@@ -3,12 +3,12 @@
 All notable changes to **medagent-core** are documented here.
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [v0.5.3] — 2024-06-12
+## [v0.7.7] — 2024-06-30
 
 ### Added
-- Extended clinical module with improved error handling
-- Added structured logging for audit operations
-- New unit tests covering edge cases in health pipeline
+- Extended drug module with improved error handling
+- Added structured logging for reasoning operations
+- New unit tests covering edge cases in clinical pipeline
 
 ### Changed
 - Refactored retry logic to use exponential backoff with jitter
@@ -16,10 +16,10 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Updated dependency pins to latest stable versions
 
 ### Fixed
-- Resolved race condition in async clinical handler
-- Fixed incorrect audit timeout calculation
+- Resolved race condition in async drug handler
+- Fixed incorrect reasoning timeout calculation
 
-## [v0.1.0] — 2024-05-29
+## [v0.1.0] — 2024-06-16
 
 ### Added
 - Initial project scaffold with biomedical AI core
