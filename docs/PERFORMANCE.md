@@ -1,10 +1,10 @@
-# Performance Tuning For Audit
+# Performance Tuning For Reasoning
 
-*medagent-core — 2024-01-26*
+*medagent-core — 2024-08-24*
 
 ## Overview
 
-This guide covers performance tuning for audit for the `medagent-core` project.
+This guide covers performance tuning for reasoning for the `medagent-core` project.
 
 ## Prerequisites
 
@@ -27,12 +27,12 @@ python -m medagent --help
 
 ## Common Scenarios
 
-### Scenario 1: Basic Audit Usage
+### Scenario 1: Basic Reasoning Usage
 
 ```python
-from medagent import Audit
+from medagent import Reasoning
 
-client = Audit(config)
+client = Reasoning(config)
 result = client.run()
 print(result)
 ```
