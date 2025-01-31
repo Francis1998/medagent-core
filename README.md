@@ -1,6 +1,6 @@
 # medagent-core
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![CI](https://github.com/Francis1998/{repo}/actions/workflows/ci.yml/badge.svg) ![License](https://img.shields.io/badge/license-MIT-green)
+![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen) ![CI](https://github.com/Francis1998/{repo}/actions/workflows/ci.yml/badge.svg) ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
 > Biomedical Ai — powered by modern Python async architecture.
 
@@ -36,4 +36,4 @@ python -m medagent --help
 
 MIT © [Francis1998](https://github.com/Francis1998)
 
-*Last updated: 2024-04-02*
+*Last updated: 2025-01-30*
