@@ -1,6 +1,6 @@
 .PHONY: help install dev-install test lint format type-check clean docker-build
 
-# medagent-core Makefile  —  updated 2025-08-16
+# medagent-core Makefile  —  updated 2025-10-01
 
 help:  ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | \
@@ -35,10 +35,10 @@ clean:  ## Remove build artifacts
 	rm -rf .pytest_cache htmlcov .coverage dist build *.egg-info
 
 docker-build:  ## Build Docker image
-	docker build -t Francis1998/medagent-core:0.3.17 .
+	docker build -t Francis1998/medagent-core:0.4.9 .
 
 docker-run:  ## Run Docker container
-	docker run --env-file .env Francis1998/medagent-core:0.3.17
+	docker run --env-file .env Francis1998/medagent-core:0.4.9
 
 bump-patch:  ## Bump patch version
 	bump2version patch
