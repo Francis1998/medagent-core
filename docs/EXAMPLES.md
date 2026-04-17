@@ -1,10 +1,10 @@
-# Usage Examples For Safety
+# Usage Examples For Health
 
-*medagent-core — 2025-12-08*
+*medagent-core — 2026-04-17*
 
 ## Overview
 
-This guide covers usage examples for safety for the `medagent-core` project.
+This guide covers usage examples for health for the `medagent-core` project.
 
 ## Prerequisites
 
@@ -27,12 +27,12 @@ python -m medagent --help
 
 ## Common Scenarios
 
-### Scenario 1: Basic Safety Usage
+### Scenario 1: Basic Health Usage
 
 ```python
-from medagent import Safety
+from medagent import Health
 
-client = Safety(config)
+client = Health(config)
 result = client.run()
 print(result)
 ```
