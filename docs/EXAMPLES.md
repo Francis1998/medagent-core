@@ -1,6 +1,6 @@
 # Usage Examples For Health
 
-*medagent-core — 2024-08-23*
+*medagent-core — 2026-04-17*
 
 ## Overview
 
