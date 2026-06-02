@@ -1,10 +1,10 @@
-# Usage Examples For Health
+# Usage Examples For Reasoning
 
-*medagent-core — 2026-04-17*
+*medagent-core — 2026-06-02*
 
 ## Overview
 
-This guide covers usage examples for health for the `medagent-core` project.
+This guide covers usage examples for reasoning for the `medagent-core` project.
 
 ## Prerequisites
 
@@ -27,12 +27,12 @@ python -m medagent --help
 
 ## Common Scenarios
 
-### Scenario 1: Basic Health Usage
+### Scenario 1: Basic Reasoning Usage
 
 ```python
-from medagent import Health
+from medagent import Reasoning
 
-client = Health(config)
+client = Reasoning(config)
 result = client.run()
 print(result)
 ```
