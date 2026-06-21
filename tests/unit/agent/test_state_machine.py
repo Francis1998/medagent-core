@@ -236,3 +236,80 @@ class TestAgentRun:
         result = await agent.run(clinical_query)
         assert result.escalated is True
         assert result.state_reached == AgentState.ESCALATE
+
+    @pytest.mark.asyncio()
+    async def test_empty_hypotheses_escalates_even_with_zero_threshold(
+        self,
+        mock_extractor: MagicMock,
+        mock_retriever: MagicMock,
+        mock_router: MagicMock,
+        mock_enforcer: MagicMock,
+        clinical_query: ClinicalQuery,
+    ) -> None:
+        """No hypotheses must ESCALATE even when the confidence threshold is 0.
+
+        With ``confidence_threshold=0.0`` the mean-confidence gate (``0.0 < 0.0``)
+        is False, so without an explicit empty-hypothesis guard the run would
+        reach OUTPUT with zero hypotheses — an unsafe result.
+        """
+        empty_reasoner = MagicMock()
+        empty_reasoner.reason = AsyncMock(return_value=[])
+        agent = ClinicalAgentStateMachine(
+            extractor=mock_extractor,
+            retriever=mock_retriever,
+            reasoner=empty_reasoner,
+            router=mock_router,
+            enforcer=mock_enforcer,
+            confidence_threshold=0.0,
+        )
+        result = await agent.run(clinical_query)
+        assert result.state_reached == AgentState.ESCALATE
+        assert result.escalated is True
+        assert result.ranked_hypotheses == []
+
+    @pytest.mark.asyncio()
+    async def test_contradictory_evidence_triggers_escalate(
+        self,
+        mock_extractor: MagicMock,
+        mock_retriever: MagicMock,
+        mock_router: MagicMock,
+        mock_enforcer: MagicMock,
+        clinical_query: ClinicalQuery,
+    ) -> None:
+        """A hypothesis with strong FOR and AGAINST evidence must ESCALATE."""
+        from medagent.models import EvidenceItem
+
+        contradictory_reasoner = MagicMock()
+        contradictory_reasoner.reason = AsyncMock(
+            return_value=[
+                Hypothesis(
+                    label="Ambiguous diagnosis",
+                    evidence_for=[
+                        EvidenceItem(
+                            direction="FOR", statement="Strong supporting finding", strength=0.9
+                        )
+                    ],
+                    evidence_against=[
+                        EvidenceItem(
+                            direction="AGAINST",
+                            statement="Strong contradicting finding",
+                            strength=0.9,
+                        )
+                    ],
+                    bayesian_score=0.9,
+                    rank=1,
+                )
+            ]
+        )
+        agent = ClinicalAgentStateMachine(
+            extractor=mock_extractor,
+            retriever=mock_retriever,
+            reasoner=contradictory_reasoner,
+            router=mock_router,
+            enforcer=mock_enforcer,
+            confidence_threshold=0.6,
+        )
+        result = await agent.run(clinical_query)
+        assert result.state_reached == AgentState.ESCALATE
+        assert result.escalated is True
+        assert any("Contradictory" in flag for flag in result.uncertainty_flags)
