@@ -101,7 +101,6 @@ select = [
 ignore = [
   "S101",   # assert usage (used for invariants)
   "ANN401", # Any type
-  "S104",   # intentional bind to 0.0.0.0 in config default
   "RUF001", # allow en-dash in medical strings (clinical ranges)
   "RUF002", # allow special chars in docstrings (math notation)
   "RUF003", # allow special chars in comments

@@ -69,7 +69,7 @@ python scripts/ingest_kb.py --sample
 
 | Variable | Default | Description |
 |---|---|---|
-| `API_HOST` | `0.0.0.0` | Bind host |
+| `API_HOST` | `127.0.0.1` | Bind host |
 | `API_PORT` | `8000` | Bind port |
 | `API_WORKERS` | `1` | Uvicorn workers (increase for production) |
 | `LOG_LEVEL` | `INFO` | Log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
