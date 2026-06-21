@@ -2,31 +2,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
 from medagent.models import (
     AgentState,
-    ClinicalEntity,
     ClinicalQuery,
     ClinicalReasoning,
     DrugInteractionWarning,
     EvidenceItem,
     FHIRPatientContext,
-    Hypothesis,
-    LabResult,
-    Medication,
-    RetrievedDocument,
     Severity,
 )
-
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
 
 
 class TestEvidenceItem:

@@ -5,19 +5,10 @@ from __future__ import annotations
 import json
 import os
 import tempfile
-from typing import TYPE_CHECKING
-
 import pytest
 
 from medagent.models import ClinicalEntity
 from medagent.retrieval.local_kb import LocalKnowledgeBase, build_sample_index
-
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
 
 
 @pytest.fixture()

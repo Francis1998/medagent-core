@@ -2,20 +2,10 @@
 
 from __future__ import annotations
 
-import math
-from typing import TYPE_CHECKING
-
 import pytest
 
 from medagent.models import EvidenceItem, Hypothesis
 from medagent.reasoning.bayesian import bayesian_score, calibrate_confidence, rank_hypotheses
-
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
 
 
 def _make_evidence(direction: str, strength: float) -> EvidenceItem:
