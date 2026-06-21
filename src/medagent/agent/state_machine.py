@@ -233,7 +233,10 @@ class ClinicalAgentStateMachine:
         uncertainty_flags: list[str] = []
         escalated = False
 
-        if overall_confidence < self._confidence_threshold:
+        if not hypotheses:
+            uncertainty_flags.append("No hypotheses generated — human review required")
+            escalated = True
+        elif overall_confidence < self._confidence_threshold:
             uncertainty_flags.append(
                 f"Overall confidence {overall_confidence:.2f} below threshold "
                 f"{self._confidence_threshold:.2f} — human review required"
