@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 
 from medagent.logging_config import get_logger
 from medagent.models import AgentState, ClinicalQuery, ClinicalReasoning
+from medagent.reasoning.bayesian import calibrate_confidence
 
 if TYPE_CHECKING:
     from medagent.extraction.ner import EntityExtractor
@@ -226,9 +227,9 @@ class ClinicalAgentStateMachine:
         entities = ctx.intermediate.get("entities", [])
         interactions = ctx.intermediate.get("interactions", [])
 
-        # Compute overall confidence as weighted mean of top-3 hypotheses
+        # Compute overall confidence with entropy-penalized calibration
         top_scores = sorted([h.bayesian_score for h in hypotheses], reverse=True)[:3]
-        overall_confidence = sum(top_scores) / max(len(top_scores), 1)
+        overall_confidence = calibrate_confidence(top_scores)
 
         uncertainty_flags: list[str] = []
         escalated = False

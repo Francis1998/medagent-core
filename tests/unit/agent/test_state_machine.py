@@ -268,6 +268,54 @@ class TestAgentRun:
         assert result.ranked_hypotheses == []
 
     @pytest.mark.asyncio()
+    async def test_near_tied_scores_escalate_with_calibrated_confidence(
+        self,
+        mock_extractor: MagicMock,
+        mock_retriever: MagicMock,
+        mock_router: MagicMock,
+        mock_enforcer: MagicMock,
+        clinical_query: ClinicalQuery,
+    ) -> None:
+        """Near-tied top hypotheses must escalate when calibrated confidence is low."""
+        near_tied_reasoner = MagicMock()
+        near_tied_reasoner.reason = AsyncMock(
+            return_value=[
+                Hypothesis(
+                    label="Diagnosis A",
+                    evidence_for=[],
+                    evidence_against=[],
+                    bayesian_score=0.65,
+                    rank=1,
+                ),
+                Hypothesis(
+                    label="Diagnosis B",
+                    evidence_for=[],
+                    evidence_against=[],
+                    bayesian_score=0.64,
+                    rank=2,
+                ),
+                Hypothesis(
+                    label="Diagnosis C",
+                    evidence_for=[],
+                    evidence_against=[],
+                    bayesian_score=0.63,
+                    rank=3,
+                ),
+            ]
+        )
+        agent = ClinicalAgentStateMachine(
+            extractor=mock_extractor,
+            retriever=mock_retriever,
+            reasoner=near_tied_reasoner,
+            router=mock_router,
+            enforcer=mock_enforcer,
+            confidence_threshold=0.6,
+        )
+        result = await agent.run(clinical_query)
+        assert result.state_reached == AgentState.ESCALATE
+        assert result.escalated is True
+
+    @pytest.mark.asyncio()
     async def test_contradictory_evidence_triggers_escalate(
         self,
         mock_extractor: MagicMock,
