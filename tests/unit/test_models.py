@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 
 from medagent.models import (
     AgentState,
@@ -30,18 +31,18 @@ class TestEvidenceItem:
 
     def test_invalid_direction_raises(self) -> None:
         """Invalid direction must raise a ValidationError."""
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError):
             EvidenceItem(direction="MAYBE", statement="Something")
 
     def test_strength_clamped_to_range(self) -> None:
         """Strength must be in [0, 1]."""
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError):
             EvidenceItem(direction="FOR", statement="x", strength=1.5)
 
     def test_frozen_model_immutable(self) -> None:
         """EvidenceItem is frozen — mutation must raise."""
         item = EvidenceItem(direction="FOR", statement="s")
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError):
             item.direction = "AGAINST"  # type: ignore[misc]
 
 
@@ -129,7 +130,7 @@ class TestClinicalReasoning:
 
     def test_confidence_range_validation(self) -> None:
         """overall_confidence outside [0, 1] must raise."""
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError):
             ClinicalReasoning(
                 session_id="s1",
                 query="test",

@@ -18,7 +18,9 @@ class TestMedicalOutputValidator:
 
     def test_valid_content_passes(self, validator: MedicalOutputValidator) -> None:
         """Standard non-prohibited content must pass validation."""
-        validator.validate("The differential includes Type 2 Diabetes mellitus as a top hypothesis.")
+        validator.validate(
+            "The differential includes Type 2 Diabetes mellitus as a top hypothesis."
+        )
 
     def test_empty_content_fails(self, validator: MedicalOutputValidator) -> None:
         """Empty string must fail validation."""

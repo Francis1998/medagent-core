@@ -42,7 +42,12 @@ def minimal_fhir_bundle() -> dict[str, Any]:
                     "resourceType": "MedicationRequest",
                     "medicationCodeableConcept": {
                         "text": "Metformin",
-                        "coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "6809"}],
+                        "coding": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "6809",
+                            }
+                        ],
                     },
                     "dosageInstruction": [{"text": "500mg twice daily"}],
                 }
@@ -100,7 +105,10 @@ class TestParseFhirBundle:
         """Observation must be parsed into LabResult with abnormal=True."""
         ctx = parse_fhir_bundle(minimal_fhir_bundle, pii_salt="test-salt")
         assert len(ctx.lab_results) >= 1
-        hba1c = next((l for l in ctx.lab_results if l.test_name == "HbA1c"), None)
+        hba1c = next(
+            (lab_result for lab_result in ctx.lab_results if lab_result.test_name == "HbA1c"),
+            None,
+        )
         assert hba1c is not None
         assert hba1c.abnormal is True
 
