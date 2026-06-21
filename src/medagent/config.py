@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     kb_index_path: str = Field(default="./data/kb_index/")
 
     # --- API Server ---
-    api_host: str = Field(default="0.0.0.0")
+    api_host: str = Field(default="127.0.0.1")
     api_port: int = Field(default=8000, ge=1, le=65535)
     api_workers: int = Field(default=1, ge=1)
     log_level: str = Field(default="INFO")
