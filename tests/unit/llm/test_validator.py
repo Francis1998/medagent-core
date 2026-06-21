@@ -6,6 +6,8 @@ import pytest
 
 from medagent.llm.validator import MedicalOutputValidationError, MedicalOutputValidator
 
+_TOO_LONG_CONTENT_LENGTH = 50_001
+
 
 @pytest.fixture()
 def validator() -> MedicalOutputValidator:
@@ -31,6 +33,11 @@ class TestMedicalOutputValidator:
         """Content shorter than 10 chars must fail validation."""
         with pytest.raises(MedicalOutputValidationError):
             validator.validate("ok")
+
+    def test_too_long_content_fails(self, validator: MedicalOutputValidator) -> None:
+        """Content above the maximum safety bound must fail validation."""
+        with pytest.raises(MedicalOutputValidationError, match="suspiciously long"):
+            validator.validate("x" * _TOO_LONG_CONTENT_LENGTH)
 
     def test_prescribe_keyword_rejected(self, validator: MedicalOutputValidator) -> None:
         """Content containing 'prescribe' must fail."""
@@ -69,3 +76,8 @@ class TestMedicalOutputValidator:
         """Invalid JSON must raise MedicalOutputValidationError."""
         with pytest.raises(MedicalOutputValidationError, match="not valid JSON"):
             validator.validate_json("this is not JSON at all", required_keys=[])
+
+    def test_validate_json_non_object_raises(self, validator: MedicalOutputValidator) -> None:
+        """JSON arrays must fail because structured outputs require objects."""
+        with pytest.raises(MedicalOutputValidationError, match="must be an object"):
+            validator.validate_json('["diagnosis", "evidence"]', required_keys=["diagnosis"])

@@ -111,3 +111,12 @@ class TestRedactFhirPii:
         result = redact_fhir_pii(bundle)
         obs = result["entry"][0]["resource"]  # type: ignore[index]
         assert obs["code"]["text"] == "Hemoglobin"  # type: ignore[index]
+
+    def test_non_list_entries_return_bundle(self) -> None:
+        """A malformed non-list entry field must return a copied bundle."""
+        bundle: dict[str, object] = {"resourceType": "Bundle", "entry": "not-a-list"}
+
+        result = redact_fhir_pii(bundle)
+
+        assert result == bundle
+        assert result is not bundle

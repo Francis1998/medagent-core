@@ -6,10 +6,15 @@ import json
 import os
 import tempfile
 
+import numpy as np
 import pytest
 
 from medagent.models import ClinicalEntity
-from medagent.retrieval.local_kb import LocalKnowledgeBase, build_sample_index
+from medagent.retrieval.local_kb import (
+    LocalKnowledgeBase,
+    _minmax_normalize,
+    build_sample_index,
+)
 
 
 @pytest.fixture()
@@ -70,6 +75,24 @@ class TestLocalKnowledgeBase:
         entities = [ClinicalEntity(text="diabetes", label="DISEASE")]
         results = kb.search(entities)
         assert results == []
+
+    def test_minmax_normalize_scales_non_constant_array(self) -> None:
+        """_minmax_normalize must scale values into the [0, 1] range."""
+        normalized = _minmax_normalize(np.array([2.0, 4.0, 6.0]))
+
+        assert normalized.tolist() == [0.0, 0.5, 1.0]
+
+    def test_minmax_normalize_constant_array_returns_zeroes(self) -> None:
+        """_minmax_normalize must return zeroes when all values are equal."""
+        normalized = _minmax_normalize(np.array([3.0, 3.0, 3.0]))
+
+        assert normalized.tolist() == [0.0, 0.0, 0.0]
+
+    def test_mean_bow_embedding_returns_none_placeholder(self, sample_index_dir: str) -> None:
+        """_mean_bow_embedding must return None until dense vectors are configured."""
+        kb = LocalKnowledgeBase(index_path=sample_index_dir)
+
+        assert kb._mean_bow_embedding(["diabetes"]) is None
 
 
 class TestBuildSampleIndex:
