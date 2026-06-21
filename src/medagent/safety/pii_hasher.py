@@ -78,7 +78,7 @@ def redact_fhir_pii(fhir_bundle: dict[str, object]) -> dict[str, object]:
     bundle = copy.deepcopy(fhir_bundle)
     entries = bundle.get("entry", [])
     if not isinstance(entries, list):
-        return bundle  # type: ignore[return-value]
+        return bundle
 
     for entry in entries:
         resource = entry.get("resource", {})
@@ -86,4 +86,4 @@ def redact_fhir_pii(fhir_bundle: dict[str, object]) -> dict[str, object]:
             for pii_field in ("name", "birthDate", "identifier", "telecom", "address"):
                 resource.pop(pii_field, None)
 
-    return bundle  # type: ignore[return-value]
+    return bundle

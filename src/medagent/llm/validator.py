@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import re
+from typing import Any, cast
 
 from medagent.logging_config import get_logger
 
@@ -83,7 +84,7 @@ class MedicalOutputValidator:
         if missing:
             raise MedicalOutputValidationError(f"LLM output missing required keys: {missing}")
 
-        return data  # type: ignore[return-value]
+        return cast(dict[str, Any], data)
 
     def _check_length(self, content: str) -> None:
         """Ensure the content is non-empty and within bounds."""

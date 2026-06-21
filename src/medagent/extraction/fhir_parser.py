@@ -105,7 +105,7 @@ def _extract_patient_id(patient: dict[str, Any]) -> str:
         value = identifier.get("value")
         if value:
             return str(value)
-    return patient.get("id", "unknown")
+    return str(patient.get("id", "unknown"))
 
 
 def _extract_age(patient: dict[str, Any]) -> int | None:
@@ -270,12 +270,12 @@ def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
                 if "chief" in coding.get("display", "").lower():
                     code_text = cond.get("code", {}).get("text")
                     if code_text:
-                        return code_text
+                        return str(code_text)
 
     # Fall back to first condition
     conditions = resources.get("Condition", [])
     if conditions:
-        return conditions[0].get("code", {}).get("text", "Not specified")
+        return str(conditions[0].get("code", {}).get("text", "Not specified"))
 
     return "Not specified"
 

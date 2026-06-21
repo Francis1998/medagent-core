@@ -12,7 +12,12 @@ from datetime import datetime
 from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from medagent.config import settings
 from medagent.logging_config import get_logger
@@ -45,11 +50,11 @@ audit_log_table = sa.Table(
     sa.Column("created_at", sa.DateTime, nullable=False, default=datetime.utcnow),
 )
 
-_engine: sa.ext.asyncio.AsyncEngine | None = None
+_engine: AsyncEngine | None = None
 _session_factory: async_sessionmaker[AsyncSession] | None = None
 
 
-async def get_engine() -> sa.ext.asyncio.AsyncEngine:
+async def get_engine() -> AsyncEngine:
     """Lazily initialise and return the async database engine."""
     global _engine, _session_factory
     if _engine is None:

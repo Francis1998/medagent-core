@@ -8,6 +8,8 @@ installed (the CI environment may lack all vendor packages).
 
 from __future__ import annotations
 
+from typing import Any, cast
+
 from medagent.config import settings
 from medagent.llm.base import BaseLLMAdapter, LLMAdapterError, LLMResponse
 from medagent.logging_config import get_logger
@@ -65,7 +67,7 @@ class OpenAIAdapter(BaseLLMAdapter):
             LLMAdapterError: On OpenAI API errors.
         """
         try:
-            from openai import AsyncOpenAI  # type: ignore[import-untyped]
+            from openai import AsyncOpenAI
         except ImportError as exc:
             raise LLMAdapterError("openai package not installed") from exc
 
@@ -148,7 +150,7 @@ class AnthropicAdapter(BaseLLMAdapter):
             LLMAdapterError: On Anthropic API errors.
         """
         try:
-            import anthropic  # type: ignore[import-untyped]
+            import anthropic
         except ImportError as exc:
             raise LLMAdapterError("anthropic package not installed") from exc
 
@@ -230,22 +232,23 @@ class GoogleAdapter(BaseLLMAdapter):
             LLMAdapterError: On Google API errors.
         """
         try:
-            import google.generativeai as genai  # type: ignore[import-untyped]
+            import google.generativeai as genai
         except ImportError as exc:
             raise LLMAdapterError("google-generativeai package not installed") from exc
 
         if not self._api_key:
             raise LLMAdapterError("GOOGLE_API_KEY is not set")
 
-        genai.configure(api_key=self._api_key)
+        genai_client = cast(Any, genai)
+        genai_client.configure(api_key=self._api_key)
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
         full_prompt = f"{sys_msg}\n\n{prompt}"
 
         try:
             import asyncio
 
-            model = genai.GenerativeModel(self._model)
-            generation_config = genai.GenerationConfig(
+            model = genai_client.GenerativeModel(self._model)
+            generation_config = genai_client.GenerationConfig(
                 max_output_tokens=max_tokens,
                 temperature=temperature,
             )
@@ -314,7 +317,7 @@ class KimiAdapter(BaseLLMAdapter):
             LLMAdapterError: On Kimi API errors.
         """
         try:
-            from openai import AsyncOpenAI  # type: ignore[import-untyped]
+            from openai import AsyncOpenAI
         except ImportError as exc:
             raise LLMAdapterError("openai package not installed (required for Kimi)") from exc
 

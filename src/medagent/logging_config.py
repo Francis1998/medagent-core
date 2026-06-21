@@ -6,7 +6,7 @@ individual reasoning chains can be replayed from logs alone.
 
 import logging
 import sys
-from typing import Any
+from typing import Any, cast
 
 import structlog
 from structlog.types import EventDict, WrappedLogger
@@ -80,4 +80,4 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
     Returns:
         A configured bound logger instance.
     """
-    return structlog.get_logger(name)  # type: ignore[return-value]
+    return cast(structlog.stdlib.BoundLogger, structlog.get_logger(name))

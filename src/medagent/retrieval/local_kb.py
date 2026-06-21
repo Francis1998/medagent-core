@@ -16,7 +16,7 @@ import json
 import math
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 from rank_bm25 import BM25Okapi
@@ -189,7 +189,7 @@ def _minmax_normalize(arr: np.ndarray) -> np.ndarray:
     arr_max = arr.max()
     if math.isclose(arr_max - arr_min, 0.0):
         return np.zeros_like(arr)
-    return (arr - arr_min) / (arr_max - arr_min)
+    return cast(np.ndarray, (arr - arr_min) / (arr_max - arr_min))
 
 
 def build_sample_index(output_dir: str = "./data/kb_index/") -> None:

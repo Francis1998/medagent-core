@@ -82,7 +82,7 @@ class EntityExtractor:
     def _load_spacy_model(model_name: str) -> Any:
         """Attempt to load a scispaCy model; log and return None on failure."""
         try:
-            import spacy  # type: ignore[import-untyped]
+            import spacy
 
             nlp = spacy.load(model_name)
             logger.info("spacy_model_loaded", model=model_name)
