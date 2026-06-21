@@ -4,11 +4,17 @@
 
 **Auditable biomedical AI decision support agent** — multi-hop clinical reasoning, drug interaction detection, and safety-first agentic architecture for health-AI research.
 
-[![CI](https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
-[![Tests: 93 passing](https://img.shields.io/badge/tests-93%20passing-brightgreen)](#quality-gates)
-[![Research Use Only](https://img.shields.io/badge/Use-Research%20Only-red.svg)](SAFETY.md)
+<p align="left">
+  <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
+  <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
+  <a href="#quality-gates"><img alt="Tests: 109 passed" src="https://img.shields.io/badge/tests-109%20passed-brightgreen.svg"></a>
+  <a href="#quality-gates"><img alt="Coverage: 70%" src="https://img.shields.io/badge/coverage-70%25-brightgreen.svg"></a>
+  <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
+  <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
+  <a href="SAFETY.md"><img alt="Research Use Only" src="https://img.shields.io/badge/use-research%20only-red.svg"></a>
+  <a href="#live-demos"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--4o%20%7C%20Claude%20%7C%20Gemini%20%7C%20Kimi-purple.svg"></a>
+</p>
 
 ---
 
