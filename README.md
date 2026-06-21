@@ -14,7 +14,7 @@
 
 ## Live Demos
 
-**Full clinical reasoning pipeline — STEMI chest pain case:**
+**Clinical reasoning pipeline — STEMI chest pain case:**
 
 ![medagent pipeline demo](assets/demo_pipeline.svg)
 
@@ -25,6 +25,26 @@
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
 ![medagent escalation demo](assets/demo_escalation.svg)
+
+**Multi-LLM routing — GPT-4o, Claude, Gemini, and Kimi failover:**
+
+![medagent LLM routing demo](assets/demo_llm_routing.svg)
+
+**FHIR intake — raw PII redaction before model calls:**
+
+![medagent FHIR intake demo](assets/demo_fhir_intake.svg)
+
+**Finite-state machine — inspectable state transitions:**
+
+![medagent state transition demo](assets/demo_state_transitions.svg)
+
+**Evaluation harness — MedQA-style and drug-interaction regression checks:**
+
+![medagent benchmark demo](assets/demo_benchmarks.svg)
+
+**Audit trace — replayable session history with hashed inputs:**
+
+![medagent audit trace demo](assets/demo_audit_trace.svg)
 
 Run all three locally — no API keys needed:
 ```bash

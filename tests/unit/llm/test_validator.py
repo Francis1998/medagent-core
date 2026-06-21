@@ -2,18 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
 from medagent.llm.validator import MedicalOutputValidationError, MedicalOutputValidator
 
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
+_TOO_LONG_CONTENT_LENGTH = 50_001
 
 
 @pytest.fixture()
@@ -27,7 +20,9 @@ class TestMedicalOutputValidator:
 
     def test_valid_content_passes(self, validator: MedicalOutputValidator) -> None:
         """Standard non-prohibited content must pass validation."""
-        validator.validate("The differential includes Type 2 Diabetes mellitus as a top hypothesis.")
+        validator.validate(
+            "The differential includes Type 2 Diabetes mellitus as a top hypothesis."
+        )
 
     def test_empty_content_fails(self, validator: MedicalOutputValidator) -> None:
         """Empty string must fail validation."""
@@ -38,6 +33,11 @@ class TestMedicalOutputValidator:
         """Content shorter than 10 chars must fail validation."""
         with pytest.raises(MedicalOutputValidationError):
             validator.validate("ok")
+
+    def test_too_long_content_fails(self, validator: MedicalOutputValidator) -> None:
+        """Content above the maximum safety bound must fail validation."""
+        with pytest.raises(MedicalOutputValidationError, match="suspiciously long"):
+            validator.validate("x" * _TOO_LONG_CONTENT_LENGTH)
 
     def test_prescribe_keyword_rejected(self, validator: MedicalOutputValidator) -> None:
         """Content containing 'prescribe' must fail."""
@@ -60,9 +60,7 @@ class TestMedicalOutputValidator:
         result = validator.validate_json(content, required_keys=["hypotheses"])
         assert "hypotheses" in result
 
-    def test_validate_json_strips_markdown_fences(
-        self, validator: MedicalOutputValidator
-    ) -> None:
+    def test_validate_json_strips_markdown_fences(self, validator: MedicalOutputValidator) -> None:
         """JSON wrapped in markdown code fences must be parsed correctly."""
         content = '```json\n{"hypotheses": [{"label": "T2DM"}]}\n```'
         result = validator.validate_json(content, required_keys=["hypotheses"])
@@ -78,3 +76,8 @@ class TestMedicalOutputValidator:
         """Invalid JSON must raise MedicalOutputValidationError."""
         with pytest.raises(MedicalOutputValidationError, match="not valid JSON"):
             validator.validate_json("this is not JSON at all", required_keys=[])
+
+    def test_validate_json_non_object_raises(self, validator: MedicalOutputValidator) -> None:
+        """JSON arrays must fail because structured outputs require objects."""
+        with pytest.raises(MedicalOutputValidationError, match="must be an object"):
+            validator.validate_json('["diagnosis", "evidence"]', required_keys=["diagnosis"])

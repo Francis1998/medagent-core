@@ -2,18 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-import pytest
-
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
-
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
 
 
 class TestHashPii:
@@ -122,3 +111,12 @@ class TestRedactFhirPii:
         result = redact_fhir_pii(bundle)
         obs = result["entry"][0]["resource"]  # type: ignore[index]
         assert obs["code"]["text"] == "Hemoglobin"  # type: ignore[index]
+
+    def test_non_list_entries_return_bundle(self) -> None:
+        """A malformed non-list entry field must return a copied bundle."""
+        bundle: dict[str, object] = {"resourceType": "Bundle", "entry": "not-a-list"}
+
+        result = redact_fhir_pii(bundle)
+
+        assert result == bundle
+        assert result is not bundle

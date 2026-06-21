@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Basic benchmark for biomedical AI throughput."""
+
 import statistics
 import time
 
 ITERATIONS = 100
+
 
 def benchmark_run() -> dict:
     """Run a basic throughput benchmark."""
@@ -21,6 +23,7 @@ def benchmark_run() -> dict:
         "p95_ms": round(sorted(times)[int(ITERATIONS * 0.95)] * 1000, 2),
         "p99_ms": round(sorted(times)[int(ITERATIONS * 0.99)] * 1000, 2),
     }
+
 
 if __name__ == "__main__":
     results = benchmark_run()

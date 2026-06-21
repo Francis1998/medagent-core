@@ -12,7 +12,12 @@ from datetime import datetime
 from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from medagent.config import settings
 from medagent.logging_config import get_logger
@@ -45,11 +50,11 @@ audit_log_table = sa.Table(
     sa.Column("created_at", sa.DateTime, nullable=False, default=datetime.utcnow),
 )
 
-_engine: sa.ext.asyncio.AsyncEngine | None = None
+_engine: AsyncEngine | None = None
 _session_factory: async_sessionmaker[AsyncSession] | None = None
 
 
-async def get_engine() -> sa.ext.asyncio.AsyncEngine:
+async def get_engine() -> AsyncEngine:
     """Lazily initialise and return the async database engine."""
     global _engine, _session_factory
     if _engine is None:
@@ -79,16 +84,12 @@ async def persist_run(reasoning: ClinicalReasoning) -> None:
         "overall_confidence": reasoning.overall_confidence,
         "model_used": reasoning.model_used,
         "wall_time_seconds": reasoning.wall_time_seconds,
-        "hypotheses_json": _serialize(
-            [h.model_dump() for h in reasoning.ranked_hypotheses]
-        ),
+        "hypotheses_json": _serialize([h.model_dump() for h in reasoning.ranked_hypotheses]),
         "interactions_json": _serialize(
             [i.model_dump() for i in reasoning.drug_interactions_flagged]
         ),
         "uncertainty_flags_json": _serialize(reasoning.uncertainty_flags),
-        "entities_json": _serialize(
-            [e.model_dump() for e in reasoning.entities_extracted]
-        ),
+        "entities_json": _serialize([e.model_dump() for e in reasoning.entities_extracted]),
         "created_at": reasoning.completed_at,
     }
 
@@ -117,9 +118,7 @@ async def fetch_run(session_id: str) -> dict[str, Any] | None:
 
     async with _session_factory() as session:
         result = await session.execute(
-            sa.select(audit_log_table).where(
-                audit_log_table.c.session_id == session_id
-            )
+            sa.select(audit_log_table).where(audit_log_table.c.session_id == session_id)
         )
         row = result.mappings().first()
         return dict(row) if row else None
@@ -147,9 +146,7 @@ async def get_recent_runs(limit: int = 20) -> list[dict[str, Any]]:
 
     async with _session_factory() as session:
         result = await session.execute(
-            sa.select(audit_log_table)
-            .order_by(audit_log_table.c.created_at.desc())
-            .limit(limit)
+            sa.select(audit_log_table).order_by(audit_log_table.c.created_at.desc()).limit(limit)
         )
         return [dict(r) for r in result.mappings().all()]
 

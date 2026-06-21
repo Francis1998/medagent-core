@@ -52,9 +52,7 @@ def parse_fhir_bundle(
 
     resource_type = bundle.get("resourceType")
     if resource_type != "Bundle":
-        raise FHIRParseError(
-            f"Expected resourceType 'Bundle', got '{resource_type}'"
-        )
+        raise FHIRParseError(f"Expected resourceType 'Bundle', got '{resource_type}'")
 
     entries: list[dict[str, Any]] = bundle.get("entry", [])
     if not isinstance(entries, list):
@@ -107,7 +105,7 @@ def _extract_patient_id(patient: dict[str, Any]) -> str:
         value = identifier.get("value")
         if value:
             return str(value)
-    return patient.get("id", "unknown")
+    return str(patient.get("id", "unknown"))
 
 
 def _extract_age(patient: dict[str, Any]) -> int | None:
@@ -198,9 +196,7 @@ def _extract_observations(observations: list[dict[str, Any]]) -> list[LabResult]
     labs: list[LabResult] = []
     for obs in observations:
         code = obs.get("code", {})
-        name = code.get("text") or (
-            (obs.get("code", {}).get("coding") or [{}])[0].get("display")
-        )
+        name = code.get("text") or ((obs.get("code", {}).get("coding") or [{}])[0].get("display"))
         if not name:
             continue
 
@@ -229,9 +225,7 @@ def _extract_observations(observations: list[dict[str, Any]]) -> list[LabResult]
         interpretation_codings = obs.get("interpretation", [{}])
         abnormal = False
         if interpretation_codings:
-            interp_code = (
-                interpretation_codings[0].get("coding") or [{}]
-            )[0].get("code", "N")
+            interp_code = (interpretation_codings[0].get("coding") or [{}])[0].get("code", "N")
             abnormal = interp_code not in {"N", "normal"}
 
         try:
@@ -276,12 +270,12 @@ def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
                 if "chief" in coding.get("display", "").lower():
                     code_text = cond.get("code", {}).get("text")
                     if code_text:
-                        return code_text
+                        return str(code_text)
 
     # Fall back to first condition
     conditions = resources.get("Condition", [])
     if conditions:
-        return conditions[0].get("code", {}).get("text", "Not specified")
+        return str(conditions[0].get("code", {}).get("text", "Not specified"))
 
     return "Not specified"
 

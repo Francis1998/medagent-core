@@ -102,8 +102,7 @@ class ClinicalAgentStateMachine:
         allowed = self.VALID_TRANSITIONS.get(ctx.current_state, set())
         if next_state not in allowed:
             raise StateMachineError(
-                f"Invalid transition: {ctx.current_state} → {next_state}. "
-                f"Allowed: {allowed}"
+                f"Invalid transition: {ctx.current_state} → {next_state}. Allowed: {allowed}"
             )
         logger.info(
             "state_transition",
@@ -228,9 +227,7 @@ class ClinicalAgentStateMachine:
         interactions = ctx.intermediate.get("interactions", [])
 
         # Compute overall confidence as weighted mean of top-3 hypotheses
-        top_scores = sorted(
-            [h.bayesian_score for h in hypotheses], reverse=True
-        )[:3]
+        top_scores = sorted([h.bayesian_score for h in hypotheses], reverse=True)[:3]
         overall_confidence = sum(top_scores) / max(len(top_scores), 1)
 
         uncertainty_flags: list[str] = []

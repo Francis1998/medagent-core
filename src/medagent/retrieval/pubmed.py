@@ -107,9 +107,7 @@ class PubMedClient:
                 resp.raise_for_status()
                 data: dict[str, Any] = await resp.json()
 
-        id_list: list[str] = (
-            data.get("esearchresult", {}).get("idlist", [])
-        )
+        id_list: list[str] = data.get("esearchresult", {}).get("idlist", [])
         return id_list
 
     @retry(
@@ -169,10 +167,7 @@ def _parse_article(article: dict[str, Any]) -> RetrievedDocument | None:
     snippet = _extract_text(abstract_text)[:500]
 
     pub_date = (
-        article_data.get("Journal", {})
-        .get("JournalIssue", {})
-        .get("PubDate", {})
-        .get("Year")
+        article_data.get("Journal", {}).get("JournalIssue", {}).get("PubDate", {}).get("Year")
     )
 
     # Extract MeSH terms
@@ -180,9 +175,7 @@ def _parse_article(article: dict[str, Any]) -> RetrievedDocument | None:
     if isinstance(mesh_list, dict):
         mesh_list = [mesh_list]
     mesh_terms = [
-        _extract_text(m.get("DescriptorName", ""))
-        for m in mesh_list
-        if m.get("DescriptorName")
+        _extract_text(m.get("DescriptorName", "")) for m in mesh_list if m.get("DescriptorName")
     ][:10]
 
     if not pmid or not title:

@@ -101,11 +101,7 @@ def compute_metrics(results: list[dict[str, Any]]) -> dict[str, float]:
 
     precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
     recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    f1 = (
-        2 * precision * recall / (precision + recall)
-        if (precision + recall) > 0
-        else 0.0
-    )
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
     accuracy = (tp + tn) / len(results) if results else 0.0
 
     return {
@@ -164,16 +160,16 @@ async def main(data_path: str, output_path: str) -> None:
     with open(output_path, "w") as f:
         json.dump(output, f, indent=2)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("DrugBank Interaction Detection Results")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Total pairs    : {len(results)}")
     print(f"Precision      : {metrics['precision']:.4f}")
     print(f"Recall         : {metrics['recall']:.4f}")
     print(f"F1 Score       : {metrics['f1']:.4f}")
     print(f"Accuracy       : {metrics['accuracy']:.4f}")
     print(f"Results saved  : {output_path}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
 
 def _synthetic_test_pairs() -> list[dict[str, Any]]:

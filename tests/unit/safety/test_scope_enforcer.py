@@ -2,18 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
-
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
 
 
 class TestScopeEnforcer:
@@ -53,16 +44,12 @@ class TestScopeEnforcer:
         with pytest.raises(ScopeViolationError):
             enforcer.check_query_in_scope("What is the bitcoin price today?")
 
-    def test_strict_mode_requires_medical_topic(
-        self, strict_enforcer: ScopeEnforcer
-    ) -> None:
+    def test_strict_mode_requires_medical_topic(self, strict_enforcer: ScopeEnforcer) -> None:
         """In strict mode, a query without medical keywords must raise."""
         with pytest.raises(ScopeViolationError):
             strict_enforcer.check_query_in_scope("Tell me about the weather in London")
 
-    def test_strict_mode_passes_medical_query(
-        self, strict_enforcer: ScopeEnforcer
-    ) -> None:
+    def test_strict_mode_passes_medical_query(self, strict_enforcer: ScopeEnforcer) -> None:
         """In strict mode, a query with a medical keyword must pass."""
         strict_enforcer.check_query_in_scope("What are the drug interaction risks here?")
 

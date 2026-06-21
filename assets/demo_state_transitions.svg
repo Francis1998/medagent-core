@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 284" width="960" height="284" role="img" aria-label="medagent-core - explicit finite-state machine">
+<title>medagent-core - explicit finite-state machine</title>
+<defs><style>.bg{fill:#0d1117}.bar{fill:#21262d}.title{fill:#8b949e;font:13px monospace}.prompt{fill:#58a6ff;font:700 13px monospace}.text{fill:#e6edf3;font:13px monospace}.dim{fill:#8b949e;font:12px monospace}.ok{fill:#3fb950;font:700 13px monospace}.warn{fill:#d29922;font:700 13px monospace}.err{fill:#f85149;font:700 13px monospace}.violet{fill:#d2a8ff;font:700 13px monospace}.box{fill:#161b22;stroke:#30363d;stroke-width:1}.line{animation:fade .3s both}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{50%{opacity:.45}}.pulse{animation:pulse 1.2s infinite}.cursor{fill:#58a6ff;animation:pulse 1s infinite}</style></defs>
+<rect width="960" height="284" rx="12" class="bg"/>
+<rect width="960" height="36" rx="12" class="bar"/>
+<circle cx="20" cy="18" r="7" fill="#ff5f57"/><circle cx="42" cy="18" r="7" fill="#ffbd2e"/><circle cx="64" cy="18" r="7" fill="#28c840"/>
+<text x="480" y="23" text-anchor="middle" class="title">medagent-core - explicit finite-state machine</text>
+<rect x="24" y="56" width="912" height="204" rx="10" class="box"/>
+<g class="line" style="animation-delay:0.37s"><text x="44" y="86" class="prompt">INTAKE -&gt; ENTITY_EXTRACTION -&gt; KNOWLEDGE_RETRIEVAL -&gt; REASONING</text></g>
+<g class="line" style="animation-delay:0.59s"><text x="44" y="110" class="ok">REASONING -&gt; SAFETY_CHECK -&gt; OUTPUT when confidence passes threshold</text></g>
+<g class="line" style="animation-delay:0.81s"><text x="44" y="134" class="warn">REASONING -&gt; SAFETY_CHECK -&gt; ESCALATE when confidence is too low</text></g>
+<g class="line" style="animation-delay:1.03s"><text x="44" y="158" class="err">Any state -&gt; ERROR when timeout or validation failure occurs</text></g>
+<g class="line" style="animation-delay:1.25s"><text x="44" y="182" class="text">Every transition logs state, elapsed_ms, evidence IDs, and safety decision</text></g>
+<g class="line" style="animation-delay:1.47s"><text x="44" y="206" class="ok">No hidden while-loop agent behavior; every branch is inspectable</text></g>
+<g class="line" style="animation-delay:1.69s"><text x="44" y="230" class="dim">Replay support: state_history can reconstruct the run after the fact</text></g>
+<g class="line" style="animation-delay:1.91s"><text x="44" y="254" class="prompt">Clinical AI control flow should be deterministic and reviewable</text></g>
+<rect x="44" y="246" width="9" height="15" rx="2" class="cursor"/>
+</svg>

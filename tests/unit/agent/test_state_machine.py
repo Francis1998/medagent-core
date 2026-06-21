@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
-from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -17,19 +15,10 @@ from medagent.models import (
     AgentState,
     ClinicalEntity,
     ClinicalQuery,
-    DrugInteractionWarning,
     FHIRPatientContext,
     Hypothesis,
     RetrievedDocument,
-    Severity,
 )
-
-if TYPE_CHECKING:
-    from _pytest.capture import CaptureFixture
-    from _pytest.fixtures import FixtureRequest
-    from _pytest.logging import LogCaptureFixture
-    from _pytest.monkeypatch import MonkeyPatch
-    from pytest_mock.plugin import MockerFixture
 
 
 @pytest.fixture()
@@ -199,12 +188,10 @@ class TestAgentRun:
         clinical_query: ClinicalQuery,
     ) -> None:
         """A scope violation must result in ERROR state, not propagate as an exception."""
-        from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
+        from medagent.safety.scope_enforcer import ScopeViolationError
 
         enforcer = MagicMock()
-        enforcer.check_query_in_scope = MagicMock(
-            side_effect=ScopeViolationError("Out of scope")
-        )
+        enforcer.check_query_in_scope = MagicMock(side_effect=ScopeViolationError("Out of scope"))
         agent = ClinicalAgentStateMachine(
             extractor=mock_extractor,
             retriever=mock_retriever,
