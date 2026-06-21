@@ -1,0 +1,247 @@
+"""Core Pydantic domain models shared across the entire medagent-core package.
+
+All models are immutable by default (frozen=True) to prevent accidental
+in-place mutation of clinical data flowing through the pipeline.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import uuid
+from datetime import datetime
+from enum import Enum
+from typing import Any
+
+from pydantic import BaseModel, Field, field_validator
+
+# ---------------------------------------------------------------------------
+# Enumerations
+# ---------------------------------------------------------------------------
+
+
+class AgentState(str, Enum):
+    """Finite states of the clinical reasoning agent."""
+
+    INTAKE = "INTAKE"
+    ENTITY_EXTRACTION = "ENTITY_EXTRACTION"
+    KNOWLEDGE_RETRIEVAL = "KNOWLEDGE_RETRIEVAL"
+    REASONING = "REASONING"
+    SAFETY_CHECK = "SAFETY_CHECK"
+    OUTPUT = "OUTPUT"
+    ESCALATE = "ESCALATE"
+    ERROR = "ERROR"
+
+
+class Severity(str, Enum):
+    """Clinical severity classification."""
+
+    CRITICAL = "CRITICAL"
+    HIGH = "HIGH"
+    MODERATE = "MODERATE"
+    LOW = "LOW"
+    UNKNOWN = "UNKNOWN"
+
+
+class LLMProvider(str, Enum):
+    """Supported LLM backend providers."""
+
+    OPENAI = "openai"
+    ANTHROPIC = "anthropic"
+    GOOGLE = "google"
+    KIMI = "kimi"
+
+
+# ---------------------------------------------------------------------------
+# Input models
+# ---------------------------------------------------------------------------
+
+
+class LabResult(BaseModel, frozen=True):
+    """A single laboratory test result."""
+
+    test_name: str
+    value: str
+    unit: str | None = None
+    reference_range: str | None = None
+    abnormal: bool = False
+
+
+class Medication(BaseModel, frozen=True):
+    """A medication entry with optional dosage metadata."""
+
+    name: str
+    rxnorm_code: str | None = None
+    dosage: str | None = None
+    route: str | None = None
+    frequency: str | None = None
+
+
+class FHIRPatientContext(BaseModel, frozen=True):
+    """Structured FHIR-compatible patient context.
+
+    Patient-identifying fields are stored as hashes; the raw values are never
+    persisted beyond the intake boundary. See ``src/medagent/safety/pii_hasher.py``.
+    """
+
+    patient_id_hash: str = Field(description="SHA-256 hash of the original patient MRN/ID")
+    age: int | None = Field(default=None, ge=0, le=150)
+    sex: str | None = Field(default=None, description="Biological sex for clinical context")
+    chief_complaint: str = Field(description="Presenting complaint in free text")
+    clinical_notes: str = Field(default="", description="Unstructured clinician notes")
+    diagnoses_history: list[str] = Field(default_factory=list)
+    medications: list[Medication] = Field(default_factory=list)
+    lab_results: list[LabResult] = Field(default_factory=list)
+    allergies: list[str] = Field(default_factory=list)
+    raw_fhir: dict[str, Any] | None = Field(
+        default=None,
+        description="Original FHIR bundle — stored for audit, not passed to LLMs",
+    )
+
+
+class ClinicalQuery(BaseModel, frozen=True):
+    """Top-level agent input combining FHIR context and a free-text question."""
+
+    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    patient_context: FHIRPatientContext
+    query: str = Field(description="Clinician's question or reasoning task")
+    requested_at: datetime = Field(default_factory=datetime.utcnow)
+
+    @property
+    def inputs_hash(self) -> str:
+        """SHA-256 of patient_id_hash + query for audit trail deduplication."""
+        payload = f"{self.patient_context.patient_id_hash}|{self.query}"
+        return hashlib.sha256(payload.encode()).hexdigest()
+
+
+# ---------------------------------------------------------------------------
+# Intermediate reasoning models
+# ---------------------------------------------------------------------------
+
+
+class ClinicalEntity(BaseModel, frozen=True):
+    """A biomedical entity extracted from clinical text."""
+
+    text: str
+    label: str = Field(description="Entity type e.g. DISEASE, CHEMICAL, GENE")
+    start_char: int | None = None
+    end_char: int | None = None
+    cui: str | None = Field(default=None, description="UMLS Concept Unique Identifier")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+
+
+class RetrievedDocument(BaseModel, frozen=True):
+    """A document retrieved from an external knowledge source."""
+
+    source: str = Field(description="e.g. 'pubmed', 'openfda', 'local_kb'")
+    doc_id: str
+    title: str
+    snippet: str
+    url: str | None = None
+    relevance_score: float = Field(default=0.0, ge=0.0, le=1.0)
+    mesh_terms: list[str] = Field(default_factory=list)
+    published_date: str | None = None
+
+
+class EvidenceItem(BaseModel, frozen=True):
+    """A single piece of evidence for or against a hypothesis."""
+
+    direction: str = Field(description="'FOR' or 'AGAINST'")
+    statement: str
+    source_doc_id: str | None = None
+    source_label: str | None = None
+    strength: float = Field(default=0.5, ge=0.0, le=1.0)
+
+    @field_validator("direction")
+    @classmethod
+    def direction_must_be_valid(cls, v: str) -> str:
+        """Ensure direction is exactly FOR or AGAINST."""
+        if v not in {"FOR", "AGAINST"}:
+            raise ValueError("direction must be 'FOR' or 'AGAINST'")
+        return v
+
+
+class Hypothesis(BaseModel, frozen=True):
+    """A candidate diagnosis or clinical hypothesis with evidence chain."""
+
+    label: str = Field(description="Human-readable diagnosis or hypothesis name")
+    icd_code: str | None = Field(default=None, description="ICD-10 code if available")
+    evidence_for: list[EvidenceItem] = Field(default_factory=list)
+    evidence_against: list[EvidenceItem] = Field(default_factory=list)
+    bayesian_score: float = Field(default=0.0, ge=0.0, le=1.0)
+    rank: int = Field(default=1, ge=1)
+    uncertainty_note: str | None = None
+
+
+class DrugInteractionWarning(BaseModel, frozen=True):
+    """A validated drug-drug or drug-condition interaction warning."""
+
+    drug_a: str
+    drug_b: str
+    severity: Severity
+    mechanism: str
+    clinical_consequence: str
+    sources: list[str] = Field(description="At least 2 source identifiers required")
+    validated: bool = Field(
+        default=False,
+        description="True only when confirmed by ≥2 independent data sources",
+    )
+
+    @field_validator("sources")
+    @classmethod
+    def require_multiple_sources(cls, v: list[str]) -> list[str]:
+        """Enforce the triple-validation safety invariant at model construction time."""
+        if len(v) < 2:
+            raise ValueError("Drug interaction warnings require ≥2 independent sources")
+        return v
+
+
+# ---------------------------------------------------------------------------
+# Output model
+# ---------------------------------------------------------------------------
+
+
+class ClinicalReasoning(BaseModel, frozen=True):
+    """Structured output of a completed agent reasoning run.
+
+    This is the canonical response type returned by the /analyze endpoint
+    and persisted to the audit log.
+    """
+
+    session_id: str
+    query: str
+    state_reached: AgentState
+
+    # Core reasoning outputs
+    ranked_hypotheses: list[Hypothesis] = Field(default_factory=list)
+    drug_interactions_flagged: list[DrugInteractionWarning] = Field(default_factory=list)
+
+    # Confidence and uncertainty
+    overall_confidence: float = Field(ge=0.0, le=1.0)
+    uncertainty_flags: list[str] = Field(default_factory=list)
+    escalated: bool = Field(
+        default=False,
+        description="True if agent reached ESCALATE state — human review required",
+    )
+
+    # Evidence provenance
+    evidence_chain: list[RetrievedDocument] = Field(default_factory=list)
+    entities_extracted: list[ClinicalEntity] = Field(default_factory=list)
+
+    # Actionable output
+    recommended_next_steps: list[str] = Field(default_factory=list)
+
+    # Mandatory disclaimer — always populated
+    disclaimer: str = Field(
+        default=(
+            "⚠️  RESEARCH USE ONLY. This output is generated by an AI system and has NOT "
+            "been reviewed by a licensed clinician. It is NOT FDA-cleared and MUST NOT be "
+            "used to guide clinical treatment decisions. Always consult a qualified "
+            "healthcare professional."
+        )
+    )
+
+    # Audit metadata
+    model_used: str | None = None
+    wall_time_seconds: float | None = None
+    completed_at: datetime = Field(default_factory=datetime.utcnow)
+    inputs_hash: str | None = None
