@@ -1,21 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" font-family="'Fira Code','Cascadia Code',monospace">
-<defs><style>
-.bg{fill:#0b1020}.panel{fill:#111827;stroke:#26324a;stroke-width:1}.head{fill:#1f2937}.txt{fill:#e5e7eb;font-size:13px}.dim{fill:#94a3b8;font-size:12px}
-.blue{fill:#60a5fa;font-size:13px;font-weight:bold}.green{fill:#34d399;font-size:12px;font-weight:bold}.red{fill:#fb7185;font-size:12px;font-weight:bold}.amber{fill:#fbbf24;font-size:12px;font-weight:bold}
-.a1{animation:in .25s .2s both}.a2{animation:in .25s .7s both}.a3{animation:in .25s 1.2s both}.a4{animation:in .25s 1.7s both}.a5{animation:in .25s 2.2s both}
-.a6{animation:in .25s 2.7s both}.a7{animation:in .25s 3.2s both}.a8{animation:in .25s 3.7s both}.a9{animation:in .25s 4.2s both}.a10{animation:in .25s 4.7s both}
-@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}} @keyframes pulse{50%{opacity:.45}}.pulse{animation:pulse 1.2s infinite}
-</style></defs>
-<rect width="900" height="470" rx="14" class="bg"/>
-<rect x="24" y="24" width="852" height="56" rx="10" class="head"/><text x="44" y="58" class="blue">Dual-source drug interaction validation</text><text x="395" y="58" class="dim">RxNorm + OpenFDA consensus before warning is returned</text>
-<g class="a1"><rect x="40" y="105" width="235" height="250" rx="12" class="panel"/><text x="60" y="135" class="blue">Medication panel</text><text x="60" y="170" class="txt">warfarin</text><text x="60" y="198" class="txt">amiodarone</text><text x="60" y="226" class="txt">aspirin</text><text x="60" y="254" class="txt">metoprolol</text><text x="60" y="282" class="txt">atorvastatin</text></g>
-<g class="a2"><rect x="330" y="105" width="230" height="112" rx="12" class="panel"/><text x="350" y="135" class="blue">RxNorm</text><text x="350" y="166" class="red">warfarin + amiodarone</text><text x="350" y="190" class="dim">severity: HIGH · INR risk</text></g>
-<g class="a3"><rect x="330" y="243" width="230" height="112" rx="12" class="panel"/><text x="350" y="273" class="blue">OpenFDA</text><text x="350" y="304" class="red">warfarin + amiodarone</text><text x="350" y="328" class="dim">label: bleeding risk</text></g>
-<g class="a4"><path d="M276 180 C300 180 305 161 330 161" stroke="#60a5fa" stroke-width="2" fill="none"/><path d="M276 228 C305 228 300 299 330 299" stroke="#60a5fa" stroke-width="2" fill="none"/></g>
-<g class="a5"><rect x="620" y="105" width="240" height="250" rx="12" class="panel"/><text x="640" y="135" class="blue">Validated finding</text><text x="640" y="172" class="red">HIGH interaction</text><text x="640" y="200" class="txt">warfarin ” amiodarone</text><text x="640" y="234" class="green"> confirmed by 2 sources</text><text x="640" y="262" class="amber">Action: monitor INR closely</text><text x="640" y="290" class="dim">No direct dosing instruction</text></g>
-<g class="a6"><path d="M560 161 C590 161 590 190 620 190" stroke="#34d399" stroke-width="2" fill="none"/><path d="M560 299 C590 299 590 224 620 224" stroke="#34d399" stroke-width="2" fill="none"/></g>
-<g class="a7 pulse"><circle cx="732" cy="389" r="18" fill="#fb7185" opacity=".2"/><text x="690" y="394" class="red">safety gate</text></g>
-<g class="a8"><text x="44" y="405" class="dim">Single-source warning? held back as low confidence. Two-source match? returned with evidence and provenance.</text></g>
-<g class="a9"><text x="44" y="432" class="green">audit: source=RxNorm:R123 + OpenFDA:L456 · session_id=demo-polypharmacy-001</text></g>
-<g class="a10"><text x="44" y="454" class="amber">research use only · not a prescribing system</text></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 308" width="960" height="308" role="img" aria-label="medagent-core - dual-source drug interaction validation">
+<title>medagent-core - dual-source drug interaction validation</title>
+<defs><style>.bg{fill:#0d1117}.bar{fill:#21262d}.title{fill:#8b949e;font:13px monospace}.prompt{fill:#58a6ff;font:700 13px monospace}.text{fill:#e6edf3;font:13px monospace}.dim{fill:#8b949e;font:12px monospace}.ok{fill:#3fb950;font:700 13px monospace}.warn{fill:#d29922;font:700 13px monospace}.err{fill:#f85149;font:700 13px monospace}.violet{fill:#d2a8ff;font:700 13px monospace}.box{fill:#161b22;stroke:#30363d;stroke-width:1}.line{animation:fade .3s both}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{50%{opacity:.45}}.pulse{animation:pulse 1.2s infinite}.cursor{fill:#58a6ff;animation:pulse 1s infinite}</style></defs>
+<rect width="960" height="308" rx="12" class="bg"/>
+<rect width="960" height="36" rx="12" class="bar"/>
+<circle cx="20" cy="18" r="7" fill="#ff5f57"/><circle cx="42" cy="18" r="7" fill="#ffbd2e"/><circle cx="64" cy="18" r="7" fill="#28c840"/>
+<text x="480" y="23" text-anchor="middle" class="title">medagent-core - dual-source drug interaction validation</text>
+<rect x="24" y="56" width="912" height="228" rx="10" class="box"/>
+<g class="line" style="animation-delay:0.37s"><text x="44" y="86" class="text">Medication panel: warfarin, amiodarone, aspirin, metoprolol, atorvastatin</text></g>
+<g class="line" style="animation-delay:0.59s"><text x="44" y="110" class="err">RxNorm match: warfarin + amiodarone -&gt; HIGH INR / bleeding risk</text></g>
+<g class="line" style="animation-delay:0.81s"><text x="44" y="134" class="err">OpenFDA label match: warfarin + amiodarone -&gt; bleeding risk</text></g>
+<g class="line" style="animation-delay:1.03s"><text x="44" y="158" class="prompt">Consensus policy: only elevate warning when independent sources agree</text></g>
+<g class="line" style="animation-delay:1.25s"><text x="44" y="182" class="ok">Validated finding: HIGH interaction, two-source provenance attached</text></g>
+<g class="line" style="animation-delay:1.47s"><text x="44" y="206" class="warn">Action text: monitor INR closely; no autonomous dosing instruction</text></g>
+<g class="line" style="animation-delay:1.69s"><text x="44" y="230" class="dim">Single-source signals remain low-confidence evidence, not final warnings</text></g>
+<g class="line" style="animation-delay:1.91s"><text x="44" y="254" class="dim">AUDIT: source=RxNorm:R123 + OpenFDA:L456, session=demo-polypharmacy-001</text></g>
+<g class="line" style="animation-delay:2.13s"><text x="44" y="278" class="err">RESEARCH USE ONLY - not a prescribing system</text></g>
+<rect x="44" y="270" width="9" height="15" rx="2" class="cursor"/>
 </svg>

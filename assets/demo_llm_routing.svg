@@ -1,17 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 500" width="940" height="500" font-family="'Fira Code','Cascadia Code',monospace">
-<defs><style>
-.bg{fill:#050814}.box{fill:#0f172a;stroke:#334155;stroke-width:1}.txt{fill:#e5e7eb;font-size:13px}.dim{fill:#94a3b8;font-size:12px}.b{fill:#60a5fa;font-size:13px;font-weight:bold}.g{fill:#34d399;font-size:12px;font-weight:bold}.a{fill:#f59e0b;font-size:12px;font-weight:bold}.r{fill:#fb7185;font-size:12px;font-weight:bold}
-.s1{animation:in .25s .2s both}.s2{animation:in .25s .7s both}.s3{animation:in .25s 1.2s both}.s4{animation:in .25s 1.7s both}.s5{animation:in .25s 2.2s both}.s6{animation:in .25s 2.7s both}.s7{animation:in .25s 3.2s both}.s8{animation:in .25s 3.7s both}
-@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes glow{50%{stroke:#34d399;filter:drop-shadow(0 0 6px #34d399)}}.glow{animation:glow 1.4s infinite}
-</style></defs>
-<rect width="940" height="500" rx="14" class="bg"/>
-<text x="40" y="45" class="b">MedicalRouter  task-aware LLM routing with failover</text>
-<g class="s1"><rect x="40" y="80" width="220" height="320" rx="12" class="box"/><text x="62" y="112" class="b">Incoming tasks</text><text x="62" y="152" class="txt">entity extraction</text><text x="62" y="196" class="txt">drug interaction</text><text x="62" y="240" class="txt">differential dx</text><text x="62" y="284" class="txt">summarization</text><text x="62" y="328" class="txt">fallback needed</text></g>
-<g class="s2"><rect x="340" y="80" width="230" height="320" rx="12" class="box glow"/><text x="362" y="112" class="b">Routing policy</text><text x="362" y="152" class="dim">entity ’ fast/cheap</text><text x="362" y="196" class="dim">drug ’ evidence strict</text><text x="362" y="240" class="dim">differential ’ strongest model</text><text x="362" y="284" class="dim">summaries ’ balanced</text><text x="362" y="328" class="dim">timeout ’ next provider</text></g>
-<g class="s3"><rect x="650" y="72" width="230" height="68" rx="10" class="box"/><text x="672" y="104" class="txt">GPT-4o</text><text x="784" y="104" class="g">primary</text></g>
-<g class="s4"><rect x="650" y="162" width="230" height="68" rx="10" class="box"/><text x="672" y="194" class="txt">Claude 3.5 Sonnet</text><text x="812" y="194" class="g">dx</text></g>
-<g class="s5"><rect x="650" y="252" width="230" height="68" rx="10" class="box"/><text x="672" y="284" class="txt">Gemini 1.5 Pro</text><text x="800" y="284" class="a">backup</text></g>
-<g class="s6"><rect x="650" y="342" width="230" height="68" rx="10" class="box"/><text x="672" y="374" class="txt">Kimi / Moonshot</text><text x="806" y="374" class="a">fallback</text></g>
-<g class="s7"><path d="M260 152 H340" stroke="#60a5fa" stroke-width="2"/><path d="M260 240 H340" stroke="#60a5fa" stroke-width="2"/><path d="M570 196 C615 196 605 196 650 196" stroke="#34d399" stroke-width="2"/><path d="M570 328 C615 328 605 376 650 376" stroke="#f59e0b" stroke-width="2"/><path d="M570 104 H650" stroke="#34d399" stroke-width="2"/></g>
-<g class="s8"><text x="40" y="452" class="g"> deterministic adapter contract</text><text x="330" y="452" class="g"> JSON schema validation</text><text x="610" y="452" class="r"> unsafe free-text output rejected</text></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 308" width="960" height="308" role="img" aria-label="medagent-core - task-aware LLM routing and failover">
+<title>medagent-core - task-aware LLM routing and failover</title>
+<defs><style>.bg{fill:#0d1117}.bar{fill:#21262d}.title{fill:#8b949e;font:13px monospace}.prompt{fill:#58a6ff;font:700 13px monospace}.text{fill:#e6edf3;font:13px monospace}.dim{fill:#8b949e;font:12px monospace}.ok{fill:#3fb950;font:700 13px monospace}.warn{fill:#d29922;font:700 13px monospace}.err{fill:#f85149;font:700 13px monospace}.violet{fill:#d2a8ff;font:700 13px monospace}.box{fill:#161b22;stroke:#30363d;stroke-width:1}.line{animation:fade .3s both}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{50%{opacity:.45}}.pulse{animation:pulse 1.2s infinite}.cursor{fill:#58a6ff;animation:pulse 1s infinite}</style></defs>
+<rect width="960" height="308" rx="12" class="bg"/>
+<rect width="960" height="36" rx="12" class="bar"/>
+<circle cx="20" cy="18" r="7" fill="#ff5f57"/><circle cx="42" cy="18" r="7" fill="#ffbd2e"/><circle cx="64" cy="18" r="7" fill="#28c840"/>
+<text x="480" y="23" text-anchor="middle" class="title">medagent-core - task-aware LLM routing and failover</text>
+<rect x="24" y="56" width="912" height="228" rx="10" class="box"/>
+<g class="line" style="animation-delay:0.37s"><text x="44" y="86" class="text">Incoming task: entity extraction -&gt; fast low-cost adapter</text></g>
+<g class="line" style="animation-delay:0.59s"><text x="44" y="110" class="text">Incoming task: differential diagnosis -&gt; strongest reasoning adapter</text></g>
+<g class="line" style="animation-delay:0.81s"><text x="44" y="134" class="text">Incoming task: drug interaction explanation -&gt; evidence-strict adapter</text></g>
+<g class="line" style="animation-delay:1.03s"><text x="44" y="158" class="prompt">Primary provider: GPT-4o</text></g>
+<g class="line" style="animation-delay:1.25s"><text x="44" y="182" class="prompt">Reasoning provider: Claude 3.5 Sonnet</text></g>
+<g class="line" style="animation-delay:1.47s"><text x="44" y="206" class="prompt">Backup providers: Gemini 1.5 Pro, Kimi / Moonshot</text></g>
+<g class="line" style="animation-delay:1.69s"><text x="44" y="230" class="warn">Timeout detected: provider failover chain advances deterministically</text></g>
+<g class="line" style="animation-delay:1.91s"><text x="44" y="254" class="err">Schema validation: unsafe free-text output rejected before safety check</text></g>
+<g class="line" style="animation-delay:2.13s"><text x="44" y="278" class="ok">Adapter contract: stable inputs, structured outputs, auditable provider choice</text></g>
+<rect x="44" y="270" width="9" height="15" rx="2" class="cursor"/>
 </svg>

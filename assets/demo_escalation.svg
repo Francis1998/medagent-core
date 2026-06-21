@@ -1,17 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" font-family="'Fira Code','Cascadia Code',monospace">
-<defs><style>
-.bg{fill:#111827}.card{fill:#0f172a;stroke:#334155;stroke-width:1}.txt{fill:#e2e8f0;font-size:13px}.dim{fill:#94a3b8;font-size:12px}.blue{fill:#38bdf8;font-size:13px;font-weight:bold}.red{fill:#fb7185;font-size:13px;font-weight:bold}.green{fill:#4ade80;font-size:12px;font-weight:bold}.amber{fill:#f59e0b;font-size:12px;font-weight:bold}
-.a1{animation:in .25s .2s both}.a2{animation:in .25s .7s both}.a3{animation:in .25s 1.2s both}.a4{animation:in .25s 1.7s both}.a5{animation:in .25s 2.2s both}.a6{animation:in .25s 2.7s both}.a7{animation:in .25s 3.2s both}.a8{animation:shake .5s 3.7s both}
-@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes shake{0%,100%{opacity:1;transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-</style></defs>
-<rect width="900" height="470" rx="14" class="bg"/>
-<text x="40" y="48" class="blue">ESCALATE state demo  when evidence is weak, medagent-core stops</text>
-<g class="a1"><rect x="40" y="78" width="820" height="72" rx="10" class="card"/><text x="60" y="110" class="txt">Input: 42F · fatigue · night sweats · mild lymphadenopathy · no fever · borderline CBC</text><text x="60" y="132" class="dim">No emergency phrase, no obvious diagnosis, mixed evidence from retrieval.</text></g>
-<g class="a2"><rect x="40" y="180" width="240" height="138" rx="10" class="card"/><text x="60" y="212" class="blue">Hypothesis candidates</text><text x="60" y="244" class="txt">#1 lymphoma</text><text x="195" y="244" class="amber">0.38</text><text x="60" y="270" class="txt">#2 viral syndrome</text><text x="195" y="270" class="amber">0.33</text><text x="60" y="296" class="txt">#3 autoimmune</text><text x="195" y="296" class="amber">0.29</text></g>
-<g class="a3"><rect x="330" y="180" width="240" height="138" rx="10" class="card"/><text x="350" y="212" class="blue">Safety thresholds</text><text x="350" y="244" class="txt">min_confidence</text><text x="492" y="244" class="green">0.60</text><text x="350" y="270" class="txt">top_score</text><text x="492" y="270" class="red">0.38</text><text x="350" y="296" class="txt">evidence_conflict</text><text x="492" y="296" class="red">true</text></g>
-<g class="a4"><rect x="620" y="180" width="240" height="138" rx="10" class="card"/><text x="640" y="212" class="blue">FSM transition</text><text x="640" y="244" class="txt">REASONING</text><text x="742" y="244" class="dim">’</text><text x="772" y="244" class="red">ESCALATE</text><text x="640" y="274" class="dim">No final diagnosis returned</text><text x="640" y="296" class="dim">Human review required</text></g>
-<g class="a5"><path d="M280 249 H330" stroke="#f59e0b" stroke-width="2"/><path d="M570 249 H620" stroke="#fb7185" stroke-width="2"/></g>
-<g class="a6"><rect x="120" y="352" width="660" height="62" rx="12" fill="#7f1d1d" opacity=".55"/><text x="154" y="386" class="red">OUTPUT BLOCKED:</text><text x="280" y="386" class="txt">Insufficient confidence for automated reasoning response</text></g>
-<g class="a7"><text x="40" y="444" class="dim">Audit row stores: trigger=LOW_CONFIDENCE · score=0.38 · threshold=0.60 · action=ESCALATE</text></g>
-<g class="a8"><text x="706" y="47" class="red">NO FALSE CERTAINTY</text></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 332" width="960" height="332" role="img" aria-label="medagent-core - ESCALATE state for low confidence">
+<title>medagent-core - ESCALATE state for low confidence</title>
+<defs><style>.bg{fill:#0d1117}.bar{fill:#21262d}.title{fill:#8b949e;font:13px monospace}.prompt{fill:#58a6ff;font:700 13px monospace}.text{fill:#e6edf3;font:13px monospace}.dim{fill:#8b949e;font:12px monospace}.ok{fill:#3fb950;font:700 13px monospace}.warn{fill:#d29922;font:700 13px monospace}.err{fill:#f85149;font:700 13px monospace}.violet{fill:#d2a8ff;font:700 13px monospace}.box{fill:#161b22;stroke:#30363d;stroke-width:1}.line{animation:fade .3s both}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{50%{opacity:.45}}.pulse{animation:pulse 1.2s infinite}.cursor{fill:#58a6ff;animation:pulse 1s infinite}</style></defs>
+<rect width="960" height="332" rx="12" class="bg"/>
+<rect width="960" height="36" rx="12" class="bar"/>
+<circle cx="20" cy="18" r="7" fill="#ff5f57"/><circle cx="42" cy="18" r="7" fill="#ffbd2e"/><circle cx="64" cy="18" r="7" fill="#28c840"/>
+<text x="480" y="23" text-anchor="middle" class="title">medagent-core - ESCALATE state for low confidence</text>
+<rect x="24" y="56" width="912" height="252" rx="10" class="box"/>
+<g class="line" style="animation-delay:0.37s"><text x="44" y="86" class="text">Input: 42F fatigue, night sweats, mild lymphadenopathy, no fever, borderline CBC</text></g>
+<g class="line" style="animation-delay:0.59s"><text x="44" y="110" class="warn">Retrieval result: mixed evidence, no single diagnosis dominates</text></g>
+<g class="line" style="animation-delay:0.81s"><text x="44" y="134" class="violet">#1 lymphoma       score=0.38</text></g>
+<g class="line" style="animation-delay:1.03s"><text x="44" y="158" class="violet">#2 viral syndrome score=0.33</text></g>
+<g class="line" style="animation-delay:1.25s"><text x="44" y="182" class="violet">#3 autoimmune     score=0.29</text></g>
+<g class="line" style="animation-delay:1.47s"><text x="44" y="206" class="prompt">Safety threshold: min_confidence=0.60</text></g>
+<g class="line" style="animation-delay:1.69s"><text x="44" y="230" class="err">FSM transition: REASONING -&gt; SAFETY_CHECK -&gt; ESCALATE</text></g>
+<g class="line" style="animation-delay:1.91s"><text x="44" y="254" class="err">OUTPUT BLOCKED: insufficient confidence for automated reasoning response</text></g>
+<g class="line" style="animation-delay:2.13s"><text x="44" y="278" class="dim">AUDIT: trigger=LOW_CONFIDENCE, score=0.38, threshold=0.60</text></g>
+<g class="line" style="animation-delay:2.35s"><text x="44" y="302" class="ok">No false certainty: human review required</text></g>
+<rect x="44" y="294" width="9" height="15" rx="2" class="cursor"/>
 </svg>
