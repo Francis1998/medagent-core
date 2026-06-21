@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Health check script for medagent-core."""
 import sys
+
 import requests
 
 BASE_URL = "http://localhost:8000"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Basic benchmark for biomedical AI throughput."""
-import time
 import statistics
+import time
 
 ITERATIONS = 100
 

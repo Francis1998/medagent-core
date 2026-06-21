@@ -39,7 +39,6 @@ from medagent.reasoning.engine import ReasoningEngine
 from medagent.retrieval.local_kb import LocalKnowledgeBase, build_sample_index
 from medagent.retrieval.orchestrator import RetrievalOrchestrator
 from medagent.safety.pii_hasher import hash_pii
-from medagent.safety.scope_enforcer import ScopeEnforcer
 
 configure_logging("INFO")
 logger = get_logger(__name__)
@@ -192,7 +191,7 @@ async def main(
         json.dump(summary, f, indent=2)
 
     print(f"\n{'='*60}")
-    print(f"MedQA Evaluation Results")
+    print("MedQA Evaluation Results")
     print(f"{'='*60}")
     print(f"Total questions : {len(results)}")
     print(f"Correct         : {correct_count}")
