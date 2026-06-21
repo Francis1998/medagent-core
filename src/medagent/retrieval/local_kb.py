@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
+from numpy.typing import NDArray
 from rank_bm25 import BM25Okapi
 
 from medagent.logging_config import get_logger
@@ -52,7 +53,7 @@ class LocalKnowledgeBase:
         self._docs: list[dict[str, Any]] = []
         self._tokenized: list[list[str]] = []
         self._bm25: BM25Okapi | None = None
-        self._embeddings: np.ndarray | None = None  # shape: (N, dim)
+        self._embeddings: NDArray[Any] | None = None  # shape: (N, dim)
         self._loaded = False
 
     def load(self) -> None:
@@ -167,7 +168,7 @@ class LocalKnowledgeBase:
 
         return results
 
-    def _mean_bow_embedding(self, tokens: list[str]) -> np.ndarray | None:
+    def _mean_bow_embedding(self, tokens: list[str]) -> NDArray[Any] | None:
         """Placeholder for word-vector lookup.
 
         In a full deployment this would look up each token in a pre-loaded
@@ -183,13 +184,13 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r"[a-z0-9]+", text.lower())
 
 
-def _minmax_normalize(arr: np.ndarray) -> np.ndarray:
+def _minmax_normalize(arr: NDArray[Any]) -> NDArray[Any]:
     """Normalize an array to [0, 1] using min-max scaling."""
     arr_min = arr.min()
     arr_max = arr.max()
     if math.isclose(arr_max - arr_min, 0.0):
         return np.zeros_like(arr)
-    return cast(np.ndarray, (arr - arr_min) / (arr_max - arr_min))
+    return cast(NDArray[Any], (arr - arr_min) / (arr_max - arr_min))
 
 
 def build_sample_index(output_dir: str = "./data/kb_index/") -> None:
