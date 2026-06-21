@@ -161,9 +161,7 @@ async def main(
 
     for i, question in enumerate(questions):
         try:
-            result = await run_single_question(
-                question, reasoner, extractor, retriever, router
-            )
+            result = await run_single_question(question, reasoner, extractor, retriever, router)
             results.append(result)
             if result["correct"]:
                 correct_count += 1
@@ -190,14 +188,14 @@ async def main(
     with open(output_path, "w") as f:
         json.dump(summary, f, indent=2)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("MedQA Evaluation Results")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Total questions : {len(results)}")
     print(f"Correct         : {correct_count}")
     print(f"Accuracy        : {accuracy:.1%}")
     print(f"Results saved to: {output_path}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
 
 def _synthetic_questions() -> list[dict[str, Any]]:

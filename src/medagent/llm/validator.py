@@ -74,18 +74,14 @@ class MedicalOutputValidator:
         try:
             data = json.loads(clean)
         except json.JSONDecodeError as exc:
-            raise MedicalOutputValidationError(
-                f"LLM output is not valid JSON: {exc}"
-            ) from exc
+            raise MedicalOutputValidationError(f"LLM output is not valid JSON: {exc}") from exc
 
         if not isinstance(data, dict):
             raise MedicalOutputValidationError("LLM output JSON must be an object")
 
         missing = [k for k in required_keys if k not in data]
         if missing:
-            raise MedicalOutputValidationError(
-                f"LLM output missing required keys: {missing}"
-            )
+            raise MedicalOutputValidationError(f"LLM output missing required keys: {missing}")
 
         return data  # type: ignore[return-value]
 

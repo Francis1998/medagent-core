@@ -81,8 +81,7 @@ class LocalKnowledgeBase:
                         continue
 
         self._tokenized = [
-            _tokenize(d.get("title", "") + " " + d.get("text", ""))
-            for d in self._docs
+            _tokenize(d.get("title", "") + " " + d.get("text", "")) for d in self._docs
         ]
         if self._tokenized:
             self._bm25 = BM25Okapi(self._tokenized)
@@ -122,9 +121,7 @@ class LocalKnowledgeBase:
             return []
 
         # Build query string from entity texts + free text
-        query_tokens = _tokenize(
-            " ".join(e.text for e in entities) + " " + query_text
-        )
+        query_tokens = _tokenize(" ".join(e.text for e in entities) + " " + query_text)
         if not query_tokens:
             return []
 
@@ -135,8 +132,7 @@ class LocalKnowledgeBase:
             query_vec = self._mean_bow_embedding(query_tokens)
             if query_vec is not None:
                 cosine_scores = self._embeddings.dot(query_vec) / (
-                    np.linalg.norm(self._embeddings, axis=1) * np.linalg.norm(query_vec)
-                    + 1e-9
+                    np.linalg.norm(self._embeddings, axis=1) * np.linalg.norm(query_vec) + 1e-9
                 )
                 dense_norm = _minmax_normalize(cosine_scores)
                 hybrid_scores = self._alpha * bm25_norm + (1 - self._alpha) * dense_norm

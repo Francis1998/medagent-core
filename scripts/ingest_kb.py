@@ -166,9 +166,7 @@ async def main() -> None:
         print(f"Ingested {count} documents from {args.input}")
 
     if args.pubmed_terms:
-        count = await ingest_from_pubmed(
-            args.pubmed_terms, args.output, args.max_per_term
-        )
+        count = await ingest_from_pubmed(args.pubmed_terms, args.output, args.max_per_term)
         print(f"Ingested {count} documents from PubMed")
 
     if not args.input and not args.pubmed_terms and not args.sample:

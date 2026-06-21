@@ -65,28 +65,52 @@ CASES: dict[str, dict[str, Any]] = {
             ("LocalKB", "kb_001", "ST Elevation MI — ECG criteria and management pathway", 0.81),
         ],
         "interaction": (
-            "aspirin", "metoprolol", "MODERATE",
-            "Additive bradycardia risk", ["rxnorm", "openfda"],
+            "aspirin",
+            "metoprolol",
+            "MODERATE",
+            "Additive bradycardia risk",
+            ["rxnorm", "openfda"],
         ),
         "hypotheses": [
-            ("STEMI — Inferior Wall", "I21.19", 0.891, [
-                ("FOR", "Markedly elevated troponin-I (2.4 ng/mL)", 0.95),
-                ("FOR", "ST elevation in inferior leads II/III/aVF", 0.92),
-                ("FOR", "Typical radiation pattern to left arm", 0.82),
-            ], [
-                ("AGAINST", "No documentation of prior cath/stent", 0.3),
-            ], None),
-            ("NSTEMI", "I21.4", 0.612, [
-                ("FOR", "Elevated troponin consistent with myocardial injury", 0.75),
-            ], [
-                ("AGAINST", "ST elevation localises to STEMI, not NSTEMI pattern", 0.80),
-            ], "Distinguish via STEMI vs NSTEMI criteria"),
-            ("Aortic Dissection", "I71.00", 0.341, [
-                ("FOR", "Severe acute chest pain in hypertensive patient", 0.55),
-            ], [
-                ("AGAINST", "No pulse differential, no widened mediastinum documented", 0.85),
-                ("AGAINST", "Troponin elevation more consistent with ACS", 0.70),
-            ], "Requires CT-angiography to exclude definitively"),
+            (
+                "STEMI — Inferior Wall",
+                "I21.19",
+                0.891,
+                [
+                    ("FOR", "Markedly elevated troponin-I (2.4 ng/mL)", 0.95),
+                    ("FOR", "ST elevation in inferior leads II/III/aVF", 0.92),
+                    ("FOR", "Typical radiation pattern to left arm", 0.82),
+                ],
+                [
+                    ("AGAINST", "No documentation of prior cath/stent", 0.3),
+                ],
+                None,
+            ),
+            (
+                "NSTEMI",
+                "I21.4",
+                0.612,
+                [
+                    ("FOR", "Elevated troponin consistent with myocardial injury", 0.75),
+                ],
+                [
+                    ("AGAINST", "ST elevation localises to STEMI, not NSTEMI pattern", 0.80),
+                ],
+                "Distinguish via STEMI vs NSTEMI criteria",
+            ),
+            (
+                "Aortic Dissection",
+                "I71.00",
+                0.341,
+                [
+                    ("FOR", "Severe acute chest pain in hypertensive patient", 0.55),
+                ],
+                [
+                    ("AGAINST", "No pulse differential, no widened mediastinum documented", 0.85),
+                    ("AGAINST", "Troponin elevation more consistent with ACS", 0.70),
+                ],
+                "Requires CT-angiography to exclude definitively",
+            ),
         ],
         "confidence": 0.81,
         "escalated": False,
@@ -118,23 +142,34 @@ CASES: dict[str, dict[str, Any]] = {
             ("atrial fibrillation", "DISEASE"),
         ],
         "docs": [
-            ("PubMed", "34521987", "Amiodarone-warfarin interaction: INR monitoring protocol", 0.95),
+            (
+                "PubMed",
+                "34521987",
+                "Amiodarone-warfarin interaction: INR monitoring protocol",
+                0.95,
+            ),
             ("OpenFDA", "warfarin-label", "FDA warfarin label: amiodarone interaction", 0.91),
             ("LocalKB", "kb_002", "Warfarin Drug Interactions — CYP2C9/2C19 pathways", 0.88),
         ],
         "interactions": [
             (
-                "warfarin", "amiodarone", "CRITICAL",
+                "warfarin",
+                "amiodarone",
+                "CRITICAL",
                 "CYP2C9 inhibition — 3-5x INR elevation — life-threatening bleeding",
                 ["rxnorm", "openfda"],
             ),
             (
-                "warfarin", "aspirin", "MODERATE",
+                "warfarin",
+                "aspirin",
+                "MODERATE",
                 "Additive anticoagulation + GI mucosal damage",
                 ["rxnorm", "openfda"],
             ),
             (
-                "omeprazole", "warfarin", "MODERATE",
+                "omeprazole",
+                "warfarin",
+                "MODERATE",
                 "CYP2C19 inhibition modestly increases warfarin AUC",
                 ["rxnorm", "openfda"],
             ),
@@ -176,28 +211,56 @@ CASES: dict[str, dict[str, Any]] = {
             ("PubMed", "32145678", "Constitutional symptoms: differential approach", 0.71),
         ],
         "hypotheses": [
-            ("Lymphoma (B-cell)", "C85.90", 0.421, [
-                ("FOR", "Classic B-symptom triad: fever, night sweats, weight loss", 0.80),
-                ("FOR", "Anaemia may indicate marrow involvement", 0.60),
-            ], [
-                ("AGAINST", "No lymphadenopathy or organomegaly documented", 0.85),
-                ("AGAINST", "LDH unavailable — cannot assess tumour burden", 0.70),
-            ], "B-cell lymphoma cannot be confirmed without biopsy and PET-CT"),
-            ("Tuberculosis (active)", "A15.9", 0.389, [
-                ("FOR", "Night sweats and weight loss are classic TB B-symptoms", 0.75),
-            ], [
-                ("AGAINST", "No cough documented, no known TB exposure history", 0.80),
-            ], "Mantoux/IGRA and chest imaging required"),
-            ("Chronic Fatigue Syndrome", "G93.3", 0.312, [
-                ("FOR", "Prominent fatigue pattern over months", 0.55),
-            ], [
-                ("AGAINST", "8kg weight loss and night sweats are atypical for CFS", 0.90),
-            ], "Weight loss and night sweats mandate ruling out organic pathology first"),
-            ("HIV (late stage)", "B24", 0.298, [
-                ("FOR", "Constitutional symptoms consistent with AIDS-defining illness", 0.65),
-            ], [
-                ("AGAINST", "No risk factors documented in history", 0.55),
-            ], "HIV test not performed — essential to exclude"),
+            (
+                "Lymphoma (B-cell)",
+                "C85.90",
+                0.421,
+                [
+                    ("FOR", "Classic B-symptom triad: fever, night sweats, weight loss", 0.80),
+                    ("FOR", "Anaemia may indicate marrow involvement", 0.60),
+                ],
+                [
+                    ("AGAINST", "No lymphadenopathy or organomegaly documented", 0.85),
+                    ("AGAINST", "LDH unavailable — cannot assess tumour burden", 0.70),
+                ],
+                "B-cell lymphoma cannot be confirmed without biopsy and PET-CT",
+            ),
+            (
+                "Tuberculosis (active)",
+                "A15.9",
+                0.389,
+                [
+                    ("FOR", "Night sweats and weight loss are classic TB B-symptoms", 0.75),
+                ],
+                [
+                    ("AGAINST", "No cough documented, no known TB exposure history", 0.80),
+                ],
+                "Mantoux/IGRA and chest imaging required",
+            ),
+            (
+                "Chronic Fatigue Syndrome",
+                "G93.3",
+                0.312,
+                [
+                    ("FOR", "Prominent fatigue pattern over months", 0.55),
+                ],
+                [
+                    ("AGAINST", "8kg weight loss and night sweats are atypical for CFS", 0.90),
+                ],
+                "Weight loss and night sweats mandate ruling out organic pathology first",
+            ),
+            (
+                "HIV (late stage)",
+                "B24",
+                0.298,
+                [
+                    ("FOR", "Constitutional symptoms consistent with AIDS-defining illness", 0.65),
+                ],
+                [
+                    ("AGAINST", "No risk factors documented in history", 0.55),
+                ],
+                "HIV test not performed — essential to exclude",
+            ),
         ],
         "confidence": 0.38,
         "escalated": True,
@@ -294,8 +357,10 @@ def render_extraction(entities: list[tuple[str, str]]) -> None:
     for text, label in entities:
         grouped.setdefault(label, []).append(text)
     label_colors = {
-        "DISEASE": "red", "CHEMICAL": "yellow",
-        "GENE": "cyan", "PROTEIN": "magenta",
+        "DISEASE": "red",
+        "CHEMICAL": "yellow",
+        "GENE": "cyan",
+        "PROTEIN": "magenta",
     }
     table = Table(show_header=True, header_style="bold dim", box=box.SIMPLE)
     table.add_column("Type", style="bold", min_width=12)
@@ -353,8 +418,10 @@ def render_retrieval(
     if interaction:
         drug_a, drug_b, severity, mechanism, sources = interaction
         sev_color = {
-            "CRITICAL": "red", "HIGH": "red",
-            "MODERATE": "yellow", "LOW": "green",
+            "CRITICAL": "red",
+            "HIGH": "red",
+            "MODERATE": "yellow",
+            "LOW": "green",
         }.get(severity, "white")
         console.print(
             Panel(
@@ -449,7 +516,9 @@ def render_output(
 ) -> None:
     """Display final ClinicalReasoning output."""
     console.print()
-    title = "[bold green]◆ OUTPUT[/]" if not case["escalated"] else "[bold red]◆ ESCALATED OUTPUT[/]"
+    title = (
+        "[bold green]◆ OUTPUT[/]" if not case["escalated"] else "[bold red]◆ ESCALATED OUTPUT[/]"
+    )
     console.print(Rule(title))
     sleep(0.5)
     next_steps = case.get("next_steps", [])

@@ -52,9 +52,7 @@ def parse_fhir_bundle(
 
     resource_type = bundle.get("resourceType")
     if resource_type != "Bundle":
-        raise FHIRParseError(
-            f"Expected resourceType 'Bundle', got '{resource_type}'"
-        )
+        raise FHIRParseError(f"Expected resourceType 'Bundle', got '{resource_type}'")
 
     entries: list[dict[str, Any]] = bundle.get("entry", [])
     if not isinstance(entries, list):
@@ -198,9 +196,7 @@ def _extract_observations(observations: list[dict[str, Any]]) -> list[LabResult]
     labs: list[LabResult] = []
     for obs in observations:
         code = obs.get("code", {})
-        name = code.get("text") or (
-            (obs.get("code", {}).get("coding") or [{}])[0].get("display")
-        )
+        name = code.get("text") or ((obs.get("code", {}).get("coding") or [{}])[0].get("display"))
         if not name:
             continue
 
@@ -229,9 +225,7 @@ def _extract_observations(observations: list[dict[str, Any]]) -> list[LabResult]
         interpretation_codings = obs.get("interpretation", [{}])
         abnormal = False
         if interpretation_codings:
-            interp_code = (
-                interpretation_codings[0].get("coding") or [{}]
-            )[0].get("code", "N")
+            interp_code = (interpretation_codings[0].get("coding") or [{}])[0].get("code", "N")
             abnormal = interp_code not in {"N", "normal"}
 
         try:

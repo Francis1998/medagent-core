@@ -142,9 +142,7 @@ class DrugInteractionClient:
         stop=stop_after_attempt(3),
         reraise=False,
     )
-    async def _query_rxnorm(
-        self, drug_a: str, drug_b: str
-    ) -> list[dict[str, Any]] | None:
+    async def _query_rxnorm(self, drug_a: str, drug_b: str) -> list[dict[str, Any]] | None:
         """Query the NLM RxNorm Interaction API for a drug pair."""
         url = f"{_RXNORM_INTERACTION_BASE}/list.json"
         params = {"drugList": f"{drug_a};{drug_b}"}
@@ -168,9 +166,7 @@ class DrugInteractionClient:
                             {
                                 "mechanism": pair.get("description", "Unknown"),
                                 "consequence": pair.get("severity", "Review required"),
-                                "severity": _map_rxnorm_severity(
-                                    pair.get("severity", "moderate")
-                                ),
+                                "severity": _map_rxnorm_severity(pair.get("severity", "moderate")),
                             }
                         )
             return interactions or None
@@ -184,13 +180,9 @@ class DrugInteractionClient:
         stop=stop_after_attempt(3),
         reraise=False,
     )
-    async def _query_openfda(
-        self, drug_a: str, drug_b: str
-    ) -> list[dict[str, Any]] | None:
+    async def _query_openfda(self, drug_a: str, drug_b: str) -> list[dict[str, Any]] | None:
         """Query OpenFDA drug label API for warnings mentioning drug_b in drug_a's label."""
-        search_query = (
-            f'openfda.brand_name:"{drug_a}" AND warnings:"{drug_b}"'
-        )
+        search_query = f'openfda.brand_name:"{drug_a}" AND warnings:"{drug_b}"'
         params: dict[str, str] = {
             "search": search_query,
             "limit": "1",

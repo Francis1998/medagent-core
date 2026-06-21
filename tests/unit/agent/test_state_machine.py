@@ -191,9 +191,7 @@ class TestAgentRun:
         from medagent.safety.scope_enforcer import ScopeViolationError
 
         enforcer = MagicMock()
-        enforcer.check_query_in_scope = MagicMock(
-            side_effect=ScopeViolationError("Out of scope")
-        )
+        enforcer.check_query_in_scope = MagicMock(side_effect=ScopeViolationError("Out of scope"))
         agent = ClinicalAgentStateMachine(
             extractor=mock_extractor,
             retriever=mock_retriever,

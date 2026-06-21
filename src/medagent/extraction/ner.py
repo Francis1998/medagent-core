@@ -116,9 +116,7 @@ class EntityExtractor:
 
         try:
             return await asyncio.wait_for(
-                asyncio.get_event_loop().run_in_executor(
-                    None, self._extract_sync, text
-                ),
+                asyncio.get_event_loop().run_in_executor(None, self._extract_sync, text),
                 timeout=self._timeout,
             )
         except asyncio.TimeoutError:
@@ -194,9 +192,5 @@ class EntityExtractor:
             List of MeSH-candidate strings.
         """
         return list(
-            {
-                e.text.title()
-                for e in entities
-                if e.label in {"DISEASE", "CHEMICAL", "GENE"}
-            }
+            {e.text.title() for e in entities if e.label in {"DISEASE", "CHEMICAL", "GENE"}}
         )

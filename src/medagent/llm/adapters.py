@@ -251,9 +251,7 @@ class GoogleAdapter(BaseLLMAdapter):
             )
             response = await asyncio.get_event_loop().run_in_executor(
                 None,
-                lambda: model.generate_content(
-                    full_prompt, generation_config=generation_config
-                ),
+                lambda: model.generate_content(full_prompt, generation_config=generation_config),
             )
         except Exception as exc:
             logger.error("google_api_error", error=str(exc))

@@ -66,15 +66,9 @@ class RetrievalOrchestrator:
         dummy_extractor = EntityExtractor(use_fallback=True)
         mesh_terms = dummy_extractor.get_mesh_terms(entities)
 
-        pubmed_task = asyncio.create_task(
-            self._safe_pubmed(mesh_terms)
-        )
-        interaction_task = asyncio.create_task(
-            self._safe_interactions(medications)
-        )
-        kb_task = asyncio.create_task(
-            self._safe_local_kb(entities)
-        )
+        pubmed_task = asyncio.create_task(self._safe_pubmed(mesh_terms))
+        interaction_task = asyncio.create_task(self._safe_interactions(medications))
+        kb_task = asyncio.create_task(self._safe_local_kb(entities))
 
         pubmed_docs, interaction_warnings, kb_docs = await asyncio.gather(
             pubmed_task, interaction_task, kb_task
@@ -91,9 +85,7 @@ class RetrievalOrchestrator:
     async def _safe_pubmed(self, mesh_terms: list[str]) -> list[RetrievedDocument]:
         """Run PubMed retrieval with timeout and error suppression."""
         try:
-            return await asyncio.wait_for(
-                self._pubmed.search(mesh_terms), timeout=self._timeout
-            )
+            return await asyncio.wait_for(self._pubmed.search(mesh_terms), timeout=self._timeout)
         except asyncio.TimeoutError:
             logger.warning("pubmed_retrieval_timeout")
             return []
@@ -117,15 +109,11 @@ class RetrievalOrchestrator:
             logger.warning("drug_interaction_error", error=str(exc))
             return []
 
-    async def _safe_local_kb(
-        self, entities: list[ClinicalEntity]
-    ) -> list[RetrievedDocument]:
+    async def _safe_local_kb(self, entities: list[ClinicalEntity]) -> list[RetrievedDocument]:
         """Run local KB search with timeout and error suppression."""
         try:
             return await asyncio.wait_for(
-                asyncio.get_event_loop().run_in_executor(
-                    None, self._local_kb.search, entities
-                ),
+                asyncio.get_event_loop().run_in_executor(None, self._local_kb.search, entities),
                 timeout=self._timeout,
             )
         except asyncio.TimeoutError:

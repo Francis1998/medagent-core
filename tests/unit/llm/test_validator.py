@@ -53,9 +53,7 @@ class TestMedicalOutputValidator:
         result = validator.validate_json(content, required_keys=["hypotheses"])
         assert "hypotheses" in result
 
-    def test_validate_json_strips_markdown_fences(
-        self, validator: MedicalOutputValidator
-    ) -> None:
+    def test_validate_json_strips_markdown_fences(self, validator: MedicalOutputValidator) -> None:
         """JSON wrapped in markdown code fences must be parsed correctly."""
         content = '```json\n{"hypotheses": [{"label": "T2DM"}]}\n```'
         result = validator.validate_json(content, required_keys=["hypotheses"])

@@ -127,15 +127,11 @@ class ReasoningEngine:
         docs: list[RetrievedDocument],
     ) -> str:
         """Construct the structured reasoning prompt."""
-        entity_str = ", ".join(
-            f"{e.text} ({e.label})" for e in entities[:15]
-        )
+        entity_str = ", ".join(f"{e.text} ({e.label})" for e in entities[:15])
 
         evidence_lines: list[str] = []
         for i, doc in enumerate(docs[:5]):
-            evidence_lines.append(
-                f"[{i}] {doc.title}: {doc.snippet}"
-            )
+            evidence_lines.append(f"[{i}] {doc.title}: {doc.snippet}")
         evidence_str = (
             "\n".join(evidence_lines) if evidence_lines else "No external evidence retrieved."
         )

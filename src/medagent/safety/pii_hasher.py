@@ -58,10 +58,7 @@ def hash_pii_dict(
         >>> len(result["mrn"])
         64
     """
-    return {
-        k: (hash_pii(v, salt=salt) if k in pii_keys else v)
-        for k, v in data.items()
-    }
+    return {k: (hash_pii(v, salt=salt) if k in pii_keys else v) for k, v in data.items()}
 
 
 def redact_fhir_pii(fhir_bundle: dict[str, object]) -> dict[str, object]:

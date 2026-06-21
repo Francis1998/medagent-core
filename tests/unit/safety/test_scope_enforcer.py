@@ -44,16 +44,12 @@ class TestScopeEnforcer:
         with pytest.raises(ScopeViolationError):
             enforcer.check_query_in_scope("What is the bitcoin price today?")
 
-    def test_strict_mode_requires_medical_topic(
-        self, strict_enforcer: ScopeEnforcer
-    ) -> None:
+    def test_strict_mode_requires_medical_topic(self, strict_enforcer: ScopeEnforcer) -> None:
         """In strict mode, a query without medical keywords must raise."""
         with pytest.raises(ScopeViolationError):
             strict_enforcer.check_query_in_scope("Tell me about the weather in London")
 
-    def test_strict_mode_passes_medical_query(
-        self, strict_enforcer: ScopeEnforcer
-    ) -> None:
+    def test_strict_mode_passes_medical_query(self, strict_enforcer: ScopeEnforcer) -> None:
         """In strict mode, a query with a medical keyword must pass."""
         strict_enforcer.check_query_in_scope("What are the drug interaction risks here?")
 
