@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 500" width="940" height="500" font-family="'Fira Code','Cascadia Code',monospace">
+<defs><style>
+.bg{fill:#06111f}.table{fill:#0f172a;stroke:#334155;stroke-width:1}.head{fill:#1e293b}.txt{fill:#e2e8f0;font-size:12px}.dim{fill:#94a3b8;font-size:11px}.b{fill:#38bdf8;font-size:13px;font-weight:bold}.g{fill:#4ade80;font-size:12px;font-weight:bold}.a{fill:#fbbf24;font-size:12px;font-weight:bold}.r{fill:#fb7185;font-size:12px;font-weight:bold}
+.s1{animation:in .25s .2s both}.s2{animation:in .25s .7s both}.s3{animation:in .25s 1.2s both}.s4{animation:in .25s 1.7s both}.s5{animation:in .25s 2.2s both}.s6{animation:in .25s 2.7s both}.s7{animation:in .25s 3.2s both}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes sweep{from{transform:translateX(-700px)}to{transform:translateX(700px)}}.sweep{fill:#38bdf8;opacity:.08;animation:sweep 2s 1.6s linear infinite}
+</style></defs>
+<rect width="940" height="500" rx="14" class="bg"/>
+<text x="40" y="46" class="b">Durable audit trace  replayable runs, hashed inputs, persisted state</text>
+<g class="s1"><rect x="40" y="78" width="860" height="330" rx="12" class="table"/><rect x="40" y="78" width="860" height="42" rx="12" class="head"/><rect x="40" y="106" width="860" height="14" class="head"/><text x="60" y="104" class="txt">session_id</text><text x="220" y="104" class="txt">inputs_hash</text><text x="390" y="104" class="txt">final_state</text><text x="530" y="104" class="txt">top_hypothesis</text><text x="720" y="104" class="txt">latency</text></g>
+<g class="s2"><text x="60" y="152" class="txt">run_001</text><text x="220" y="152" class="dim">sha256:8a19...e02</text><text x="390" y="152" class="g">OUTPUT</text><text x="530" y="152" class="txt">STEMI Inferior 0.89</text><text x="720" y="152" class="dim">4.18s</text></g>
+<g class="s3"><text x="60" y="202" class="txt">run_002</text><text x="220" y="202" class="dim">sha256:c0df...29b</text><text x="390" y="202" class="a">ESCALATE</text><text x="530" y="202" class="txt">lymphoma 0.38</text><text x="720" y="202" class="dim">3.42s</text></g>
+<g class="s4"><text x="60" y="252" class="txt">run_003</text><text x="220" y="252" class="dim">sha256:711f...90c</text><text x="390" y="252" class="r">ERROR</text><text x="530" y="252" class="txt">timeout: retrieval</text><text x="720" y="252" class="dim">10.00s</text></g>
+<g class="s5"><text x="60" y="302" class="txt">run_004</text><text x="220" y="302" class="dim">sha256:44aa...7fd</text><text x="390" y="302" class="g">OUTPUT</text><text x="530" y="302" class="txt">drug risk high</text><text x="720" y="302" class="dim">2.77s</text></g>
+<g class="s6"><rect x="40" y="350" width="860" height="58" rx="0" class="sweep"/><text x="60" y="376" class="dim">Replay fields: state_history · retrieved_docs · safety_checks · model_provider · redaction_decisions</text></g>
+<g class="s7"><rect x="112" y="432" width="716" height="42" rx="10" fill="#0f172a" stroke="#334155"/><text x="142" y="459" class="g">SQLite for local dev</text><text x="330" y="459" class="dim">’ same schema can target Postgres in deployed research stacks</text></g>
+</svg>

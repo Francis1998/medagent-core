@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 500" width="940" height="500" font-family="'Fira Code','Cascadia Code',monospace">
+<defs><style>
+.bg{fill:#0d1117}.bar{fill:#21262d}.txt{fill:#e6edf3;font-size:13px}.dim{fill:#8b949e;font-size:12px}.b{fill:#58a6ff;font-size:13px;font-weight:bold}.g{fill:#3fb950;font-size:12px;font-weight:bold}.a{fill:#d29922;font-size:12px;font-weight:bold}.r{fill:#f85149;font-size:12px;font-weight:bold}
+.s1{animation:in .25s .2s both}.s2{animation:in .25s .8s both}.s3{animation:in .25s 1.4s both}.s4{animation:in .25s 2s both}.s5{animation:in .25s 2.6s both}.s6{animation:in .25s 3.2s both}.s7{animation:in .25s 3.8s both}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes fill1{from{width:0}to{width:520px}}@keyframes fill2{from{width:0}to{width:474px}}@keyframes fill3{from{width:0}to{width:505px}}.f1{animation:fill1 1s 1.7s both}.f2{animation:fill2 1s 2.3s both}.f3{animation:fill3 1s 2.9s both}
+</style></defs>
+<rect width="940" height="500" rx="12" class="bg"/>
+<rect width="940" height="36" rx="12" class="bar"/><text x="470" y="23" text-anchor="middle" class="dim">medagent-core evaluation harness</text>
+<g class="s1"><text x="30" y="72" class="b">o python scripts/eval_medqa.py --dataset sample</text></g>
+<g class="s2"><text x="30" y="104" class="g"> loaded 100 MedQA-style questions</text><text x="30" y="130" class="g"> audit trace enabled: results/medqa_runs.jsonl</text></g>
+<g class="s3"><text x="30" y="176" class="txt">MedQA accuracy</text><rect x="190" y="160" width="610" height="24" rx="4" fill="#161b22"/><rect x="190" y="160" height="24" rx="4" fill="#3fb950" class="f1"/><text x="820" y="178" class="g">85.2%</text></g>
+<g class="s4"><text x="30" y="226" class="b">o python scripts/eval_drugbank.py --dataset sample</text></g>
+<g class="s5"><text x="30" y="278" class="txt">Interaction precision</text><rect x="230" y="262" width="570" height="24" rx="4" fill="#161b22"/><rect x="230" y="262" height="24" rx="4" fill="#58a6ff" class="f2"/><text x="820" y="280" class="b">83.1%</text></g>
+<g class="s6"><text x="30" y="328" class="txt">Interaction F1</text><rect x="230" y="312" width="570" height="24" rx="4" fill="#161b22"/><rect x="230" y="312" height="24" rx="4" fill="#d29922" class="f3"/><text x="820" y="330" class="a">88.6%</text></g>
+<g class="s7"><text x="30" y="388" class="dim">Each question logs: input_hash · retrieved_doc_ids · hypotheses · final_state · latency_ms</text><text x="30" y="422" class="r">Benchmark numbers are sample-harness outputs, not clinical validation claims.</text><text x="30" y="456" class="g">Use your own datasets with the same scripts for reproducible regression checks.</text></g>
+</svg>

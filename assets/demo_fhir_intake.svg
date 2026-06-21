@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 500" width="940" height="500" font-family="'Fira Code','Cascadia Code',monospace">
+<defs><style>
+.bg{fill:#071018}.box{fill:#0f172a;stroke:#334155;stroke-width:1}.txt{fill:#e2e8f0;font-size:12px}.dim{fill:#94a3b8;font-size:12px}.b{fill:#38bdf8;font-size:13px;font-weight:bold}.g{fill:#4ade80;font-size:12px;font-weight:bold}.r{fill:#fb7185;font-size:12px;font-weight:bold}.a{fill:#fbbf24;font-size:12px;font-weight:bold}
+.s1{animation:in .25s .2s both}.s2{animation:in .25s .8s both}.s3{animation:in .25s 1.4s both}.s4{animation:in .25s 2s both}.s5{animation:in .25s 2.6s both}.s6{animation:in .25s 3.2s both}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@keyframes wipe{from{width:0}to{width:134px}}.mask{fill:#7f1d1d;animation:wipe 1s 1.5s both}
+</style></defs>
+<rect width="940" height="500" rx="14" class="bg"/>
+<text x="40" y="46" class="b">FHIR R4 intake  PII is removed before LLM or audit boundaries</text>
+<g class="s1"><rect x="40" y="82" width="365" height="300" rx="12" class="box"/><text x="62" y="116" class="b">Raw Patient resource</text><text x="62" y="152" class="txt">{</text><text x="82" y="176" class="r">"name": "Jane Doe",</text><text x="82" y="200" class="r">"identifier": "MRN-7712",</text><text x="82" y="224" class="r">"birthDate": "1979-03-09",</text><text x="82" y="248" class="txt">"condition": "chest pain",</text><text x="82" y="272" class="txt">"medication": ["aspirin"],</text><text x="82" y="296" class="txt">"observation": "troponin 2.4"</text><text x="62" y="320" class="txt">}</text></g>
+<g class="s2"><rect x="82" y="164" height="16" rx="3" class="mask"/><rect x="82" y="188" height="16" rx="3" class="mask"/><rect x="82" y="212" height="16" rx="3" class="mask"/></g>
+<g class="s3"><path d="M405 232 H525" stroke="#38bdf8" stroke-width="2"/><text x="430" y="220" class="dim">normalize + HMAC</text></g>
+<g class="s4"><rect x="525" y="82" width="365" height="300" rx="12" class="box"/><text x="547" y="116" class="b">ClinicalQuery passed downstream</text><text x="547" y="152" class="txt">{</text><text x="567" y="176" class="g">"patient_hash": "hmac:7b9a...c12",</text><text x="567" y="200" class="g">"session_id": "run_20260621_001",</text><text x="567" y="224" class="txt">"condition": "chest pain",</text><text x="567" y="248" class="txt">"medication": ["aspirin"],</text><text x="567" y="272" class="txt">"observation": "troponin 2.4"</text><text x="547" y="296" class="txt">}</text><text x="547" y="336" class="a">Raw name/MRN/DOB never sent to LLM.</text></g>
+<g class="s5"><rect x="96" y="410" width="748" height="48" rx="10" fill="#0f172a" stroke="#334155"/><text x="118" y="440" class="g">audit inputs_hash = sha256(redacted_payload)</text><text x="470" y="440" class="dim">· reversible identifiers are not persisted</text></g>
+<g class="s6"><text x="40" y="478" class="dim">Designed for retrospective research workflows where PHI minimization must happen before model calls.</text></g>
+</svg>
