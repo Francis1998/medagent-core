@@ -4,8 +4,19 @@ from __future__ import annotations
 
 import pytest
 
+from medagent.config import Settings
 from medagent.llm.adapters import AnthropicAdapter, GoogleAdapter, KimiAdapter, OpenAIAdapter
 from medagent.llm.base import LLMAdapterError
+
+
+def test_settings_default_models_use_current_stack() -> None:
+    """Default live-provider models must track the current agentic AI stack."""
+    configured_settings = Settings(_env_file=None)
+
+    assert configured_settings.openai_model == "gpt-5.5"
+    assert configured_settings.anthropic_model == "claude-sonnet-4-6"
+    assert configured_settings.google_model == "gemini-3.1-pro-preview"
+    assert configured_settings.kimi_model == "kimi-k2"
 
 
 class TestAdapterMetadata:

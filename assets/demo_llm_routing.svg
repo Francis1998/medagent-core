@@ -9,9 +9,9 @@
 <g class="line" style="animation-delay:0.37s"><text x="44" y="86" class="text">Incoming task: entity extraction -&gt; fast low-cost adapter</text></g>
 <g class="line" style="animation-delay:0.59s"><text x="44" y="110" class="text">Incoming task: differential diagnosis -&gt; strongest reasoning adapter</text></g>
 <g class="line" style="animation-delay:0.81s"><text x="44" y="134" class="text">Incoming task: drug interaction explanation -&gt; evidence-strict adapter</text></g>
-<g class="line" style="animation-delay:1.03s"><text x="44" y="158" class="prompt">Primary provider: GPT-4o</text></g>
-<g class="line" style="animation-delay:1.25s"><text x="44" y="182" class="prompt">Reasoning provider: Claude 3.5 Sonnet</text></g>
-<g class="line" style="animation-delay:1.47s"><text x="44" y="206" class="prompt">Backup providers: Gemini 1.5 Pro, Kimi / Moonshot</text></g>
+<g class="line" style="animation-delay:1.03s"><text x="44" y="158" class="prompt">Primary provider: GPT-5.5</text></g>
+<g class="line" style="animation-delay:1.25s"><text x="44" y="182" class="prompt">Reasoning provider: Claude Sonnet 4.6</text></g>
+<g class="line" style="animation-delay:1.47s"><text x="44" y="206" class="prompt">Backup providers: Gemini 3.1 Pro, Kimi K2</text></g>
 <g class="line" style="animation-delay:1.69s"><text x="44" y="230" class="warn">Timeout detected: provider failover chain advances deterministically</text></g>
 <g class="line" style="animation-delay:1.91s"><text x="44" y="254" class="err">Schema validation: unsafe free-text output rejected before safety check</text></g>
 <g class="line" style="animation-delay:2.13s"><text x="44" y="278" class="ok">Adapter contract: stable inputs, structured outputs, auditable provider choice</text></g>

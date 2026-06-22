@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# OpenAI (GPT-4o)
+# OpenAI (GPT)
 # ---------------------------------------------------------------------------
 
 
@@ -28,7 +28,7 @@ class OpenAIAdapter(BaseLLMAdapter):
 
     Args:
         api_key: OpenAI API key.
-        model: Model identifier (e.g. ``gpt-4o``).
+        model: Model identifier (e.g. ``gpt-5.5``).
     """
 
     def __init__(
@@ -52,7 +52,7 @@ class OpenAIAdapter(BaseLLMAdapter):
         max_tokens: int = 2048,
         temperature: float = 0.1,
     ) -> LLMResponse:
-        """Run a GPT-4o chat completion.
+        """Run an OpenAI chat completion.
 
         Args:
             prompt: User message content.
@@ -102,7 +102,7 @@ class OpenAIAdapter(BaseLLMAdapter):
 
 
 # ---------------------------------------------------------------------------
-# Anthropic (Claude 3.5 Sonnet)
+# Anthropic (Claude)
 # ---------------------------------------------------------------------------
 
 
@@ -184,7 +184,7 @@ class AnthropicAdapter(BaseLLMAdapter):
 
 
 # ---------------------------------------------------------------------------
-# Google (Gemini 1.5 Pro / Flash)
+# Google (Gemini)
 # ---------------------------------------------------------------------------
 
 

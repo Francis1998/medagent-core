@@ -2,7 +2,7 @@
 
 Routing heuristics (configurable via settings):
   - Complex differential diagnosis → Claude (strongest chain-of-thought)
-  - Drug interaction lookup → GPT-4o (best structured JSON adherence)
+  - Drug interaction lookup → GPT-5.5 (best structured JSON adherence)
   - Quick entity resolution / classification → Gemini Flash (fastest)
   - Overflow / fallback → first available adapter
 
@@ -85,7 +85,7 @@ class MedicalRouter:
         return response.content
 
     async def route_drug_interaction(self, prompt: str) -> str:
-        """Route a drug interaction query to GPT-4o (best structured JSON).
+        """Route a drug interaction query to GPT-5.5 (best structured JSON).
 
         Args:
             prompt: Drug interaction lookup prompt.
