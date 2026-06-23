@@ -118,9 +118,9 @@ src/medagent/
 
 | Task | Preferred Provider | Fallback Chain | Rationale |
 |---|---|---|---|
-| Differential diagnosis | Claude 3.5 Sonnet | GPT-4o → Gemini → Kimi | Best long-form reasoning |
-| Drug interaction lookup | GPT-4o | Claude → Gemini → Kimi | Best structured JSON adherence |
-| Entity resolution | Gemini 1.5 Flash | GPT-4o → Claude → Kimi | Fastest for short classification |
+| Differential diagnosis | Claude Sonnet 4.6 | GPT-5.5 → Gemini → Kimi | Best long-form reasoning |
+| Drug interaction lookup | GPT-5.5 | Claude → Gemini → Kimi | Best structured JSON adherence |
+| Entity resolution | Gemini 3.1 Pro | GPT-5.5 → Claude → Kimi | Fastest for short classification |
 
 All responses pass through `MedicalOutputValidator` before returning. If the validator rejects the response (prohibited prescription language), the fallback chain is tried automatically.
 

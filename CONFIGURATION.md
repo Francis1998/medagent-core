@@ -8,21 +8,21 @@ All configuration is managed through environment variables loaded from a `.env` 
 
 | Variable | Required | Description |
 |---|---|---|
-| `OPENAI_API_KEY` | Recommended | OpenAI API key (GPT-4o) |
-| `ANTHROPIC_API_KEY` | Recommended | Anthropic API key (Claude 3.5 Sonnet) |
+| `OPENAI_API_KEY` | Recommended | OpenAI API key (GPT-5.5) |
+| `ANTHROPIC_API_KEY` | Recommended | Anthropic API key (Claude Sonnet 4.6) |
 | `GOOGLE_API_KEY` | Optional | Google Generative AI key (Gemini) |
 | `KIMI_API_KEY` | Optional | Kimi/Moonshot API key |
 
-The agent falls back gracefully — if Claude is unavailable it routes to GPT-4o, then Gemini, then Kimi. With no keys configured, the reasoning engine uses heuristic-only fallback (lower accuracy).
+The agent falls back gracefully — if Claude is unavailable it routes to GPT-5.5, then Gemini, then Kimi. With no keys configured, the reasoning engine uses heuristic-only fallback (lower accuracy).
 
 ## LLM Model Overrides
 
 | Variable | Default | Description |
 |---|---|---|
-| `OPENAI_MODEL` | `gpt-4o` | OpenAI model name |
-| `ANTHROPIC_MODEL` | `claude-3-5-sonnet-20241022` | Anthropic model name |
-| `GOOGLE_MODEL` | `gemini-1.5-pro` | Google model name |
-| `KIMI_MODEL` | `moonshot-v1-32k` | Kimi model name |
+| `OPENAI_MODEL` | `gpt-5.5` | OpenAI model name |
+| `ANTHROPIC_MODEL` | `claude-sonnet-4-6` | Anthropic model name |
+| `GOOGLE_MODEL` | `gemini-3.1-pro-preview` | Google model name |
+| `KIMI_MODEL` | `kimi-k2` | Kimi model name |
 
 ## External APIs
 

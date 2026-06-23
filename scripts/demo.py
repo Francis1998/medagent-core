@@ -449,7 +449,7 @@ def render_reasoning(
         TimeElapsedColumn(),
         transient=True,
     ) as p:
-        p.add_task("[cyan]Routing to Claude 3.5 Sonnet …", total=None)
+        p.add_task("[cyan]Routing to Claude Sonnet 4.6 ...", total=None)
         time.sleep(1.2 if DELAY > 0 else 0)
         p.stop()
     for i, (label, icd, score, ev_for, ev_against, note) in enumerate(hypotheses, 1):

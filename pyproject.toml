@@ -44,7 +44,7 @@ dependencies = [
   "spacy>=3.7.4",
   # Retrieval
   "rank-bm25>=0.2.2",
-  "numpy>=1.26.0",
+  "numpy>=1.26.0,<2.5",
   # Async
   "anyio>=4.4.0",
   "aiohttp>=3.9.5",

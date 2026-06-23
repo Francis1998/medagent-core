@@ -25,10 +25,10 @@ class Settings(BaseSettings):
     google_api_key: str = Field(default="", description="Google Generative AI key")
     kimi_api_key: str = Field(default="", description="Kimi/Moonshot API key")
 
-    openai_model: str = Field(default="gpt-4o")
-    anthropic_model: str = Field(default="claude-3-5-sonnet-20241022")
-    google_model: str = Field(default="gemini-1.5-pro")
-    kimi_model: str = Field(default="moonshot-v1-32k")
+    openai_model: str = Field(default="gpt-5.5")
+    anthropic_model: str = Field(default="claude-sonnet-4-6")
+    google_model: str = Field(default="gemini-3.1-pro-preview")
+    kimi_model: str = Field(default="kimi-k2")
 
     # --- External APIs ---
     pubmed_api_key: str = Field(default="")
