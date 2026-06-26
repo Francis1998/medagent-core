@@ -36,7 +36,7 @@ class OpenAIAdapter(BaseLLMAdapter):
         api_key: str = "",
         model: str = "",
     ) -> None:
-        self._api_key = api_key or settings.openai_api_key
+        self._api_key = _normalize_api_key(api_key or settings.openai_api_key)
         self._model = model or settings.openai_model
 
     @property
@@ -119,7 +119,7 @@ class AnthropicAdapter(BaseLLMAdapter):
         api_key: str = "",
         model: str = "",
     ) -> None:
-        self._api_key = api_key or settings.anthropic_api_key
+        self._api_key = _normalize_api_key(api_key or settings.anthropic_api_key)
         self._model = model or settings.anthropic_model
 
     @property
@@ -201,7 +201,7 @@ class GoogleAdapter(BaseLLMAdapter):
         api_key: str = "",
         model: str = "",
     ) -> None:
-        self._api_key = api_key or settings.google_api_key
+        self._api_key = _normalize_api_key(api_key or settings.google_api_key)
         self._model = model or settings.google_model
 
     @property
@@ -286,7 +286,7 @@ class KimiAdapter(BaseLLMAdapter):
         api_key: str = "",
         model: str = "",
     ) -> None:
-        self._api_key = api_key or settings.kimi_api_key
+        self._api_key = _normalize_api_key(api_key or settings.kimi_api_key)
         self._model = model or settings.kimi_model
 
     @property
@@ -352,3 +352,8 @@ class KimiAdapter(BaseLLMAdapter):
             completion_tokens=response.usage.completion_tokens if response.usage else 0,
             finish_reason=choice.finish_reason or "stop",
         )
+
+
+def _normalize_api_key(api_key: str) -> str:
+    """Normalize provider API keys so blank values are treated as missing."""
+    return api_key.strip()

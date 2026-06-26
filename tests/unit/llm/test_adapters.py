@@ -33,6 +33,13 @@ class TestAdapterMetadata:
 class TestAdapterMissingKeys:
     """Tests for no-key failures before network calls."""
 
+    def test_blank_api_keys_normalize_to_missing(self) -> None:
+        """Adapters must treat whitespace-only API keys as missing."""
+        assert OpenAIAdapter(api_key="   ", model="test")._api_key == ""
+        assert AnthropicAdapter(api_key="   ", model="test")._api_key == ""
+        assert GoogleAdapter(api_key="   ", model="test")._api_key == ""
+        assert KimiAdapter(api_key="   ", model="test")._api_key == ""
+
     @pytest.mark.asyncio()
     async def test_openai_missing_key_raises(self) -> None:
         """OpenAI adapter must reject calls without an API key."""
