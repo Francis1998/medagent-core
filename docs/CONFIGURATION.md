@@ -1,64 +1,11 @@
-# Configuration Reference For Medagent
+# Configuration Reference
 
-*medagent-core — 2026-06-01*
+The maintained configuration reference lives at [`../CONFIGURATION.md`](../CONFIGURATION.md).
 
-## Overview
+Use that root document for:
 
-This guide covers configuration reference for medagent for the `medagent-core` project.
+- LLM key and model settings for GPT-5.5, Claude Sonnet 4.6, Gemini, and Kimi.
+- PubMed, OpenFDA, database, API server, and local knowledge-base settings.
+- Safety-sensitive production settings such as `PII_HASH_SALT`, confidence thresholds, and agent timeouts.
 
-## Prerequisites
-
-- Python 3.10+
-- Redis (if using distributed mode)
-- Environment variables configured (see `.env.example`)
-
-## Quick Start
-
-```bash
-# Install dependencies
-pip install -e ".[dev]"
-
-# Copy and configure environment
-cp .env.example .env
-
-# Run the medagent module
-python -m medagent --help
-```
-
-## Common Scenarios
-
-### Scenario 1: Basic Reasoning Usage
-
-```python
-from medagent import Reasoning
-
-client = Reasoning(config)
-result = client.run()
-print(result)
-```
-
-### Scenario 2: Advanced Configuration
-
-```python
-from medagent.config import Settings
-
-settings = Settings(
-    max_retries=3,
-    timeout=30,
-    log_level="INFO",
-)
-```
-
-## Troubleshooting
-
-| Issue | Cause | Fix |
-|-------|-------|-----|
-| `ConnectionError` | API endpoint unreachable | Check `BASE_URL` in `.env` |
-| `TimeoutError` | Request took too long | Increase `timeout` setting |
-| `AuthError` | Invalid or expired token | Rotate API key |
-
-## See Also
-
-- [README](../README.md)
-- [ARCHITECTURE](../ARCHITECTURE.md)
-- [API Reference](./API.md)
+For setup steps, see [`../QUICKSTART.md`](../QUICKSTART.md). For safety controls and research-use constraints, see [`../SAFETY.md`](../SAFETY.md).
