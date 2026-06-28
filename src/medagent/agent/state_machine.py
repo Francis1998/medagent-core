@@ -125,6 +125,9 @@ class ClinicalAgentStateMachine:
             Structured ClinicalReasoning output.
         """
         ctx = RunContext(query=query)
+        routing_metadata_clearer = getattr(self._router, "clear_routing_metadata", None)
+        if callable(routing_metadata_clearer):
+            routing_metadata_clearer()
         logger.info(
             "agent_run_start",
             session_id=query.session_id,
@@ -276,6 +279,7 @@ class ClinicalAgentStateMachine:
             entities_extracted=entities,
             recommended_next_steps=next_steps,
             disclaimer=MANDATORY_DISCLAIMER,
+            model_used=getattr(self._router, "last_model_used", None),
         )
 
     def _has_contradictory_evidence(self, hypotheses: list[Any]) -> bool:

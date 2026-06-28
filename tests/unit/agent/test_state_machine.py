@@ -104,7 +104,9 @@ def mock_reasoner(clinical_query: ClinicalQuery) -> MagicMock:
 @pytest.fixture()
 def mock_router() -> MagicMock:
     """Return a mock MedicalRouter."""
-    return MagicMock()
+    router = MagicMock()
+    router.last_model_used = None
+    return router
 
 
 @pytest.fixture()
@@ -162,11 +164,16 @@ class TestAgentRun:
     async def test_successful_run_reaches_output(
         self,
         agent: ClinicalAgentStateMachine,
+        mock_router: MagicMock,
         clinical_query: ClinicalQuery,
     ) -> None:
         """A successful run must reach OUTPUT or ESCALATE state."""
+        mock_router.last_model_used = "anthropic/claude-sonnet-4-6"
+
         result = await agent.run(clinical_query)
+
         assert result.state_reached in {AgentState.OUTPUT, AgentState.ESCALATE}
+        assert result.model_used == "anthropic/claude-sonnet-4-6"
 
     @pytest.mark.asyncio()
     async def test_result_has_mandatory_disclaimer(

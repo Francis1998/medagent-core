@@ -65,6 +65,17 @@ class TestMedicalRouter:
         assert openai.prompts == ["rank diagnoses"]
 
     @pytest.mark.asyncio()
+    async def test_route_differential_tracks_model_used(self) -> None:
+        """Successful routing should expose the provider and model used."""
+        anthropic = RecordingAdapter("anthropic")
+        router = MedicalRouter(anthropic=anthropic)
+
+        result = await router.route_differential("rank diagnoses")
+
+        assert result == anthropic.response_text
+        assert router.last_model_used == "anthropic/anthropic-test"
+
+    @pytest.mark.asyncio()
     async def test_route_drug_interaction_prefers_openai(self) -> None:
         """Drug-interaction routing must use OpenAI when available."""
         openai = RecordingAdapter("openai")

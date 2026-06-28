@@ -51,6 +51,7 @@ class MedicalRouter:
             self._adapters["kimi"] = kimi
 
         self._validator = validator or MedicalOutputValidator()
+        self._last_model_used: str | None = None
 
     @classmethod
     def from_settings(cls) -> MedicalRouter:
@@ -136,6 +137,7 @@ class MedicalRouter:
             LLMAdapterError: When all adapters fail.
         """
         errors: list[str] = []
+        self.clear_routing_metadata()
         for provider in preferred_order:
             adapter = self._adapters.get(provider)
             if adapter is None:
@@ -150,6 +152,7 @@ class MedicalRouter:
                 )
                 # Validate output — raises on schema violation
                 self._validator.validate(response.content)
+                self._last_model_used = f"{provider}/{response.model}"
                 return response
             except LLMAdapterError as exc:
                 logger.warning(
@@ -171,6 +174,17 @@ class MedicalRouter:
         raise LLMAdapterError(
             f"All LLM adapters failed for task '{task_label}': {'; '.join(errors)}"
         )
+
+    @property
+    def last_model_used(self) -> str | None:
+        """Return provider/model metadata for the most recent successful route."""
+
+        return self._last_model_used
+
+    def clear_routing_metadata(self) -> None:
+        """Reset per-route metadata before a new routing attempt."""
+
+        self._last_model_used = None
 
     def available_providers(self) -> list[str]:
         """Return the list of configured provider names.
