@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 
 from medagent.config import Settings
@@ -75,3 +77,32 @@ class TestAdapterMissingKeys:
 
         with pytest.raises(LLMAdapterError, match="KIMI_API_KEY"):
             await adapter.complete("clinical prompt")
+
+
+class TestGoogleAdapterModernSDK:
+    """Tests for the migrated google-genai (Client API) integration."""
+
+    @pytest.mark.asyncio()
+    async def test_google_adapter_uses_genai_client(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """GoogleAdapter must call the modern async Client API and return its text."""
+        import google.genai as genai
+
+        fake_response = MagicMock()
+        fake_response.text = "Differential includes community-acquired pneumonia."
+
+        generate_content = AsyncMock(return_value=fake_response)
+        fake_client = MagicMock()
+        fake_client.aio.models.generate_content = generate_content
+        client_factory = MagicMock(return_value=fake_client)
+        monkeypatch.setattr(genai, "Client", client_factory)
+
+        adapter = GoogleAdapter(api_key="test-key", model="gemini-3.1-pro-preview")
+        response = await adapter.complete("chest pain workup", system_prompt="system")
+
+        client_factory.assert_called_once_with(api_key="test-key")
+        assert generate_content.await_count == 1
+        call_kwargs = generate_content.await_args.kwargs
+        assert call_kwargs["model"] == "gemini-3.1-pro-preview"
+        assert call_kwargs["contents"] == "chest pain workup"
+        assert response.content == "Differential includes community-acquired pneumonia."
+        assert response.model == "gemini-3.1-pro-preview"
