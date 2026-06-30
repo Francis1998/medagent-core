@@ -232,35 +232,34 @@ class GoogleAdapter(BaseLLMAdapter):
             LLMAdapterError: On Google API errors.
         """
         try:
-            import google.generativeai as genai
+            from google import genai
+            from google.genai import types
         except ImportError as exc:
-            raise LLMAdapterError("google-generativeai package not installed") from exc
+            raise LLMAdapterError("google-genai package not installed") from exc
 
         if not self._api_key:
             raise LLMAdapterError("GOOGLE_API_KEY is not set")
 
-        genai_client = cast(Any, genai)
-        genai_client.configure(api_key=self._api_key)
+        genai_module = cast(Any, genai)
+        types_module = cast(Any, types)
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
-        full_prompt = f"{sys_msg}\n\n{prompt}"
 
         try:
-            import asyncio
-
-            model = genai_client.GenerativeModel(self._model)
-            generation_config = genai_client.GenerationConfig(
-                max_output_tokens=max_tokens,
-                temperature=temperature,
-            )
-            response = await asyncio.get_event_loop().run_in_executor(
-                None,
-                lambda: model.generate_content(full_prompt, generation_config=generation_config),
+            client = genai_module.Client(api_key=self._api_key)
+            response = await client.aio.models.generate_content(
+                model=self._model,
+                contents=prompt,
+                config=types_module.GenerateContentConfig(
+                    system_instruction=sys_msg,
+                    max_output_tokens=max_tokens,
+                    temperature=temperature,
+                ),
             )
         except Exception as exc:
             logger.error("google_api_error", error=str(exc))
             raise LLMAdapterError(f"Google API error: {exc}") from exc
 
-        text = response.text if hasattr(response, "text") else ""
+        text = getattr(response, "text", "") or ""
         return LLMResponse(
             content=text,
             model=self._model,
