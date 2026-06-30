@@ -83,6 +83,34 @@ async def test_single_source_interactions_are_suppressed(
 
 
 @pytest.mark.asyncio
+async def test_openfda_searches_both_label_directions(mocker: MockerFixture) -> None:
+    """OpenFDA must confirm an interaction documented on either drug's label."""
+
+    client = DrugInteractionClient()
+
+    async def fake_label(label_drug: str, mentioned_drug: str) -> list[dict[str, Any]] | None:
+        """Mention the pair only on the second drug's label (reverse direction)."""
+
+        if label_drug == "aspirin" and mentioned_drug == "warfarin":
+            return [
+                {
+                    "mechanism": "See FDA label warnings section",
+                    "consequence": "Potential interaction noted in aspirin label",
+                    "severity": "MODERATE",
+                }
+            ]
+        return None
+
+    query_label = mocker.patch.object(client, "_query_openfda_label", side_effect=fake_label)
+
+    result = await client._query_openfda("warfarin", "aspirin")
+
+    assert result is not None
+    assert result[0]["consequence"] == "Potential interaction noted in aspirin label"
+    assert query_label.await_count == 2
+
+
+@pytest.mark.asyncio
 async def test_short_medication_lists_skip_source_queries(mocker: MockerFixture) -> None:
     """Medication lists with fewer than two items do not query external sources."""
 
