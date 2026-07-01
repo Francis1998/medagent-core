@@ -85,6 +85,29 @@ class TestParseFhirBundle:
         assert ctx.age is not None
         assert 30 <= ctx.age <= 70  # born 1980, checked ~2025
 
+    def test_age_accounts_for_birthday_not_yet_reached(self) -> None:
+        """Age must not be overstated when this year's birthday has not occurred."""
+        from datetime import date
+
+        today = date.today()
+        birth_year = today.year - 40
+        # Birthday on Dec 31: not yet reached on any day except Dec 31 itself.
+        bundle: dict[str, Any] = {
+            "resourceType": "Bundle",
+            "entry": [
+                {
+                    "resource": {
+                        "resourceType": "Patient",
+                        "id": "p-age",
+                        "birthDate": f"{birth_year}-12-31",
+                    }
+                }
+            ],
+        }
+        expected = 40 if (today.month, today.day) >= (12, 31) else 39
+        ctx = parse_fhir_bundle(bundle, pii_salt="test-salt")
+        assert ctx.age == expected
+
     def test_sex_extracted(self, minimal_fhir_bundle: dict[str, Any]) -> None:
         """Sex field must be extracted from the Patient resource."""
         ctx = parse_fhir_bundle(minimal_fhir_bundle, pii_salt="test-salt")
