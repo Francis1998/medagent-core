@@ -174,15 +174,32 @@ class DrugInteractionClient:
             logger.debug("rxnorm_query_failed", error=str(exc))
             return None
 
+    async def _query_openfda(self, drug_a: str, drug_b: str) -> list[dict[str, Any]] | None:
+        """Query OpenFDA labels in both directions for a drug pair.
+
+        Interaction text on an FDA label is asymmetric: a pair may be documented
+        in either drug's warnings section. Searching only ``drug_a``'s label for
+        ``drug_b`` would silently miss interactions recorded solely on
+        ``drug_b``'s label, dropping OpenFDA as a confirming source and
+        suppressing an otherwise cross-validated warning. Search both
+        orientations; the first label that mentions the other drug confirms it.
+        """
+        forward = await self._query_openfda_label(drug_a, drug_b)
+        if forward:
+            return forward
+        return await self._query_openfda_label(drug_b, drug_a)
+
     @retry(
         retry=retry_if_exception_type((aiohttp.ClientError, asyncio.TimeoutError)),
         wait=wait_exponential(multiplier=1, min=1, max=8),
         stop=stop_after_attempt(3),
         reraise=False,
     )
-    async def _query_openfda(self, drug_a: str, drug_b: str) -> list[dict[str, Any]] | None:
-        """Query OpenFDA drug label API for warnings mentioning drug_b in drug_a's label."""
-        search_query = f'openfda.brand_name:"{drug_a}" AND warnings:"{drug_b}"'
+    async def _query_openfda_label(
+        self, label_drug: str, mentioned_drug: str
+    ) -> list[dict[str, Any]] | None:
+        """Search one drug's OpenFDA label for a warning mentioning another drug."""
+        search_query = f'openfda.brand_name:"{label_drug}" AND warnings:"{mentioned_drug}"'
         params: dict[str, str] = {
             "search": search_query,
             "limit": "1",
@@ -204,13 +221,13 @@ class DrugInteractionClient:
                 return None
 
             warnings_text = results[0].get("warnings", [""])[0]
-            if drug_b.lower() not in warnings_text.lower():
+            if mentioned_drug.lower() not in warnings_text.lower():
                 return None
 
             return [
                 {
                     "mechanism": "See FDA label warnings section",
-                    "consequence": f"Potential interaction noted in {drug_a} label",
+                    "consequence": f"Potential interaction noted in {label_drug} label",
                     "severity": "MODERATE",
                 }
             ]
