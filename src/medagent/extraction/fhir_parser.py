@@ -109,16 +109,28 @@ def _extract_patient_id(patient: dict[str, Any]) -> str:
 
 
 def _extract_age(patient: dict[str, Any]) -> int | None:
-    """Compute age from birthDate string (YYYY-MM-DD)."""
+    """Compute age from a FHIR birthDate.
+
+    FHIR ``birthDate`` may be a partial date (``YYYY``, ``YYYY-MM`` or
+    ``YYYY-MM-DD``). When the month and day are available the birthday-not-yet-
+    reached case is accounted for so the age is not overstated by one year;
+    with only the year, a year-difference best effort is used.
+    """
     birth_date = patient.get("birthDate")
     if not birth_date:
         return None
     try:
         from datetime import date
 
-        year = int(birth_date[:4])
-        current_year = date.today().year
-        age = current_year - year
+        parts = birth_date.split("-")
+        year = int(parts[0])
+        today = date.today()
+        age = today.year - year
+        if len(parts) >= 3:
+            birth_month = int(parts[1])
+            birth_day = int(parts[2])
+            if (today.month, today.day) < (birth_month, birth_day):
+                age -= 1
         return age if 0 <= age <= 150 else None
     except (ValueError, IndexError):
         return None
