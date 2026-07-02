@@ -89,6 +89,10 @@ src/medagent/
   - **PubMed**: ESearch by MeSH terms derived from entities → EFetch abstracts
   - **RxNorm + OpenFDA**: Pairwise drug interaction checks (dual-source validation)
   - **Local KB**: Hybrid BM25 + dense retrieval over local JSONL corpus
+- MeSH terms (`EntityExtractor.get_mesh_terms`) are derived in **deterministic**
+  first-seen entity order. The orchestrator queries only `mesh_terms[:5]`, so a
+  stable order guarantees the same PubMed subset — and therefore reproducible
+  retrieval — for identical inputs.
 - Timeout: 20 seconds per source (configurable)
 - Transition: → `REASONING` | `ERROR`
 
