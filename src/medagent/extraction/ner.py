@@ -185,12 +185,26 @@ class EntityExtractor:
         Converts entity text to title-case as a simple MeSH approximation.
         A production system would look these up against the UMLS Metathesaurus.
 
+        The result preserves the input entity order and de-duplicates. Using a
+        set comprehension here made the order non-deterministic across processes
+        (Python randomises ``str`` hashing), which in turn made the
+        ``mesh_terms[:5]`` PubMed query in the retrieval orchestrator select a
+        non-deterministic subset of terms — producing different retrieval
+        results for identical inputs and defeating reproducibility/caching.
+
         Args:
             entities: List of extracted clinical entities.
 
         Returns:
-            List of MeSH-candidate strings.
+            Ordered, de-duplicated list of MeSH-candidate strings.
         """
-        return list(
-            {e.text.title() for e in entities if e.label in {"DISEASE", "CHEMICAL", "GENE"}}
-        )
+        seen: set[str] = set()
+        mesh_terms: list[str] = []
+        for entity in entities:
+            if entity.label not in {"DISEASE", "CHEMICAL", "GENE"}:
+                continue
+            term = entity.text.title()
+            if term not in seen:
+                seen.add(term)
+                mesh_terms.append(term)
+        return mesh_terms

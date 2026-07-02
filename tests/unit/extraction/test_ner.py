@@ -74,6 +74,32 @@ class TestEntityExtractor:
         assert "Metformin" in mesh_terms
         assert "Unknown_Label" not in mesh_terms
 
+    def test_get_mesh_terms_is_order_preserving_and_deduplicated(
+        self, extractor: EntityExtractor
+    ) -> None:
+        """MeSH terms must follow entity order and de-duplicate deterministically.
+
+        The previous set-comprehension implementation returned terms in a
+        process-dependent (hash-randomised) order. Downstream, the retrieval
+        orchestrator slices ``mesh_terms[:5]``, so a non-deterministic order
+        silently selected a different subset of terms per run. The output must
+        equal the first-seen order of qualifying entities.
+        """
+        from medagent.models import ClinicalEntity
+
+        entities = [
+            ClinicalEntity(text="diabetes", label="DISEASE"),
+            ClinicalEntity(text="metformin", label="CHEMICAL"),
+            ClinicalEntity(text="diabetes", label="DISEASE"),
+            ClinicalEntity(text="troponin", label="GENE"),
+            ClinicalEntity(text="aspirin", label="CHEMICAL"),
+            ClinicalEntity(text="sepsis", label="DISEASE"),
+        ]
+
+        mesh_terms = extractor.get_mesh_terms(entities)
+
+        assert mesh_terms == ["Diabetes", "Metformin", "Troponin", "Aspirin", "Sepsis"]
+
 
 class TestEntityExtractorFallback:
     """Tests that validate fallback mode behavioural edge cases."""
