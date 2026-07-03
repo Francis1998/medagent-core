@@ -66,6 +66,8 @@ Escalated runs produce a response with `escalated: true` and `recommended_next_s
 ### 3.5 PII De-identification
 Patient-identifying fields (MRN, name, DOB) are SHA-256 hashed with a configurable salt **before** any LLM call is made. The raw FHIR bundle is stored in the audit log but the `raw_fhir` field is never included in LLM prompts.
 
+Free-text clinical notes pass through `sanitise_clinical_text` (`src/medagent/extraction/fhir_parser.py`), which redacts date-of-birth patterns (`MM/DD/YYYY`, ISO-8601 `YYYY-MM-DD` — the FHIR `birthDate` format — and `DD-Mon-YYYY`), MRN-like digit sequences, phone numbers, and email addresses before any text is placed in a prompt.
+
 ### 3.6 Scope Enforcement
 The `ScopeEnforcer` (`src/medagent/safety/scope_enforcer.py`) rejects queries requesting internet access, code execution, or clearly non-clinical topics before the agent state machine starts.
 
