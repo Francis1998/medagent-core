@@ -161,6 +161,24 @@ class TestSanitiseClinicalText:
         assert "06/15/1980" not in result
         assert "REDACTED" in result
 
+    def test_redacts_iso_and_named_month_dob_formats(self) -> None:
+        """ISO-8601 and DD-Mon-YYYY DOB dates must also be redacted.
+
+        ``birthDate`` in FHIR is ISO-8601 (``YYYY-MM-DD``); the original numeric
+        pattern only matched 1-2 digit leading components, so an ISO date (and a
+        named-month ``DD-Mon-YYYY`` date) leaked through unredacted.
+        """
+        iso_result = sanitise_clinical_text("Patient DOB 2023-01-15 presented.")
+        assert "2023-01-15" not in iso_result
+        assert "[REDACTED-DOB]" in iso_result
+
+        named_result = sanitise_clinical_text("Born 15-Jan-2020 in county.")
+        assert "15-Jan-2020" not in named_result
+        assert "[REDACTED-DOB]" in named_result
+
+        # Clinical content adjacent to the date must be preserved.
+        assert "presented" in iso_result
+
     def test_redacts_phone_number(self) -> None:
         """Phone number patterns must be replaced with [REDACTED-PHONE]."""
         result = sanitise_clinical_text("Contact: 555-867-5309")

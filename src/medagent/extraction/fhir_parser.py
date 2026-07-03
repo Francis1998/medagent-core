@@ -304,9 +304,22 @@ def sanitise_clinical_text(text: str) -> str:
     Returns:
         Text with PII patterns replaced by ``[REDACTED]``.
     """
-    # DOB patterns: MM/DD/YYYY, YYYY-MM-DD, DD-Mon-YYYY
+    # DOB patterns: MM/DD/YYYY (or with '-' separators)
     text = re.sub(
         r"\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b",
+        "[REDACTED-DOB]",
+        text,
+    )
+    # ISO-8601 dates (YYYY-MM-DD) — the FHIR ``birthDate`` format. The numeric
+    # pattern above cannot match these because its first group is 1–2 digits.
+    text = re.sub(
+        r"\b\d{4}-\d{2}-\d{2}\b",
+        "[REDACTED-DOB]",
+        text,
+    )
+    # DD-Mon-YYYY (e.g. 15-Jan-2020)
+    text = re.sub(
+        r"\b\d{1,2}-[A-Za-z]{3}-\d{4}\b",
         "[REDACTED-DOB]",
         text,
     )
