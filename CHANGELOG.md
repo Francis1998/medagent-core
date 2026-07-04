@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Fixed
+- `sanitise_clinical_text` now redacts US Social Security numbers (`NNN-NN-NNNN`) in free-text clinical notes; SSNs are listed as PII in the de-identification contract but no prior pattern matched their 3-2-4 shape, so they leaked into LLM prompts unredacted.
 - `sanitise_clinical_text` now redacts ISO-8601 (`YYYY-MM-DD`, the FHIR `birthDate` format) and `DD-Mon-YYYY` date-of-birth patterns in free-text clinical notes; previously only `MM/DD/YYYY`-style dates were redacted, leaking ISO dates into LLM prompts.
 
 ## [v0.7.19] — 2026-03-13
