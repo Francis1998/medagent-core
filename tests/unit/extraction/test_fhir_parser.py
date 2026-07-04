@@ -179,6 +179,20 @@ class TestSanitiseClinicalText:
         # Clinical content adjacent to the date must be preserved.
         assert "presented" in iso_result
 
+    def test_redacts_social_security_number(self) -> None:
+        """SSN (NNN-NN-NNNN) must be redacted before text reaches an LLM.
+
+        The de-identification contract lists SSN as PII, but no prior pattern
+        matched the SSN 3-2-4 shape: the date patterns require 1-2 digit leading
+        groups and the phone pattern requires a 3-digit middle group. An SSN
+        therefore leaked through ``sanitise_clinical_text`` unredacted.
+        """
+        result = sanitise_clinical_text("Patient SSN 123-45-6789 on file.")
+        assert "123-45-6789" not in result
+        assert "[REDACTED-SSN]" in result
+        # Adjacent clinical content must be preserved.
+        assert "Patient" in result and "file" in result
+
     def test_redacts_phone_number(self) -> None:
         """Phone number patterns must be replaced with [REDACTED-PHONE]."""
         result = sanitise_clinical_text("Contact: 555-867-5309")

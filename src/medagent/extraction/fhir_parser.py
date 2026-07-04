@@ -325,6 +325,11 @@ def sanitise_clinical_text(text: str) -> str:
     )
     # MRN-like patterns: sequences of 6–12 digits
     text = re.sub(r"\bMRN?:?\s*\d{6,12}\b", "[REDACTED-MRN]", text, flags=re.IGNORECASE)
+    # US Social Security numbers (NNN-NN-NNNN). Neither the date patterns above
+    # (which need 1-2 digit leading groups) nor the phone pattern below (which
+    # needs a 3-digit middle group) match the SSN 3-2-4 shape, so SSNs listed as
+    # PII in the de-identification contract otherwise leaked through unredacted.
+    text = re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "[REDACTED-SSN]", text)
     # Phone numbers
     text = re.sub(r"\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b", "[REDACTED-PHONE]", text)
     # Email addresses
