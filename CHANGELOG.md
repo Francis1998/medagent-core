@@ -5,7 +5,11 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Drug-allergy conflict checker (`safety/allergy_checker.py`) that cross-checks active medications against documented patient allergies, flagging direct conflicts and intra-class cross-reactivity (penicillins, cephalosporins, sulfonamides, NSAIDs) as `AllergyConflict` records. Documented as Safety Control #9 (SAFETY.md §3.9).
+
 ### Fixed
+- `_extract_age` now applies the birthday-not-yet-reached adjustment to partial `YYYY-MM` FHIR `birthDate` values using the month, instead of only full `YYYY-MM-DD` dates, which overstated age by up to a year for such dates.
 - `sanitise_clinical_text` now redacts US Social Security numbers (`NNN-NN-NNNN`) in free-text clinical notes; SSNs are listed as PII in the de-identification contract but no prior pattern matched their 3-2-4 shape, so they leaked into LLM prompts unredacted.
 - `sanitise_clinical_text` now redacts ISO-8601 (`YYYY-MM-DD`, the FHIR `birthDate` format) and `DD-Mon-YYYY` date-of-birth patterns in free-text clinical notes; previously only `MM/DD/YYYY`-style dates were redacted, leaking ISO dates into LLM prompts.
 
