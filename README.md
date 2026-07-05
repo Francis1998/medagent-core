@@ -268,7 +268,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — Eight Hard Controls
+## Safety — Nine Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -282,6 +282,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 6 | Scope enforcement | `safety/scope_enforcer.py` | Rejects 12 prohibited query patterns |
 | 7 | Dual-source drug validation | `models.py` | Pydantic enforces ≥2 sources at model construction |
 | 8 | Hard timeouts | `api/main.py` | 120s total, per-stage limits |
+| 9 | Drug-allergy conflict check | `safety/allergy_checker.py` | Flags medications conflicting with documented allergies (direct + intra-class cross-reactivity) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

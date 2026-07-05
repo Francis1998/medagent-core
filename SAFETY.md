@@ -84,6 +84,14 @@ Drug interaction warnings are **only surfaced** when confirmed by at least 2 ind
 
 These are configured in `.env` and enforced via `asyncio.wait_for`. The agent cannot exceed these limits regardless of LLM response latency.
 
+### 3.9 Drug-Allergy Conflict Checking
+`safety/allergy_checker.py` cross-checks a patient's active medications against their documented allergies (both already present on `FHIRPatientContext`). It flags two conflict types:
+
+- **Direct** — the medication is, or contains as a component, a documented allergen (e.g. `Penicillin V Potassium` vs a `penicillin` allergy).
+- **Cross-reactivity** — the medication and allergen belong to the same well-established drug class with documented intra-class cross-reactivity (penicillins, cephalosporins, sulfonamides, NSAIDs).
+
+Matching is deterministic and whole-token based to avoid loose-substring false positives; a direct match takes precedence over a cross-reactivity match. Per the research-use posture, the checker does not model inter-class cross-reactivity (e.g. penicillin ↔ cephalosporin) to avoid false alarms. Conflicts are returned as `AllergyConflict` records and are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy

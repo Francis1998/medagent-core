@@ -195,6 +195,27 @@ class DrugInteractionWarning(BaseModel, frozen=True):
         return v
 
 
+class AllergyConflict(BaseModel, frozen=True):
+    """A conflict between a prescribed medication and a documented allergy."""
+
+    medication: str
+    allergy: str
+    match_type: str = Field(description="'direct' or 'cross_reactivity'")
+    drug_class: str | None = Field(
+        default=None, description="Shared drug class for cross-reactivity matches"
+    )
+    severity: Severity
+    rationale: str
+
+    @field_validator("match_type")
+    @classmethod
+    def match_type_must_be_valid(cls, v: str) -> str:
+        """Ensure match_type is exactly 'direct' or 'cross_reactivity'."""
+        if v not in {"direct", "cross_reactivity"}:
+            raise ValueError("match_type must be 'direct' or 'cross_reactivity'")
+        return v
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
