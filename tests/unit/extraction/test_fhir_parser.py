@@ -108,6 +108,42 @@ class TestParseFhirBundle:
         ctx = parse_fhir_bundle(bundle, pii_salt="test-salt")
         assert ctx.age == expected
 
+    def test_age_partial_year_month_birthdate_accounts_for_month(self) -> None:
+        """A ``YYYY-MM`` birthDate must use its month for the birthday check.
+
+        FHIR ``birthDate`` may be a partial ``YYYY-MM`` date. The month-not-yet-
+        reached adjustment previously ran only for full ``YYYY-MM-DD`` dates, so
+        a partial date whose birth month is later in the year overstated age by
+        one year.
+        """
+        from datetime import date
+
+        today = date.today()
+        birth_year = today.year - 30
+
+        def _bundle(birth_date: str) -> dict[str, Any]:
+            return {
+                "resourceType": "Bundle",
+                "entry": [
+                    {
+                        "resource": {
+                            "resourceType": "Patient",
+                            "id": "p-partial",
+                            "birthDate": birth_date,
+                        }
+                    }
+                ],
+            }
+
+        if today.month < 12:
+            later_month = f"{birth_year}-{today.month + 1:02d}"
+            ctx = parse_fhir_bundle(_bundle(later_month), pii_salt="test-salt")
+            assert ctx.age == 29
+        if today.month > 1:
+            earlier_month = f"{birth_year}-{today.month - 1:02d}"
+            ctx = parse_fhir_bundle(_bundle(earlier_month), pii_salt="test-salt")
+            assert ctx.age == 30
+
     def test_sex_extracted(self, minimal_fhir_bundle: dict[str, Any]) -> None:
         """Sex field must be extracted from the Patient resource."""
         ctx = parse_fhir_bundle(minimal_fhir_bundle, pii_salt="test-salt")
