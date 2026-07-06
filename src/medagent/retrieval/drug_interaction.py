@@ -237,9 +237,14 @@ class DrugInteractionClient:
 
 
 def _map_rxnorm_severity(rxnorm_severity: str) -> str:
-    """Map RxNorm severity strings to our Severity enum values."""
+    """Map RxNorm severity strings to our Severity enum values.
+
+    The lookup is case-insensitive, so mapping keys are stored lowercase to stay
+    reachable; ``N/A`` (unrated) therefore resolves to ``UNKNOWN`` rather than
+    silently defaulting to ``MODERATE``.
+    """
     mapping = {
-        "N/A": "UNKNOWN",
+        "n/a": "UNKNOWN",
         "minor": "LOW",
         "moderate": "MODERATE",
         "major": "HIGH",

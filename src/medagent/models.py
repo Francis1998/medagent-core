@@ -216,6 +216,25 @@ class AllergyConflict(BaseModel, frozen=True):
         return v
 
 
+class DuplicateTherapy(BaseModel, frozen=True):
+    """Multiple active medications that share one therapeutic class."""
+
+    therapeutic_class: str
+    medications: list[str] = Field(
+        description="Active medications sharing the therapeutic class (≥2 distinct agents)"
+    )
+    severity: Severity
+    rationale: str
+
+    @field_validator("medications")
+    @classmethod
+    def require_at_least_two(cls, v: list[str]) -> list[str]:
+        """Enforce that a duplicate-therapy finding names at least two agents."""
+        if len(v) < 2:
+            raise ValueError("duplicate therapy requires at least two medications")
+        return v
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 from medagent.models import Medication, Severity
-from medagent.retrieval.drug_interaction import DrugInteractionClient
+from medagent.retrieval.drug_interaction import DrugInteractionClient, _map_rxnorm_severity
 
 if TYPE_CHECKING:
     from pytest_mock.plugin import MockerFixture
@@ -17,6 +17,19 @@ def _medications() -> list[Medication]:
     """Build a deterministic medication pair for interaction tests."""
 
     return [Medication(name="warfarin"), Medication(name="aspirin")]
+
+
+def test_rxnorm_na_severity_maps_to_unknown() -> None:
+    """An RxNorm severity of ``N/A`` must map to ``UNKNOWN``, not ``MODERATE``.
+
+    The lookup lowercases its input, but the mapping key was the uppercase
+    ``N/A``, so an unrated interaction never matched its own entry and silently
+    fell through to the ``MODERATE`` default — overstating an interaction with no
+    documented severity. The mapping must be reachable regardless of input case.
+    """
+
+    assert _map_rxnorm_severity("N/A") == "UNKNOWN"
+    assert _map_rxnorm_severity("n/a") == "UNKNOWN"
 
 
 @pytest.mark.asyncio

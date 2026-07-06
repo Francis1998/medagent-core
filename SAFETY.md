@@ -92,6 +92,11 @@ These are configured in `.env` and enforced via `asyncio.wait_for`. The agent ca
 
 Matching is deterministic and whole-token based to avoid loose-substring false positives; a direct match takes precedence over a cross-reactivity match. Per the research-use posture, the checker does not model inter-class cross-reactivity (e.g. penicillin ↔ cephalosporin) to avoid false alarms. Conflicts are returned as `AllergyConflict` records and are **advisory** — they never auto-modify a medication list.
 
+### 3.10 Duplicate-Therapy Detection
+`safety/duplicate_therapy.py` groups a patient's active medications by therapeutic class and flags any class that contains **two or more distinct agents** (for example two NSAIDs or two anticoagulants). Duplicate therapy is a recognized source of avoidable additive toxicity that a drug-drug *interaction* check does not necessarily surface, because redundant agents are not strictly interacting.
+
+Distinct agents are keyed by the canonical class member they match, so the same drug listed twice (or a brand/generic pair for one agent) is not flagged — only genuinely different agents in one class are. Covered classes include anticoagulants (CRITICAL), SSRIs, benzodiazepines, opioids (HIGH), NSAIDs, ACE inhibitors, statins (MODERATE), and proton-pump inhibitors (LOW). Matching is deterministic and whole-token based, and findings are returned as `DuplicateTherapy` records that are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy
