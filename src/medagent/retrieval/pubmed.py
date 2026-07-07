@@ -158,7 +158,10 @@ class PubMedClient:
 def _parse_article(article: dict[str, Any]) -> RetrievedDocument | None:
     """Parse a PubmedArticle dict into a RetrievedDocument."""
     medline = article.get("MedlineCitation", {})
-    pmid = str(medline.get("PMID", {}).get("#text") or medline.get("PMID", ""))
+    # PMID may be a structured node ({"#text": ...}) or, when NCBI renders a
+    # single-valued element with no attributes, a bare string. _extract_text
+    # normalizes both without assuming a dict.
+    pmid = _extract_text(medline.get("PMID", "")).strip()
 
     article_data = medline.get("Article", {})
     title = _extract_text(article_data.get("ArticleTitle", ""))
