@@ -235,6 +235,15 @@ class DuplicateTherapy(BaseModel, frozen=True):
         return v
 
 
+class PregnancyRisk(BaseModel, frozen=True):
+    """A medication flagged as unsafe for use during pregnancy."""
+
+    medication: str
+    agent: str = Field(description="Canonical teratogenic agent matched in the medication name")
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------

@@ -283,6 +283,8 @@ All controls are **technically enforced in code**, not just documented policy:
 | 7 | Dual-source drug validation | `models.py` | Pydantic enforces ≥2 sources at model construction |
 | 8 | Hard timeouts | `api/main.py` | 120s total, per-stage limits |
 | 9 | Drug-allergy conflict check | `safety/allergy_checker.py` | Flags medications conflicting with documented allergies (direct + intra-class cross-reactivity) |
+| 10 | Duplicate-therapy detection | `safety/duplicate_therapy.py` | Flags ≥2 distinct agents from one therapeutic class |
+| 11 | Pregnancy-safety check | `safety/pregnancy_checker.py` | Flags teratogenic/contraindicated medications for pregnant patients |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

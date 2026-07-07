@@ -97,6 +97,11 @@ Matching is deterministic and whole-token based to avoid loose-substring false p
 
 Distinct agents are keyed by the canonical class member they match, so the same drug listed twice (or a brand/generic pair for one agent) is not flagged — only genuinely different agents in one class are. Covered classes include anticoagulants (CRITICAL), SSRIs, benzodiazepines, opioids (HIGH), NSAIDs, ACE inhibitors, statins (MODERATE), and proton-pump inhibitors (LOW). Matching is deterministic and whole-token based, and findings are returned as `DuplicateTherapy` records that are **advisory** — they never auto-modify a medication list.
 
+### 3.11 Pregnancy-Safety Checking
+`safety/pregnancy_checker.py` flags a patient's active medications that match a known human teratogen or an agent otherwise contraindicated in pregnancy (for example isotretinoin, methotrexate, warfarin, valproate, ACE inhibitors, and ARBs). This hazard is to the fetus rather than an interaction or an allergy, so neither the drug-drug interaction nor the drug-allergy checker surfaces it.
+
+The check is gated on a `pregnant` flag and returns **no** findings for non-pregnant patients, so it never raises noise where the risk does not apply. Matching is deterministic and whole-token based (a substring such as `lithiumfree` never matches `lithium`), and when a medication matches more than one agent the highest-severity agent is reported. Findings are returned as `PregnancyRisk` records that are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy
