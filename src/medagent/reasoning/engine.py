@@ -152,8 +152,12 @@ class ReasoningEngine:
         Falls back to an empty list on any parse failure, which triggers
         the fallback path in the state machine.
         """
-        # Strip markdown code fences if present
-        response = re.sub(r"```(?:json)?", "", response).strip().rstrip("`").strip()
+        # Strip markdown code fences if present. The language tag after the
+        # opening fence is matched generically and case-insensitively: models
+        # emit ```json, ```JSON, or a bare ``` fence, and a case-sensitive
+        # ``(?:json)?`` left an uppercase "JSON" tag in the payload, breaking
+        # json.loads and silently dropping every hypothesis.
+        response = re.sub(r"```[a-zA-Z0-9]*", "", response).strip().rstrip("`").strip()
 
         try:
             data: dict[str, Any] = json.loads(response)
