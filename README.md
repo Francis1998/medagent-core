@@ -285,6 +285,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 9 | Drug-allergy conflict check | `safety/allergy_checker.py` | Flags medications conflicting with documented allergies (direct + intra-class cross-reactivity) |
 | 10 | Duplicate-therapy detection | `safety/duplicate_therapy.py` | Flags ≥2 distinct agents from one therapeutic class |
 | 11 | Pregnancy-safety check | `safety/pregnancy_checker.py` | Flags teratogenic/contraindicated medications for pregnant patients |
+| 12 | QT-prolongation check | `safety/qt_prolongation_checker.py` | Flags QT-prolonging medications; elevates severity for additive (co-prescribed) torsades risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

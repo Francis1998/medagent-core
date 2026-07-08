@@ -102,6 +102,11 @@ Distinct agents are keyed by the canonical class member they match, so the same 
 
 The check is gated on a `pregnant` flag and returns **no** findings for non-pregnant patients, so it never raises noise where the risk does not apply. Matching is deterministic and whole-token based (a substring such as `lithiumfree` never matches `lithium`), and when a medication matches more than one agent the highest-severity agent is reported. Findings are returned as `PregnancyRisk` records that are **advisory** — they never auto-modify a medication list.
 
+### 3.12 QT-Prolongation Checking
+`safety/qt_prolongation_checker.py` flags a patient's active medications that match a known QT-prolonging agent (for example amiodarone, sotalol, methadone, citalopram, haloperidol, ondansetron, and the macrolide/fluoroquinolone antibiotics). Excessive QT prolongation can precipitate torsades de pointes, a potentially fatal ventricular arrhythmia — a hazard distinct from a two-drug interaction, an allergy, a duplicate therapy, or a pregnancy risk.
+
+Because torsadogenic risk is **additive**, a finding's severity is elevated to at least `HIGH` and its rationale notes the additive risk whenever two or more QT-prolonging medications are co-prescribed; the count of concurrent QT-prolonging medications is recorded on each `QTProlongationRisk`. Matching is deterministic and whole-token based (a substring never triggers a match), and when a medication matches more than one agent the highest-baseline-severity agent is reported. Findings are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy
