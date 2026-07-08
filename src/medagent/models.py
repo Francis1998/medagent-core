@@ -244,6 +244,20 @@ class PregnancyRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class QTProlongationRisk(BaseModel, frozen=True):
+    """A medication that prolongs the QT interval (torsades-de-pointes risk)."""
+
+    medication: str
+    agent: str = Field(description="Canonical QT-prolonging agent matched in the medication name")
+    severity: Severity
+    concurrent_qt_medications: int = Field(
+        default=0,
+        ge=0,
+        description="Count of other active QT-prolonging medications co-prescribed",
+    )
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
