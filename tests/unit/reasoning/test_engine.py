@@ -59,3 +59,49 @@ def test_parse_llm_response_handles_lowercase_and_bare_fences() -> None:
     assert len(lowercase) == 1
     assert len(bare) == 1
     assert len(unfenced) == 1
+
+
+def test_parse_llm_response_accepts_string_evidence_items() -> None:
+    """Evidence given as bare strings must not drop the whole hypothesis.
+
+    The prompt asks for ``{"statement": ..., "strength": ...}`` objects, but
+    models frequently emit each evidence item as a bare string. The previous
+    ``e.get("statement")`` assumed a dict and raised ``AttributeError`` on a
+    string, which was caught one level up and silently discarded the entire
+    hypothesis. String evidence must be parsed into a statement with a neutral
+    default strength instead.
+    """
+    engine = ReasoningEngine()
+    response = (
+        '{"hypotheses": [{"label": "Community-acquired pneumonia", '
+        '"evidence_for": ["productive cough", "fever", "elevated WBC"], '
+        '"evidence_against": ["no chest pain"], "uncertainty_note": null}]}'
+    )
+
+    hypotheses = engine._parse_llm_response(response, [_doc()])
+
+    assert len(hypotheses) == 1
+    hypothesis = hypotheses[0]
+    assert hypothesis.label == "Community-acquired pneumonia"
+    assert [item.statement for item in hypothesis.evidence_for] == [
+        "productive cough",
+        "fever",
+        "elevated WBC",
+    ]
+    assert all(item.strength == 0.5 for item in hypothesis.evidence_for)
+    assert [item.statement for item in hypothesis.evidence_against] == ["no chest pain"]
+
+
+def test_parse_llm_response_clamps_out_of_range_strength() -> None:
+    """An out-of-range numeric strength is clamped rather than dropping the item."""
+    engine = ReasoningEngine()
+    response = (
+        '{"hypotheses": [{"label": "Sepsis", '
+        '"evidence_for": [{"statement": "hypotension", "strength": 1.8}], '
+        '"evidence_against": [], "uncertainty_note": null}]}'
+    )
+
+    hypotheses = engine._parse_llm_response(response, [_doc()])
+
+    assert len(hypotheses) == 1
+    assert hypotheses[0].evidence_for[0].strength == 1.0
