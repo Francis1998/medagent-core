@@ -171,33 +171,18 @@ class ReasoningEngine:
 
         hypotheses: list[Hypothesis] = []
         doc_ids = [d.doc_id for d in docs]
+        source_doc_id = doc_ids[0] if doc_ids else None
 
         for raw in raw_hyps[:5]:
             if not isinstance(raw, dict):
                 continue
             try:
-                evidence_for = [
-                    EvidenceItem(
-                        direction="FOR",
-                        statement=e.get("statement", ""),
-                        strength=float(e.get("strength", 0.5)),
-                        source_doc_id=doc_ids[0] if doc_ids else None,
-                        source_label="retrieved_evidence",
-                    )
-                    for e in raw.get("evidence_for", [])
-                    if e.get("statement")
-                ]
-                evidence_against = [
-                    EvidenceItem(
-                        direction="AGAINST",
-                        statement=e.get("statement", ""),
-                        strength=float(e.get("strength", 0.5)),
-                        source_doc_id=doc_ids[0] if doc_ids else None,
-                        source_label="retrieved_evidence",
-                    )
-                    for e in raw.get("evidence_against", [])
-                    if e.get("statement")
-                ]
+                evidence_for = self._parse_evidence(
+                    raw.get("evidence_for", []), "FOR", source_doc_id
+                )
+                evidence_against = self._parse_evidence(
+                    raw.get("evidence_against", []), "AGAINST", source_doc_id
+                )
                 hyp = Hypothesis(
                     label=raw.get("label", "Unknown"),
                     icd_code=raw.get("icd_code"),
@@ -210,6 +195,73 @@ class ReasoningEngine:
                 logger.warning("hypothesis_parse_error", error=str(exc))
 
         return hypotheses
+
+    @staticmethod
+    def _parse_evidence(
+        raw_items: object,
+        direction: str,
+        source_doc_id: str | None,
+    ) -> list[EvidenceItem]:
+        """Parse an LLM ``evidence_for``/``evidence_against`` list tolerantly.
+
+        The prompt asks for a list of ``{"statement": ..., "strength": ...}``
+        objects, but models frequently emit each evidence item as a bare string
+        instead. The previous ``e.get("statement")`` assumed every item was a
+        dict, so a string item raised ``AttributeError`` that was caught one
+        level up and silently discarded the *entire* hypothesis. Both shapes are
+        now supported: a bare string becomes the statement with a neutral default
+        strength, and a malformed or out-of-range strength is coerced/clamped
+        rather than dropping the item.
+
+        Args:
+            raw_items: The raw ``evidence_for``/``evidence_against`` value.
+            direction: ``"FOR"`` or ``"AGAINST"``.
+            source_doc_id: Optional source document id to attribute evidence to.
+
+        Returns:
+            Parsed evidence items; items without a usable statement are skipped.
+        """
+        if not isinstance(raw_items, list):
+            return []
+        items: list[EvidenceItem] = []
+        for entry in raw_items:
+            if isinstance(entry, str):
+                statement = entry.strip()
+                strength = 0.5
+            elif isinstance(entry, dict):
+                statement = str(entry.get("statement", "")).strip()
+                strength = ReasoningEngine._coerce_strength(entry.get("strength", 0.5))
+            else:
+                continue
+            if not statement:
+                continue
+            items.append(
+                EvidenceItem(
+                    direction=direction,
+                    statement=statement,
+                    strength=strength,
+                    source_doc_id=source_doc_id,
+                    source_label="retrieved_evidence",
+                )
+            )
+        return items
+
+    @staticmethod
+    def _coerce_strength(value: object) -> float:
+        """Coerce a raw strength value to a float clamped to ``[0.0, 1.0]``.
+
+        Args:
+            value: Raw strength from the LLM (may be a number, numeric string, or
+                out of range).
+
+        Returns:
+            A float within ``[0.0, 1.0]``; defaults to ``0.5`` when uncoercible.
+        """
+        try:
+            strength = float(value)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            return 0.5
+        return max(0.0, min(1.0, strength))
 
     def _fallback_hypotheses(self, entities: list[ClinicalEntity]) -> list[Hypothesis]:
         """Return a minimal fallback hypothesis when LLM reasoning fails."""
