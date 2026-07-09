@@ -107,6 +107,11 @@ The check is gated on a `pregnant` flag and returns **no** findings for non-preg
 
 Because torsadogenic risk is **additive**, a finding's severity is elevated to at least `HIGH` and its rationale notes the additive risk whenever two or more QT-prolonging medications are co-prescribed; the count of concurrent QT-prolonging medications is recorded on each `QTProlongationRisk`. Matching is deterministic and whole-token based (a substring never triggers a match), and when a medication matches more than one agent the highest-baseline-severity agent is reported. Findings are **advisory** — they never auto-modify a medication list.
 
+### 3.13 Anticholinergic-Burden Checking
+`safety/anticholinergic_burden_checker.py` scores a patient's active medications on the Anticholinergic Cognitive Burden (ACB) scale (1 = mild, 2 = moderate, 3 = strong) and sums the scores. Many common drugs — sedating antihistamines, tricyclic antidepressants, bladder antimuscarinics, low-potency antipsychotics — carry anticholinergic activity whose harm (confusion, falls, urinary retention, and, in older adults, cognitive decline) is *cumulative* rather than tied to a single agent, so it is not surfaced by the interaction, allergy, duplicate-therapy, pregnancy, or QT checkers.
+
+Because the risk is cumulative, a finding's severity is elevated to at least `HIGH` when the total active burden reaches the clinically significant threshold (**≥3**); each `AnticholinergicBurdenRisk` records the agent's per-drug score and the summed total burden. Matching is deterministic and whole-token based (a substring never triggers a match), and when a medication matches more than one agent the highest-scoring agent is reported. Findings are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy

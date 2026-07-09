@@ -258,6 +258,24 @@ class QTProlongationRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class AnticholinergicBurdenRisk(BaseModel, frozen=True):
+    """A medication contributing to cumulative anticholinergic burden."""
+
+    medication: str
+    agent: str = Field(description="Canonical anticholinergic agent matched in the medication name")
+    anticholinergic_score: int = Field(
+        ge=1,
+        le=3,
+        description="Anticholinergic Cognitive Burden (ACB) score contributed by this agent (1-3)",
+    )
+    total_burden: int = Field(
+        ge=1,
+        description="Sum of ACB scores across all active anticholinergic medications",
+    )
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------

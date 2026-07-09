@@ -286,6 +286,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 10 | Duplicate-therapy detection | `safety/duplicate_therapy.py` | Flags ≥2 distinct agents from one therapeutic class |
 | 11 | Pregnancy-safety check | `safety/pregnancy_checker.py` | Flags teratogenic/contraindicated medications for pregnant patients |
 | 12 | QT-prolongation check | `safety/qt_prolongation_checker.py` | Flags QT-prolonging medications; elevates severity for additive (co-prescribed) torsades risk |
+| 13 | Anticholinergic-burden check | `safety/anticholinergic_burden_checker.py` | Scores medications on the ACB scale and elevates severity when cumulative burden reaches the clinically significant threshold (≥3) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
