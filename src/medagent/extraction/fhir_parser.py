@@ -335,8 +335,17 @@ def sanitise_clinical_text(text: str) -> str:
     # needs a 3-digit middle group) match the SSN 3-2-4 shape, so SSNs listed as
     # PII in the de-identification contract otherwise leaked through unredacted.
     text = re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "[REDACTED-SSN]", text)
-    # Phone numbers
-    text = re.sub(r"\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b", "[REDACTED-PHONE]", text)
+    # Phone numbers, including an optional country code and a parenthesised area
+    # code. A leading ``\b`` cannot match before the ``(`` of a ``(415) 555-1234``
+    # number (``(`` is a non-word character), so such numbers previously leaked
+    # through unredacted; ``(?<!\w)``/``(?!\w)`` boundaries hold whether the
+    # number starts with a digit, a ``(``, or a ``+``. A separator (or the parens)
+    # is still required so a bare run of ten digits is not treated as a phone.
+    text = re.sub(
+        r"(?<!\w)(?:\+?\d{1,3}[-.\s])?(?:\(\d{3}\)[-.\s]?|\d{3}[-.\s])\d{3}[-.\s]?\d{4}(?!\w)",
+        "[REDACTED-PHONE]",
+        text,
+    )
     # Email addresses
     text = re.sub(r"\b[\w.+-]+@[\w-]+\.\w+\b", "[REDACTED-EMAIL]", text)
     return text

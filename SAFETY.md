@@ -112,6 +112,11 @@ Because torsadogenic risk is **additive**, a finding's severity is elevated to a
 
 Because the risk is cumulative, a finding's severity is elevated to at least `HIGH` when the total active burden reaches the clinically significant threshold (**≥3**); each `AnticholinergicBurdenRisk` records the agent's per-drug score and the summed total burden. Matching is deterministic and whole-token based (a substring never triggers a match), and when a medication matches more than one agent the highest-scoring agent is reported. Findings are **advisory** — they never auto-modify a medication list.
 
+### 3.14 Serotonin-Syndrome Checking
+`safety/serotonin_syndrome_checker.py` flags active medications that carry serotonergic activity (SSRIs, SNRIs, MAOIs, serotonergic tricyclics, triptans, serotonergic opioids such as tramadol, and other agents such as trazodone, buspirone, ondansetron, linezolid, and lithium). Serotonin syndrome is a potentially life-threatening reaction driven by the *combination* of serotonergic agents rather than any single named drug-drug pair, allergy, duplicate therapy, pregnancy risk, QT interval, or anticholinergic burden, so it is not surfaced by the other checkers.
+
+Because the hazard requires a combination, a lone serotonergic medication yields no finding. When two or more are co-prescribed every finding is at least `HIGH`, and when any monoamine oxidase inhibitor (MAOI, including the reversible-MAOI antibiotic linezolid) is part of the combination all findings are escalated to `CRITICAL` — an MAOI with another serotonergic agent is contraindicated. Each `SerotoninSyndromeRisk` records the matched agent, its drug class, and the count of other co-prescribed serotonergic medications. Matching is deterministic and whole-token based (a substring never triggers a match). Findings are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy

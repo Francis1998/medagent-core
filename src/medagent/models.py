@@ -276,6 +276,21 @@ class AnticholinergicBurdenRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class SerotoninSyndromeRisk(BaseModel, frozen=True):
+    """A serotonergic medication contributing to serotonin-syndrome risk."""
+
+    medication: str
+    agent: str = Field(description="Canonical serotonergic agent matched in the medication name")
+    drug_class: str = Field(description="Serotonergic drug class (e.g. SSRI, SNRI, MAOI, triptan)")
+    concurrent_serotonergic_medications: int = Field(
+        default=0,
+        ge=0,
+        description="Count of other active serotonergic medications co-prescribed",
+    )
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
