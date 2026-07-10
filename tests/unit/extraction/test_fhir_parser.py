@@ -234,6 +234,24 @@ class TestSanitiseClinicalText:
         result = sanitise_clinical_text("Contact: 555-867-5309")
         assert "555-867-5309" not in result
 
+    def test_redacts_parenthesized_area_code_phone(self) -> None:
+        """A phone with a parenthesised area code must be redacted.
+
+        The phone regex was anchored with a leading ``\\b`` and only accepted a
+        bare 3-digit area code, so a common ``(415) 555-1234`` number (whose
+        ``(`` is a non-word character with no preceding word boundary) leaked
+        through ``sanitise_clinical_text`` unredacted into text passed to the
+        LLM. Parenthesised and country-code-prefixed numbers must be redacted.
+        """
+        paren_result = sanitise_clinical_text("Call the clinic at (415) 555-1234 today.")
+        assert "415" not in paren_result
+        assert "555-1234" not in paren_result
+        assert "[REDACTED-PHONE]" in paren_result
+
+        country_result = sanitise_clinical_text("Reachable at +1 415-555-1234.")
+        assert "415-555-1234" not in country_result
+        assert "[REDACTED-PHONE]" in country_result
+
     def test_redacts_email(self) -> None:
         """Email addresses must be replaced with [REDACTED-EMAIL]."""
         result = sanitise_clinical_text("Email: patient@example.com")
