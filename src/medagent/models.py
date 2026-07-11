@@ -291,6 +291,23 @@ class SerotoninSyndromeRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class BeersCriteriaRisk(BaseModel, frozen=True):
+    """A potentially inappropriate medication (PIM) for an older adult.
+
+    Based on the American Geriatrics Society (AGS) Beers Criteria, which flag
+    medications whose risk generally outweighs their benefit in adults aged 65
+    and older.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical Beers-listed agent matched in the medication name")
+    beers_category: str = Field(
+        description="Beers Criteria category (e.g. 'long-acting benzodiazepine')"
+    )
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
