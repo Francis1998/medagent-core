@@ -257,6 +257,23 @@ class TestSanitiseClinicalText:
         result = sanitise_clinical_text("Email: patient@example.com")
         assert "patient@example.com" not in result
 
+    def test_redacts_multi_label_email_domain_fully(self) -> None:
+        """Subdomain / compound-TLD email domains must not leak a trailing fragment.
+
+        The domain pattern previously matched only the first dotted label, so a
+        subdomain (``mail.hospital.org``) or compound TLD (``acme.co.uk``) left a
+        recognizable ``.org`` / ``.co.uk`` fragment revealing the organisation.
+        """
+        subdomain = sanitise_clinical_text("Contact john.doe@mail.hospital.org for records.")
+        assert "[REDACTED-EMAIL]" in subdomain
+        assert ".org" not in subdomain
+        assert "hospital" not in subdomain
+
+        compound_tld = sanitise_clinical_text("Email a@team.acme.co.uk please.")
+        assert "[REDACTED-EMAIL]" in compound_tld
+        assert ".co.uk" not in compound_tld
+        assert "acme" not in compound_tld
+
     def test_preserves_clinical_content(self) -> None:
         """Clinical observations must not be redacted."""
         text = "Patient presents with elevated troponin and chest pain"

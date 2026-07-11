@@ -117,6 +117,11 @@ Because the risk is cumulative, a finding's severity is elevated to at least `HI
 
 Because the hazard requires a combination, a lone serotonergic medication yields no finding. When two or more are co-prescribed every finding is at least `HIGH`, and when any monoamine oxidase inhibitor (MAOI, including the reversible-MAOI antibiotic linezolid) is part of the combination all findings are escalated to `CRITICAL` — an MAOI with another serotonergic agent is contraindicated. Each `SerotoninSyndromeRisk` records the matched agent, its drug class, and the count of other co-prescribed serotonergic medications. Matching is deterministic and whole-token based (a substring never triggers a match). Findings are **advisory** — they never auto-modify a medication list.
 
+### 3.15 Beers Criteria (Potentially Inappropriate Medications in Older Adults)
+`safety/beers_criteria_checker.py` flags active medications that appear on the American Geriatrics Society (AGS) Beers Criteria of potentially inappropriate medications (PIMs) for adults aged **65 and older** — for example long-acting benzodiazepines (falls, fractures), tertiary tricyclic antidepressants and first-generation antihistamines (anticholinergic load), long-acting sulfonylureas (prolonged hypoglycaemia), skeletal muscle relaxants, barbiturates, and certain NSAIDs and peripheral alpha-1 blockers. Unlike the interaction, allergy, duplicate-therapy, pregnancy, QT, anticholinergic-burden, and serotonin-syndrome checkers — which key on drug pairs, combinations, or cumulative load — this hazard is an *age-conditioned, single-agent appropriateness* judgement.
+
+The check applies **only** to patients aged 65 or older; for a younger patient or an unknown age it returns no finding. For an eligible patient, each active medication matching a Beers-listed agent yields one `BeersCriteriaRisk` recording the matched agent, the Beers category, and a per-agent severity (`HIGH` for benzodiazepines, tertiary TCAs, long-acting sulfonylureas, barbiturates, and ketorolac; `MODERATE` for Z-drug hypnotics, first-generation antihistamines, muscle relaxants, other NSAIDs, and alpha-1 blockers). Matching is deterministic and whole-token based (a substring never triggers a match). Findings are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy
