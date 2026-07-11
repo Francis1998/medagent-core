@@ -346,6 +346,9 @@ def sanitise_clinical_text(text: str) -> str:
         "[REDACTED-PHONE]",
         text,
     )
-    # Email addresses
-    text = re.sub(r"\b[\w.+-]+@[\w-]+\.\w+\b", "[REDACTED-EMAIL]", text)
+    # Email addresses. The domain must match *every* dotted label, not just the
+    # first, so a multi-label domain (a subdomain such as ``mail.hospital.org``
+    # or a compound TLD such as ``acme.co.uk``) is fully redacted rather than
+    # leaving a trailing ``.org`` / ``.co.uk`` fragment revealing the organisation.
+    text = re.sub(r"\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b", "[REDACTED-EMAIL]", text)
     return text
