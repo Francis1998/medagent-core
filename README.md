@@ -288,6 +288,8 @@ All controls are **technically enforced in code**, not just documented policy:
 | 12 | QT-prolongation check | `safety/qt_prolongation_checker.py` | Flags QT-prolonging medications; elevates severity for additive (co-prescribed) torsades risk |
 | 13 | Anticholinergic-burden check | `safety/anticholinergic_burden_checker.py` | Scores medications on the ACB scale and elevates severity when cumulative burden reaches the clinically significant threshold (≥3) |
 | 14 | Serotonin-syndrome check | `safety/serotonin_syndrome_checker.py` | Flags ≥2 co-prescribed serotonergic agents (HIGH), escalating to CRITICAL when an MAOI is part of the combination |
+| 15 | Beers Criteria (older-adult PIMs) | `safety/beers_criteria_checker.py` | Flags potentially inappropriate medications for adults aged ≥65 (age-conditioned, single-agent) |
+| 16 | Renal-dose (eGFR) check | `safety/renal_dose_checker.py` | Flags renally-cleared medications inappropriate for the patient's eGFR with an avoid/reduce-dose action |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

@@ -122,6 +122,11 @@ Because the hazard requires a combination, a lone serotonergic medication yields
 
 The check applies **only** to patients aged 65 or older; for a younger patient or an unknown age it returns no finding. For an eligible patient, each active medication matching a Beers-listed agent yields one `BeersCriteriaRisk` recording the matched agent, the Beers category, and a per-agent severity (`HIGH` for benzodiazepines, tertiary TCAs, long-acting sulfonylureas, barbiturates, and ketorolac; `MODERATE` for Z-drug hypnotics, first-generation antihistamines, muscle relaxants, other NSAIDs, and alpha-1 blockers). Matching is deterministic and whole-token based (a substring never triggers a match). Findings are **advisory** — they never auto-modify a medication list.
 
+### 3.16 Renal-Dose (eGFR) Checking
+`safety/renal_dose_checker.py` flags active medications that are **renally cleared** and therefore accumulate to toxic concentrations in reduced kidney function unless the dose is reduced or the drug is avoided — for example metformin (lactic acidosis), nitrofurantoin, NSAIDs (acute kidney injury), spironolactone (hyperkalaemia), dabigatran/fondaparinux/enoxaparin (bleeding), and dose-dependent accumulators such as gabapentin, pregabalin, digoxin, atenolol, colchicine, and allopurinol. Unlike the interaction, allergy, duplicate-therapy, pregnancy, QT, anticholinergic-burden, serotonin-syndrome, and (age-conditioned) Beers checkers, this hazard is a *renal-function-conditioned, single-agent appropriateness* judgement keyed on the patient's estimated glomerular filtration rate (eGFR).
+
+The check applies **only** when an eGFR (mL/min/1.73m²) is known; with an unknown eGFR it returns no finding. For each active medication matching a renally-cleared agent whose per-agent eGFR threshold the patient is at or below, one `RenalDoseRisk` is produced recording the matched agent, the patient eGFR, the threshold, a recommended action (`avoid` or `reduce dose`), and a per-agent severity (`HIGH` for contraindicated agents and NSAIDs; `MODERATE` for dose-reduction agents). Matching is deterministic and whole-token based (a substring never triggers a match). Findings are **advisory** — they never auto-modify a medication list.
+
 ---
 
 ## 4. Escalation Policy

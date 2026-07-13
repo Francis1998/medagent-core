@@ -308,6 +308,25 @@ class BeersCriteriaRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class RenalDoseRisk(BaseModel, frozen=True):
+    """A renally-cleared medication flagged against a patient's kidney function.
+
+    Based on renal-function (eGFR) thresholds below which a medication is
+    contraindicated or requires dose adjustment because reduced clearance leads
+    to accumulation and toxicity.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical renally-cleared agent matched in the medication name")
+    egfr: float = Field(description="Patient eGFR in mL/min/1.73m^2 used for the assessment")
+    threshold_egfr: float = Field(
+        description="eGFR threshold at or below which the medication is flagged"
+    )
+    action: str = Field(description="Recommended action (e.g. 'avoid', 'reduce dose')")
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
