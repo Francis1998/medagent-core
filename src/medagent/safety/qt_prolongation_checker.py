@@ -100,10 +100,16 @@ class QTProlongationChecker:
             )
             matched_medications.append((medication, agent, severity, reason))
 
-        qt_medication_count = len(matched_medications)
+        # Additive torsadogenic risk comes from *distinct* QT-prolonging agents,
+        # not from duplicate list entries of the same drug (common after
+        # medication reconciliation or brand/generic double-listing). Counting
+        # raw entries let a single agent listed twice falsely present as a
+        # co-prescribed combination and spuriously elevate severity, so the
+        # concurrency count is taken over the distinct matched agents.
+        distinct_agent_count = len({agent for _med, agent, _sev, _reason in matched_medications})
         findings: list[QTProlongationRisk] = []
         for medication, agent, severity, reason in matched_medications:
-            concurrent = qt_medication_count - 1
+            concurrent = distinct_agent_count - 1
             effective_severity = severity
             if concurrent >= 1 and _SEVERITY_RANK[severity] < _SEVERITY_RANK[Severity.HIGH]:
                 effective_severity = Severity.HIGH
