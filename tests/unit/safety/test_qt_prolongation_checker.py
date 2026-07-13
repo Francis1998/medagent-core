@@ -49,6 +49,26 @@ def test_co_prescription_elevates_severity_and_counts_concurrency() -> None:
         assert "additive risk" in finding.rationale
 
 
+def test_duplicate_same_agent_does_not_trigger_additive_escalation() -> None:
+    """A single QT agent listed twice must not present as an additive combination.
+
+    Medication reconciliation and brand/generic double-listing commonly place the
+    same drug in the list twice. Counting raw entries treated those duplicates as
+    co-prescribed QT drugs, spuriously elevating a baseline MODERATE agent to HIGH
+    with ``concurrent_qt_medications == 1``. Additive risk must be measured over
+    *distinct* agents, so a duplicated single agent stays at its baseline severity
+    with no concurrent QT medications.
+    """
+    findings = QTProlongationChecker().check(_meds("Citalopram 20mg", "citalopram"))
+
+    assert len(findings) == 2
+    for finding in findings:
+        assert finding.agent == "citalopram"
+        assert finding.severity is Severity.MODERATE
+        assert finding.concurrent_qt_medications == 0
+        assert "additive risk" not in finding.rationale
+
+
 def test_findings_are_ordered_by_descending_severity_then_name() -> None:
     """Findings are ordered worst-severity first, then by medication name."""
     findings = QTProlongationChecker().check(_meds("Ondansetron", "Amiodarone", "Citalopram"))
