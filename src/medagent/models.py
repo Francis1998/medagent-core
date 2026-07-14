@@ -42,6 +42,21 @@ class Severity(str, Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class HepaticFunction(str, Enum):
+    """Hepatic-function class used for hepatic dose adjustment.
+
+    Ordered by increasing impairment, mirroring the Child-Pugh classification:
+    ``MILD`` corresponds to Child-Pugh A, ``MODERATE`` to Child-Pugh B, and
+    ``SEVERE`` to Child-Pugh C (decompensated cirrhosis). ``NORMAL`` denotes no
+    clinically significant hepatic impairment.
+    """
+
+    NORMAL = "NORMAL"
+    MILD = "MILD"
+    MODERATE = "MODERATE"
+    SEVERE = "SEVERE"
+
+
 class LLMProvider(str, Enum):
     """Supported LLM backend providers."""
 
@@ -321,6 +336,28 @@ class RenalDoseRisk(BaseModel, frozen=True):
     egfr: float = Field(description="Patient eGFR in mL/min/1.73m^2 used for the assessment")
     threshold_egfr: float = Field(
         description="eGFR threshold at or below which the medication is flagged"
+    )
+    action: str = Field(description="Recommended action (e.g. 'avoid', 'reduce dose')")
+    severity: Severity
+    rationale: str
+
+
+class HepaticDoseRisk(BaseModel, frozen=True):
+    """A hepatically-cleared or hepatotoxic medication flagged against liver function.
+
+    Based on hepatic-function (Child-Pugh) thresholds at or above which a
+    medication is contraindicated or requires dose adjustment because impaired
+    hepatic metabolism, hepatotoxicity, or a heightened risk of bleeding or
+    encephalopathy makes continued use hazardous.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical hepatic agent matched in the medication name")
+    hepatic_function: HepaticFunction = Field(
+        description="Patient hepatic-function class used for the assessment"
+    )
+    threshold_function: HepaticFunction = Field(
+        description="Hepatic-function class at or above which the medication is flagged"
     )
     action: str = Field(description="Recommended action (e.g. 'avoid', 'reduce dose')")
     severity: Severity

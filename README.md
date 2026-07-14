@@ -290,6 +290,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 14 | Serotonin-syndrome check | `safety/serotonin_syndrome_checker.py` | Flags ≥2 co-prescribed serotonergic agents (HIGH), escalating to CRITICAL when an MAOI is part of the combination |
 | 15 | Beers Criteria (older-adult PIMs) | `safety/beers_criteria_checker.py` | Flags potentially inappropriate medications for adults aged ≥65 (age-conditioned, single-agent) |
 | 16 | Renal-dose (eGFR) check | `safety/renal_dose_checker.py` | Flags renally-cleared medications inappropriate for the patient's eGFR with an avoid/reduce-dose action |
+| 17 | Hepatic-dose (Child-Pugh) check | `safety/hepatic_dose_checker.py` | Flags hepatically-cleared or hepatotoxic medications inappropriate for the patient's Child-Pugh class with an avoid/reduce-dose action |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
