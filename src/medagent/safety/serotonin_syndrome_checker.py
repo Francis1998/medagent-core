@@ -131,14 +131,20 @@ class SerotoninSyndromeChecker:
             )
             matched.append((medication, agent, drug_class, descriptor))
 
-        # Serotonin syndrome requires a combination; a single agent is not it.
-        if len(matched) < 2:
+        # Serotonin syndrome requires a combination of *distinct* serotonergic
+        # agents, not duplicate list entries of the same drug (common after
+        # medication reconciliation or brand/generic double-listing). Counting
+        # raw entries let a single agent listed twice falsely present as a
+        # co-prescribed combination, so the combination is judged over the
+        # distinct matched agents.
+        distinct_agents = {agent for _med, agent, _class, _desc in matched}
+        if len(distinct_agents) < 2:
             logger.info("serotonin_syndrome_checked", findings=0)
             return []
 
         maoi_present = any(drug_class == _MAOI_CLASS for _, _, drug_class, _ in matched)
         combination_severity = Severity.CRITICAL if maoi_present else Severity.HIGH
-        concurrent = len(matched) - 1
+        concurrent = len(distinct_agents) - 1
 
         findings: list[SerotoninSyndromeRisk] = []
         for medication, agent, drug_class, descriptor in matched:

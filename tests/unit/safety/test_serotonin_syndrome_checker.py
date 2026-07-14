@@ -32,6 +32,30 @@ def test_unrelated_medications_are_not_flagged() -> None:
     assert findings == []
 
 
+def test_same_agent_listed_twice_is_not_a_combination() -> None:
+    """Duplicate entries of one serotonergic agent are not a combination.
+
+    Serotonin syndrome requires two or more *distinct* serotonergic agents. The
+    same drug listed twice (common after medication reconciliation or
+    brand/generic double-listing) is a single agent, so counting raw entries
+    previously produced a false serotonin-syndrome finding. No finding must be
+    raised when only one distinct agent is present.
+    """
+    findings = SerotoninSyndromeChecker().check(_meds("Fluoxetine 20mg", "Fluoxetine 10mg"))
+
+    assert findings == []
+
+
+def test_concurrent_count_reflects_distinct_agents() -> None:
+    """The concurrency count is over distinct agents, not raw list entries."""
+    findings = SerotoninSyndromeChecker().check(
+        _meds("Fluoxetine 20mg", "Fluoxetine 10mg", "Tramadol 50mg")
+    )
+
+    assert len(findings) == 3
+    assert {finding.concurrent_serotonergic_medications for finding in findings} == {1}
+
+
 def test_two_serotonergic_agents_are_flagged_high() -> None:
     """Two co-prescribed serotonergic agents raise a HIGH combination finding."""
     findings = SerotoninSyndromeChecker().check(_meds("Sertraline 50mg", "Tramadol 50mg"))
