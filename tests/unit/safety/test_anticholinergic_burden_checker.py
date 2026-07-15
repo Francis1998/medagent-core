@@ -58,6 +58,39 @@ def test_sub_threshold_burden_stays_low() -> None:
     assert findings[0].severity is Severity.LOW
 
 
+def test_duplicate_agent_entries_do_not_double_count_burden() -> None:
+    """The same agent listed twice must not double-count its ACB burden.
+
+    Cumulative burden is a sum over *distinct* anticholinergic agents. When the
+    same agent appears in two medication entries (common after medication
+    reconciliation or brand/generic double-listing), counting each entry
+    previously inflated the total (2 -> 4 here), spuriously crossing the
+    significance threshold (3) and over-escalating every finding to HIGH. The
+    total must reflect the single distinct agent's score and stay LOW.
+    """
+    findings = AnticholinergicBurdenChecker().check(
+        _meds("Cimetidine 400mg", "Cimetidine (Tagamet)")
+    )
+
+    assert len(findings) == 2
+    for finding in findings:
+        assert finding.agent == "cimetidine"
+        assert finding.total_burden == 2
+        assert finding.severity is Severity.LOW
+
+
+def test_distinct_agents_still_sum_across_the_threshold() -> None:
+    """Distinct agents continue to accumulate into the significant-burden band."""
+    findings = AnticholinergicBurdenChecker().check(
+        _meds("Diphenhydramine 25mg", "Cimetidine 400mg")
+    )
+
+    assert len(findings) == 2
+    for finding in findings:
+        assert finding.total_burden == 5
+        assert finding.severity is Severity.HIGH
+
+
 def test_whole_token_matching_avoids_false_substrings() -> None:
     """Matching is on whole tokens, so a substring does not trigger a finding."""
     findings = AnticholinergicBurdenChecker().check(_meds("Superatropineish tonic"))

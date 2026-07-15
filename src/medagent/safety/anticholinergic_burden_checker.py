@@ -116,7 +116,16 @@ class AnticholinergicBurdenChecker:
             agent, score, descriptor = max(candidates, key=lambda item: (item[1], item[0]))
             matched.append((medication, agent, score, descriptor))
 
-        total_burden = sum(score for _, _, score, _ in matched)
+        # Cumulative anticholinergic burden is the sum over *distinct* agents,
+        # not over raw list entries: the same agent listed twice (common after
+        # medication reconciliation or brand/generic double-listing) is a single
+        # anticholinergic exposure, so counting each entry would double-count its
+        # ACB score and could spuriously cross the significance threshold and
+        # over-escalate every finding's severity. Deduplicate by canonical agent
+        # (each agent contributes its score once), mirroring the QT checker's
+        # distinct-agent concurrency count.
+        agent_scores = {agent: score for _med, agent, score, _desc in matched}
+        total_burden = sum(agent_scores.values())
         significant = total_burden >= _SIGNIFICANT_BURDEN_THRESHOLD
 
         findings: list[AnticholinergicBurdenRisk] = []
