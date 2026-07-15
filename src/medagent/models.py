@@ -364,6 +364,27 @@ class HepaticDoseRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class LabCriticalValueRisk(BaseModel, frozen=True):
+    """A laboratory result whose value crosses a critical (panic) threshold.
+
+    Independent of any medication, a lab value at or beyond a standardized
+    critical (panic) threshold — for example potassium >6.0 mmol/L or glucose
+    <40 mg/dL — signals a potentially life-threatening state that warrants
+    urgent clinician notification, so it is not surfaced by the medication-keyed
+    checkers.
+    """
+
+    test_name: str = Field(description="Reported laboratory test name as received")
+    canonical_test: str = Field(description="Canonical panel test the result matched")
+    value: float = Field(description="Parsed numeric result value")
+    unit: str | None = Field(default=None, description="Result unit when reported")
+    direction: str = Field(description="Whether the value is 'critically low' or 'critically high'")
+    threshold: float = Field(description="Critical threshold the value crossed")
+    action: str = Field(description="Recommended action (e.g. 'urgent clinician notification')")
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------

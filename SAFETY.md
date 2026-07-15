@@ -132,6 +132,11 @@ The check applies **only** when an eGFR (mL/min/1.73m²) is known; with an unkno
 
 The check applies **only** when hepatic function is known and impaired (`MILD`/`MODERATE`/`SEVERE`, i.e. Child-Pugh A/B/C); with an unknown or `NORMAL` hepatic function it returns no finding. For each active medication matching a hepatic agent whose per-agent impairment threshold the patient is at or above, one `HepaticDoseRisk` is produced recording the matched agent, the patient hepatic-function class, the threshold, a recommended action (`avoid` or `reduce dose`), and a per-agent severity (`HIGH` for hepatotoxic agents, NSAIDs, DOACs, and statins; `MODERATE` for sedatives/opioids and dose-limited analgesics). Matching is deterministic and whole-token based (a substring never triggers a match). Findings are **advisory** — they never auto-modify a medication list.
 
+### 3.18 Laboratory Critical-Value (Panic-Value) Checking
+`safety/lab_critical_value_checker.py` flags laboratory results whose value crosses a standardized **critical (panic) threshold** — a value laboratories are required to report to the ordering clinician without delay because it signals a potentially life-threatening state. Unlike every other checker (which is keyed on a medication), this hazard is a *result-value* judgement keyed on the lab value itself: it is independent of the medication list. The conservative adult panel covers potassium, sodium, glucose, calcium, magnesium, INR, hemoglobin, platelets, WBC, creatinine, arterial pH, and bicarbonate, each with outer low/high panic bounds well beyond the routine reference range.
+
+For each reported `LabResult` whose test name matches a panel analyte (whole-token matching, never loose substrings) and whose value parses to a number, a value at or below the low panic threshold or at or above the high panic threshold produces one `LabCriticalValueRisk` recording the canonical analyte, the parsed value, the direction (`critically low`/`critically high`), the crossed threshold, a recommended action (`urgent clinician notification`), and a per-analyte severity (`CRITICAL` for potassium, sodium, glucose, calcium, INR, platelets, and arterial pH; `HIGH` for magnesium, hemoglobin, WBC, creatinine, and bicarbonate). Matching is deterministic. Findings are **advisory** — they never auto-modify results or orders.
+
 ---
 
 ## 4. Escalation Policy
