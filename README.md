@@ -292,6 +292,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 16 | Renal-dose (eGFR) check | `safety/renal_dose_checker.py` | Flags renally-cleared medications inappropriate for the patient's eGFR with an avoid/reduce-dose action |
 | 17 | Hepatic-dose (Child-Pugh) check | `safety/hepatic_dose_checker.py` | Flags hepatically-cleared or hepatotoxic medications inappropriate for the patient's Child-Pugh class with an avoid/reduce-dose action |
 | 18 | Lab critical-value (panic) check | `safety/lab_critical_value_checker.py` | Flags laboratory results crossing a standardized critical/panic threshold (e.g. potassium >6.0, glucose <40, INR >5.0) for urgent clinician notification |
+| 19 | Drug–food interaction check | `safety/drug_food_interaction_checker.py` | Flags medication × dietary-exposure pairs (grapefruit/statins, dairy/tetracyclines–ciprofloxacin, tyramine/MAOIs, alcohol/metronidazole–disulfiram) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

@@ -137,6 +137,11 @@ The check applies **only** when hepatic function is known and impaired (`MILD`/`
 
 For each reported `LabResult` whose test name matches a panel analyte (whole-token matching, never loose substrings) and whose value parses to a number, a value at or below the low panic threshold or at or above the high panic threshold produces one `LabCriticalValueRisk` recording the canonical analyte, the parsed value, the direction (`critically low`/`critically high`), the crossed threshold, a recommended action (`urgent clinician notification`), and a per-analyte severity (`CRITICAL` for potassium, sodium, glucose, calcium, INR, platelets, and arterial pH; `HIGH` for magnesium, hemoglobin, WBC, creatinine, and bicarbonate). Matching is deterministic. Findings are **advisory** — they never auto-modify results or orders.
 
+### 3.19 Drug–Food Interaction Checking
+`safety/drug_food_interaction_checker.py` flags clinically significant interactions between a patient's active medications and dietary exposures — grapefruit with simvastatin/atorvastatin (CYP3A4 → myopathy), dairy/calcium with tetracyclines or ciprofloxacin (chelation → reduced absorption), tyramine with MAOIs such as phenelzine/tranylcypromine (hypertensive crisis), and alcohol with metronidazole/disulfiram (disulfiram-like reaction). Unlike the drug–drug interaction, allergy, and duplicate-therapy checkers, this hazard pairs a *drug with a food or beverage exposure*, so it is not surfaced elsewhere.
+
+Dietary flags are free-text strings (for example `grapefruit juice`, `dairy`, `tyramine-rich foods`, `alcohol`) matched as whole tokens against a conservative panel; medication names use the same whole-token style as the allergy and duplicate-therapy checkers. Each matching pair yields one `DrugFoodInteractionRisk` recording the matched agent, the dietary flag, the canonical food category, and a per-pair severity (`CRITICAL` for tyramine/MAOI; `HIGH` for grapefruit/statins and alcohol/metronidazole–disulfiram; `MODERATE` for dairy/antibiotics). Findings are **advisory** — they never auto-modify a medication list or dietary advice.
+
 ---
 
 ## 4. Escalation Policy
