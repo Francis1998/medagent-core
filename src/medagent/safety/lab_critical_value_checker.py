@@ -40,6 +40,12 @@ _SEVERITY_RANK: dict[Severity, int] = {
 # "6.8 mmol/L" or "-1.2"). Comparison/qualifier prefixes (">", "<") are ignored.
 _NUMBER_PATTERN: Final[re.Pattern[str]] = re.compile(r"[-+]?\d*\.\d+|[-+]?\d+")
 
+# Detects mmol/L reported in a unit field or embedded in a free-text value.
+_MMOL_L_PATTERN: Final[re.Pattern[str]] = re.compile(r"mmol\s*/\s*l", re.IGNORECASE)
+
+# Glucose panel thresholds are mg/dL; SI labs often report mmol/L (×18 ≈ mg/dL).
+_GLUCOSE_MMOL_TO_MGDL: Final[float] = 18.0
+
 
 class _Analyte:
     """A canonical panic-value analyte definition.
@@ -119,9 +125,10 @@ class LabCriticalValueChecker:
             analyte = self._match_analyte(result.test_name)
             if analyte is None:
                 continue
-            value = self._parse_value(result.value)
-            if value is None:
+            parsed = self._parse_value(result.value)
+            if parsed is None:
                 continue
+            value = self._normalize_to_panel_unit(analyte, parsed, result.value, result.unit)
 
             if analyte.low is not None and value <= analyte.low:
                 direction, threshold = "critically low", analyte.low
@@ -130,10 +137,10 @@ class LabCriticalValueChecker:
             else:
                 continue
 
-            unit = result.unit or analyte.unit
             rationale = (
-                f"Lab '{result.test_name}' ({analyte.canonical}) is {value:g} {unit}, which is "
-                f"{direction} (critical threshold {threshold:g} {analyte.unit}). This is a panic "
+                f"Lab '{result.test_name}' ({analyte.canonical}) is "
+                f"{value:g} {analyte.unit}, which is {direction} "
+                f"(critical threshold {threshold:g} {analyte.unit}). This is a panic "
                 "value requiring urgent clinician notification and confirmation."
             )
             findings.append(
@@ -195,3 +202,51 @@ class LabCriticalValueChecker:
             return float(match.group())
         except ValueError:
             return None
+
+    @staticmethod
+    def _is_mmol_l(value: str, unit: str | None) -> bool:
+        """Return True when the reported unit is mmol/L.
+
+        Detection covers both an explicit ``unit`` field and a unit embedded in
+        the free-text value (for example ``"5.5 mmol/L"``).
+
+        Args:
+            value: Reported result value string.
+            unit: Optional structured unit field.
+
+        Returns:
+            True when mmol/L is detected in either place.
+        """
+        if unit is not None and _MMOL_L_PATTERN.search(unit) is not None:
+            return True
+        return _MMOL_L_PATTERN.search(value) is not None
+
+    @classmethod
+    def _normalize_to_panel_unit(
+        cls,
+        analyte: _Analyte,
+        parsed: float,
+        value: str,
+        unit: str | None,
+    ) -> float:
+        """Convert a parsed value into the analyte's panel unit when needed.
+
+        Glucose panel thresholds are in mg/dL. SI labs frequently report
+        glucose in mmol/L; without conversion a normal fasting value such as
+        5.5 mmol/L (≈99 mg/dL) would falsely cross the low panic bound of
+        40 mg/dL. Conversion is applied **only** for glucose when mmol/L is
+        detected — other analytes (including those whose panel unit is already
+        mmol/L) are left unchanged.
+
+        Args:
+            analyte: Matched panel analyte.
+            parsed: Numeric value parsed from the result string.
+            value: Original free-text result value.
+            unit: Optional structured unit field.
+
+        Returns:
+            Value expressed in the analyte's panel unit for threshold compare.
+        """
+        if analyte.canonical == "glucose" and cls._is_mmol_l(value, unit):
+            return parsed * _GLUCOSE_MMOL_TO_MGDL
+        return parsed

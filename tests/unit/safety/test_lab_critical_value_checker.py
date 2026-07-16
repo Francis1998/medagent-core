@@ -100,3 +100,50 @@ def test_findings_ordered_by_descending_severity_then_test() -> None:
         ("potassium", Severity.CRITICAL),
         ("hemoglobin", Severity.HIGH),
     ]
+
+
+def test_glucose_mmol_l_in_value_string_is_not_false_critical() -> None:
+    """Normal fasting glucose in mmol/L embedded in the value is not critically low.
+
+    5.5 mmol/L ≈ 99 mg/dL, well above the 40 mg/dL low panic threshold. Without
+    unit conversion the raw 5.5 would falsely cross that mg/dL bound.
+    """
+    findings = LabCriticalValueChecker().check(_labs(("Glucose", "5.5 mmol/L")))
+
+    assert findings == []
+
+
+def test_glucose_mmol_l_unit_field_is_not_false_critical() -> None:
+    """Normal fasting glucose with a structured mmol/L unit is not critically low."""
+    findings = LabCriticalValueChecker().check(
+        [LabResult(test_name="Glucose", value="5.5", unit="mmol/L")]
+    )
+
+    assert findings == []
+
+
+def test_glucose_mmol_l_still_flags_true_critical_low() -> None:
+    """A truly hypoglycaemic mmol/L glucose is still flagged after conversion.
+
+    2.0 mmol/L ≈ 36 mg/dL, which is at or below the 40 mg/dL low panic threshold.
+    """
+    findings = LabCriticalValueChecker().check(
+        [LabResult(test_name="Glucose", value="2.0", unit="mmol/L")]
+    )
+
+    assert len(findings) == 1
+    assert findings[0].canonical_test == "glucose"
+    assert findings[0].direction == "critically low"
+    assert findings[0].value == 36.0
+    assert findings[0].threshold == 40.0
+
+
+def test_potassium_mmol_l_is_not_converted_like_glucose() -> None:
+    """Non-glucose analytes whose panel unit is already mmol/L are unchanged.
+
+    A normal potassium of 4.1 mmol/L must not be multiplied by 18 (which would
+    spuriously cross the high panic threshold of 6.0).
+    """
+    findings = LabCriticalValueChecker().check(_labs(("Potassium", "4.1 mmol/L")))
+
+    assert findings == []
