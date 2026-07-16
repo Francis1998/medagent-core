@@ -385,6 +385,24 @@ class LabCriticalValueRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class DrugFoodInteractionRisk(BaseModel, frozen=True):
+    """A clinically significant interaction between a medication and a dietary exposure.
+
+    Distinct from drug–drug interactions, allergies, and duplicate therapy: the
+    hazard pairs an active medication with a food or beverage exposure (for
+    example grapefruit with a statin, or tyramine with an MAOI).
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical interacting agent matched in the medication name")
+    dietary_flag: str = Field(description="Reported dietary exposure flag as received")
+    food_category: str = Field(
+        description="Canonical food/beverage category (e.g. grapefruit, dairy, tyramine, alcohol)"
+    )
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
