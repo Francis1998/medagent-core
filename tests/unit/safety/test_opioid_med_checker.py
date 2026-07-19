@@ -118,9 +118,7 @@ def test_custom_high_med_threshold() -> None:
 
 def test_non_opioid_medications_are_ignored() -> None:
     """Non-opioid medications produce no findings."""
-    findings = OpioidMedChecker().check(
-        [_med("Metformin 500 mg"), _med("Lisinopril 10 mg daily")]
-    )
+    findings = OpioidMedChecker().check([_med("Metformin 500 mg"), _med("Lisinopril 10 mg daily")])
 
     assert findings == []
 

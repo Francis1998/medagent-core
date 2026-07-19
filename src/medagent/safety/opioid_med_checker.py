@@ -64,9 +64,7 @@ _OPIOID_FACTORS: dict[str, tuple[float, str]] = {
 _NUMBER_PATTERN: Final[re.Pattern[str]] = re.compile(r"[-+]?\d*\.\d+|[-+]?\d+")
 
 # Strength patterns: "10 mg", "10mg", "25 mcg/hr", "25mcg/h".
-_MG_PATTERN: Final[re.Pattern[str]] = re.compile(
-    r"(\d+(?:\.\d+)?)\s*mg\b", re.IGNORECASE
-)
+_MG_PATTERN: Final[re.Pattern[str]] = re.compile(r"(\d+(?:\.\d+)?)\s*mg\b", re.IGNORECASE)
 _MCG_HR_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"(\d+(?:\.\d+)?)\s*(?:mcg|µg|ug)\s*/\s*h(?:r|our)?\b", re.IGNORECASE
 )
@@ -194,9 +192,7 @@ class OpioidMedChecker:
             found.
         """
         blob = " ".join(
-            part
-            for part in (medication.dosage, medication.name, medication.frequency)
-            if part
+            part for part in (medication.dosage, medication.name, medication.frequency) if part
         )
         if not blob.strip():
             return None

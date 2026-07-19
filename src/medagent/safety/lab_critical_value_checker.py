@@ -44,9 +44,7 @@ _NUMBER_PATTERN: Final[re.Pattern[str]] = re.compile(r"[-+]?\d*\.\d+|[-+]?\d+")
 _MMOL_L_PATTERN: Final[re.Pattern[str]] = re.compile(r"mmol\s*/\s*l", re.IGNORECASE)
 
 # Detects µmol/L / umol/L (creatinine SI) in a unit field or free-text value.
-_UMOL_L_PATTERN: Final[re.Pattern[str]] = re.compile(
-    r"(?:u|µ|μ)mol\s*/\s*l", re.IGNORECASE
-)
+_UMOL_L_PATTERN: Final[re.Pattern[str]] = re.compile(r"(?:u|µ|μ)mol\s*/\s*l", re.IGNORECASE)
 
 # Detects bare g/L (hemoglobin SI) without matching mg/dL or g/dL.
 _G_L_PATTERN: Final[re.Pattern[str]] = re.compile(
