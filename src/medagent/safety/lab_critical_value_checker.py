@@ -57,6 +57,9 @@ _GLUCOSE_MMOL_TO_MGDL: Final[float] = 18.0
 # Calcium panel thresholds are mg/dL; SI labs often report mmol/L (×4 ≈ mg/dL).
 _CALCIUM_MMOL_TO_MGDL: Final[float] = 4.0
 
+# Magnesium panel thresholds are mg/dL; SI labs often report mmol/L (×2.43 ≈ mg/dL).
+_MAGNESIUM_MMOL_TO_MGDL: Final[float] = 2.43
+
 # Creatinine panel thresholds are mg/dL; SI labs often report µmol/L (÷88.4 ≈ mg/dL).
 _CREATININE_UMOL_TO_MGDL: Final[float] = 88.4
 
@@ -294,6 +297,7 @@ class LabCriticalValueChecker:
 
         * glucose 5.5 mmol/L (≈99 mg/dL) vs low panic ≤40 mg/dL
         * calcium 2.3 mmol/L (≈9.2 mg/dL) vs low panic ≤6.0 mg/dL
+        * magnesium 0.85 mmol/L (≈2.07 mg/dL) vs low panic ≤1.0 mg/dL
         * creatinine 80 µmol/L (≈0.90 mg/dL) vs high panic ≥7.4 mg/dL
         * hemoglobin 140 g/L (≈14.0 g/dL) vs high panic ≥20.0 g/dL
 
@@ -314,6 +318,8 @@ class LabCriticalValueChecker:
             return parsed * _GLUCOSE_MMOL_TO_MGDL
         if analyte.canonical == "calcium" and cls._is_mmol_l(value, unit):
             return parsed * _CALCIUM_MMOL_TO_MGDL
+        if analyte.canonical == "magnesium" and cls._is_mmol_l(value, unit):
+            return parsed * _MAGNESIUM_MMOL_TO_MGDL
         if analyte.canonical == "creatinine" and cls._is_umol_l(value, unit):
             return parsed / _CREATININE_UMOL_TO_MGDL
         if analyte.canonical == "hemoglobin" and cls._is_g_l(value, unit):
