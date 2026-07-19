@@ -43,8 +43,25 @@ _NUMBER_PATTERN: Final[re.Pattern[str]] = re.compile(r"[-+]?\d*\.\d+|[-+]?\d+")
 # Detects mmol/L reported in a unit field or embedded in a free-text value.
 _MMOL_L_PATTERN: Final[re.Pattern[str]] = re.compile(r"mmol\s*/\s*l", re.IGNORECASE)
 
+# Detects µmol/L / umol/L (creatinine SI) in a unit field or free-text value.
+_UMOL_L_PATTERN: Final[re.Pattern[str]] = re.compile(r"(?:u|µ|μ)mol\s*/\s*l", re.IGNORECASE)
+
+# Detects bare g/L (hemoglobin SI) without matching mg/dL or g/dL.
+_G_L_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"(?<![a-z0-9])g\s*/\s*l(?![a-z0-9])", re.IGNORECASE
+)
+
 # Glucose panel thresholds are mg/dL; SI labs often report mmol/L (×18 ≈ mg/dL).
 _GLUCOSE_MMOL_TO_MGDL: Final[float] = 18.0
+
+# Calcium panel thresholds are mg/dL; SI labs often report mmol/L (×4 ≈ mg/dL).
+_CALCIUM_MMOL_TO_MGDL: Final[float] = 4.0
+
+# Creatinine panel thresholds are mg/dL; SI labs often report µmol/L (÷88.4 ≈ mg/dL).
+_CREATININE_UMOL_TO_MGDL: Final[float] = 88.4
+
+# Hemoglobin panel thresholds are g/dL; SI labs often report g/L (÷10 = g/dL).
+_HEMOGLOBIN_G_L_TO_G_DL: Final[float] = 10.0
 
 
 class _Analyte:
@@ -204,7 +221,23 @@ class LabCriticalValueChecker:
             return None
 
     @staticmethod
-    def _is_mmol_l(value: str, unit: str | None) -> bool:
+    def _unit_matches(pattern: re.Pattern[str], value: str, unit: str | None) -> bool:
+        """Return True when ``pattern`` matches the unit field or value string.
+
+        Args:
+            pattern: Compiled unit detector.
+            value: Reported result value string.
+            unit: Optional structured unit field.
+
+        Returns:
+            True when the pattern matches in either place.
+        """
+        if unit is not None and pattern.search(unit) is not None:
+            return True
+        return pattern.search(value) is not None
+
+    @classmethod
+    def _is_mmol_l(cls, value: str, unit: str | None) -> bool:
         """Return True when the reported unit is mmol/L.
 
         Detection covers both an explicit ``unit`` field and a unit embedded in
@@ -217,9 +250,33 @@ class LabCriticalValueChecker:
         Returns:
             True when mmol/L is detected in either place.
         """
-        if unit is not None and _MMOL_L_PATTERN.search(unit) is not None:
-            return True
-        return _MMOL_L_PATTERN.search(value) is not None
+        return cls._unit_matches(_MMOL_L_PATTERN, value, unit)
+
+    @classmethod
+    def _is_umol_l(cls, value: str, unit: str | None) -> bool:
+        """Return True when the reported unit is µmol/L (or umol/L).
+
+        Args:
+            value: Reported result value string.
+            unit: Optional structured unit field.
+
+        Returns:
+            True when µmol/L is detected in either place.
+        """
+        return cls._unit_matches(_UMOL_L_PATTERN, value, unit)
+
+    @classmethod
+    def _is_g_l(cls, value: str, unit: str | None) -> bool:
+        """Return True when the reported unit is bare g/L (not mg/dL or g/dL).
+
+        Args:
+            value: Reported result value string.
+            unit: Optional structured unit field.
+
+        Returns:
+            True when g/L is detected in either place.
+        """
+        return cls._unit_matches(_G_L_PATTERN, value, unit)
 
     @classmethod
     def _normalize_to_panel_unit(
@@ -231,12 +288,18 @@ class LabCriticalValueChecker:
     ) -> float:
         """Convert a parsed value into the analyte's panel unit when needed.
 
-        Glucose panel thresholds are in mg/dL. SI labs frequently report
-        glucose in mmol/L; without conversion a normal fasting value such as
-        5.5 mmol/L (≈99 mg/dL) would falsely cross the low panic bound of
-        40 mg/dL. Conversion is applied **only** for glucose when mmol/L is
-        detected — other analytes (including those whose panel unit is already
-        mmol/L) are left unchanged.
+        Several panel thresholds are conventional US units while SI labs report
+        the same analytes differently. Without conversion, normal SI values are
+        falsely flagged as panic values — for example:
+
+        * glucose 5.5 mmol/L (≈99 mg/dL) vs low panic ≤40 mg/dL
+        * calcium 2.3 mmol/L (≈9.2 mg/dL) vs low panic ≤6.0 mg/dL
+        * creatinine 80 µmol/L (≈0.90 mg/dL) vs high panic ≥7.4 mg/dL
+        * hemoglobin 140 g/L (≈14.0 g/dL) vs high panic ≥20.0 g/dL
+
+        Conversion is applied only for the analyte/unit pairs above; other
+        analytes (including those whose panel unit is already mmol/L) are left
+        unchanged.
 
         Args:
             analyte: Matched panel analyte.
@@ -249,4 +312,10 @@ class LabCriticalValueChecker:
         """
         if analyte.canonical == "glucose" and cls._is_mmol_l(value, unit):
             return parsed * _GLUCOSE_MMOL_TO_MGDL
+        if analyte.canonical == "calcium" and cls._is_mmol_l(value, unit):
+            return parsed * _CALCIUM_MMOL_TO_MGDL
+        if analyte.canonical == "creatinine" and cls._is_umol_l(value, unit):
+            return parsed / _CREATININE_UMOL_TO_MGDL
+        if analyte.canonical == "hemoglobin" and cls._is_g_l(value, unit):
+            return parsed / _HEMOGLOBIN_G_L_TO_G_DL
         return parsed
