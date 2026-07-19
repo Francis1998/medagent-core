@@ -403,6 +403,37 @@ class DrugFoodInteractionRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class OpioidMedRisk(BaseModel, frozen=True):
+    """An opioid medication contributing to cumulative morphine-equivalent dose (MED).
+
+    Distinct from duplicate-therapy (intra-class redundancy) and hepatic-dose
+    (Child-Pugh) opioid flags: this hazard is a *dose-cumulative* judgement keyed
+    on CDC-style oral morphine milligram equivalents (MME/MED). High total MED is
+    associated with overdose and respiratory-depression risk.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical opioid agent matched in the medication name")
+    daily_dose: float = Field(
+        description="Parsed daily dose in the agent's native unit (mg/day or mcg/hr for fentanyl)"
+    )
+    dose_unit: str = Field(description="Unit of daily_dose (e.g. 'mg/day', 'mcg/hr')")
+    conversion_factor: float = Field(
+        description="CDC-style MME conversion factor applied to this agent's daily dose"
+    )
+    med_contribution: float = Field(
+        description="Morphine-equivalent dose (MED/MME) contributed by this medication"
+    )
+    total_med: float = Field(
+        description="Sum of MED contributions across all active opioid medications"
+    )
+    high_med_threshold: float = Field(
+        description="High-MED threshold used for severity elevation (default 90.0)"
+    )
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
