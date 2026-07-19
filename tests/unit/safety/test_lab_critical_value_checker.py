@@ -271,3 +271,39 @@ def test_hemoglobin_mg_dl_is_not_treated_as_g_l() -> None:
     )
 
     assert findings == []
+
+
+def test_magnesium_mmol_l_is_not_false_critical() -> None:
+    """Normal serum magnesium in mmol/L is not critically low against mg/dL bounds.
+
+    0.85 mmol/L ≈ 2.07 mg/dL, well above the 1.0 mg/dL low panic threshold. Without
+    conversion the raw SI value is falsely flagged as critically low (≤1.0 mg/dL).
+    """
+    findings = LabCriticalValueChecker().check(_labs(("Magnesium", "0.85 mmol/L")))
+
+    assert findings == []
+
+
+def test_magnesium_mmol_l_unit_field_is_not_false_critical() -> None:
+    """Normal magnesium with a structured mmol/L unit is not critically low."""
+    findings = LabCriticalValueChecker().check(
+        [LabResult(test_name="Magnesium", value="0.85", unit="mmol/L")]
+    )
+
+    assert findings == []
+
+
+def test_magnesium_mmol_l_still_flags_true_critical_low() -> None:
+    """A truly hypomagnesaemic mmol/L magnesium is still flagged after conversion.
+
+    0.35 mmol/L ≈ 0.85 mg/dL, which is at or below the 1.0 mg/dL low panic threshold.
+    """
+    findings = LabCriticalValueChecker().check(
+        [LabResult(test_name="Magnesium", value="0.35", unit="mmol/L")]
+    )
+
+    assert len(findings) == 1
+    assert findings[0].canonical_test == "magnesium"
+    assert findings[0].direction == "critically low"
+    assert findings[0].value == pytest.approx(0.35 * 2.43, rel=1e-3)
+    assert findings[0].threshold == 1.0
