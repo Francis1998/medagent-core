@@ -294,7 +294,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 18 | Lab critical-value (panic) check | `safety/lab_critical_value_checker.py` | Flags laboratory results crossing a standardized critical/panic threshold (e.g. potassium >6.0, glucose <40, INR >5.0) for urgent clinician notification |
 | 19 | Drug–food interaction check | `safety/drug_food_interaction_checker.py` | Flags medication × dietary-exposure pairs (grapefruit/statins, dairy/tetracyclines–ciprofloxacin, tyramine/MAOIs, alcohol/metronidazole–disulfiram) |
 | 20 | Opioid MED (MME) check | `safety/opioid_med_checker.py` | Sums CDC-style morphine-equivalent dose across active opioids and elevates severity when total MED ≥ threshold (default 90) |
-| 21 | Pediatric dose / age check | `safety/pediatric_dose_checker.py` | Flags paediatric age contraindications (e.g. codeine/tramadol <12y) and mg/kg/day ceiling excesses |
+| 21 | STOPP/START check | `safety/stopp_start_checker.py` | Flags STOPP avoidances and START omissions for adults ≥65 (complements Beers) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
