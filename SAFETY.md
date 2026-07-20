@@ -147,6 +147,11 @@ Dietary flags are free-text strings (for example `grapefruit juice`, `dairy`, `t
 
 Daily dose is parsed from the medication `name` / `dosage` / `frequency` fields (BID/TID/QID/qNh/daily multipliers for oral agents; mcg/hr for fentanyl). Medications that do not match the opioid panel or lack a parseable dose are skipped. Each contributing opioid yields one `OpioidMedRisk` recording the agent, daily dose, conversion factor, per-medication MED contribution, total MED, threshold, and severity (`MODERATE` below threshold; `HIGH` at or above). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/OPIOID_MED_GUIDE.md`.
 
+### 3.21 STOPP/START Prescribing-Criteria Checking
+`safety/stopp_start_checker.py` applies a curated mini-set of **STOPP** (Screening Tool of Older Persons' Prescriptions) and **START** (Screening Tool to Alert to Right Treatment) criteria for adults aged **65 and older**. Unlike Beers (single-agent PIM list without omission detection), this checker covers both potentially inappropriate prescriptions (e.g. long-acting benzodiazepines as STOPP-D1; NSAID with heart failure as STOPP-H1) and potentially omitted indicated therapy (e.g. missing statin in secondary prevention as START-A5; missing anticoagulant in atrial fibrillation as START-A1).
+
+The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; condition matching is phrase/token-aware. Each fired criterion yields one `StoppStartRisk` recording the criterion id/type, matched or expected agent, and severity. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/STOPP_START_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
