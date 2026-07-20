@@ -434,6 +434,48 @@ class OpioidMedRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class PediatricDoseRisk(BaseModel, frozen=True):
+    """A paediatric age-contraindication or mg/kg daily-dose excess finding.
+
+    Distinct from Beers (older-adult PIM), renal/hepatic dose, and pregnancy
+    checkers: this hazard is an *age- and weight-conditioned* paediatric
+    appropriateness judgement (for example codeine/tramadol under 12 years, or
+    acetaminophen exceeding ~75 mg/kg/day).
+    """
+
+    medication: str
+    agent: str = Field(
+        description="Canonical paediatric-panel agent matched in the medication name"
+    )
+    age_years: float | None = Field(default=None, description="Patient age in years when known")
+    weight_kg: float | None = Field(
+        default=None, description="Patient weight in kilograms when known"
+    )
+    min_age_years: float | None = Field(
+        default=None,
+        description="Exclusive minimum age for the agent when the finding is age-gated",
+    )
+    dose_mg_per_kg_day: float | None = Field(
+        default=None, description="Calculated total daily dose in mg/kg/day when parseable"
+    )
+    max_mg_per_kg_day: float | None = Field(
+        default=None, description="Panel maximum total daily dose in mg/kg/day when applicable"
+    )
+    finding_kind: str = Field(
+        description=(
+            "Kind of paediatric finding: 'age_contraindication', 'mg_per_kg_excess', "
+            "or 'age_and_mg_per_kg'"
+        )
+    )
+    severity: Severity
+    rationale: str
+
+
+# ---------------------------------------------------------------------------
+# Output model
+# ---------------------------------------------------------------------------
+
+
 class StoppStartRisk(BaseModel, frozen=True):
     """A STOPP/START prescribing-criteria finding for an older adult.
 
