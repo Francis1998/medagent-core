@@ -147,6 +147,11 @@ Dietary flags are free-text strings (for example `grapefruit juice`, `dairy`, `t
 
 Daily dose is parsed from the medication `name` / `dosage` / `frequency` fields (BID/TID/QID/qNh/daily multipliers for oral agents; mcg/hr for fentanyl). Medications that do not match the opioid panel or lack a parseable dose are skipped. Each contributing opioid yields one `OpioidMedRisk` recording the agent, daily dose, conversion factor, per-medication MED contribution, total MED, threshold, and severity (`MODERATE` below threshold; `HIGH` at or above). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/OPIOID_MED_GUIDE.md`.
 
+### 3.21 Pediatric Dose / Age-Contraindication Checking
+`safety/pediatric_dose_checker.py` flags paediatric **age contraindications** and optional **mg/kg/day** ceiling excesses for a patient's age and weight. Unlike Beers (older-adult PIMs) and renal/hepatic dose checkers, this hazard is an *age- and weight-conditioned* paediatric appropriateness judgement: codeine and tramadol under 12 years (CRITICAL), tetracyclines under 8 years and aspirin under 16 years (HIGH), plus weight-based ceilings for acetaminophen/paracetamol (~75 mg/kg/day), ibuprofen (~40), and amoxicillin (~90).
+
+Daily mg dose is parsed from `name` / `dosage` / `frequency` when a weight-based rule applies. Medications that do not match the panel, or lack the age/weight needed to evaluate a rule, are skipped. Each violation yields one `PediatricDoseRisk` recording the agent, age/weight, thresholds, finding kind, and severity. Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/PEDIATRIC_DOSE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
