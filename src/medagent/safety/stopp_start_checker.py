@@ -258,12 +258,12 @@ class StoppStartChecker:
         condition_blob = self._condition_blob(conditions or [])
         findings: list[StoppStartRisk] = []
 
-        for rule in _STOPP_RULES:
-            if rule.required_condition_aliases and not self._aliases_match(
-                condition_blob, rule.required_condition_aliases
+        for stopp_rule in _STOPP_RULES:
+            if stopp_rule.required_condition_aliases and not self._aliases_match(
+                condition_blob, stopp_rule.required_condition_aliases
             ):
                 continue
-            matched_agents = sorted(med_tokens.keys() & rule.agents)
+            matched_agents = sorted(med_tokens.keys() & stopp_rule.agents)
             if not matched_agents:
                 continue
             agent = matched_agents[0]
@@ -272,34 +272,35 @@ class StoppStartChecker:
                 StoppStartRisk(
                     medication=medication_name,
                     agent=agent,
-                    criterion_id=rule.criterion_id,
+                    criterion_id=stopp_rule.criterion_id,
                     criterion_type="STOPP",
-                    severity=rule.severity,
+                    severity=stopp_rule.severity,
                     rationale=(
-                        f"{rule.criterion_id}: medication '{medication_name}' contains {agent}; "
-                        f"{rule.rationale} (patient age {age}). Consider stopping or switching "
-                        f"to a safer alternative."
+                        f"{stopp_rule.criterion_id}: medication '{medication_name}' contains "
+                        f"{agent}; {stopp_rule.rationale} (patient age {age}). Consider "
+                        f"stopping or switching to a safer alternative."
                     ),
                 )
             )
 
-        for rule in _START_RULES:
-            if not self._aliases_match(condition_blob, rule.condition_aliases):
+        for start_rule in _START_RULES:
+            if not self._aliases_match(condition_blob, start_rule.condition_aliases):
                 continue
-            if med_tokens.keys() & rule.expected_agents:
+            if med_tokens.keys() & start_rule.expected_agents:
                 continue
-            expected = sorted(rule.expected_agents)[0]
+            expected = sorted(start_rule.expected_agents)[0]
             findings.append(
                 StoppStartRisk(
                     medication=None,
                     agent=expected,
-                    criterion_id=rule.criterion_id,
+                    criterion_id=start_rule.criterion_id,
                     criterion_type="START",
-                    severity=rule.severity,
+                    severity=start_rule.severity,
                     rationale=(
-                        f"{rule.criterion_id}: {rule.rationale} (patient age {age}); "
-                        f"no matching therapy found among active medications. Consider "
-                        f"starting an indicated agent (e.g. {expected}) if no contraindication."
+                        f"{start_rule.criterion_id}: {start_rule.rationale} "
+                        f"(patient age {age}); no matching therapy found among active "
+                        f"medications. Consider starting an indicated agent "
+                        f"(e.g. {expected}) if no contraindication."
                     ),
                 )
             )
