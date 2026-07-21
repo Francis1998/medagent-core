@@ -471,6 +471,27 @@ class PediatricDoseRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class StoppStartRisk(BaseModel, frozen=True):
+    """A STOPP/START prescribing-criteria finding for an older adult.
+
+    Complements Beers Criteria: STOPP flags medications that should usually be
+    stopped (or avoided), while START flags indicated therapies that appear to
+    be omitted given documented conditions. Applies to adults aged 65+.
+    """
+
+    medication: str | None = Field(
+        default=None,
+        description="Matched medication name for STOPP findings; None for START omissions",
+    )
+    agent: str = Field(
+        description="Canonical agent matched (STOPP) or an example expected agent (START)"
+    )
+    criterion_id: str = Field(description="Stable criterion id (e.g. 'STOPP-D1', 'START-A5')")
+    criterion_type: str = Field(description="Criterion family: 'STOPP' or 'START'")
+    severity: Severity
+    rationale: str
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
