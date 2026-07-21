@@ -156,6 +156,11 @@ Daily mg dose is parsed from `name` / `dosage` / `frequency` when a weight-based
 
 The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; condition matching is phrase/token-aware. Each fired criterion yields one `StoppStartRisk` recording the criterion id/type, matched or expected agent, and severity. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/STOPP_START_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
 
+### 3.23 Antibiotic Stewardship Checking
+`safety/antibiotic_stewardship_checker.py` flags high-risk antimicrobial-use patterns that are not surfaced by allergy, duplicate-therapy, QT, renal/hepatic dose, or STOPP/START checkers: fluoroquinolones without a documented indication, duplicate antimicrobial coverage (e.g. duplicate anaerobic, MRSA, macrolide, fluoroquinolone, or antipseudomonal beta-lactam coverage), and prolonged-course cues such as `for 21 days`, `3 week course`, `day 15 of therapy`, or chronic/suppressive language.
+
+Medication matching is deterministic and whole-token based, so substring look-alikes (e.g. `ciprofloxacinoid`) never trigger. Fluoroquinolone indication context is supplied as free-text indications / clinical notes and matched against a conservative set of recognized infectious indications; absent or unrelated context produces an advisory `AntibioticStewardshipRisk`. Duplicate coverage is judged over distinct canonical antibiotic agents, so duplicate entries for the same drug are not flagged. Findings are **advisory** — they never auto-modify antibiotics, stop dates, or culture-directed plans. See also `docs/guides/ANTIBIOTIC_STEWARDSHIP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
@@ -227,4 +232,4 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 
 ---
 
-*Last updated: 2026-06-20. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+*Last updated: 2026-07-21. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*

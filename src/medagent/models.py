@@ -492,6 +492,62 @@ class StoppStartRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class AntibioticStewardshipRisk(BaseModel, frozen=True):
+    """An advisory antibiotic-stewardship safety finding.
+
+    Flags high-risk antimicrobial-use patterns that are distinct from allergy,
+    duplicate-therapy, QT, renal/hepatic dose, and STOPP/START hazards: broad
+    fluoroquinolone use without a documented indication, duplicate antimicrobial
+    coverage, and prolonged-course cues.
+    """
+
+    concern: str = Field(
+        description=(
+            "Stewardship concern kind: 'fluoroquinolone_without_indication', "
+            "'duplicate_coverage', or 'prolonged_duration'"
+        )
+    )
+    medications: list[str] = Field(
+        description="Active antibiotic medication names involved in the finding"
+    )
+    agents: list[str] = Field(description="Canonical antibiotic agents matched")
+    severity: Severity
+    coverage_class: str | None = Field(
+        default=None,
+        description="Coverage class involved when duplicate antimicrobial coverage is flagged",
+    )
+    duration_days: float | None = Field(
+        default=None,
+        description="Parsed or inferred duration in days when prolonged-course cues are flagged",
+    )
+    indication_context: str | None = Field(
+        default=None,
+        description="Documented indication text used for fluoroquinolone stewardship checks",
+    )
+    rationale: str
+
+    @field_validator("concern")
+    @classmethod
+    def concern_must_be_valid(cls, v: str) -> str:
+        """Ensure concern is one of the supported stewardship finding types."""
+        allowed = {
+            "fluoroquinolone_without_indication",
+            "duplicate_coverage",
+            "prolonged_duration",
+        }
+        if v not in allowed:
+            raise ValueError("concern must be a supported antibiotic-stewardship finding type")
+        return v
+
+    @field_validator("medications", "agents")
+    @classmethod
+    def require_non_empty_lists(cls, v: list[str]) -> list[str]:
+        """Ensure stewardship findings always name at least one medication and agent."""
+        if not v:
+            raise ValueError("antibiotic stewardship findings require at least one entry")
+        return v
+
+
 # ---------------------------------------------------------------------------
 # Output model
 # ---------------------------------------------------------------------------
