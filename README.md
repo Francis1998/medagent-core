@@ -296,6 +296,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 20 | Opioid MED (MME) check | `safety/opioid_med_checker.py` | Sums CDC-style morphine-equivalent dose across active opioids and elevates severity when total MED ≥ threshold (default 90) |
 | 21 | Pediatric dose / age check | `safety/pediatric_dose_checker.py` | Flags paediatric age contraindications (e.g. codeine/tramadol <12y) and mg/kg/day ceiling excesses |
 | 22 | STOPP/START check | `safety/stopp_start_checker.py` | Flags STOPP avoidances and START omissions for adults ≥65 (complements Beers) |
+| 23 | FDA black-box warning check | `safety/black_box_warning_checker.py` | Flags agents with FDA boxed warnings |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
