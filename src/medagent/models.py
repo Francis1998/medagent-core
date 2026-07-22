@@ -492,9 +492,21 @@ class StoppStartRisk(BaseModel, frozen=True):
     rationale: str
 
 
-# ---------------------------------------------------------------------------
-# Output model
-# ---------------------------------------------------------------------------
+class BlackBoxWarningRisk(BaseModel, frozen=True):
+    """An active medication that carries an FDA boxed (black-box) warning.
+
+    Distinct from pregnancy, Beers, and interaction checkers: this hazard is a
+    *labelling-severity* judgement keyed on agents whose US prescribing
+    information includes an FDA boxed warning.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical boxed-warning agent matched in the medication name")
+    warning_theme: str = Field(
+        description="Boxed-warning theme/class (e.g. 'fluoroquinolone', 'clozapine')"
+    )
+    severity: Severity
+    rationale: str
 
 
 class ClinicalReasoning(BaseModel, frozen=True):
