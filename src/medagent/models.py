@@ -470,6 +470,7 @@ class PediatricDoseRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class StoppStartRisk(BaseModel, frozen=True):
     """A STOPP/START prescribing-criteria finding for an older adult.
 
@@ -490,6 +491,7 @@ class StoppStartRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class BlackBoxWarningRisk(BaseModel, frozen=True):
     """An active medication that carries an FDA boxed (black-box) warning.
 
@@ -505,6 +507,7 @@ class BlackBoxWarningRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
 
 class ClinicalReasoning(BaseModel, frozen=True):
     """Structured output of a completed agent reasoning run.
