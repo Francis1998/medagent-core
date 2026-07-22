@@ -268,7 +268,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — Nine Hard Controls
+## Safety — Twenty-four Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -297,6 +297,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 21 | Pediatric dose / age check | `safety/pediatric_dose_checker.py` | Flags paediatric age contraindications (e.g. codeine/tramadol <12y) and mg/kg/day ceiling excesses |
 | 22 | STOPP/START check | `safety/stopp_start_checker.py` | Flags STOPP avoidances and START omissions for adults ≥65 (complements Beers) |
 | 23 | FDA black-box warning check | `safety/black_box_warning_checker.py` | Flags agents with FDA boxed warnings |
+| 24 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
