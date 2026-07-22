@@ -160,6 +160,11 @@ The checker returns no findings for patients under 65 or of unknown age. Medicat
 
 Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
 
+### 3.24 QTc Drug-Drug Interaction Panel Checking
+`safety/qtc_ddi_checker.py` flags named **QTc-prolonging drug-drug interaction pairs** whose synergistic risk is more specific than the additive medication count in `safety/qt_prolongation_checker.py`. The conservative panel includes high-risk combinations such as methadone + ondansetron, azithromycin + amiodarone, clarithromycin/erythromycin + amiodarone, sotalol/dofetilide + azithromycin, citalopram + ondansetron, and amiodarone + moxifloxacin.
+
+The checker returns one `QtcDdiRisk` per unique canonical pair, records both medication names, both canonical agents, a stable panel id, severity (`HIGH` or `CRITICAL`), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/QTC_DDI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
@@ -231,4 +236,4 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 
 ---
 
-*Last updated: 2026-06-20. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+*Last updated: 2026-07-22. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*

@@ -28,6 +28,10 @@
 
 ![medagent drug interaction demo](assets/demo_drugcheck.svg)
 
+**QTc DDI panel — azithromycin + amiodarone and methadone + ondansetron:**
+
+![medagent QTc DDI demo](assets/qtc_ddi_demo.gif)
+
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
 ![medagent escalation demo](assets/demo_escalation.svg)
@@ -52,7 +56,7 @@
 
 ![medagent audit trace demo](assets/demo_audit_trace.svg)
 
-Run all three locally — no API keys needed:
+Run demos locally — no API keys needed:
 ```bash
 git clone https://github.com/Francis1998/medagent-core
 cd medagent-core && pip install -e ".[dev]"
@@ -268,7 +272,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — Nine Hard Controls
+## Safety — Twenty-four Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -297,6 +301,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 21 | Pediatric dose / age check | `safety/pediatric_dose_checker.py` | Flags paediatric age contraindications (e.g. codeine/tramadol <12y) and mg/kg/day ceiling excesses |
 | 22 | STOPP/START check | `safety/stopp_start_checker.py` | Flags STOPP avoidances and START omissions for adults ≥65 (complements Beers) |
 | 23 | FDA black-box warning check | `safety/black_box_warning_checker.py` | Flags agents with FDA boxed warnings |
+| 24 | QTc DDI panel check | `safety/qtc_ddi_checker.py` | Flags named synergistic QTc-prolonging DDI pairs such as methadone+ondansetron and azithromycin+amiodarone |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
@@ -390,7 +395,7 @@ medagent-core/
 │   ├── eval_medqa.py   # USMLE benchmark runner
 │   ├── eval_drugbank.py# Drug interaction F1 evaluator
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
-├── assets/             # Animated SVG demos
+├── assets/             # Animated SVG/GIF demos
 ├── data/               # Sample FHIR R4 bundle + KB index
 ├── results/            # Benchmark outputs (gitignored except .gitkeep)
 ├── .github/workflows/  # CI: ruff + mypy + pytest + Docker
