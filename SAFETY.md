@@ -164,8 +164,10 @@ Each matched medication yields one `BlackBoxWarningRisk` recording the agent, wa
 
 ### 3.24 Combined Renal + Hepatic Checking
 `safety/combined_renal_hepatic_checker.py` composes the renal-dose (eGFR) and hepatic-dose (Child-Pugh) checkers to flag active medications that have **both** organ-function concerns in the same patient context. This mirrors the dual organ impairment alert pattern used by clinical decision support systems such as First Databank and Lexicomp, while remaining deterministic and research-only.
-
 The check applies **only** when both eGFR and hepatic function are known. Unknown eGFR or unknown Child-Pugh class returns no combined finding even if one component checker alone would flag a medication. For known inputs, one `CombinedRenalHepaticRisk` is emitted only when the same medication display name and the same canonical agent appear in both component findings. The combined severity is the maximum of the renal and hepatic component severities, and the record preserves both component actions, thresholds, and severities for auditability. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/COMBINED_RENAL_HEPATIC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+### 3.24 Antibiotic Stewardship Checking
+`safety/antibiotic_stewardship_checker.py` flags high-risk antimicrobial-use patterns that are not surfaced by allergy, duplicate-therapy, QT, renal/hepatic dose, STOPP/START, or FDA boxed-warning checkers: fluoroquinolones without a documented indication, duplicate antimicrobial coverage (e.g. duplicate anaerobic, MRSA, macrolide, fluoroquinolone, or antipseudomonal beta-lactam coverage), and prolonged-course cues such as `for 21 days`, `3 week course`, `day 15 of therapy`, or chronic/suppressive language.
+Medication matching is deterministic and whole-token based, so substring look-alikes (e.g. `ciprofloxacinoid`) never trigger. Fluoroquinolone indication context is supplied as free-text indications / clinical notes and matched against a conservative set of recognized infectious indications; absent or unrelated context produces an advisory `AntibioticStewardshipRisk`. Duplicate coverage is judged over distinct canonical antibiotic agents, so duplicate entries for the same drug are not flagged. Findings are **advisory** — they never auto-modify antibiotics, stop dates, or culture-directed plans. See also `docs/guides/ANTIBIOTIC_STEWARDSHIP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
 
 ---
 
@@ -239,3 +241,4 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ---
 
 *Last updated: 2026-07-23. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+*Last updated: 2026-07-22. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
