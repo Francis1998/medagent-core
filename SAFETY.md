@@ -151,14 +151,21 @@ Daily dose is parsed from the medication `name` / `dosage` / `frequency` fields 
 `safety/pediatric_dose_checker.py` flags paediatric **age contraindications** and optional **mg/kg/day** ceiling excesses for a patient's age and weight. Unlike Beers (older-adult PIMs) and renal/hepatic dose checkers, this hazard is an *age- and weight-conditioned* paediatric appropriateness judgement: codeine and tramadol under 12 years (CRITICAL), tetracyclines under 8 years and aspirin under 16 years (HIGH), plus weight-based ceilings for acetaminophen/paracetamol (~75 mg/kg/day), ibuprofen (~40), and amoxicillin (~90).
 
 Daily mg dose is parsed from `name` / `dosage` / `frequency` when a weight-based rule applies. Medications that do not match the panel, or lack the age/weight needed to evaluate a rule, are skipped. Each violation yields one `PediatricDoseRisk` recording the agent, age/weight, thresholds, finding kind, and severity. Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/PEDIATRIC_DOSE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
 ### 3.22 STOPP/START Prescribing-Criteria Checking
 `safety/stopp_start_checker.py` applies a curated mini-set of **STOPP** (Screening Tool of Older Persons' Prescriptions) and **START** (Screening Tool to Alert to Right Treatment) criteria for adults aged **65 and older**. Unlike Beers (single-agent PIM list without omission detection), this checker covers both potentially inappropriate prescriptions (e.g. long-acting benzodiazepines as STOPP-D1; NSAID with heart failure as STOPP-H1) and potentially omitted indicated therapy (e.g. missing statin in secondary prevention as START-A5; missing anticoagulant in atrial fibrillation as START-A1).
 
 The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; condition matching is phrase/token-aware. Each fired criterion yields one `StoppStartRisk` recording the criterion id/type, matched or expected agent, and severity. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/STOPP_START_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
 ### 3.23 FDA Black-Box (Boxed) Warning Checking
 `safety/black_box_warning_checker.py` flags active medications that match a curated panel of agents with well-known **FDA boxed (black-box) warnings** — the agency's strongest labelling caution. Unlike pregnancy (pregnancy-gated teratogens), Beers/STOPP (older-adult appropriateness), or interaction/dose checkers, this hazard is a *labelling-severity* judgement: fluoroquinolones (tendinopathy/neuropathy), clozapine (agranulocytosis), isotretinoin, methotrexate, warfarin, metformin (lactic acidosis), amiodarone, valproate/carbamazepine, selected opioids, NSAIDs, and thiazolidinediones.
 
 Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+
+### 3.24 Combined Renal + Hepatic Checking
+`safety/combined_renal_hepatic_checker.py` composes the renal-dose (eGFR) and hepatic-dose (Child-Pugh) checkers to flag active medications that have **both** organ-function concerns in the same patient context. This mirrors the dual organ impairment alert pattern used by clinical decision support systems such as First Databank and Lexicomp, while remaining deterministic and research-only.
+
+The check applies **only** when both eGFR and hepatic function are known. Unknown eGFR or unknown Child-Pugh class returns no combined finding even if one component checker alone would flag a medication. For known inputs, one `CombinedRenalHepaticRisk` is emitted only when the same medication display name and the same canonical agent appear in both component findings. The combined severity is the maximum of the renal and hepatic component severities, and the record preserves both component actions, thresholds, and severities for auditability. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/COMBINED_RENAL_HEPATIC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
 
 ---
 
@@ -231,4 +238,4 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 
 ---
 
-*Last updated: 2026-06-20. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+*Last updated: 2026-07-23. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*

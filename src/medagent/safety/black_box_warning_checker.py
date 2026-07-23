@@ -11,9 +11,9 @@ on agents that carry an FDA boxed warning, so it is not surfaced by the existing
 checkers.
 
 This checker matches active medications to a conservative curated panel of
-agents with well-known boxed warnings (whole-token matching, never loose
-substrings) and emits one finding per matched agent. It is deterministic and
-RESEARCH USE ONLY.
+agents with well-known boxed warnings (whole-token matching with selected
+brand-name aliases, never loose substrings) and emits one finding per matched
+agent. It is deterministic and RESEARCH USE ONLY.
 """
 
 from __future__ import annotations
@@ -178,6 +178,14 @@ _BOXED_WARNING_AGENTS: Final[dict[str, tuple[str, Severity, str]]] = {
     ),
 }
 
+_BOXED_WARNING_ALIASES: Final[dict[str, str]] = {
+    "accutane": "isotretinoin",
+    "cipro": "ciprofloxacin",
+    "coumadin": "warfarin",
+    "glucophage": "metformin",
+    "levaquin": "levofloxacin",
+}
+
 
 class BlackBoxWarningChecker:
     """Flag active medications that carry an FDA boxed (black-box) warning."""
@@ -201,7 +209,7 @@ class BlackBoxWarningChecker:
         for medication in medications:
             tokens = self._tokens(medication.name)
             matched = sorted(
-                tokens & set(_BOXED_WARNING_AGENTS),
+                self._canonical_agents(tokens),
                 key=lambda agent: (
                     -_SEVERITY_RANK[_BOXED_WARNING_AGENTS[agent][1]],
                     agent,
@@ -240,3 +248,23 @@ class BlackBoxWarningChecker:
             Set of component tokens.
         """
         return set(re.findall(r"[a-z0-9]+", name.lower()))
+
+    @staticmethod
+    def _canonical_agents(tokens: set[str]) -> set[str]:
+        """Return canonical boxed-warning agents matched by tokens or aliases.
+
+        Args:
+            tokens: Lowercase alphanumeric component tokens from a medication
+                name.
+
+        Returns:
+            Canonical boxed-warning panel agents matched directly or via a
+            selected brand-name alias.
+        """
+        direct_matches = tokens & set(_BOXED_WARNING_AGENTS)
+        alias_matches = {
+            canonical_agent
+            for token in tokens
+            if (canonical_agent := _BOXED_WARNING_ALIASES.get(token)) is not None
+        }
+        return direct_matches | alias_matches

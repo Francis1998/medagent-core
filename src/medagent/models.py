@@ -364,6 +364,34 @@ class HepaticDoseRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class CombinedRenalHepaticRisk(BaseModel, frozen=True):
+    """A medication with concurrent renal and hepatic impairment concerns.
+
+    Distinct from the individual renal-dose and hepatic-dose risks: this hazard
+    surfaces only when the same active medication and canonical agent triggers
+    both organ-function checkers for the same patient context.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical agent matched by both component checkers")
+    egfr: float = Field(description="Patient eGFR in mL/min/1.73m^2 used for renal assessment")
+    threshold_egfr: float = Field(
+        description="eGFR threshold at or below which the renal component is flagged"
+    )
+    hepatic_function: HepaticFunction = Field(
+        description="Patient hepatic-function class used for hepatic assessment"
+    )
+    threshold_function: HepaticFunction = Field(
+        description="Hepatic-function class at or above which the hepatic component is flagged"
+    )
+    renal_action: str = Field(description="Recommended action from the renal component")
+    hepatic_action: str = Field(description="Recommended action from the hepatic component")
+    renal_severity: Severity = Field(description="Severity assigned by the renal component")
+    hepatic_severity: Severity = Field(description="Severity assigned by the hepatic component")
+    severity: Severity = Field(description="Maximum severity of the renal and hepatic components")
+    rationale: str
+
+
 class LabCriticalValueRisk(BaseModel, frozen=True):
     """A laboratory result whose value crosses a critical (panic) threshold.
 
