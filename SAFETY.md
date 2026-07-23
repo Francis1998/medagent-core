@@ -164,8 +164,10 @@ Each matched medication yields one `BlackBoxWarningRisk` recording the agent, wa
 
 ### 3.24 Combined Renal + Hepatic Checking
 `safety/combined_renal_hepatic_checker.py` composes the renal-dose (eGFR) and hepatic-dose (Child-Pugh) checkers to flag active medications that have **both** organ-function concerns in the same patient context. This mirrors the dual organ impairment alert pattern used by clinical decision support systems such as First Databank and Lexicomp, while remaining deterministic and research-only.
-
 The check applies **only** when both eGFR and hepatic function are known. Unknown eGFR or unknown Child-Pugh class returns no combined finding even if one component checker alone would flag a medication. For known inputs, one `CombinedRenalHepaticRisk` is emitted only when the same medication display name and the same canonical agent appear in both component findings. The combined severity is the maximum of the renal and hepatic component severities, and the record preserves both component actions, thresholds, and severities for auditability. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/COMBINED_RENAL_HEPATIC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
+### 3.24 QTc Drug-Drug Interaction Panel Checking
+`safety/qtc_ddi_checker.py` flags named **QTc-prolonging drug-drug interaction pairs** whose synergistic risk is more specific than the additive medication count in `safety/qt_prolongation_checker.py`. The conservative panel includes high-risk combinations such as methadone + ondansetron, azithromycin + amiodarone, clarithromycin/erythromycin + amiodarone, sotalol/dofetilide + azithromycin, citalopram + ondansetron, and amiodarone + moxifloxacin.
+The checker returns one `QtcDdiRisk` per unique canonical pair, records both medication names, both canonical agents, a stable panel id, severity (`HIGH` or `CRITICAL`), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/QTC_DDI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 2.5**, **Kimi K2**.
 
 ---
 
@@ -239,3 +241,4 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ---
 
 *Last updated: 2026-07-23. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+*Last updated: 2026-07-22. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
