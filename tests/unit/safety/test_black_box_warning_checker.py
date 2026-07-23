@@ -30,6 +30,16 @@ def test_flags_fluoroquinolone_boxed_warning() -> None:
     assert "boxed" in finding.rationale.lower() or "black-box" in finding.rationale.lower()
 
 
+def test_brand_alias_maps_to_canonical_boxed_warning_agent() -> None:
+    """A common brand alias maps to the canonical boxed-warning agent."""
+    findings = BlackBoxWarningChecker().check(_meds("Cipro 500mg"))
+
+    assert len(findings) == 1
+    assert findings[0].agent == "ciprofloxacin"
+    assert findings[0].warning_theme == "fluoroquinolone"
+    assert findings[0].severity is Severity.HIGH
+
+
 def test_flags_clozapine_as_critical() -> None:
     """Clozapine carries a CRITICAL boxed-warning finding."""
     findings = BlackBoxWarningChecker().check(_meds("Clozapine 100mg"))

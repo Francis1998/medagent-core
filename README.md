@@ -8,12 +8,12 @@
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
-  <a href="#quality-gates"><img alt="Tests: 113 passed" src="https://img.shields.io/badge/tests-113%20passed-brightgreen.svg"></a>
+  <a href="#quality-gates"><img alt="Tests: 285 passed" src="https://img.shields.io/badge/tests-285%20passed-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Coverage: 70%" src="https://img.shields.io/badge/coverage-70%25-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
   <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
   <a href="SAFETY.md"><img alt="Research Use Only" src="https://img.shields.io/badge/use-research%20only-red.svg"></a>
-  <a href="#live-demos"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--5.5%20%7C%20Claude%20%7C%20Gemini%20%7C%20Kimi-purple.svg"></a>
+  <a href="#live-demos"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--5.5%20%7C%20Claude%20Sonnet%204.6%20%7C%20Gemini%202.5%20%7C%20Kimi%20K2-purple.svg"></a>
 </p>
 
 ---
@@ -32,7 +32,7 @@
 
 ![medagent escalation demo](assets/demo_escalation.svg)
 
-**Multi-LLM routing — GPT-5.5, Claude, Gemini, and Kimi failover:**
+**Multi-LLM routing — GPT-5.5, Claude Sonnet 4.6, Gemini 2.5, and Kimi K2 failover:**
 
 ![medagent LLM routing demo](assets/demo_llm_routing.svg)
 
@@ -134,7 +134,7 @@ POST /drug-interactions
 **How medagent-core helps:**
 - `scripts/eval_medqa.py` runs the full agent pipeline on MedQA USMLE-style questions
 - Logs per-question reasoning traces (not just accuracy) enabling qualitative failure analysis
-- Compares reasoning quality across Claude, GPT-5.5, Gemini, and Kimi with identical prompts
+- Compares reasoning quality across GPT-5.5, Claude Sonnet 4.6, Gemini 2.5, and Kimi K2 with identical prompts
 - Bayesian confidence score measures calibration: does high confidence correlate with correctness?
 - ESCALATE events reveal what the model *doesn't know* — the most clinically important failure mode
 
@@ -190,7 +190,7 @@ async def search(entities: list[ClinicalEntity]) -> list[RetrievedDocument]: ...
 # Add to RetrievalOrchestrator → runs in parallel with PubMed + local KB
 ```
 
-All safety infrastructure (PII hashing, disclaimer injection, dual-source drug validation, ESCALATE gating) is production-hardened and covered by 93 unit tests. You inherit it for free.
+All safety infrastructure (PII hashing, disclaimer injection, dual-source drug validation, ESCALATE gating) is production-hardened and covered by 285 unit tests. You inherit it for free.
 
 ---
 
@@ -268,7 +268,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — Nine Hard Controls
+## Safety — 24 Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -297,6 +297,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 21 | Pediatric dose / age check | `safety/pediatric_dose_checker.py` | Flags paediatric age contraindications (e.g. codeine/tramadol <12y) and mg/kg/day ceiling excesses |
 | 22 | STOPP/START check | `safety/stopp_start_checker.py` | Flags STOPP avoidances and START omissions for adults ≥65 (complements Beers) |
 | 23 | FDA black-box warning check | `safety/black_box_warning_checker.py` | Flags agents with FDA boxed warnings |
+| 24 | Combined renal + hepatic check | `safety/combined_renal_hepatic_checker.py` | Flags medications that have both eGFR and Child-Pugh concerns for the same patient context |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
@@ -365,7 +366,7 @@ Results saved to `results/` as JSON + printed summary.
 
 ```bash
 ruff check src/     # zero errors
-pytest tests/ -v    # 93/93 passed
+pytest tests/ -v    # 285/285 passed
 ```
 
 CI: lint → test → eval smoke test → Docker build (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
@@ -384,7 +385,7 @@ medagent-core/
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
 │   ├── safety/         # PII hashing + scope enforcer + mandatory disclaimers
 │   └── api/            # FastAPI: /analyze /drug-interactions /health
-├── tests/              # 93 pytest tests — all typed + documented
+├── tests/              # 285 pytest tests — all typed + documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
