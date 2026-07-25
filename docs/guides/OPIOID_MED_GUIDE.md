@@ -70,7 +70,7 @@ layer, prefer current frontier models for clinical prose:
 
 - **GPT-5.5**
 - **Claude Sonnet 4.6**
-- **Gemini 2.5**
+- **Gemini 3.x**
 - **Kimi K2**
 
 The checker itself is deterministic and does not call an LLM.
