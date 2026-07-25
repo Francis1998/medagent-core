@@ -181,12 +181,19 @@ POST /analyze
 # Add a new LLM provider in ~50 lines:
 class MyProviderAdapter(BaseLLMAdapter):
     @property
-    def provider_name(self) -> str: return "myprovider"
+    def provider_name(self) -> str:
+        return "myprovider"
+
     async def complete(self, prompt: str, **kwargs: Any) -> LLMResponse: ...
+
+
 # Register it → automatically joins the medical routing fallback chain
+
 
 # Add a new retrieval source:
 async def search(entities: list[ClinicalEntity]) -> list[RetrievedDocument]: ...
+
+
 # Add to RetrievalOrchestrator → runs in parallel with PubMed + local KB
 ```
 
