@@ -323,6 +323,31 @@ class BeersCriteriaRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class GeriatricDeprescribingRisk(BaseModel, frozen=True):
+    """A medication that may be a geriatric deprescribing opportunity.
+
+    Complements Beers and STOPP/START by focusing on review/taper candidates
+    commonly targeted during older-adult medication reconciliation, rather than
+    reproducing formal potentially-inappropriate-medication criteria.
+    """
+
+    medication: str
+    agent: str = Field(
+        description="Canonical deprescribing-panel agent matched in the medication name"
+    )
+    deprescribing_category: str = Field(
+        description="Opportunity category (e.g. 'long-term PPI without clear indication')"
+    )
+    suggested_action: str = Field(
+        description="Research-only deprescribing review action, such as taper or step-down"
+    )
+    taper_candidate: bool = Field(
+        description="Whether abrupt discontinuation should generally be avoided in chronic use"
+    )
+    severity: Severity
+    rationale: str
+
+
 class RenalDoseRisk(BaseModel, frozen=True):
     """A renally-cleared medication flagged against a patient's kidney function.
 
