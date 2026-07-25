@@ -273,6 +273,27 @@ class QTProlongationRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class QtcDdiRisk(BaseModel, frozen=True):
+    """A known high-risk QTc-prolonging drug-drug interaction pair.
+
+    Complements :class:`QTProlongationRisk`, which counts additive exposure to
+    QT-prolonging agents. This model records named pairs with documented
+    synergistic torsades risk.
+    """
+
+    medication_a: str = Field(description="First active medication in the matched pair")
+    medication_b: str = Field(description="Second active medication in the matched pair")
+    agent_a: str = Field(description="Canonical QTc-DDI panel agent matched in medication_a")
+    agent_b: str = Field(description="Canonical QTc-DDI panel agent matched in medication_b")
+    pair_id: str = Field(description="Stable curated-panel identifier for the interaction pair")
+    severity: Severity
+    mechanism: str = Field(description="Mechanism driving the synergistic QTc/torsades risk")
+    clinical_consequence: str = Field(
+        description="Expected clinical hazard, e.g. torsades de pointes or serious arrhythmia"
+    )
+    rationale: str
+
+
 class AnticholinergicBurdenRisk(BaseModel, frozen=True):
     """A medication contributing to cumulative anticholinergic burden."""
 

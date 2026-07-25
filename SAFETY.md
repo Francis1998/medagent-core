@@ -172,6 +172,11 @@ The check applies **only** when both eGFR and hepatic function are known. Unknow
 
 The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; long-term PPI and chronic NSAID rules require scheduled/chronic-use text, and PPI findings are suppressed by protective indication text such as Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome. Each finding yields one `GeriatricDeprescribingRisk` recording the matched agent, deprescribing category, suggested research-only review action, taper-candidate flag, and severity. Findings are **advisory**, **educational**, and **not clinical advice** — they never auto-modify a medication list and require qualified clinician review before any medication change. See also `docs/guides/GERIATRIC_DEPRESCRIBING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.26 QTc Drug-Drug Interaction Panel Checking
+`safety/qtc_ddi_checker.py` flags named **QTc-prolonging drug-drug interaction pairs** whose synergistic risk is more specific than the additive medication count in `safety/qt_prolongation_checker.py`. The conservative panel includes high-risk combinations such as methadone + ondansetron, azithromycin + amiodarone, clarithromycin/erythromycin + amiodarone, sotalol/dofetilide + azithromycin, citalopram + ondansetron, and amiodarone + moxifloxacin.
+
+The checker returns one `QtcDdiRisk` per unique canonical pair, records both medication names, both canonical agents, a stable panel id, severity (`HIGH` or `CRITICAL`), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/QTC_DDI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
