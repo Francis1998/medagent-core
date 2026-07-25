@@ -2,6 +2,8 @@
 
 *medagent-core — Safety Control #25*
 
+![Geriatric deprescribing checker flow](../../assets/geriatric_deprescribing_demo.gif)
+
 ## Overview
 
 `GeriatricDeprescribingChecker` flags curated medication patterns that are
