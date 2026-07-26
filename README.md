@@ -275,7 +275,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — 26 Hard Controls
+## Safety — 27 Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -307,6 +307,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 24 | Combined renal + hepatic check | `safety/combined_renal_hepatic_checker.py` | Flags medications that have both eGFR and Child-Pugh concerns for the same patient context |
 | 25 | Geriatric deprescribing check | `safety/geriatric_deprescribing_checker.py` | Flags older-adult deprescribing opportunities such as long-term PPIs without indication, Z-drugs, first-generation antihistamines, and chronic NSAIDs |
 | 26 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
+| 27 | Lactation / breastfeeding medication-safety check | `safety/lactation_checker.py` | Flags breastfeeding-specific medication concerns such as radioiodine/I-131, chemotherapy agents, amiodarone, lithium, codeine, and tramadol when the patient is breastfeeding |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

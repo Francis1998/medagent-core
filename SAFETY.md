@@ -177,6 +177,11 @@ The checker returns no findings for patients under 65 or of unknown age. Medicat
 
 Medication matching is deterministic and whole-token based, so substring look-alikes (e.g. `ciprofloxacinoid`) never trigger. Fluoroquinolone indication context is supplied as free-text indications / clinical notes and matched against a conservative set of recognized infectious indications; absent or unrelated context produces an advisory `AntibioticStewardshipRisk`. Duplicate coverage is judged over distinct canonical antibiotic agents, so duplicate entries for the same drug are not flagged. Findings are **advisory** — they never auto-modify antibiotics, stop dates, or culture-directed plans. See also `docs/guides/ANTIBIOTIC_STEWARDSHIP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.27 Lactation / Breastfeeding Medication-Safety Checking
+`safety/lactation_checker.py` flags a conservative curated panel of active medications with breastfeeding-specific concerns: radioactive iodine / I-131 aliases, antineoplastic or antimetabolite chemotherapy agents (cyclophosphamide, doxorubicin, methotrexate, fluorouracil, capecitabine), amiodarone, lithium, codeine, and tramadol. This hazard is distinct from pregnancy teratogenicity because the exposed patient is the breastfed infant rather than the fetus, and it is not surfaced by interaction, allergy, duplicate-therapy, QT, renal/hepatic dose, or boxed-warning checks.
+
+The check is gated on a `breastfeeding` flag and returns **no** findings when breastfeeding/lactation is not documented. Medication names are matched with deterministic whole-token / whole-phrase logic (for example `Lithiumfree` and `Radioiodinefree` do not match, while `I-131` and `radioactive iodine` map to radioactive iodine). Each finding yields a `LactationRisk` record with the matched agent, concern category, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, breastfeeding plans, monitoring, or infant care. See also `docs/guides/LACTATION_CHECKER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
