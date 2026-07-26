@@ -275,7 +275,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — 25 Hard Controls
+## Safety — 26 Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -306,6 +306,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 23 | FDA black-box warning check | `safety/black_box_warning_checker.py` | Flags agents with FDA boxed warnings |
 | 24 | Combined renal + hepatic check | `safety/combined_renal_hepatic_checker.py` | Flags medications that have both eGFR and Child-Pugh concerns for the same patient context |
 | 25 | Geriatric deprescribing check | `safety/geriatric_deprescribing_checker.py` | Flags older-adult deprescribing opportunities such as long-term PPIs without indication, Z-drugs, first-generation antihistamines, and chronic NSAIDs |
+| 26 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
