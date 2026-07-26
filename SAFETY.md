@@ -172,6 +172,11 @@ The check applies **only** when both eGFR and hepatic function are known. Unknow
 
 The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; long-term PPI and chronic NSAID rules require scheduled/chronic-use text, and PPI findings are suppressed by protective indication text such as Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome. Each finding yields one `GeriatricDeprescribingRisk` recording the matched agent, deprescribing category, suggested research-only review action, taper-candidate flag, and severity. Findings are **advisory**, **educational**, and **not clinical advice** — they never auto-modify a medication list and require qualified clinician review before any medication change. See also `docs/guides/GERIATRIC_DEPRESCRIBING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.26 Antibiotic Stewardship Checking
+`safety/antibiotic_stewardship_checker.py` flags high-risk antimicrobial-use patterns that are not surfaced by allergy, duplicate-therapy, QT, renal/hepatic dose, STOPP/START, or FDA boxed-warning checkers: fluoroquinolones without a documented indication, duplicate antimicrobial coverage (e.g. duplicate anaerobic, MRSA, macrolide, fluoroquinolone, or antipseudomonal beta-lactam coverage), and prolonged-course cues such as `for 21 days`, `3 week course`, `day 15 of therapy`, or chronic/suppressive language.
+
+Medication matching is deterministic and whole-token based, so substring look-alikes (e.g. `ciprofloxacinoid`) never trigger. Fluoroquinolone indication context is supplied as free-text indications / clinical notes and matched against a conservative set of recognized infectious indications; absent or unrelated context produces an advisory `AntibioticStewardshipRisk`. Duplicate coverage is judged over distinct canonical antibiotic agents, so duplicate entries for the same drug are not flagged. Findings are **advisory** — they never auto-modify antibiotics, stop dates, or culture-directed plans. See also `docs/guides/ANTIBIOTIC_STEWARDSHIP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
