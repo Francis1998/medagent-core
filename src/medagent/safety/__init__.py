@@ -9,6 +9,7 @@ from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribi
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
+from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 
 __all__ = [
     "ESCALATION_MESSAGE",
@@ -18,6 +19,7 @@ __all__ = [
     "QtcDdiChecker",
     "ScopeEnforcer",
     "ScopeViolationError",
+    "TaperScheduleChecker",
     "hash_pii",
     "hash_pii_dict",
     "redact_fhir_pii",

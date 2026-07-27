@@ -181,6 +181,11 @@ Medication matching is deterministic and whole-token based, so substring look-al
 
 The checker returns one `QtcDdiRisk` per unique canonical pair, records both medication names, both canonical agents, a stable panel id, severity (`HIGH` or `CRITICAL`), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/QTC_DDI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.29 Taper-Schedule Advisory Checking
+`safety/taper_schedule_checker.py` flags conservative **taper-schedule review opportunities** for chronic/scheduled opioids, benzodiazepines/Z-drugs, proton-pump inhibitors (PPIs), and SSRIs/SNRIs. Unlike geriatric deprescribing, Beers, STOPP/START, opioid MED, or duplicate-therapy checks, this hazard is a *withdrawal/rebound/relapse review* judgement: it asks whether abrupt discontinuation could be unsafe or poorly tolerated and whether a qualified clinician should review individualized taper planning.
+
+The checker requires whole-token medication matching plus scheduled/chronic-use cues before emitting a `TaperScheduleRisk`. PPI findings are suppressed when protective high-risk GI indications are documented (for example Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome). Each finding records the medication, canonical agent, medication class (`opioid`, `benzodiazepine_z_drug`, `ppi`, `ssri`, or `snri`), taper-opportunity category, non-prescriptive suggested review, abrupt-stop concern, taper-candidate flag, and severity (`HIGH` for opioids and benzodiazepines/Z-drugs, `MODERATE` for SSRIs/SNRIs, `LOW` for PPIs). Findings are **RESEARCH USE ONLY**, **advisory**, and **not taper instructions** — they never prescribe, stop, auto-generate a taper schedule, or modify a medication list. See also `docs/guides/TAPER_SCHEDULE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
