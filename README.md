@@ -28,6 +28,10 @@
 
 ![medagent drug interaction demo](assets/demo_drugcheck.svg)
 
+**QTc DDI panel — azithromycin + amiodarone and methadone + ondansetron:**
+
+![medagent QTc DDI demo](assets/qtc_ddi_demo.gif)
+
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
 ![medagent escalation demo](assets/demo_escalation.svg)
@@ -52,7 +56,7 @@
 
 ![medagent audit trace demo](assets/demo_audit_trace.svg)
 
-Run all three locally — no API keys needed:
+Run demos locally — no API keys needed:
 ```bash
 git clone https://github.com/Francis1998/medagent-core
 cd medagent-core && pip install -e ".[dev]"
@@ -307,6 +311,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 24 | Combined renal + hepatic check | `safety/combined_renal_hepatic_checker.py` | Flags medications that have both eGFR and Child-Pugh concerns for the same patient context |
 | 25 | Geriatric deprescribing check | `safety/geriatric_deprescribing_checker.py` | Flags older-adult deprescribing opportunities such as long-term PPIs without indication, Z-drugs, first-generation antihistamines, and chronic NSAIDs |
 | 26 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
+| 27 | QTc DDI panel check | `safety/qtc_ddi_checker.py` | Flags named synergistic QTc-prolonging DDI pairs such as methadone+ondansetron and azithromycin+amiodarone |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
@@ -400,7 +405,7 @@ medagent-core/
 │   ├── eval_medqa.py   # USMLE benchmark runner
 │   ├── eval_drugbank.py# Drug interaction F1 evaluator
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
-├── assets/             # Animated SVG demos
+├── assets/             # Animated SVG/GIF demos
 ├── data/               # Sample FHIR R4 bundle + KB index
 ├── results/            # Benchmark outputs (gitignored except .gitkeep)
 ├── .github/workflows/  # CI: ruff + mypy + pytest + Docker
