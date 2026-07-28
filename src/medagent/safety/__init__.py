@@ -6,6 +6,7 @@ from medagent.safety.disclaimer import (
     MEDICAL_SYSTEM_PROMPT,
 )
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
+from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
@@ -15,6 +16,7 @@ __all__ = [
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
     "GeriatricDeprescribingChecker",
+    "LactationSafetyChecker",
     "QtcDdiChecker",
     "ScopeEnforcer",
     "ScopeViolationError",
