@@ -279,7 +279,7 @@ python scripts/demo.py --case escalate
 
 ---
 
-## Safety — 26 Hard Controls
+## Safety — 28 Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -312,6 +312,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 25 | Geriatric deprescribing check | `safety/geriatric_deprescribing_checker.py` | Flags older-adult deprescribing opportunities such as long-term PPIs without indication, Z-drugs, first-generation antihistamines, and chronic NSAIDs |
 | 26 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
 | 27 | QTc DDI panel check | `safety/qtc_ddi_checker.py` | Flags named synergistic QTc-prolonging DDI pairs such as methadone+ondansetron and azithromycin+amiodarone |
+| 28 | Lactation / breastfeeding medication-safety check | `safety/lactation_checker.py` | Flags breastfeeding-specific medication concerns such as radioiodine/I-131, chemotherapy agents, amiodarone, lithium, codeine, and tramadol when the patient is breastfeeding |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

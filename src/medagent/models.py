@@ -259,6 +259,20 @@ class PregnancyRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class LactationRisk(BaseModel, frozen=True):
+    """A medication flagged as a breastfeeding/lactation safety concern."""
+
+    medication: str
+    agent: str = Field(
+        description="Canonical lactation-concern agent matched in the medication name"
+    )
+    concern_category: str = Field(
+        description="Lactation concern category, such as antineoplastic or infant sedation risk"
+    )
+    severity: Severity
+    rationale: str
+
+
 class QTProlongationRisk(BaseModel, frozen=True):
     """A medication that prolongs the QT interval (torsades-de-pointes risk)."""
 
