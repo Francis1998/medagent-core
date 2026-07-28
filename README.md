@@ -318,7 +318,8 @@ All controls are **technically enforced in code**, not just documented policy:
 | 26 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
 | 27 | QTc DDI panel check | `safety/qtc_ddi_checker.py` | Flags named synergistic QTc-prolonging DDI pairs such as methadone+ondansetron and azithromycin+amiodarone |
 | 28 | Lactation / breastfeeding medication-safety check | `safety/lactation_checker.py` | Flags breastfeeding-specific medication concerns such as radioiodine/I-131, chemotherapy agents, amiodarone, lithium, codeine, and tramadol when the patient is breastfeeding |
-| 29 | Taper-schedule advisory check | `safety/taper_schedule_checker.py` | Flags chronic/scheduled opioids, benzodiazepines/Z-drugs, PPIs, and SSRIs/SNRIs for research-only taper-schedule review without prescribing or auto-generating taper plans |
+| 30 | Taper-schedule advisory check | `safety/taper_schedule_checker.py` | Flags chronic/scheduled opioids, benzodiazepines/Z-drugs, PPIs, and SSRIs/SNRIs for research-only taper-schedule review without prescribing or auto-generating taper plans |
+| 30 | Fall-risk medication check | `safety/fall_risk_checker.py` | Flags medications that increase fall risk in adults ≥65 (benzodiazepines, Z-drugs, anticholinergic subset, antipsychotics, muscle relaxants, alpha-1 blockers) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

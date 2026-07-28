@@ -273,6 +273,22 @@ class LactationRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class FallRiskFinding(BaseModel, frozen=True):
+    """A medication flagged for increased fall risk in older adults."""
+
+    medication: str
+    agent: str = Field(description="Canonical fall-risk agent matched in the medication name")
+    risk_category: str = Field(
+        description=(
+            "Fall-risk category such as benzodiazepine, z-drug, anticholinergic, "
+            "antipsychotic, or muscle relaxant"
+        )
+    )
+    severity: Severity
+    patient_age: int = Field(ge=0, description="Patient age in years used for the age gate")
+    rationale: str
+
+
 class QTProlongationRisk(BaseModel, frozen=True):
     """A medication that prolongs the QT interval (torsades-de-pointes risk)."""
 
