@@ -383,6 +383,47 @@ class GeriatricDeprescribingRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class TaperScheduleRisk(BaseModel, frozen=True):
+    """A medication that may warrant taper-schedule review.
+
+    This advisory model is intentionally not a taper prescription. It records
+    conservative, research-only opportunities where abrupt discontinuation can
+    cause withdrawal, rebound symptoms, relapse, or avoidable distress unless a
+    qualified clinician designs and supervises an individualized taper plan.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical taper-panel agent matched in the medication name")
+    medication_class: str = Field(
+        description="Curated class: opioid, benzodiazepine_z_drug, ppi, ssri, or snri"
+    )
+    taper_opportunity: str = Field(
+        description="Research-only taper opportunity category for the matched medication"
+    )
+    suggested_review: str = Field(
+        description="Non-prescriptive clinician review action; never a patient-specific taper"
+    )
+    abrupt_stop_concern: str = Field(
+        description="Why abrupt discontinuation may be unsafe or poorly tolerated"
+    )
+    taper_candidate: bool = Field(
+        description=(
+            "Whether the medication generally requires gradual clinician-supervised tapering"
+        )
+    )
+    severity: Severity
+    rationale: str
+
+    @field_validator("medication_class")
+    @classmethod
+    def medication_class_must_be_valid(cls, v: str) -> str:
+        """Ensure medication_class is one of the supported taper panel classes."""
+        allowed = {"opioid", "benzodiazepine_z_drug", "ppi", "ssri", "snri"}
+        if v not in allowed:
+            raise ValueError("medication_class must be a supported taper panel class")
+        return v
+
+
 class RenalDoseRisk(BaseModel, frozen=True):
     """A renally-cleared medication flagged against a patient's kidney function.
 

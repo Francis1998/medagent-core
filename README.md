@@ -8,7 +8,7 @@
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
-  <a href="#quality-gates"><img alt="Tests: 296 passed" src="https://img.shields.io/badge/tests-296%20passed-brightgreen.svg"></a>
+  <a href="#quality-gates"><img alt="Tests: 322 passed" src="https://img.shields.io/badge/tests-322%20passed-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Coverage: 70%" src="https://img.shields.io/badge/coverage-70%25-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
   <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
@@ -31,6 +31,10 @@
 **QTc DDI panel — azithromycin + amiodarone and methadone + ondansetron:**
 
 ![medagent QTc DDI demo](assets/qtc_ddi_demo.gif)
+
+**Taper-schedule advisory — chronic opioid, Z-drug, SSRI/SNRI, and PPI review flags:**
+
+![medagent taper schedule demo](assets/taper_schedule_demo.gif)
 
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
@@ -201,7 +205,7 @@ async def search(entities: list[ClinicalEntity]) -> list[RetrievedDocument]: ...
 # Add to RetrievalOrchestrator → runs in parallel with PubMed + local KB
 ```
 
-All safety infrastructure (PII hashing, disclaimer injection, dual-source drug validation, ESCALATE gating) is production-hardened and covered by 296 unit tests. You inherit it for free.
+All safety infrastructure (PII hashing, disclaimer injection, dual-source drug validation, ESCALATE gating) is production-hardened and covered by 322 unit tests. You inherit it for free.
 
 ---
 
@@ -280,6 +284,7 @@ python scripts/demo.py --case escalate
 ---
 
 ## Safety — 28 Hard Controls
+## Safety — 29 Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -313,6 +318,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 26 | Antibiotic stewardship check | `safety/antibiotic_stewardship_checker.py` | Flags fluoroquinolones without documented indication, duplicate antimicrobial coverage, and prolonged-course cues |
 | 27 | QTc DDI panel check | `safety/qtc_ddi_checker.py` | Flags named synergistic QTc-prolonging DDI pairs such as methadone+ondansetron and azithromycin+amiodarone |
 | 28 | Lactation / breastfeeding medication-safety check | `safety/lactation_checker.py` | Flags breastfeeding-specific medication concerns such as radioiodine/I-131, chemotherapy agents, amiodarone, lithium, codeine, and tramadol when the patient is breastfeeding |
+| 29 | Taper-schedule advisory check | `safety/taper_schedule_checker.py` | Flags chronic/scheduled opioids, benzodiazepines/Z-drugs, PPIs, and SSRIs/SNRIs for research-only taper-schedule review without prescribing or auto-generating taper plans |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
@@ -381,7 +387,7 @@ Results saved to `results/` as JSON + printed summary.
 
 ```bash
 ruff check src/     # zero errors
-pytest tests/ -v    # 296/296 passed
+pytest tests/ -v    # 322/322 passed
 ```
 
 CI: lint → test → eval smoke test → Docker build (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
@@ -400,7 +406,7 @@ medagent-core/
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
 │   ├── safety/         # PII hashing + scope enforcer + mandatory disclaimers
 │   └── api/            # FastAPI: /analyze /drug-interactions /health
-├── tests/              # 296 pytest tests — all typed + documented
+├── tests/              # 322 pytest tests — all typed + documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
