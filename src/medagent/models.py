@@ -407,6 +407,31 @@ class QtcMonitoringRisk(BaseModel, frozen=True):
             raise ValueError("monitoring_phase must be 'initiation' or 'maintenance'")
         return v
 
+class AnticoagBleedingRisk(BaseModel, frozen=True):
+    """An anticoagulant combined with an agent that elevates bleeding risk.
+
+    Complements duplicate-therapy anticoagulant detection and generic DDI
+    screening by flagging named anticoagulant × antiplatelet/NSAID/SSRI
+    combinations with additive hemorrhagic hazard.
+    """
+
+    medication_a: str = Field(description="Active medication entry for the anticoagulant")
+    medication_b: str = Field(description="Active medication entry for the bleeding-risk augmenter")
+    anticoagulant_agent: str = Field(
+        description="Canonical anticoagulant agent matched in medication_a"
+    )
+    augmenter_agent: str = Field(description="Canonical augmenter agent matched in medication_b")
+    augmenter_category: str = Field(description="Augmenter category: antiplatelet, NSAID, or SSRI")
+    combination_id: str = Field(
+        description="Stable curated-panel identifier for the anticoagulant × augmenter pair"
+    )
+    severity: Severity
+    mechanism: str = Field(description="Mechanism driving the additive bleeding risk")
+    clinical_consequence: str = Field(
+        description="Expected clinical hazard, e.g. major GI or intracranial hemorrhage"
+    )
+    rationale: str
+
 
 class AnticholinergicBurdenRisk(BaseModel, frozen=True):
     """A medication contributing to cumulative anticholinergic burden."""
