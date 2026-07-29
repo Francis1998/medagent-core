@@ -407,6 +407,7 @@ class QtcMonitoringRisk(BaseModel, frozen=True):
             raise ValueError("monitoring_phase must be 'initiation' or 'maintenance'")
         return v
 
+
 class AnticoagBleedingRisk(BaseModel, frozen=True):
     """An anticoagulant combined with an agent that elevates bleeding risk.
 
