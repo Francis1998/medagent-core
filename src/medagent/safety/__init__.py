@@ -1,5 +1,6 @@
 """Safety module — disclaimer injector, PII hasher, scope enforcer."""
 
+from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.disclaimer import (
     ESCALATION_MESSAGE,
     MANDATORY_DISCLAIMER,
@@ -19,6 +20,7 @@ __all__ = [
     "ESCALATION_MESSAGE",
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
+    "AnticoagBleedingChecker",
     "FallRiskChecker",
     "GeriatricDeprescribingChecker",
     "LactationSafetyChecker",
