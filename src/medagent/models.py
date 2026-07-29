@@ -324,6 +324,51 @@ class QtcDdiRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class QtcMonitoringRisk(BaseModel, frozen=True):
+    """Inadequate ECG monitoring interval for a high-risk QT-prolonging medication.
+
+    Complements :class:`QTProlongationRisk` and :class:`QtcDdiRisk` by flagging
+    when periodic QTc/ECG surveillance is missing or overdue for agents that
+    require close monitoring at initiation or during maintenance therapy.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical high-risk QT agent matched in the medication name")
+    risk_category: str = Field(
+        description=(
+            "High-risk QT category such as class III antiarrhythmic, opioid, "
+            "antipsychotic, or SSRI (high dose)"
+        )
+    )
+    severity: Severity
+    last_ecg_days_ago: int | None = Field(
+        default=None,
+        ge=0,
+        description="Days since the most recent ECG, or None when unknown/missing",
+    )
+    recommended_interval_days: int = Field(
+        ge=1,
+        description="Recommended maximum days between ECGs for the monitoring phase",
+    )
+    monitoring_phase: str = Field(
+        description="Monitoring phase applied: 'initiation' (≤7 days) or 'maintenance' (≤30 days)"
+    )
+    baseline_qtc_ms: float | None = Field(
+        default=None,
+        ge=0,
+        description="Most recent documented QTc interval in milliseconds, if known",
+    )
+    rationale: str
+
+    @field_validator("monitoring_phase")
+    @classmethod
+    def monitoring_phase_must_be_valid(cls, v: str) -> str:
+        """Ensure monitoring_phase is initiation or maintenance."""
+        if v not in {"initiation", "maintenance"}:
+            raise ValueError("monitoring_phase must be 'initiation' or 'maintenance'")
+        return v
+
+
 class AnticholinergicBurdenRisk(BaseModel, frozen=True):
     """A medication contributing to cumulative anticholinergic burden."""
 

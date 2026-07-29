@@ -320,6 +320,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 28 | Lactation / breastfeeding medication-safety check | `safety/lactation_checker.py` | Flags breastfeeding-specific medication concerns such as radioiodine/I-131, chemotherapy agents, amiodarone, lithium, codeine, and tramadol when the patient is breastfeeding |
 | 29 | Taper-schedule advisory check | `safety/taper_schedule_checker.py` | Flags chronic/scheduled opioids, benzodiazepines/Z-drugs, PPIs, and SSRIs/SNRIs for research-only taper-schedule review without prescribing or auto-generating taper plans |
 | 30 | Fall-risk medication check | `safety/fall_risk_checker.py` | Flags medications that increase fall risk in adults ≥65 (benzodiazepines, Z-drugs, anticholinergic subset, antipsychotics, muscle relaxants, alpha-1 blockers) |
+| 31 | QTc monitoring interval check | `safety/qtc_monitoring_checker.py` | Flags missing or overdue ECG/QTc monitoring for high-risk QT-prolonging drugs (7-day initiation, 30-day maintenance intervals) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
