@@ -273,6 +273,45 @@ class LactationRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class PregnancyLactationConcernKind(str, Enum):
+    """Whether a finding reflects pregnancy-only, lactation-only, or dual concern."""
+
+    COMBINED = "combined"
+    PREGNANCY_ONLY = "pregnancy_only"
+    LACTATION_ONLY = "lactation_only"
+
+
+class PregnancyLactationRisk(BaseModel, frozen=True):
+    """A medication with pregnancy and/or lactation safety concerns.
+
+    Distinct from standalone :class:`PregnancyRisk` and :class:`LactationRisk`:
+    this model unifies both hazard domains and escalates severity when the same
+    medication triggers both pregnancy and lactation panels.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical agent matched in the medication name for reporting")
+    concern_kind: PregnancyLactationConcernKind = Field(
+        description="Whether the finding is combined, pregnancy-only, or lactation-only"
+    )
+    pregnancy_severity: Severity | None = Field(
+        default=None,
+        description="Severity from the pregnancy component, when applicable",
+    )
+    lactation_severity: Severity | None = Field(
+        default=None,
+        description="Severity from the lactation component, when applicable",
+    )
+    lactation_concern_category: str | None = Field(
+        default=None,
+        description="Lactation concern category when the lactation component fired",
+    )
+    severity: Severity = Field(
+        description="Overall severity, escalated for combined pregnancy+lactation concerns"
+    )
+    rationale: str
+
+
 class FallRiskFinding(BaseModel, frozen=True):
     """A medication flagged for increased fall risk in older adults."""
 
