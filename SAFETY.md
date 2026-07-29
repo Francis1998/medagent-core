@@ -194,6 +194,11 @@ The checker requires whole-token medication matching plus scheduled/chronic-use 
 
 The check is gated on `patient_age >= 65` and returns **no** findings when age is under 65 or unknown. Medication names are matched with deterministic whole-token logic (for example `Lorazepamfree` and `Zolpidemoid` do not match). Each finding yields a `FallRiskFinding` record with the matched agent, risk category, severity, patient age, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, doses, or fall-prevention plans. See also `docs/guides/FALL_RISK_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.31 QTc Monitoring Interval Checking
+`safety/qtc_monitoring_checker.py` flags when **ECG/QTc monitoring is missing or overdue** for high-risk QT-prolonging medications — a clinical decision-support gap versus UpToDate/Lexicomp-style QTc surveillance cadence. The conservative panel includes class III antiarrhythmics (dofetilide, sotalol, amiodarone), methadone, haloperidol, ziprasidone, high-dose citalopram (>40 mg) / escitalopram (>20 mg), and IV ondansetron. This hazard is distinct from additive QT-prolongation counting (`qt_prolongation_checker.py`) and named QTc DDI pairs (`qtc_ddi_checker.py`).
+
+The checker applies a **7-day initiation** interval when `on_initiation=True` and a **30-day maintenance** interval by default. A finding is emitted when `last_ecg_days_ago` is unknown/missing or exceeds the interval. Optional `baseline_qtc_ms` notes borderline (≥480 ms) or prolonged (≥500 ms) QTc in the rationale and elevates non-CRITICAL findings when ≥500 ms. Medication names are matched with deterministic whole-token logic (for example `Pseudosotalol` does not match). Each finding yields a `QtcMonitoringRisk` record with the matched agent, risk category, severity, monitoring phase, recommended interval, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, order ECGs, or change monitoring plans. See also `docs/guides/QTC_MONITORING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
