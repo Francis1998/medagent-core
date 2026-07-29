@@ -333,9 +333,7 @@ class QtcMonitoringRisk(BaseModel, frozen=True):
     """
 
     medication: str
-    agent: str = Field(
-        description="Canonical high-risk QT agent matched in the medication name"
-    )
+    agent: str = Field(description="Canonical high-risk QT agent matched in the medication name")
     risk_category: str = Field(
         description=(
             "High-risk QT category such as class III antiarrhythmic, opioid, "

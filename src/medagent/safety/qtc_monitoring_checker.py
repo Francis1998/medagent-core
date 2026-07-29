@@ -92,9 +92,7 @@ class QtcMonitoringChecker:
             _INITIATION_INTERVAL_DAYS if on_initiation else _MAINTENANCE_INTERVAL_DAYS
         )
         monitoring_phase = "initiation" if on_initiation else "maintenance"
-        ecg_overdue = (
-            last_ecg_days_ago is None or last_ecg_days_ago > recommended_interval
-        )
+        ecg_overdue = last_ecg_days_ago is None or last_ecg_days_ago > recommended_interval
 
         findings: list[QtcMonitoringRisk] = []
         for medication in medications:
@@ -132,9 +130,7 @@ class QtcMonitoringChecker:
         logger.info("qtc_monitoring_checked", findings=len(findings), overdue=ecg_overdue)
         return findings
 
-    def _match_monitoring_agent(
-        self, medication_name: str
-    ) -> tuple[str, str, Severity] | None:
+    def _match_monitoring_agent(self, medication_name: str) -> tuple[str, str, Severity] | None:
         """Return the matched agent, category, and severity for a medication name."""
         tokens = self._tokens(medication_name)
         if not tokens:
@@ -169,9 +165,7 @@ class QtcMonitoringChecker:
         return None
 
     @staticmethod
-    def _effective_severity(
-        baseline_severity: Severity, baseline_qtc_ms: float | None
-    ) -> Severity:
+    def _effective_severity(baseline_severity: Severity, baseline_qtc_ms: float | None) -> Severity:
         """Elevate severity when baseline QTc is markedly prolonged."""
         if baseline_qtc_ms is None or baseline_qtc_ms < _PROLONGED_QTC_MS:
             return baseline_severity
