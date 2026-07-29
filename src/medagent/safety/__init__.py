@@ -9,6 +9,7 @@ from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
+from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecker
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
@@ -21,6 +22,7 @@ __all__ = [
     "FallRiskChecker",
     "GeriatricDeprescribingChecker",
     "LactationSafetyChecker",
+    "PregnancyLactationChecker",
     "QtcDdiChecker",
     "QtcMonitoringChecker",
     "ScopeEnforcer",
