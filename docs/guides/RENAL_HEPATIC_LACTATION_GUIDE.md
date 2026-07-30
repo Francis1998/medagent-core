@@ -1,6 +1,6 @@
 # Combined Renal + Hepatic + Lactation Checker Guide
 
-*medagent-core — Safety Control #34*
+*medagent-core — Safety Control #36*
 
 ![Combined renal + hepatic + lactation checker flow](../../assets/renal_hepatic_lactation_demo.gif)
 
@@ -82,7 +82,7 @@ The checker itself is deterministic and does not call an LLM.
 
 ## See also
 
-- [SAFETY.md §3.34](../../SAFETY.md)
+- [SAFETY.md §3.36](../../SAFETY.md)
 - [README safety controls table](../../README.md)
 - [CHANGELOG](../../CHANGELOG.md)
 - Combined renal + hepatic: `safety/combined_renal_hepatic_checker.py`
