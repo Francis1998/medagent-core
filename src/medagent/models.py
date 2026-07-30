@@ -549,6 +549,52 @@ class BeersCriteriaRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class Beers2023DeltaRisk(BaseModel, frozen=True):
+    """A 2023 AGS Beers Criteria update delta for an older adult.
+
+    Complements :class:`BeersCriteriaRisk` by focusing on medications newly
+    added or strengthened as avoid/caution recommendations in the 2023 update
+    relative to the prior Beers edition, rather than reproducing the full
+    classic PIM panel.
+    """
+
+    medication: str
+    agent: str = Field(
+        description="Canonical 2023-delta Beers agent matched in the medication name"
+    )
+    delta_kind: str = Field(
+        description=(
+            "Update kind: 'new_avoid', 'new_caution', 'expanded_avoid', or 'concurrent_avoid'"
+        )
+    )
+    beers_category: str = Field(
+        description="Beers category for the 2023 delta (e.g. 'sulfonylurea', 'SNRI')"
+    )
+    update_summary: str = Field(
+        description="Short description of what changed versus the prior Beers edition"
+    )
+    severity: Severity
+    patient_age: int = Field(ge=0, description="Patient age in years used for the age gate")
+    medication_b: str | None = Field(
+        default=None,
+        description="Second medication when the delta is a concurrent-use pair, else None",
+    )
+    agent_b: str | None = Field(
+        default=None,
+        description="Second canonical agent when the delta is a concurrent-use pair, else None",
+    )
+    rationale: str
+
+    @field_validator("delta_kind")
+    @classmethod
+    def delta_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure delta_kind is one of the curated 2023 update kinds."""
+        allowed = {"new_avoid", "new_caution", "expanded_avoid", "concurrent_avoid"}
+        if v not in allowed:
+            raise ValueError(f"delta_kind must be one of {sorted(allowed)}")
+        return v
+
+
 class GeriatricDeprescribingRisk(BaseModel, frozen=True):
     """A medication that may be a geriatric deprescribing opportunity.
 
