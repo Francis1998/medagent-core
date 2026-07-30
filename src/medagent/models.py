@@ -312,6 +312,78 @@ class PregnancyLactationRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class RenalHepaticLactationConcernKind(str, Enum):
+    """Whether a finding reflects organ-only, lactation-only, or dual concern."""
+
+    COMBINED = "combined"
+    ORGAN_ONLY = "organ_only"
+    LACTATION_ONLY = "lactation_only"
+
+
+class RenalHepaticLactationRisk(BaseModel, frozen=True):
+    """A medication with organ-impairment and/or lactation safety concerns.
+
+    Distinct from :class:`CombinedRenalHepaticRisk` and :class:`LactationRisk`:
+    this model unifies renal-dose, hepatic-dose, and breastfeeding hazard domains
+    and escalates severity when the same medication triggers organ impairment
+    and lactation panels.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical agent matched in the medication name for reporting")
+    concern_kind: RenalHepaticLactationConcernKind = Field(
+        description="Whether the finding is combined, organ-only, or lactation-only"
+    )
+    egfr: float | None = Field(
+        default=None,
+        description="Patient eGFR in mL/min/1.73m^2 when the renal component fired",
+    )
+    threshold_egfr: float | None = Field(
+        default=None,
+        description="eGFR threshold at or below which the renal component is flagged",
+    )
+    hepatic_function: HepaticFunction | None = Field(
+        default=None,
+        description="Patient Child-Pugh class when the hepatic component fired",
+    )
+    threshold_function: HepaticFunction | None = Field(
+        default=None,
+        description="Hepatic-function class at or above which the hepatic component is flagged",
+    )
+    renal_action: str | None = Field(
+        default=None,
+        description="Recommended action from the renal component, when applicable",
+    )
+    hepatic_action: str | None = Field(
+        default=None,
+        description="Recommended action from the hepatic component, when applicable",
+    )
+    renal_severity: Severity | None = Field(
+        default=None,
+        description="Severity from the renal component, when applicable",
+    )
+    hepatic_severity: Severity | None = Field(
+        default=None,
+        description="Severity from the hepatic component, when applicable",
+    )
+    organ_severity: Severity | None = Field(
+        default=None,
+        description="Maximum severity across renal and hepatic components that fired",
+    )
+    lactation_severity: Severity | None = Field(
+        default=None,
+        description="Severity from the lactation component, when applicable",
+    )
+    lactation_concern_category: str | None = Field(
+        default=None,
+        description="Lactation concern category when the lactation component fired",
+    )
+    severity: Severity = Field(
+        description="Overall severity, escalated for combined organ+lactation concerns"
+    )
+    rationale: str
+
+
 class FallRiskFinding(BaseModel, frozen=True):
     """A medication flagged for increased fall risk in older adults."""
 
