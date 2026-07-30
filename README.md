@@ -8,7 +8,7 @@
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
-  <a href="#quality-gates"><img alt="Tests: 322 passed" src="https://img.shields.io/badge/tests-322%20passed-brightgreen.svg"></a>
+  <a href="#quality-gates"><img alt="Tests: 396 passed" src="https://img.shields.io/badge/tests-396%20passed-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Coverage: 70%" src="https://img.shields.io/badge/coverage-70%25-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
   <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
@@ -43,6 +43,9 @@
 **INR / TTR monitoring cadence — overdue INR and low TTR on warfarin:**
 
 ![medagent INR TTR monitoring demo](assets/inr_ttr_demo.gif)
+**Beers 2023 update deltas — expanded sulfonylurea avoid, SNRI caution, opioid × gabapentinoid:**
+
+![medagent Beers 2023 delta demo](assets/beers_2023_delta_demo.gif)
 
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
@@ -332,6 +335,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 32 | Combined pregnancy + lactation check | `safety/pregnancy_lactation_checker.py` | Unifies pregnancy teratogen and lactation/breastfeeding panels; escalates severity when the same medication triggers both concerns |
 | 33 | Anticoagulation bleeding-risk check | `safety/anticoag_bleeding_checker.py` | Flags anticoagulant × antiplatelet/NSAID/SSRI combinations that elevate major bleeding risk (warfarin, apixaban, rivaroxaban, dabigatran, enoxaparin, heparin + aspirin/clopidogrel/ibuprofen/naproxen/sertraline, etc.) |
 | 34 | Anticoagulation INR / TTR monitoring cadence check | `safety/inr_ttr_checker.py` | Flags missing or overdue INR checks and suboptimal TTR for warfarin/VKA patients (7-day initiation, 28-day maintenance; default TTR threshold 65%) |
+| 35 | Beers 2023 criteria update-delta check | `safety/beers_2023_delta_checker.py` | Flags 2023 AGS Beers update deltas vs prior (aspirin primary-prevention avoid, warfarin→DOAC preference, rivaroxaban/dabigatran caution, expanded sulfonylureas, SNRI falls caution, opioid×gabapentinoid concurrent avoid) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
@@ -400,7 +404,7 @@ Results saved to `results/` as JSON + printed summary.
 
 ```bash
 ruff check src/     # zero errors
-pytest tests/ -v    # 322/322 passed
+pytest tests/ -v    # 396/396 passed
 ```
 
 CI: lint → test → eval smoke test → Docker build (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
@@ -419,7 +423,7 @@ medagent-core/
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
 │   ├── safety/         # PII hashing + scope enforcer + mandatory disclaimers
 │   └── api/            # FastAPI: /analyze /drug-interactions /health
-├── tests/              # 322 pytest tests — all typed + documented
+├── tests/              # 396 pytest tests — all typed + documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
