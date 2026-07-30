@@ -434,6 +434,71 @@ class AnticoagBleedingRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class InrTtrRisk(BaseModel, frozen=True):
+    """Inadequate INR monitoring cadence or suboptimal TTR for a VKA patient.
+
+    Complements anticoagulation bleeding-risk checking and lab critical-value
+    INR panic thresholds by flagging when warfarin/VKA therapy lacks timely INR
+    surveillance or has time-in-therapeutic-range below a quality threshold.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical vitamin K antagonist matched in the medication name")
+    risk_category: str = Field(
+        description="VKA risk category such as vitamin K antagonist (warfarin)"
+    )
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'overdue_inr' when INR is missing/late, or "
+            "'low_ttr' when TTR is below threshold"
+        )
+    )
+    severity: Severity
+    last_inr_days_ago: int | None = Field(
+        default=None,
+        ge=0,
+        description="Days since the most recent INR, or None when unknown/missing",
+    )
+    recommended_interval_days: int | None = Field(
+        default=None,
+        ge=1,
+        description="Recommended maximum days between INR checks for the monitoring phase",
+    )
+    monitoring_phase: str | None = Field(
+        default=None,
+        description="Monitoring phase applied: 'initiation' (≤7 days) or 'maintenance' (≤28 days)",
+    )
+    ttr_percent: float | None = Field(
+        default=None,
+        ge=0,
+        le=100,
+        description="Documented time in therapeutic range as a percentage, if known",
+    )
+    ttr_threshold_percent: float | None = Field(
+        default=None,
+        ge=0,
+        le=100,
+        description="TTR percentage threshold used for the low_ttr finding",
+    )
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is overdue_inr or low_ttr."""
+        if v not in {"overdue_inr", "low_ttr"}:
+            raise ValueError("finding_kind must be 'overdue_inr' or 'low_ttr'")
+        return v
+
+    @field_validator("monitoring_phase")
+    @classmethod
+    def monitoring_phase_must_be_valid(cls, v: str | None) -> str | None:
+        """Ensure monitoring_phase is initiation, maintenance, or omitted."""
+        if v is not None and v not in {"initiation", "maintenance"}:
+            raise ValueError("monitoring_phase must be 'initiation' or 'maintenance'")
+        return v
+
+
 class AnticholinergicBurdenRisk(BaseModel, frozen=True):
     """A medication contributing to cumulative anticholinergic burden."""
 
