@@ -40,6 +40,10 @@
 
 ![medagent anticoagulation bleeding demo](assets/anticoag_bleeding_demo.gif)
 
+**INR / TTR monitoring cadence — overdue INR and low TTR on warfarin:**
+
+![medagent INR TTR monitoring demo](assets/inr_ttr_demo.gif)
+
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
 ![medagent escalation demo](assets/demo_escalation.svg)
@@ -327,6 +331,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 31 | QTc monitoring interval check | `safety/qtc_monitoring_checker.py` | Flags missing or overdue ECG/QTc monitoring for high-risk QT-prolonging drugs (7-day initiation, 30-day maintenance intervals) |
 | 32 | Combined pregnancy + lactation check | `safety/pregnancy_lactation_checker.py` | Unifies pregnancy teratogen and lactation/breastfeeding panels; escalates severity when the same medication triggers both concerns |
 | 33 | Anticoagulation bleeding-risk check | `safety/anticoag_bleeding_checker.py` | Flags anticoagulant × antiplatelet/NSAID/SSRI combinations that elevate major bleeding risk (warfarin, apixaban, rivaroxaban, dabigatran, enoxaparin, heparin + aspirin/clopidogrel/ibuprofen/naproxen/sertraline, etc.) |
+| 34 | Anticoagulation INR / TTR monitoring cadence check | `safety/inr_ttr_checker.py` | Flags missing or overdue INR checks and suboptimal TTR for warfarin/VKA patients (7-day initiation, 28-day maintenance; default TTR threshold 65%) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
