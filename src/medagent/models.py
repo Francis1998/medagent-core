@@ -1024,6 +1024,50 @@ class MaoiSerotoninRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class AntibioticDurationRisk(BaseModel, frozen=True):
+    """An antibiotic course exceeding recommended duration or missing a stop date.
+
+    Complements :class:`AntibioticStewardshipRisk` (fluoroquinolone indication,
+    duplicate coverage, prolonged-course text cues) by evaluating explicit
+    ``days_on_therapy`` against recommended duration cadences.
+    """
+
+    medication: str
+    agent: str = Field(description="Canonical antibiotic agent matched in the medication name")
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'exceeds_recommended_duration' when days_on_therapy "
+            "exceeds the recommended maximum, or 'missing_stop_date' when no "
+            "stop date is documented"
+        )
+    )
+    severity: Severity
+    days_on_therapy: int = Field(
+        ge=0, description="Days the patient has been on antibiotic therapy"
+    )
+    recommended_max_days: float = Field(
+        ge=1, description="Recommended maximum duration in days for the agent/indication"
+    )
+    stop_date_provided: bool = Field(
+        description="Whether a stop date / end-of-course date is documented"
+    )
+    indication_type: str | None = Field(
+        default=None,
+        description="Indication category used to select recommended duration (e.g. uti, pneumonia)",
+    )
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is exceeds_recommended_duration or missing_stop_date."""
+        if v not in {"exceeds_recommended_duration", "missing_stop_date"}:
+            raise ValueError(
+                "finding_kind must be 'exceeds_recommended_duration' or 'missing_stop_date'"
+            )
+        return v
+
+
 class ClinicalReasoning(BaseModel, frozen=True):
     """Structured output of a completed agent reasoning run.
 
