@@ -1003,6 +1003,27 @@ class AntibioticStewardshipRisk(BaseModel, frozen=True):
         return v
 
 
+class MaoiSerotoninRisk(BaseModel, frozen=True):
+    """An MAOI co-prescribed with a serotonergic medication.
+
+    Complements :class:`SerotoninSyndromeRisk` (any two or more serotonergic
+    agents) by providing a focused MAOI × serotonergic cross-check with explicit
+    partner pairing. MAOI plus serotonergic combinations are contraindicated.
+    """
+
+    medication: str = Field(description="Medication name containing the matched MAOI")
+    agent: str = Field(description="Canonical MAOI agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed serotonergic medication name")
+    partner_agent: str = Field(
+        description="Canonical serotonergic agent matched in the partner medication"
+    )
+    partner_drug_class: str = Field(
+        description="Serotonergic drug class of the partner (e.g. SSRI, SNRI, triptan)"
+    )
+    severity: Severity
+    rationale: str
+
+
 class ClinicalReasoning(BaseModel, frozen=True):
     """Structured output of a completed agent reasoning run.
 
