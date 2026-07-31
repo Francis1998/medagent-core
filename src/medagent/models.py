@@ -1003,6 +1003,52 @@ class AntibioticStewardshipRisk(BaseModel, frozen=True):
         return v
 
 
+class PediatricRenalRisk(BaseModel, frozen=True):
+    """A pediatric renally-cleared medication with missing or inadequate renal function.
+
+    Complements :class:`RenalDoseRisk` (adult eGFR-conditioned dosing) and
+    :class:`PediatricDoseRisk` (age/weight contraindications) by flagging
+    renally-cleared agents in patients under 18 when eGFR/CrCl is missing or
+    below age-adjusted thresholds.
+    """
+
+    medication: str
+    agent: str = Field(
+        description="Canonical renally-cleared pediatric agent matched in the medication name"
+    )
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'missing_renal_function' when eGFR and CrCl are absent, "
+            "or 'below_renal_threshold' when renal function is below the age-adjusted threshold"
+        )
+    )
+    severity: Severity
+    age_years: float = Field(description="Patient age in years (pediatric, <18)")
+    egfr: float | None = Field(
+        default=None,
+        description="Estimated GFR in mL/min/1.73m² when known",
+    )
+    crcl: float | None = Field(
+        default=None,
+        description="Creatinine clearance in mL/min when known",
+    )
+    age_adjusted_threshold: float = Field(
+        description="Age-adjusted minimum acceptable eGFR/CrCl for the pediatric patient"
+    )
+    concern: str = Field(description="Clinical concern when renal function is inadequate")
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is missing_renal_function or below_renal_threshold."""
+        if v not in {"missing_renal_function", "below_renal_threshold"}:
+            raise ValueError(
+                "finding_kind must be 'missing_renal_function' or 'below_renal_threshold'"
+            )
+        return v
+
+
 class MaoiSerotoninRisk(BaseModel, frozen=True):
     """An MAOI co-prescribed with a serotonergic medication.
 
