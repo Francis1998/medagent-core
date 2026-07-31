@@ -13,6 +13,7 @@ from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribi
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
+from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecker
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
@@ -33,6 +34,7 @@ __all__ = [
     "InrTtrChecker",
     "LactationSafetyChecker",
     "MaoiSerotoninCrosscheckChecker",
+    "PediatricRenalDosingChecker",
     "PregnancyLactationChecker",
     "QtcDdiChecker",
     "QtcMonitoringChecker",
