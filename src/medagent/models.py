@@ -1223,3 +1223,55 @@ class ClinicalReasoning(BaseModel, frozen=True):
     wall_time_seconds: float | None = None
     completed_at: datetime = Field(default_factory=datetime.utcnow)
     inputs_hash: str | None = None
+
+
+class ChemoEmesisRisk(BaseModel, frozen=True):
+    """Emetogenic chemotherapy with missing or inadequate antiemetic prophylaxis.
+
+    Distinct from lactation chemotherapy flagging and QT-prolonging antiemetic
+    surveillance; focuses on acute and delayed CINV prophylaxis gaps.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched emetogenic chemotherapy agent"
+    )
+    agent: str = Field(
+        description="Canonical emetogenic chemotherapy agent matched in the medication name"
+    )
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'missing_antiemetic_prophylaxis' when no antiemetic "
+            "agents are documented, or 'delayed_phase_uncovered' when days_since_chemo "
+            "falls in the delayed CINV window without delayed-phase coverage"
+        )
+    )
+    severity: Severity
+    emetogenic_level: str = Field(description="Emetogenicity level: 'high' or 'moderate'")
+    days_since_chemo: int | None = Field(
+        default=None,
+        ge=0,
+        description="Whole days since the most recent chemotherapy cycle when known",
+    )
+    antiemetic_agents_found: list[str] = Field(
+        default_factory=list,
+        description="Canonical antiemetic agents matched across the medication list",
+    )
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is a supported chemo-emesis finding type."""
+        if v not in {"missing_antiemetic_prophylaxis", "delayed_phase_uncovered"}:
+            raise ValueError(
+                "finding_kind must be 'missing_antiemetic_prophylaxis' or 'delayed_phase_uncovered'"
+            )
+        return v
+
+    @field_validator("emetogenic_level")
+    @classmethod
+    def emetogenic_level_must_be_valid(cls, v: str) -> str:
+        """Ensure emetogenic_level is high or moderate."""
+        if v not in {"high", "moderate"}:
+            raise ValueError("emetogenic_level must be 'high' or 'moderate'")
+        return v
