@@ -345,6 +345,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 38 | MAOI + serotonergic cross-check | `safety/maoi_serotonin_checker.py` | Flags MAOI × SSRI/SNRI/triptan/serotonergic-opioid pairs with CRITICAL severity (complements serotonin-syndrome checker) |
 | 39 | Antibiotic duration stewardship check | `safety/antibiotic_duration_checker.py` | Flags antibiotic courses exceeding recommended duration or missing stop date when days_on_therapy provided (complements antibiotic_stewardship_checker) |
 | 40 | Electrolyte panel (K/Mg) with QT drugs | `safety/electrolyte_qt_checker.py` | Flags QT-prolonging meds when potassium or magnesium labs missing or low (K &lt;3.5, Mg &lt;1.7) |
+| 41 | Opioid + benzodiazepine/Z-drug CNS depression | `safety/opioid_benzo_checker.py` | Flags opioid × benzodiazepine/Z-drug pairs with CRITICAL severity (respiratory depression risk) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
