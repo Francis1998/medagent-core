@@ -1155,6 +1155,29 @@ class ElectrolyteQtRisk(BaseModel, frozen=True):
         return v
 
 
+class OpioidBenzoRisk(BaseModel, frozen=True):
+    """An opioid co-prescribed with a benzodiazepine or Z-drug hypnotic.
+
+    Opioid plus benzodiazepine/Z-drug combinations increase the risk of profound
+    CNS and respiratory depression. Distinct from :class:`OpioidMedRisk` (MED
+    summation) and taper-schedule advisory flagging.
+    """
+
+    medication: str = Field(description="Medication name containing the matched opioid")
+    agent: str = Field(description="Canonical opioid agent matched in the medication name")
+    partner_medication: str = Field(
+        description="Co-prescribed benzodiazepine or Z-drug medication name"
+    )
+    partner_agent: str = Field(
+        description="Canonical benzodiazepine/Z-drug agent matched in the partner medication"
+    )
+    partner_drug_class: str = Field(
+        description="Drug class of the partner (benzodiazepine or Z-drug)"
+    )
+    severity: Severity
+    rationale: str
+
+
 class ClinicalReasoning(BaseModel, frozen=True):
     """Structured output of a completed agent reasoning run.
 
