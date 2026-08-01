@@ -1114,6 +1114,47 @@ class AntibioticDurationRisk(BaseModel, frozen=True):
         return v
 
 
+class ElectrolyteQtRisk(BaseModel, frozen=True):
+    """A QT-prolonging medication with missing or low potassium/magnesium.
+
+    Complements :class:`QtProlongationRisk` (additive QT drug count) and
+    :class:`QtcMonitoringRisk` (ECG surveillance cadence) by evaluating
+    electrolyte laboratory values against QT-prolonging agents.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched QT-prolonging agent"
+    )
+    agent: str = Field(description="Canonical QT-prolonging agent matched in the medication name")
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'missing_electrolytes' when potassium and/or magnesium "
+            "is absent, 'low_potassium' when K < 3.5 mmol/L, or 'low_magnesium' "
+            "when Mg < 1.7 mg/dL"
+        )
+    )
+    severity: Severity
+    potassium_mmol_l: float | None = Field(
+        default=None,
+        description="Serum potassium in mmol/L when known",
+    )
+    magnesium_mg_dl: float | None = Field(
+        default=None,
+        description="Serum magnesium in mg/dL when known",
+    )
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is a supported electrolyte-QT finding type."""
+        if v not in {"missing_electrolytes", "low_potassium", "low_magnesium"}:
+            raise ValueError(
+                "finding_kind must be 'missing_electrolytes', 'low_potassium', or 'low_magnesium'"
+            )
+        return v
+
+
 class ClinicalReasoning(BaseModel, frozen=True):
     """Structured output of a completed agent reasoning run.
 
