@@ -8,6 +8,7 @@ from medagent.safety.disclaimer import (
     MANDATORY_DISCLAIMER,
     MEDICAL_SYSTEM_PROMPT,
 )
+from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.inr_ttr_checker import InrTtrChecker
@@ -29,6 +30,7 @@ __all__ = [
     "AntibioticDurationStewardshipChecker",
     "AnticoagBleedingChecker",
     "Beers2023DeltaChecker",
+    "ElectrolyteQtChecker",
     "FallRiskChecker",
     "GeriatricDeprescribingChecker",
     "InrTtrChecker",
