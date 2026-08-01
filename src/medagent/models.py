@@ -1153,6 +1153,8 @@ class ElectrolyteQtRisk(BaseModel, frozen=True):
                 "finding_kind must be 'missing_electrolytes', 'low_potassium', or 'low_magnesium'"
             )
         return v
+
+
 class OpioidBenzoRisk(BaseModel, frozen=True):
     """An opioid co-prescribed with a benzodiazepine or Z-drug hypnotic.
 
@@ -1174,6 +1176,7 @@ class OpioidBenzoRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
 
 class ClinicalReasoning(BaseModel, frozen=True):
     """Structured output of a completed agent reasoning run.
