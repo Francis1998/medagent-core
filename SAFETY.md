@@ -327,6 +327,13 @@ The conservative emetogenic panel includes cisplatin, carboplatin, doxorubicin, 
 
 ---
 
+### 3.43 Digoxin Toxicity Risk
+`safety/digoxin_toxicity_checker.py` flags **digoxin** when **hypokalemia** (K &lt; 3.5 mmol/L), **hypomagnesemia** (Mg &lt; 1.7 mg/dL), or **loop diuretic co-prescription without K/Mg repletion cues** elevates toxicity risk. This hazard is distinct from electrolyte × QT checking and focuses on digoxin narrow therapeutic index concerns.
+
+The loop diuretic panel includes furosemide, bumetanide, and torsemide. Repletion cues include potassium, kcl, magnesium, spironolactone, eplerenone, amiloride, and triamterene. A `low_potassium`, `low_magnesium`, or `loop_diuretic_without_repletion` finding is emitted per applicable risk factor. Medication names are matched with deterministic whole-token logic. Each finding yields a `DigoxinToxicityRisk` record with finding kind, electrolyte values, loop diuretic and repletion agents found, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or prescribe repletion. See also `docs/guides/DIGOXIN_TOXICITY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

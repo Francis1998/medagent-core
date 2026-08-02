@@ -1275,3 +1275,48 @@ class ChemoEmesisRisk(BaseModel, frozen=True):
         if v not in {"high", "moderate"}:
             raise ValueError("emetogenic_level must be 'high' or 'moderate'")
         return v
+
+
+class DigoxinToxicityRisk(BaseModel, frozen=True):
+    """Digoxin with electrolyte or loop-diuretic factors elevating toxicity risk.
+
+    Distinct from QT electrolyte checking; focuses on digoxin-specific narrow
+    therapeutic index hazards from hypokalemia, hypomagnesemia, and loop diuretics.
+    """
+
+    medication: str = Field(description="Medication name containing the matched digoxin agent")
+    agent: str = Field(description="Canonical digoxin agent matched in the medication name")
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'low_potassium', 'low_magnesium', or 'loop_diuretic_without_repletion'"
+        )
+    )
+    severity: Severity
+    potassium_mmol_l: float | None = Field(
+        default=None,
+        description="Serum potassium in mmol/L when supplied",
+    )
+    magnesium_mg_dl: float | None = Field(
+        default=None,
+        description="Serum magnesium in mg/dL when supplied",
+    )
+    loop_diuretic_agents_found: list[str] = Field(
+        default_factory=list,
+        description="Canonical loop diuretic agents matched across the medication list",
+    )
+    repletion_agents_found: list[str] = Field(
+        default_factory=list,
+        description="Canonical K/Mg repletion agents matched across the medication list",
+    )
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is a supported digoxin-toxicity finding type."""
+        if v not in {"low_potassium", "low_magnesium", "loop_diuretic_without_repletion"}:
+            raise ValueError(
+                "finding_kind must be 'low_potassium', 'low_magnesium', or "
+                "'loop_diuretic_without_repletion'"
+            )
+        return v
