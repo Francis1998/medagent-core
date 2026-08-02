@@ -4,6 +4,7 @@ from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewar
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
+from medagent.safety.digoxin_toxicity_checker import DigoxinToxicityChecker
 from medagent.safety.disclaimer import (
     ESCALATION_MESSAGE,
     MANDATORY_DISCLAIMER,
@@ -33,6 +34,7 @@ __all__ = [
     "AnticoagBleedingChecker",
     "Beers2023DeltaChecker",
     "ChemoEmesisChecker",
+    "DigoxinToxicityChecker",
     "ElectrolyteQtChecker",
     "FallRiskChecker",
     "GeriatricDeprescribingChecker",

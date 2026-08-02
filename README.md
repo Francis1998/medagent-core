@@ -347,6 +347,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 39 | Antibiotic duration stewardship check | `safety/antibiotic_duration_checker.py` | Flags antibiotic courses exceeding recommended duration or missing stop date when days_on_therapy provided (complements antibiotic_stewardship_checker) |
 | 40 | Electrolyte panel (K/Mg) with QT drugs | `safety/electrolyte_qt_checker.py` | Flags QT-prolonging meds when potassium or magnesium labs missing or low (K &lt;3.5, Mg &lt;1.7) |
 | 41 | Opioid + benzodiazepine/Z-drug CNS depression | `safety/opioid_benzo_checker.py` | Flags opioid × benzodiazepine/Z-drug pairs with CRITICAL severity (respiratory depression risk) |
+| 43 | Digoxin toxicity risk | `safety/digoxin_toxicity_checker.py` | Flags digoxin when hypokalemia, hypomagnesemia, or loop diuretic without K/Mg repletion elevates toxicity risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
