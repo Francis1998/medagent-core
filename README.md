@@ -350,6 +350,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 43 | Digoxin toxicity risk | `safety/digoxin_toxicity_checker.py` | Flags digoxin when hypokalemia, hypomagnesemia, or loop diuretic without K/Mg repletion elevates toxicity risk |
 | 19 | Drug–food interaction check | `safety/drug_food_interaction_checker.py` | Flags medication × dietary-exposure pairs (grapefruit/statins, dairy/tetracyclines–ciprofloxacin, tyramine/MAOIs, alcohol/metronidazole–disulfiram) |
 | 44 | Statin + strong CYP3A4 inhibitor | `safety/statin_cyp3a4_checker.py` | Flags simvastatin/lovastatin/atorvastatin with strong CYP3A4 inhibitors (myopathy/rhabdomyolysis risk) |
+| 45 | Insulin stacking | `safety/insulin_stacking_checker.py` | Flags overlapping rapid-acting boluses (&lt;3 h) without meal/correction context or concurrent premix+bolus |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

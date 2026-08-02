@@ -412,6 +412,13 @@ The conservative statin panel includes simvastatin, lovastatin, and atorvastatin
 
 ---
 
+### 3.45 Insulin Stacking
+`safety/insulin_stacking_checker.py` flags **overlapping rapid-acting insulin boluses** when `hours_since_last_bolus` is below three hours without documented meal or correction context, and **concurrent premix plus bolus insulin** regimens that create cumulative rapid-acting exposure.
+
+The rapid-acting panel includes lispro, aspart, and glulisine. Premix markers include protamine, mix, 70/30, 75/25, and 50/50. A `rapid_bolus_stacking` finding is emitted when bolus interval is too short without context; a `premix_plus_bolus` finding is emitted when premix and bolus insulins are co-prescribed. Medication names are matched with deterministic whole-token logic. Each finding yields an `InsulinStackingRisk` record with finding kind, bolus timing, context flags, partner medication when applicable, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify insulin regimens. See also `docs/guides/INSULIN_STACKING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
