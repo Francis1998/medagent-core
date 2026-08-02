@@ -1320,3 +1320,23 @@ class DigoxinToxicityRisk(BaseModel, frozen=True):
                 "'loop_diuretic_without_repletion'"
             )
         return v
+
+
+class StatinCyp3a4Risk(BaseModel, frozen=True):
+    """A statin co-prescribed with a strong CYP3A4 inhibitor.
+
+    Simvastatin, lovastatin, and atorvastatin with strong CYP3A4 inhibitors
+    increase myopathy and rhabdomyolysis risk. Distinct from generic DDI and
+    drug-food grapefruit screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched statin")
+    agent: str = Field(description="Canonical statin agent matched in the medication name")
+    partner_medication: str = Field(
+        description="Co-prescribed strong CYP3A4 inhibitor medication name"
+    )
+    partner_agent: str = Field(
+        description="Canonical CYP3A4 inhibitor agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
