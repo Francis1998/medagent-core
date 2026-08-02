@@ -1340,3 +1340,52 @@ class StatinCyp3a4Risk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class InsulinStackingRisk(BaseModel, frozen=True):
+    """Overlapping rapid-acting insulin boluses or concurrent premix plus bolus regimens.
+
+    Insulin stacking increases hypoglycemia risk from cumulative rapid-acting effect.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched insulin agent for this finding"
+    )
+    agent: str = Field(description="Canonical insulin agent matched in the medication name")
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rapid_bolus_stacking' when bolus interval is too short "
+            "without context, or 'premix_plus_bolus' for concurrent premix and bolus"
+        )
+    )
+    partner_medication: str | None = Field(
+        default=None,
+        description="Partner bolus insulin medication name for premix_plus_bolus findings",
+    )
+    partner_agent: str | None = Field(
+        default=None,
+        description="Partner bolus insulin agent for premix_plus_bolus findings",
+    )
+    hours_since_last_bolus: float | None = Field(
+        default=None,
+        ge=0.0,
+        description="Hours since the most recent rapid-acting bolus when supplied",
+    )
+    meal_context: bool = Field(
+        default=False,
+        description="True when a meal bolus context is documented",
+    )
+    correction_context: bool = Field(
+        default=False,
+        description="True when a correction bolus context is documented",
+    )
+    severity: Severity
+    rationale: str
+
+    @field_validator("finding_kind")
+    @classmethod
+    def finding_kind_must_be_valid(cls, v: str) -> str:
+        """Ensure finding_kind is a supported insulin-stacking finding type."""
+        if v not in {"rapid_bolus_stacking", "premix_plus_bolus"}:
+            raise ValueError("finding_kind must be 'rapid_bolus_stacking' or 'premix_plus_bolus'")
+        return v

@@ -14,6 +14,7 @@ from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.inr_ttr_checker import InrTtrChecker
+from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
 from medagent.safety.opioid_benzo_checker import OpioidBenzoChecker
@@ -40,6 +41,7 @@ __all__ = [
     "FallRiskChecker",
     "GeriatricDeprescribingChecker",
     "InrTtrChecker",
+    "InsulinStackingChecker",
     "LactationSafetyChecker",
     "MaoiSerotoninCrosscheckChecker",
     "OpioidBenzoChecker",
