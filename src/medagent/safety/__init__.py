@@ -24,6 +24,7 @@ from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
+from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 
 __all__ = [
@@ -49,6 +50,7 @@ __all__ = [
     "RenalHepaticLactationChecker",
     "ScopeEnforcer",
     "ScopeViolationError",
+    "StatinCyp3a4Checker",
     "TaperScheduleChecker",
     "hash_pii",
     "hash_pii_dict",

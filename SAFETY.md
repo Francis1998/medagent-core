@@ -404,3 +404,81 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ---
 
 *Last updated: 2026-07-25. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+
+### 3.44 Statin + Strong CYP3A4 Inhibitor
+`safety/statin_cyp3a4_checker.py` flags **simvastatin, lovastatin, and atorvastatin** co-prescribed with **strong CYP3A4 inhibitors** — combinations that markedly increase systemic statin exposure and the risk of myopathy and rhabdomyolysis. This hazard is distinct from generic drug-drug interaction screening and drug-food grapefruit flagging.
+
+The conservative statin panel includes simvastatin, lovastatin, and atorvastatin. Strong CYP3A4 inhibitor partners include clarithromycin, itraconazole, ketoconazole, ritonavir, and grapefruit. Every statin × inhibitor pair yields a `StatinCyp3a4Risk` record with both medication names, matched agents, severity (`CRITICAL` for simvastatin/lovastatin, `HIGH` for atorvastatin), and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+## 4. Escalation Policy
+
+When the agent enters `ESCALATE` state:
+
+1. The response is returned immediately with `escalated: true`
+2. `uncertainty_flags` lists the specific reasons for escalation
+3. `recommended_next_steps` instructs the user to consult a clinician
+4. The run is persisted to the audit log with `escalated=true` for traceability
+5. **No clinical recommendation is provided** — the output is diagnostic context only
+
+Operators building on top of this system MUST implement their own escalation routing (e.g., alert a clinical supervisor, block UI progression) when `escalated: true` is received.
+
+---
+
+## 5. Audit Trail
+
+Every agent run produces a durable audit record containing:
+
+| Field | Description |
+|---|---|
+| `session_id` | UUID for the run |
+| `inputs_hash` | SHA-256 of patient_id_hash + query (deduplication key) |
+| `state_reached` | Final state machine state |
+| `escalated` | Whether human review was triggered |
+| `overall_confidence` | Calibrated confidence score |
+| `model_used` | LLM model that produced the reasoning |
+| `wall_time_seconds` | End-to-end latency |
+| `hypotheses_json` | Full ranked hypothesis list with evidence chains |
+| `interactions_json` | Drug interaction warnings |
+| `entities_json` | Extracted clinical entities |
+| `created_at` | UTC timestamp |
+
+Audit records are retained indefinitely by default. Operators must implement their own data retention and deletion policies compliant with applicable regulations (HIPAA, GDPR, etc.).
+
+---
+
+## 6. Responsible Use Guidelines
+
+Operators integrating this system into any application MUST:
+
+1. **Display the disclaimer** on every output surface visible to end users
+2. **Not remove or override** the `disclaimer` field
+3. **Implement escalation routing** for `escalated: true` responses
+4. **Obtain informed consent** from any individuals whose data is processed
+5. **Not claim FDA clearance** or regulatory approval for this system
+6. **Not deploy in a clinical care setting** without extensive validation, regulatory review, and clinical governance approval
+7. **Conduct independent safety evaluation** before any production deployment touching patient data
+
+---
+
+## 7. Regulatory Status
+
+- **Not FDA-cleared**: This system has not been submitted to or cleared by the U.S. Food and Drug Administration under 21 CFR Part 882 (neurological devices) or any other device classification
+- **Not CE-marked**: Not conformant with EU MDR 2017/745
+- **Not validated** on any prospective clinical cohort
+- **Not peer-reviewed** as a clinical tool
+
+---
+
+## 8. Reporting Safety Concerns
+
+If you discover a safety-relevant bug (e.g., the system produces a direct prescription, bypasses the disclaimer, or escalation fails to trigger when confidence is low), please:
+
+1. Open a GitHub issue tagged `safety-critical`
+2. Do NOT publish exploit details before the maintainers have had 7 days to respond
+3. For critical vulnerabilities, email the maintainers directly via the contact in `pyproject.toml`
+
+---
+
+*Last updated: 2026-07-25. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*

@@ -348,6 +348,8 @@ All controls are **technically enforced in code**, not just documented policy:
 | 40 | Electrolyte panel (K/Mg) with QT drugs | `safety/electrolyte_qt_checker.py` | Flags QT-prolonging meds when potassium or magnesium labs missing or low (K &lt;3.5, Mg &lt;1.7) |
 | 41 | Opioid + benzodiazepine/Z-drug CNS depression | `safety/opioid_benzo_checker.py` | Flags opioid × benzodiazepine/Z-drug pairs with CRITICAL severity (respiratory depression risk) |
 | 43 | Digoxin toxicity risk | `safety/digoxin_toxicity_checker.py` | Flags digoxin when hypokalemia, hypomagnesemia, or loop diuretic without K/Mg repletion elevates toxicity risk |
+| 19 | Drug–food interaction check | `safety/drug_food_interaction_checker.py` | Flags medication × dietary-exposure pairs (grapefruit/statins, dairy/tetracyclines–ciprofloxacin, tyramine/MAOIs, alcohol/metronidazole–disulfiram) |
+| 44 | Statin + strong CYP3A4 inhibitor | `safety/statin_cyp3a4_checker.py` | Flags simvastatin/lovastatin/atorvastatin with strong CYP3A4 inhibitors (myopathy/rhabdomyolysis risk) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
