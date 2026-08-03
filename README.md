@@ -353,6 +353,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 45 | Insulin stacking | `safety/insulin_stacking_checker.py` | Flags overlapping rapid-acting boluses (&lt;3 h) without meal/correction context or concurrent premix+bolus |
 | 46 | Triple whammy (NSAID+ACEI/ARB+diuretic) | `safety/triple_whammy_checker.py` | Flags concurrent NSAID + ACEI/ARB/ARNI + loop/thiazide diuretic (AKI / renal risk) |
 | 47 | Methotrexate without folate | `safety/mtx_folate_checker.py` | Flags methotrexate without folic acid / folate / leucovorin co-therapy |
+| 48 | Digoxin + amiodarone monitoring | `safety/digoxin_amio_checker.py` | Flags digoxin with amiodarone for level monitoring (HIGH) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
