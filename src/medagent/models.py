@@ -1427,3 +1427,20 @@ class MtxFolateRisk(BaseModel, frozen=True):
     agent: str = Field(description="Canonical methotrexate agent matched in the medication name")
     severity: Severity
     rationale: str
+
+
+class DigoxinAmioRisk(BaseModel, frozen=True):
+    """Digoxin co-prescribed with amiodarone requiring serum digoxin monitoring.
+
+    Amiodarone inhibits digoxin clearance and can approximately double digoxin
+    levels. Distinct from digoxin toxicity electrolyte screening and generic DDI.
+    """
+
+    medication: str = Field(description="Medication name containing the matched digoxin agent")
+    agent: str = Field(description="Canonical digoxin agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed amiodarone medication name")
+    partner_agent: str = Field(
+        description="Canonical amiodarone agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str

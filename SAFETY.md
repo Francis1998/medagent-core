@@ -502,6 +502,12 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 
 The methotrexate panel includes methotrexate. Folate co-therapy cues that suppress findings include folic, folate, and leucovorin. When methotrexate is present and no folate co-therapy cue is found, a `MtxFolateRisk` record is emitted with `HIGH` severity and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_FOLATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.48 Digoxin + Amiodarone Level Monitoring
+`safety/digoxin_amio_checker.py` flags **digoxin / lanoxin** co-prescribed with **amiodarone / cordarone** — a combination that inhibits digoxin clearance and can approximately double digoxin serum concentrations. Findings recommend digoxin dose review and serum digoxin level monitoring. This hazard is distinct from digoxin toxicity electrolyte screening and generic drug-drug interaction flagging.
+
+The digoxin panel includes digoxin and lanoxin. Amiodarone partners include amiodarone and cordarone. Every digoxin × amiodarone pair yields a `DigoxinAmioRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_AMIO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy
