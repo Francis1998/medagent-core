@@ -1389,3 +1389,28 @@ class InsulinStackingRisk(BaseModel, frozen=True):
         if v not in {"rapid_bolus_stacking", "premix_plus_bolus"}:
             raise ValueError("finding_kind must be 'rapid_bolus_stacking' or 'premix_plus_bolus'")
         return v
+
+
+class TripleWhammyRisk(BaseModel, frozen=True):
+    """NSAID + ACEI/ARB/ARNI + loop/thiazide diuretic concurrent therapy.
+
+    The "triple whammy" combination impairs renal autoregulation and increases
+    acute kidney injury risk. Distinct from generic DDI screening.
+    """
+
+    nsaid_medication: str = Field(description="Medication name containing the matched NSAID")
+    nsaid_agent: str = Field(description="Canonical NSAID agent matched in the medication name")
+    acei_arb_medication: str = Field(
+        description="Medication name containing the matched ACEI, ARB, or ARNI agent"
+    )
+    acei_arb_agent: str = Field(
+        description="Canonical ACEI/ARB/ARNI agent matched in the medication name"
+    )
+    diuretic_medication: str = Field(
+        description="Medication name containing the matched loop or thiazide diuretic"
+    )
+    diuretic_agent: str = Field(
+        description="Canonical loop/thiazide diuretic agent matched in the medication name"
+    )
+    severity: Severity
+    rationale: str

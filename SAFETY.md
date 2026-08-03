@@ -419,6 +419,13 @@ The rapid-acting panel includes lispro, aspart, and glulisine. Premix markers in
 
 ---
 
+### 3.46 Triple Whammy (NSAID + ACEI/ARB/ARNI + Diuretic)
+`safety/triple_whammy_checker.py` flags concurrent **NSAID**, **ACEI/ARB/ARNI**, and **loop or thiazide diuretic** therapy — the "triple whammy" combination that impairs renal autoregulation and markedly increases acute kidney injury risk. This hazard is distinct from generic drug-drug interaction screening and single-axis renal dose adjustment.
+
+The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, and meloxicam. The ACEI/ARB/ARNI panel includes lisinopril, enalapril, ramipril, losartan, valsartan, and sacubitril. The diuretic panel includes furosemide, bumetanide, torsemide, hctz, hydrochlorothiazide, and chlorthalidone. Every NSAID × ACEI/ARB/ARNI × diuretic triad yields a `TripleWhammyRisk` record with all three medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRIPLE_WHAMMY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
