@@ -1414,3 +1414,16 @@ class TripleWhammyRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class MtxFolateRisk(BaseModel, frozen=True):
+    """Methotrexate prescribed without folic acid / folate / leucovorin co-therapy.
+
+    Missing folate co-therapy increases mucositis and hematologic toxicity risk.
+    Distinct from generic DDI screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched methotrexate agent")
+    agent: str = Field(description="Canonical methotrexate agent matched in the medication name")
+    severity: Severity
+    rationale: str
