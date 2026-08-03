@@ -27,6 +27,7 @@ from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactatio
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
+from medagent.safety.triple_whammy_checker import TripleWhammyChecker
 
 __all__ = [
     "ESCALATION_MESSAGE",
@@ -54,6 +55,7 @@ __all__ = [
     "ScopeViolationError",
     "StatinCyp3a4Checker",
     "TaperScheduleChecker",
+    "TripleWhammyChecker",
     "hash_pii",
     "hash_pii_dict",
     "redact_fhir_pii",
