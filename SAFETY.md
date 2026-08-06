@@ -508,6 +508,12 @@ The methotrexate panel includes methotrexate. Folate co-therapy cues that suppre
 
 The digoxin panel includes digoxin and lanoxin. Amiodarone partners include amiodarone and cordarone. Every digoxin × amiodarone pair yields a `DigoxinAmioRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_AMIO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.49 Warfarin + NSAID Bleeding Intensifier
+`safety/warfarin_nsaid_checker.py` flags **warfarin / coumadin / jantoven** co-prescribed with an **NSAID bleed intensifier** (ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, or aspirin). Concurrent warfarin-class anticoagulation with an NSAID increases major bleeding risk via GI mucosal injury and platelet dysfunction. This hazard is distinct from the broader anticoagulation bleeding-risk panel and generic drug-drug interaction flagging.
+
+The warfarin-class panel includes warfarin, coumadin, and jantoven. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and aspirin. Every warfarin × NSAID pair yields a `WarfarinNsaidRisk` record with both medication names, matched agents, `HIGH` severity for typical NSAIDs or `CRITICAL` for aspirin/ketorolac, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy

@@ -1444,3 +1444,23 @@ class DigoxinAmioRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class WarfarinNsaidRisk(BaseModel, frozen=True):
+    """Warfarin-class anticoagulant co-prescribed with an NSAID bleed intensifier.
+
+    Concurrent warfarin anticoagulation with an NSAID increases major bleeding
+    risk via GI mucosal injury and platelet dysfunction. Distinct from the
+    broader anticoagulation bleeding-risk panel and generic DDI screening.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched warfarin-class agent"
+    )
+    agent: str = Field(description="Canonical warfarin-class agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed NSAID medication name")
+    partner_agent: str = Field(
+        description="Canonical NSAID agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
