@@ -354,6 +354,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 46 | Triple whammy (NSAID+ACEI/ARB+diuretic) | `safety/triple_whammy_checker.py` | Flags concurrent NSAID + ACEI/ARB/ARNI + loop/thiazide diuretic (AKI / renal risk) |
 | 47 | Methotrexate without folate | `safety/mtx_folate_checker.py` | Flags methotrexate without folic acid / folate / leucovorin co-therapy |
 | 48 | Digoxin + amiodarone monitoring | `safety/digoxin_amio_checker.py` | Flags digoxin with amiodarone for level monitoring (HIGH) |
+| 49 | Warfarin + NSAID bleed intensifier | `safety/warfarin_nsaid_checker.py` | Flags warfarin/coumadin/jantoven with NSAID (ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, aspirin) — HIGH/CRITICAL |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
