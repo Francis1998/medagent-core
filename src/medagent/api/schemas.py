@@ -68,3 +68,15 @@ class HealthResponse(BaseModel):
     agent_ready: bool
     version: str = "0.1.0"
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+
+class AuditRunResponse(BaseModel):
+    """Response body for GET /audit/{session_id}."""
+
+    session_id: str
+    state_reached: str
+    escalated: bool
+    overall_confidence: float
+    model_used: str
+    created_at: datetime | None = None
+    api_version: str = "0.1.0"

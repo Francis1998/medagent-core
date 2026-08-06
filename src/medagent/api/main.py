@@ -16,11 +16,12 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from medagent.agent.audit import persist_run
+from medagent.agent.audit import fetch_run, persist_run
 from medagent.agent.state_machine import ClinicalAgentStateMachine
 from medagent.api.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
+    AuditRunResponse,
     DrugInteractionRequest,
     DrugInteractionResponse,
     HealthResponse,
@@ -120,6 +121,35 @@ async def health() -> HealthResponse:
         JSON with status=ok and the current timestamp.
     """
     return HealthResponse(status="ok", agent_ready=_agent is not None)
+
+
+@app.get("/audit/{session_id}", response_model=AuditRunResponse, tags=["Operations"])
+async def get_audit_run(session_id: str) -> AuditRunResponse:
+    """Fetch a persisted audit row for a completed agent session.
+
+    Args:
+        session_id: Session UUID returned by POST /analyze.
+
+    Returns:
+        Audit metadata for safety review and compliance follow-up.
+
+    Raises:
+        HTTPException 404: If no audit row exists for the session.
+    """
+    row = await fetch_run(session_id)
+    if row is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No audit entry found for session_id={session_id}",
+        )
+    return AuditRunResponse(
+        session_id=str(row["session_id"]),
+        state_reached=str(row.get("state_reached", "")),
+        escalated=bool(row.get("escalated", False)),
+        overall_confidence=float(row.get("overall_confidence", 0.0)),
+        model_used=str(row.get("model_used", "")),
+        created_at=row.get("created_at"),
+    )
 
 
 @app.post("/analyze", response_model=AnalyzeResponse, tags=["Clinical Reasoning"])
