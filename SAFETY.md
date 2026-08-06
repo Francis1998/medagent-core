@@ -514,6 +514,12 @@ The digoxin panel includes digoxin and lanoxin. Amiodarone partners include amio
 
 The warfarin-class panel includes warfarin, coumadin, and jantoven. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and aspirin. Every warfarin × NSAID pair yields a `WarfarinNsaidRisk` record with both medication names, matched agents, `HIGH` severity for typical NSAIDs or `CRITICAL` for aspirin/ketorolac, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.50 ACEI + ARB + ARNI Dual-Blockade Duplication
+`safety/acei_arb_duplication_checker.py` flags concurrent therapy across **≥2 distinct RAAS classes** among ACE inhibitors (lisinopril, enalapril, ramipril), ARBs (losartan, valsartan, olmesartan), and ARNIs (sacubitril). Dual blockade increases hyperkalemia, hypotension, and renal risk without outcome benefit. This hazard is distinct from the triple-whammy (NSAID + ACEI/ARB + diuretic) check and generic drug-drug interaction flagging.
+
+Every cross-class agent pair yields an `AceiArbDuplicationRisk` record with both medication names, matched agents, class labels, `classes_present`, `CRITICAL` severity when ACEI + ARB are both present (or `HIGH` for ACEI/ARB + ARNI two-class combinations without ACEI+ARB), and RESEARCH USE ONLY rationale. Same-class duplicates do not flag. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_ARB_DUPLICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ## 4. Escalation Policy

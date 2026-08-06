@@ -1464,3 +1464,24 @@ class WarfarinNsaidRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AceiArbDuplicationRisk(BaseModel, frozen=True):
+    """Dual RAAS blockade from concurrent ACEI, ARB, and/or ARNI therapy.
+
+    Combining ≥2 distinct renin–angiotensin classes increases hyperkalemia,
+    hypotension, and renal risk without outcome benefit. Distinct from
+    triple-whammy renal risk and generic DDI screening.
+    """
+
+    medication_a: str = Field(description="Medication name for the first RAAS-class agent")
+    agent_a: str = Field(description="Canonical agent matched in medication_a")
+    class_a: str = Field(description="RAAS class of agent_a: ACEI, ARB, or ARNI")
+    medication_b: str = Field(description="Medication name for the second RAAS-class agent")
+    agent_b: str = Field(description="Canonical agent matched in medication_b")
+    class_b: str = Field(description="RAAS class of agent_b: ACEI, ARB, or ARNI")
+    classes_present: list[str] = Field(
+        description="Distinct RAAS classes present on the medication list (ACEI/ARB/ARNI)"
+    )
+    severity: Severity
+    rationale: str
