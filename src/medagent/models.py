@@ -1571,9 +1571,7 @@ class LithiumNsaidRisk(BaseModel, frozen=True):
     medication: str = Field(
         description="Medication name containing the matched lithium-class agent"
     )
-    agent: str = Field(
-        description="Canonical lithium-class agent matched in the medication name"
-    )
+    agent: str = Field(description="Canonical lithium-class agent matched in the medication name")
     partner_medication: str = Field(description="Co-prescribed NSAID medication name")
     partner_agent: str = Field(
         description="Canonical NSAID agent matched in the partner medication"
