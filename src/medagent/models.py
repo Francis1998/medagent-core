@@ -1557,3 +1557,20 @@ class MacrolideDigoxinRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class LithiumNsaidRisk(BaseModel, frozen=True):
+    """Lithium-class agent co-prescribed with an NSAID (toxicity risk).
+
+    NSAIDs can reduce renal lithium clearance and raise serum lithium
+    concentrations, increasing lithium toxicity risk. Acetaminophen and
+    paracetamol are excluded because they are not NSAIDs. Distinct from
+    lactation, pregnancy, renal-dose, and generic DDI screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched lithium-class agent")
+    agent: str = Field(description="Canonical lithium-class agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed NSAID medication name")
+    partner_agent: str = Field(description="Canonical NSAID agent matched in the partner medication")
+    severity: Severity
+    rationale: str
