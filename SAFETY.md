@@ -604,3 +604,11 @@ The tramadol panel includes tramadol and ultram. SSRI/SNRI partners include sert
 `safety/black_box_warning_checker.py` flags active medications that match a curated panel of agents with well-known **FDA boxed (black-box) warnings** — the agency's strongest labelling caution. Unlike pregnancy (pregnancy-gated teratogens), Beers/STOPP (older-adult appropriateness), or interaction/dose checkers, this hazard is a *labelling-severity* judgement: fluoroquinolones (tendinopathy/neuropathy), clozapine (agranulocytosis), isotretinoin, methotrexate, warfarin, metformin (lactic acidosis), amiodarone, valproate/carbamazepine, selected opioids, NSAIDs, and thiazolidinediones.
 
 Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.53 SGLT2 + Loop Diuretic Volume Depletion
+`safety/sglt2_loop_checker.py` flags **SGLT2 inhibitors** (empagliflozin, dapagliflozin, canagliflozin, ertugliflozin) co-prescribed with **loop diuretics** (furosemide, bumetanide, torsemide, ethacrynic acid). Concurrent osmotic and loop diuresis increases volume depletion, hypotension, and acute kidney injury risk. This hazard is distinct from the triple-whammy renal panel and generic drug-drug interaction flagging.
+
+Every SGLT2 × loop diuretic pair yields an `Sglt2LoopRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_LOOP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+---
