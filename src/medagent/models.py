@@ -1485,3 +1485,22 @@ class AceiArbDuplicationRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class TramadolSsriRisk(BaseModel, frozen=True):
+    """Tramadol co-prescribed with an SSRI/SNRI elevating seizure and serotonin risk.
+
+    Tramadol lowers seizure threshold and is serotonergic; stacking with
+    SSRI/SNRI agents compounds both hazards. Distinct from MAOI serotonin
+    cross-checks and broad serotonin-syndrome screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched tramadol agent")
+    agent: str = Field(description="Canonical tramadol agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed SSRI/SNRI medication name")
+    partner_agent: str = Field(
+        description="Canonical SSRI/SNRI agent matched in the partner medication"
+    )
+    partner_drug_class: str = Field(description="Partner drug class: SSRI or SNRI")
+    severity: Severity
+    rationale: str
