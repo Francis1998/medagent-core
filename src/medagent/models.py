@@ -1520,3 +1520,21 @@ class ClozapineAncRisk(BaseModel, frozen=True):
     agent: str = Field(description="Canonical clozapine-class agent matched in the medication name")
     severity: Severity
     rationale: str
+
+
+class Sglt2LoopRisk(BaseModel, frozen=True):
+    """SGLT2 inhibitor co-prescribed with a loop diuretic (volume depletion risk).
+
+    Concurrent SGLT2 inhibitor and loop diuretic therapy increases volume
+    depletion, hypotension, and acute kidney injury risk. Distinct from
+    triple-whammy renal risk and generic DDI screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched SGLT2 inhibitor")
+    agent: str = Field(description="Canonical SGLT2 inhibitor matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed loop diuretic medication name")
+    partner_agent: str = Field(
+        description="Canonical loop diuretic agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
