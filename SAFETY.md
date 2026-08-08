@@ -610,6 +610,16 @@ Each matched medication yields one `BlackBoxWarningRisk` recording the agent, wa
 
 Every SGLT2 × loop diuretic pair yields an `Sglt2LoopRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_LOOP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.54 Macrolide + Digoxin P-glycoprotein Interaction
+`safety/macrolide_digoxin_checker.py` flags **digoxin / lanoxin** co-prescribed with **P-glycoprotein-inhibiting macrolides** (clarithromycin, erythromycin). Clarithromycin and erythromycin can raise digoxin serum concentrations and increase digoxin toxicity risk. Azithromycin is intentionally excluded as a weaker P-gp inhibitor. This hazard is distinct from digoxin + amiodarone level monitoring and digoxin toxicity electrolyte screening.
+
+Every digoxin × macrolide pair yields a `MacrolideDigoxinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MACROLIDE_DIGOXIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.55 Lithium + NSAID Toxicity Interaction
+`safety/lithium_nsaid_checker.py` flags **lithium-class agents** (lithium, Lithobid, Eskalith) co-prescribed with **NSAIDs** (ibuprofen, naproxen, diclofenac, indomethacin, ketorolac, meloxicam, piroxicam, celecoxib). NSAIDs can reduce renal lithium clearance and raise serum lithium concentrations, increasing lithium toxicity risk. Acetaminophen and paracetamol are intentionally excluded because they are not NSAIDs. This hazard is distinct from lactation, pregnancy, renal-dose, and generic drug-drug interaction screening.
+
+Every lithium × NSAID pair yields a `LithiumNsaidRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 
 ---
 

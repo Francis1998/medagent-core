@@ -19,6 +19,7 @@ from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribi
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
 from medagent.safety.lactation_checker import LactationSafetyChecker
+from medagent.safety.lithium_nsaid_checker import LithiumNsaidChecker
 from medagent.safety.macrolide_digoxin_checker import MacrolideDigoxinChecker
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
 from medagent.safety.mtx_folate_checker import MtxFolateChecker
@@ -55,6 +56,7 @@ __all__ = [
     "InrTtrChecker",
     "InsulinStackingChecker",
     "LactationSafetyChecker",
+    "LithiumNsaidChecker",
     "MacrolideDigoxinChecker",
     "MaoiSerotoninCrosscheckChecker",
     "MtxFolateChecker",
