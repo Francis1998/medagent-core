@@ -1504,3 +1504,19 @@ class TramadolSsriRisk(BaseModel, frozen=True):
     partner_drug_class: str = Field(description="Partner drug class: SSRI or SNRI")
     severity: Severity
     rationale: str
+
+
+class ClozapineAncRisk(BaseModel, frozen=True):
+    """Clozapine therapy requiring absolute neutrophil count (ANC) monitoring.
+
+    Clozapine carries a boxed warning for severe neutropenia / agranulocytosis
+    and requires scheduled ANC monitoring. Distinct from generic boxed-warning
+    panels and generic DDI screening.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched clozapine-class agent"
+    )
+    agent: str = Field(description="Canonical clozapine-class agent matched in the medication name")
+    severity: Severity
+    rationale: str

@@ -600,3 +600,7 @@ The tramadol panel includes tramadol and ultram. SSRI/SNRI partners include sert
 
 ---
 
+### 3.23 FDA Black-Box (Boxed) Warning Checking
+`safety/black_box_warning_checker.py` flags active medications that match a curated panel of agents with well-known **FDA boxed (black-box) warnings** — the agency's strongest labelling caution. Unlike pregnancy (pregnancy-gated teratogens), Beers/STOPP (older-adult appropriateness), or interaction/dose checkers, this hazard is a *labelling-severity* judgement: fluoroquinolones (tendinopathy/neuropathy), clozapine (agranulocytosis), isotretinoin, methotrexate, warfarin, metformin (lactic acidosis), amiodarone, valproate/carbamazepine, selected opioids, NSAIDs, and thiazolidinediones.
+
+Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
