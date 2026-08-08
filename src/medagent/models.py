@@ -1538,3 +1538,22 @@ class Sglt2LoopRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class MacrolideDigoxinRisk(BaseModel, frozen=True):
+    """Digoxin co-prescribed with a P-gp-inhibiting macrolide (toxicity risk).
+
+    Clarithromycin and erythromycin inhibit P-glycoprotein and can raise digoxin
+    serum concentrations, increasing digoxin toxicity risk. Azithromycin is
+    excluded as a weaker P-gp inhibitor. Distinct from digoxin+amiodarone
+    monitoring and digoxin toxicity electrolyte screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched digoxin agent")
+    agent: str = Field(description="Canonical digoxin agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed macrolide medication name")
+    partner_agent: str = Field(
+        description="Canonical P-gp-inhibiting macrolide matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
