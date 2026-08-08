@@ -355,6 +355,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 47 | Methotrexate without folate | `safety/mtx_folate_checker.py` | Flags methotrexate without folic acid / folate / leucovorin co-therapy |
 | 48 | Digoxin + amiodarone monitoring | `safety/digoxin_amio_checker.py` | Flags digoxin with amiodarone for level monitoring (HIGH) |
 | 49 | Warfarin + NSAID bleed intensifier | `safety/warfarin_nsaid_checker.py` | Flags warfarin/coumadin/jantoven with NSAID (ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, aspirin) — HIGH/CRITICAL |
+| 50 | ACEI + ARB + ARNI duplication | `safety/acei_arb_duplication_checker.py` | Flags ≥2 distinct RAAS classes (ACEI/ARB/ARNI) — dual blockade HIGH/CRITICAL |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
