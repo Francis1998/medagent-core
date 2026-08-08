@@ -352,6 +352,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 44 | Statin + strong CYP3A4 inhibitor | `safety/statin_cyp3a4_checker.py` | Flags simvastatin/lovastatin/atorvastatin with strong CYP3A4 inhibitors (myopathy/rhabdomyolysis risk) |
 | 45 | Insulin stacking | `safety/insulin_stacking_checker.py` | Flags overlapping rapid-acting boluses (&lt;3 h) without meal/correction context or concurrent premix+bolus |
 | 46 | Triple whammy (NSAID+ACEI/ARB+diuretic) | `safety/triple_whammy_checker.py` | Flags concurrent NSAID + ACEI/ARB/ARNI + loop/thiazide diuretic (AKI / renal risk) |
+| 52 | Clozapine ANC monitoring | `safety/clozapine_anc_checker.py` | Flags clozapine/Clozaril/FazaClo with CRITICAL ANC / agranulocytosis monitoring reminder |
 | 51 | Tramadol + SSRI/SNRI dual risk | `safety/tramadol_ssri_checker.py` | Flags tramadol/ultram with SSRI/SNRI (seizure + serotonin risk) — HIGH |
 | 47 | Methotrexate without folate | `safety/mtx_folate_checker.py` | Flags methotrexate without folic acid / folate / leucovorin co-therapy |
 | 48 | Digoxin + amiodarone monitoring | `safety/digoxin_amio_checker.py` | Flags digoxin with amiodarone for level monitoring (HIGH) |
