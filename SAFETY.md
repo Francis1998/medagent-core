@@ -592,3 +592,11 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ---
 
 *Last updated: 2026-07-25. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
+
+### 3.51 Tramadol + SSRI/SNRI Seizure/Serotonin Dual Risk
+`safety/tramadol_ssri_checker.py` flags **tramadol / ultram** co-prescribed with an **SSRI or SNRI** antidepressant (sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, duloxetine). Concurrent tramadol with an SSRI/SNRI elevates seizure risk and serotonergic toxicity. This hazard is distinct from MAOI serotonin cross-checks and broad serotonin-syndrome screening.
+
+The tramadol panel includes tramadol and ultram. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, and duloxetine. Every tramadol × SSRI/SNRI pair yields a `TramadolSsriRisk` record with both medication names, matched agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRAMADOL_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+

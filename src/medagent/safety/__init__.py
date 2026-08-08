@@ -30,6 +30,7 @@ from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactatio
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
+from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
 from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
 
@@ -62,6 +63,7 @@ __all__ = [
     "ScopeViolationError",
     "StatinCyp3a4Checker",
     "TaperScheduleChecker",
+    "TramadolSsriChecker",
     "TripleWhammyChecker",
     "WarfarinNsaidChecker",
     "hash_pii",
