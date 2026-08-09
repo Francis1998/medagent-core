@@ -1596,3 +1596,21 @@ class DoacAntiplateletRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class MtxTmpsmxRisk(BaseModel, frozen=True):
+    """Methotrexate co-prescribed with TMP-SMX (myelosuppression / toxicity risk).
+
+    Trimethoprim–sulfamethoxazole can potentiate methotrexate antifolate toxicity
+    and increase myelosuppression risk. Distinct from methotrexate-without-folate
+    co-therapy screening and generic DDI flagging.
+    """
+
+    medication: str = Field(description="Medication name containing the matched methotrexate agent")
+    agent: str = Field(description="Canonical methotrexate agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed TMP-SMX medication name")
+    partner_agent: str = Field(
+        description="Canonical TMP-SMX panel agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
