@@ -639,6 +639,18 @@ Every methotrexate × TMP-SMX pair yields a `MtxTmpsmxRisk` record with both med
 
 ---
 
+### 3.58 Amiodarone + Warfarin INR Interaction
+`safety/amio_warfarin_checker.py` flags **amiodarone-class agents** (amiodarone, cordarone, pacerone) co-prescribed with **warfarin-class anticoagulants** (warfarin, coumadin, jantoven). Amiodarone potentiates warfarin anticoagulation and can raise INR, increasing bleeding risk. This hazard is distinct from digoxin + amiodarone level monitoring, warfarin + NSAID intensifier screening, and generic drug-drug interaction flagging.
+
+Every amiodarone × warfarin pair yields an `AmioWarfarinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIO_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+
+---
+
+---
+
+
 ### 3.12 QT-Prolongation Checking
 `safety/qt_prolongation_checker.py` flags a patient's active medications that match a known QT-prolonging agent (for example amiodarone, sotalol, methadone, citalopram, haloperidol, ondansetron, and the macrolide/fluoroquinolone antibiotics). Excessive QT prolongation can precipitate torsades de pointes, a potentially fatal ventricular arrhythmia — a hazard distinct from a two-drug interaction, an allergy, a duplicate therapy, or a pregnancy risk.
 

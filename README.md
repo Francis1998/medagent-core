@@ -357,6 +357,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 55 | Lithium + NSAID toxicity | `safety/lithium_nsaid_checker.py` | Flags lithium/lithobid/eskalith with NSAIDs (not acetaminophen/paracetamol) — HIGH lithium toxicity risk |
 | 56 | Methotrexate + TMP-SMX toxicity | `safety/mtx_tmpsmx_checker.py` | Flags methotrexate with TMP-SMX / co-trimoxazole (trimethoprim, sulfamethoxazole, bactrim, septra, cotrimoxazole) — CRITICAL myelosuppression risk |
 | 57 | DOAC + antiplatelet bleed intensifier | `safety/doac_antiplatelet_checker.py` | Flags apixaban/rivaroxaban/edoxaban/dabigatran with aspirin/clopidogrel/prasugrel/ticagrelor — HIGH major bleeding risk |
+| 58 | Amiodarone + warfarin INR interaction | `safety/amio_warfarin_checker.py` | Flags amiodarone/cordarone/pacerone with warfarin/coumadin/jantoven — HIGH INR/bleeding risk |
 | 53 | SGLT2 + loop diuretic volume depletion | `safety/sglt2_loop_checker.py` | Flags empagliflozin/dapagliflozin/canagliflozin/ertugliflozin with furosemide/bumetanide/torsemide/ethacrynic — HIGH |
 | 51 | Tramadol + SSRI/SNRI dual risk | `safety/tramadol_ssri_checker.py` | Flags tramadol/ultram with SSRI/SNRI (seizure + serotonin risk) — HIGH |
 | 47 | Methotrexate without folate | `safety/mtx_folate_checker.py` | Flags methotrexate without folic acid / folate / leucovorin co-therapy |
