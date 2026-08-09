@@ -1,6 +1,7 @@
 """Safety module — disclaimer injector, PII hasher, scope enforcer."""
 
 from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationChecker
+from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewardshipChecker
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
@@ -45,6 +46,7 @@ __all__ = [
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
     "AceiArbDuplicationChecker",
+    "AmioWarfarinChecker",
     "AntibioticDurationStewardshipChecker",
     "AnticoagBleedingChecker",
     "Beers2023DeltaChecker",

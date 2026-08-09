@@ -1614,3 +1614,25 @@ class MtxTmpsmxRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AmioWarfarinRisk(BaseModel, frozen=True):
+    """Amiodarone co-prescribed with warfarin (INR potentiation / bleeding risk).
+
+    Amiodarone inhibits warfarin metabolism and can raise INR, increasing bleeding
+    risk. Distinct from digoxin + amiodarone level monitoring, warfarin + NSAID
+    intensifier screening, and generic DDI flagging.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched amiodarone-class agent"
+    )
+    agent: str = Field(
+        description="Canonical amiodarone-class agent matched in the medication name"
+    )
+    partner_medication: str = Field(description="Co-prescribed warfarin-class medication name")
+    partner_agent: str = Field(
+        description="Canonical warfarin-class agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
