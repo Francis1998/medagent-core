@@ -13,6 +13,7 @@ from medagent.safety.disclaimer import (
     MANDATORY_DISCLAIMER,
     MEDICAL_SYSTEM_PROMPT,
 )
+from medagent.safety.doac_antiplatelet_checker import DoacAntiplateletChecker
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
@@ -50,6 +51,7 @@ __all__ = [
     "ClozapineAncChecker",
     "DigoxinAmioChecker",
     "DigoxinToxicityChecker",
+    "DoacAntiplateletChecker",
     "ElectrolyteQtChecker",
     "FallRiskChecker",
     "GeriatricDeprescribingChecker",

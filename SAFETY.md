@@ -621,6 +621,13 @@ Every digoxin × macrolide pair yields a `MacrolideDigoxinRisk` record with both
 Every lithium × NSAID pair yields a `LithiumNsaidRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.57 DOAC + Antiplatelet Bleed Intensifier
+`safety/doac_antiplatelet_checker.py` flags **DOAC agents** (apixaban, rivaroxaban, edoxaban, dabigatran) co-prescribed with **antiplatelet partners** (aspirin, clopidogrel, prasugrel, ticagrelor). Concurrent DOAC anticoagulation with antiplatelet therapy intensifies major bleeding risk. This hazard is distinct from the broader anticoagulation bleeding-risk panel, warfarin + NSAID intensifier screening, and generic drug-drug interaction flagging.
+
+Every DOAC × antiplatelet pair yields a `DoacAntiplateletRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_ANTIPLATELET_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+
 ---
 
 ### 3.12 QT-Prolongation Checking
