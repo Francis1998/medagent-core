@@ -630,6 +630,15 @@ Every DOAC × antiplatelet pair yields a `DoacAntiplateletRisk` record with both
 
 ---
 
+### 3.56 Methotrexate + TMP-SMX Toxicity Interaction
+`safety/mtx_tmpsmx_checker.py` flags **methotrexate** co-prescribed with **TMP-SMX / co-trimoxazole panel agents** (trimethoprim, sulfamethoxazole, bactrim, septra, cotrimoxazole). Trimethoprim–sulfamethoxazole can potentiate methotrexate antifolate toxicity and increase myelosuppression risk. This hazard is distinct from methotrexate-without-folate co-therapy screening and generic drug-drug interaction flagging.
+
+Every methotrexate × TMP-SMX pair yields a `MtxTmpsmxRisk` record with both medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_TMPSMX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+
+---
+
 ### 3.12 QT-Prolongation Checking
 `safety/qt_prolongation_checker.py` flags a patient's active medications that match a known QT-prolonging agent (for example amiodarone, sotalol, methadone, citalopram, haloperidol, ondansetron, and the macrolide/fluoroquinolone antibiotics). Excessive QT prolongation can precipitate torsades de pointes, a potentially fatal ventricular arrhythmia — a hazard distinct from a two-drug interaction, an allergy, a duplicate therapy, or a pregnancy risk.
 
