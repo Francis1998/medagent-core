@@ -1578,3 +1578,21 @@ class LithiumNsaidRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class DoacAntiplateletRisk(BaseModel, frozen=True):
+    """DOAC co-prescribed with an antiplatelet bleed intensifier.
+
+    Concurrent DOAC anticoagulation with antiplatelet therapy intensifies major
+    bleeding risk. Distinct from the broader anticoagulation bleeding-risk panel,
+    warfarin + NSAID intensifier screening, and generic DDI flagging.
+    """
+
+    medication: str = Field(description="Medication name containing the matched DOAC agent")
+    agent: str = Field(description="Canonical DOAC agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed antiplatelet medication name")
+    partner_agent: str = Field(
+        description="Canonical antiplatelet agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
