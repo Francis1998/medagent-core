@@ -1674,3 +1674,22 @@ class AceiKsparingRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class NsaidSsriBleedRisk(BaseModel, frozen=True):
+    """NSAID co-prescribed with an SSRI/SNRI bleeding intensifier.
+
+    NSAID-related GI mucosal injury and platelet inhibition combined with
+    SSRI/SNRI-related impairment of platelet aggregation increases bleeding
+    risk. Distinct from warfarin + NSAID and tramadol + SSRI/SNRI screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched NSAID agent")
+    agent: str = Field(description="Canonical NSAID matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed SSRI/SNRI medication name")
+    partner_agent: str = Field(
+        description="Canonical SSRI/SNRI agent matched in the partner medication"
+    )
+    partner_drug_class: str = Field(description="Partner drug class: SSRI or SNRI")
+    severity: Severity
+    rationale: str
