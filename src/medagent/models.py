@@ -1656,3 +1656,21 @@ class FluoroquinoloneWarfarinRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AceiKsparingRisk(BaseModel, frozen=True):
+    """ACE inhibitor/ARB co-prescribed with a potassium-sparing agent.
+
+    Combining ACEI/ARB therapy with a potassium-sparing diuretic or
+    mineralocorticoid receptor antagonist increases hyperkalemia and renal risk.
+    Distinct from ACEI + ARB dual-blockade duplication screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched ACEI/ARB agent")
+    agent: str = Field(description="Canonical ACEI/ARB agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed potassium-sparing medication name")
+    partner_agent: str = Field(
+        description="Canonical potassium-sparing agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
