@@ -651,6 +651,13 @@ Every amiodarone × warfarin pair yields an `AmioWarfarinRisk` record with both 
 
 Every unique fluoroquinolone × warfarin-class pair across separate medication entries yields a `FluoroquinoloneWarfarinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/FLUOROQUINOLONE_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+---
+
+### 3.60 ACEI/ARB + Potassium-Sparing Hyperkalemia Risk
+`safety/acei_ksparing_checker.py` flags an **ACE inhibitor or angiotensin receptor blocker (ARB)** co-prescribed with a **potassium-sparing agent** (spironolactone, eplerenone, amiloride, triamterene). Combined aldosterone suppression or potassium retention increases hyperkalemia and renal-function risk. This hazard is distinct from ACEI + ARB/ARNI dual-blockade duplication and the triple-whammy acute kidney injury panel.
+
+Every unique ACEI/ARB × potassium-sparing pair across separate medication entries yields an `AceiKsparingRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. The ACEI/ARB panel includes lisinopril, enalapril, ramipril, benazepril, captopril, fosinopril, perindopril, quinapril, trandolapril, losartan, valsartan, candesartan, irbesartan, olmesartan, telmisartan, azilsartan, and eprosartan. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/ACEI_KSPARING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 
 
 ---

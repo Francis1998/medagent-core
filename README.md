@@ -359,6 +359,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 57 | DOAC + antiplatelet bleed intensifier | `safety/doac_antiplatelet_checker.py` | Flags apixaban/rivaroxaban/edoxaban/dabigatran with aspirin/clopidogrel/prasugrel/ticagrelor — HIGH major bleeding risk |
 | 58 | Amiodarone + warfarin INR interaction | `safety/amio_warfarin_checker.py` | Flags amiodarone/cordarone/pacerone with warfarin/coumadin/jantoven — HIGH INR/bleeding risk |
 | 59 | Fluoroquinolone + warfarin INR/bleeding interaction | `safety/fluoroquinolone_warfarin_checker.py` | Flags ciprofloxacin/levofloxacin/moxifloxacin/ofloxacin with warfarin/coumadin/jantoven — HIGH INR variability and bleeding risk |
+| 60 | ACEI/ARB + potassium-sparing hyperkalemia | `safety/acei_ksparing_checker.py` | Flags ACE inhibitors or ARBs with spironolactone/eplerenone/amiloride/triamterene — HIGH hyperkalemia and renal-function risk |
 | 53 | SGLT2 + loop diuretic volume depletion | `safety/sglt2_loop_checker.py` | Flags empagliflozin/dapagliflozin/canagliflozin/ertugliflozin with furosemide/bumetanide/torsemide/ethacrynic — HIGH |
 | 51 | Tramadol + SSRI/SNRI dual risk | `safety/tramadol_ssri_checker.py` | Flags tramadol/ultram with SSRI/SNRI (seizure + serotonin risk) — HIGH |
 | 47 | Methotrexate without folate | `safety/mtx_folate_checker.py` | Flags methotrexate without folic acid / folate / leucovorin co-therapy |
