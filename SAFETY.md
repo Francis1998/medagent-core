@@ -664,6 +664,16 @@ Every unique ACEI/ARB × potassium-sparing pair across separate medication entri
 
 ---
 
+### 3.61 NSAID + SSRI/SNRI Bleeding Intensifier
+`safety/nsaid_ssri_checker.py` flags an **NSAID** co-prescribed with an **SSRI or SNRI antidepressant**. NSAID-related gastrointestinal mucosal injury and platelet inhibition combined with SSRI/SNRI-related impairment of platelet aggregation increases gastrointestinal and other bleeding risk. This hazard is distinct from warfarin + NSAID bleeding intensification and tramadol + SSRI/SNRI seizure/serotonin risk.
+
+The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine, venlafaxine, desvenlafaxine, duloxetine, levomilnacipran, and milnacipran. Every unique NSAID × SSRI/SNRI pair across separate medication entries yields a `NsaidSsriBleedRisk` record with both medication names, canonical agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/NSAID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+
+---
+
+---
 
 ### 3.12 QT-Prolongation Checking
 `safety/qt_prolongation_checker.py` flags a patient's active medications that match a known QT-prolonging agent (for example amiodarone, sotalol, methadone, citalopram, haloperidol, ondansetron, and the macrolide/fluoroquinolone antibiotics). Excessive QT prolongation can precipitate torsades de pointes, a potentially fatal ventricular arrhythmia — a hazard distinct from a two-drug interaction, an allergy, a duplicate therapy, or a pregnancy risk.
