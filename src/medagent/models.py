@@ -1636,3 +1636,23 @@ class AmioWarfarinRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class FluoroquinoloneWarfarinRisk(BaseModel, frozen=True):
+    """Fluoroquinolone co-prescribed with warfarin (INR / bleeding risk).
+
+    Fluoroquinolone antibiotics can potentiate warfarin anticoagulation,
+    increasing INR variability and bleeding risk. Distinct from amiodarone +
+    warfarin, warfarin + NSAID, and generic DDI screening.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched fluoroquinolone agent"
+    )
+    agent: str = Field(description="Canonical fluoroquinolone matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed warfarin-class medication name")
+    partner_agent: str = Field(
+        description="Canonical warfarin-class agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str

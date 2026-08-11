@@ -644,6 +644,13 @@ Every methotrexate × TMP-SMX pair yields a `MtxTmpsmxRisk` record with both med
 
 Every amiodarone × warfarin pair yields an `AmioWarfarinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIO_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+---
+
+### 3.59 Fluoroquinolone + Warfarin INR/Bleeding Interaction
+`safety/fluoroquinolone_warfarin_checker.py` flags **fluoroquinolone antibiotics** (ciprofloxacin, levofloxacin, moxifloxacin, ofloxacin) co-prescribed with **warfarin-class anticoagulants** (warfarin, Coumadin, Jantoven). Fluoroquinolones can potentiate warfarin anticoagulation, increasing INR variability and bleeding risk. This hazard is distinct from amiodarone + warfarin INR potentiation, warfarin + NSAID bleeding intensification, and generic drug-drug interaction screening.
+
+Every unique fluoroquinolone × warfarin-class pair across separate medication entries yields a `FluoroquinoloneWarfarinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/FLUOROQUINOLONE_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 
 
 ---
