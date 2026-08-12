@@ -676,6 +676,13 @@ The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, 
 The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. Every unique fluoroquinolone × NSAID pair across separate medication entries yields a `FluoroquinoloneNsaidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.63 ACEI/ARB + Trimethoprim / TMP-SMX Hyperkalemia Risk
+`safety/acei_trimethoprim_checker.py` flags an **ACE inhibitor or ARB** co-prescribed with **trimethoprim or TMP-SMX**. ACEI/ARB therapy reduces aldosterone activity while trimethoprim blocks epithelial sodium channels in a potassium-sparing manner, increasing hyperkalemia risk. This hazard is distinct from ACEI/ARB + potassium-sparing diuretic hyperkalemia screening and methotrexate + TMP-SMX myelosuppression.
+
+The ACEI/ARB panel includes lisinopril, enalapril, ramipril, benazepril, captopril, fosinopril, perindopril, quinapril, trandolapril, losartan, valsartan, candesartan, irbesartan, olmesartan, telmisartan, azilsartan, and eprosartan. Trimethoprim / TMP-SMX partners include trimethoprim (`HIGH`), bactrim, septra, and cotrimoxazole (`CRITICAL`). Every unique ACEI/ARB × trimethoprim pair across separate medication entries yields an `AceiTrimethoprimRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_TRIMETHOPRIM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+
 
 
 ---
