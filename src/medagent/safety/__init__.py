@@ -44,6 +44,7 @@ from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.sglt2_loop_checker import Sglt2LoopChecker
+from medagent.safety.ssri_triptan_checker import SsriTriptanChecker
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
@@ -89,6 +90,7 @@ __all__ = [
     "ScopeEnforcer",
     "ScopeViolationError",
     "Sglt2LoopChecker",
+    "SsriTriptanChecker",
     "StatinCyp3a4Checker",
     "TaperScheduleChecker",
     "TramadolSsriChecker",
