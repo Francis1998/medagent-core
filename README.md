@@ -369,6 +369,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 61 | NSAID + SSRI/SNRI bleed intensifier | `safety/nsaid_ssri_checker.py` | Flags NSAIDs with SSRIs/SNRIs — HIGH gastrointestinal and other bleeding risk |
 | 62 | Fluoroquinolone + NSAID CNS/seizure risk | `safety/fluoroquinolone_nsaid_checker.py` | Flags ciprofloxacin/levofloxacin/moxifloxacin/ofloxacin with NSAIDs — HIGH CNS stimulation / seizure-risk intensifier |
 | 63 | ACEI/ARB + trimethoprim / TMP-SMX hyperkalemia | `safety/acei_trimethoprim_checker.py` | Flags ACE inhibitors or ARBs with trimethoprim/bactrim/septra/cotrimoxazole — HIGH/CRITICAL hyperkalemia risk |
+| 64 | SSRI/SNRI + triptan serotonin pair | `safety/ssri_triptan_checker.py` | Flags SSRIs/SNRIs with triptans (sumatriptan/rizatriptan/eletriptan/…) — HIGH serotonin-syndrome pair risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

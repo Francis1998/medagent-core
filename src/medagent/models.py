@@ -1732,3 +1732,22 @@ class AceiTrimethoprimRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class SsriTriptanRisk(BaseModel, frozen=True):
+    """SSRI/SNRI co-prescribed with a triptan (serotonin-syndrome pair risk).
+
+    Combining an SSRI or SNRI with a triptan antimigraine agent increases
+    serotonin-syndrome risk. Distinct from the broader multi-class serotonin
+    syndrome panel and NSAID + SSRI/SNRI bleeding intensification.
+    """
+
+    medication: str = Field(description="Medication name containing the matched SSRI/SNRI agent")
+    agent: str = Field(description="Canonical SSRI/SNRI agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed triptan medication name")
+    partner_agent: str = Field(
+        description="Canonical triptan agent matched in the partner medication"
+    )
+    antidepressant_class: str = Field(description="Antidepressant drug class: SSRI or SNRI")
+    severity: Severity
+    rationale: str
