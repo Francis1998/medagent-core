@@ -368,6 +368,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 50 | ACEI + ARB + ARNI duplication | `safety/acei_arb_duplication_checker.py` | Flags ≥2 distinct RAAS classes (ACEI/ARB/ARNI) — dual blockade HIGH/CRITICAL |
 | 61 | NSAID + SSRI/SNRI bleed intensifier | `safety/nsaid_ssri_checker.py` | Flags NSAIDs with SSRIs/SNRIs — HIGH gastrointestinal and other bleeding risk |
 | 62 | Fluoroquinolone + NSAID CNS/seizure risk | `safety/fluoroquinolone_nsaid_checker.py` | Flags ciprofloxacin/levofloxacin/moxifloxacin/ofloxacin with NSAIDs — HIGH CNS stimulation / seizure-risk intensifier |
+| 63 | ACEI/ARB + trimethoprim / TMP-SMX hyperkalemia | `safety/acei_trimethoprim_checker.py` | Flags ACE inhibitors or ARBs with trimethoprim/bactrim/septra/cotrimoxazole — HIGH/CRITICAL hyperkalemia risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

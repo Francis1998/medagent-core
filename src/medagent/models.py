@@ -1713,3 +1713,22 @@ class FluoroquinoloneNsaidRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AceiTrimethoprimRisk(BaseModel, frozen=True):
+    """ACE inhibitor/ARB co-prescribed with trimethoprim / TMP-SMX.
+
+    Combining ACEI/ARB therapy with trimethoprim (including TMP-SMX) increases
+    hyperkalemia risk via additive potassium-sparing effects. Distinct from
+    ACEI/ARB + potassium-sparing diuretic screening and methotrexate + TMP-SMX
+    myelosuppression screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched ACEI/ARB agent")
+    agent: str = Field(description="Canonical ACEI/ARB agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed trimethoprim / TMP-SMX medication")
+    partner_agent: str = Field(
+        description="Canonical trimethoprim / TMP-SMX agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
