@@ -670,6 +670,13 @@ Every unique ACEI/ARB × potassium-sparing pair across separate medication entri
 The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine, venlafaxine, desvenlafaxine, duloxetine, levomilnacipran, and milnacipran. Every unique NSAID × SSRI/SNRI pair across separate medication entries yields a `NsaidSsriBleedRisk` record with both medication names, canonical agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/NSAID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.62 Fluoroquinolone + NSAID CNS / Seizure Risk
+`safety/fluoroquinolone_nsaid_checker.py` flags a **fluoroquinolone antibiotic** co-prescribed with an **NSAID**. Fluoroquinolones can lower the seizure threshold and cause CNS stimulation; concurrent NSAID use intensifies that CNS / seizure risk. This hazard is distinct from fluoroquinolone + warfarin INR potentiation and warfarin + NSAID bleeding intensification.
+
+The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. Every unique fluoroquinolone × NSAID pair across separate medication entries yields a `FluoroquinoloneNsaidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+
 
 ---
 
