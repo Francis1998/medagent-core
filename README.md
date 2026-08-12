@@ -367,6 +367,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 49 | Warfarin + NSAID bleed intensifier | `safety/warfarin_nsaid_checker.py` | Flags warfarin/coumadin/jantoven with NSAID (ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, aspirin) — HIGH/CRITICAL |
 | 50 | ACEI + ARB + ARNI duplication | `safety/acei_arb_duplication_checker.py` | Flags ≥2 distinct RAAS classes (ACEI/ARB/ARNI) — dual blockade HIGH/CRITICAL |
 | 61 | NSAID + SSRI/SNRI bleed intensifier | `safety/nsaid_ssri_checker.py` | Flags NSAIDs with SSRIs/SNRIs — HIGH gastrointestinal and other bleeding risk |
+| 62 | Fluoroquinolone + NSAID CNS/seizure risk | `safety/fluoroquinolone_nsaid_checker.py` | Flags ciprofloxacin/levofloxacin/moxifloxacin/ofloxacin with NSAIDs — HIGH CNS stimulation / seizure-risk intensifier |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

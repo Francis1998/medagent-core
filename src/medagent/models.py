@@ -1693,3 +1693,23 @@ class NsaidSsriBleedRisk(BaseModel, frozen=True):
     partner_drug_class: str = Field(description="Partner drug class: SSRI or SNRI")
     severity: Severity
     rationale: str
+
+
+class FluoroquinoloneNsaidRisk(BaseModel, frozen=True):
+    """Fluoroquinolone co-prescribed with an NSAID (CNS / seizure risk).
+
+    Fluoroquinolones can lower the seizure threshold and cause CNS stimulation;
+    concurrent NSAID use intensifies that CNS risk. Distinct from fluoroquinolone
+    + warfarin INR potentiation and warfarin + NSAID bleeding intensification.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched fluoroquinolone agent"
+    )
+    agent: str = Field(description="Canonical fluoroquinolone matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed NSAID medication name")
+    partner_agent: str = Field(
+        description="Canonical NSAID agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
