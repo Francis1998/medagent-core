@@ -1771,3 +1771,21 @@ class FluoroquinoloneCorticosteroidRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class DigoxinVerapamilRisk(BaseModel, frozen=True):
+    """Digoxin co-prescribed with verapamil (toxicity via P-gp / reduced clearance).
+
+    Verapamil inhibits P-glycoprotein and reduces digoxin clearance, raising
+    digoxin serum concentrations. Distinct from digoxin + amiodarone level
+    monitoring and macrolide + digoxin P-gp interaction screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched digoxin agent")
+    agent: str = Field(description="Canonical digoxin agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed verapamil medication name")
+    partner_agent: str = Field(
+        description="Canonical verapamil agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str

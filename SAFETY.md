@@ -695,6 +695,12 @@ The SSRI/SNRI panel includes sertraline, fluoxetine, paroxetine, citalopram, esc
 
 The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. Corticosteroid partners include prednisone, prednisolone, methylprednisolone, dexamethasone, hydrocortisone, and betamethasone. Every unique fluoroquinolone × corticosteroid pair across separate medication entries yields a `FluoroquinoloneCorticosteroidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_CORTICOSTEROID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.66 Digoxin + Verapamil Toxicity Interaction
+`safety/digoxin_verapamil_checker.py` flags **digoxin** co-prescribed with **verapamil**. Verapamil inhibits P-glycoprotein and reduces digoxin clearance, raising digoxin serum concentrations and toxicity risk. This hazard is distinct from digoxin + amiodarone level monitoring and macrolide + digoxin P-gp interaction screening.
+
+The digoxin panel includes digoxin and lanoxin. Verapamil partners include verapamil, calan, isoptin, and verelan. Every unique digoxin × verapamil pair across separate medication entries yields a `DigoxinVerapamilRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_VERAPAMIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---
