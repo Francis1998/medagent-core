@@ -371,6 +371,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 63 | ACEI/ARB + trimethoprim / TMP-SMX hyperkalemia | `safety/acei_trimethoprim_checker.py` | Flags ACE inhibitors or ARBs with trimethoprim/bactrim/septra/cotrimoxazole — HIGH/CRITICAL hyperkalemia risk |
 | 64 | SSRI/SNRI + triptan serotonin pair | `safety/ssri_triptan_checker.py` | Flags SSRIs/SNRIs with triptans (sumatriptan/rizatriptan/eletriptan/…) — HIGH serotonin-syndrome pair risk |
 | 65 | Fluoroquinolone + corticosteroid tendon risk | `safety/fluoroquinolone_corticosteroid_checker.py` | Flags ciprofloxacin/levofloxacin/moxifloxacin/ofloxacin with systemic corticosteroids — HIGH tendon rupture / tendinopathy risk |
+| 66 | Digoxin + verapamil toxicity | `safety/digoxin_verapamil_checker.py` | Flags digoxin/lanoxin with verapamil/calan/isoptin/verelan — HIGH digoxin toxicity via P-gp / reduced clearance |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

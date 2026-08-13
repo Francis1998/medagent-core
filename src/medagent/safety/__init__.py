@@ -11,6 +11,7 @@ from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
 from medagent.safety.digoxin_amio_checker import DigoxinAmioChecker
 from medagent.safety.digoxin_toxicity_checker import DigoxinToxicityChecker
+from medagent.safety.digoxin_verapamil_checker import DigoxinVerapamilChecker
 from medagent.safety.disclaimer import (
     ESCALATION_MESSAGE,
     MANDATORY_DISCLAIMER,
@@ -69,6 +70,7 @@ __all__ = [
     "ClozapineAncChecker",
     "DigoxinAmioChecker",
     "DigoxinToxicityChecker",
+    "DigoxinVerapamilChecker",
     "DoacAntiplateletChecker",
     "ElectrolyteQtChecker",
     "FallRiskChecker",
