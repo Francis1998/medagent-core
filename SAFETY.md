@@ -689,6 +689,12 @@ The SSRI/SNRI panel includes sertraline, fluoxetine, paroxetine, citalopram, esc
 
 
 
+
+### 3.65 Fluoroquinolone + Corticosteroid Tendon Risk
+`safety/fluoroquinolone_corticosteroid_checker.py` flags a **fluoroquinolone antibiotic** co-prescribed with a **systemic corticosteroid**. Concurrent fluoroquinolone and corticosteroid therapy increases tendon rupture and tendinopathy risk. This hazard is distinct from fluoroquinolone + NSAID CNS/seizure risk and fluoroquinolone + warfarin INR potentiation.
+
+The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. Corticosteroid partners include prednisone, prednisolone, methylprednisolone, dexamethasone, hydrocortisone, and betamethasone. Every unique fluoroquinolone × corticosteroid pair across separate medication entries yields a `FluoroquinoloneCorticosteroidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_CORTICOSTEROID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---
