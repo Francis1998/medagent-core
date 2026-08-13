@@ -50,6 +50,7 @@ from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.sglt2_loop_checker import Sglt2LoopChecker
 from medagent.safety.ssri_triptan_checker import SsriTriptanChecker
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
+from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
@@ -98,6 +99,7 @@ __all__ = [
     "Sglt2LoopChecker",
     "SsriTriptanChecker",
     "StatinCyp3a4Checker",
+    "StatinMacrolideChecker",
     "TaperScheduleChecker",
     "TramadolSsriChecker",
     "TripleWhammyChecker",

@@ -701,6 +701,12 @@ The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, an
 
 The digoxin panel includes digoxin and lanoxin. Verapamil partners include verapamil, calan, isoptin, and verelan. Every unique digoxin × verapamil pair across separate medication entries yields a `DigoxinVerapamilRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_VERAPAMIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.67 Statin + Macrolide CYP3A4 Interaction
+`safety/statin_macrolide_checker.py` flags a **CYP3A4-metabolized statin** co-prescribed with a **strong CYP3A4-inhibiting macrolide**. Clarithromycin and erythromycin markedly increase systemic exposure to simvastatin and lovastatin (and to a lesser extent atorvastatin), raising myopathy and rhabdomyolysis risk. This hazard is a focused macrolide pair distinct from the broader statin + strong CYP3A4 inhibitor panel (`StatinCyp3a4Risk`).
+
+The statin panel includes simvastatin and lovastatin (`CRITICAL`) and atorvastatin (`HIGH`). Macrolide partners include clarithromycin and erythromycin (azithromycin intentionally excluded). Every unique statin × macrolide pair across separate medication entries yields a `StatinMacrolideRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---

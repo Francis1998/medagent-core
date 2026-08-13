@@ -1789,3 +1789,21 @@ class DigoxinVerapamilRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class StatinMacrolideRisk(BaseModel, frozen=True):
+    """Statin co-prescribed with a strong CYP3A4-inhibiting macrolide.
+
+    Clarithromycin and erythromycin increase systemic exposure to
+    CYP3A4-metabolized statins, raising myopathy and rhabdomyolysis risk.
+    Distinct from the broader statin + strong CYP3A4 inhibitor panel.
+    """
+
+    medication: str = Field(description="Medication name containing the matched statin agent")
+    agent: str = Field(description="Canonical statin agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed macrolide medication name")
+    partner_agent: str = Field(
+        description="Canonical macrolide agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
