@@ -1751,3 +1751,23 @@ class SsriTriptanRisk(BaseModel, frozen=True):
     antidepressant_class: str = Field(description="Antidepressant drug class: SSRI or SNRI")
     severity: Severity
     rationale: str
+
+
+class FluoroquinoloneCorticosteroidRisk(BaseModel, frozen=True):
+    """Fluoroquinolone co-prescribed with a corticosteroid (tendon rupture risk).
+
+    Concurrent fluoroquinolone and systemic corticosteroid therapy increases
+    tendon rupture and tendinopathy risk. Distinct from fluoroquinolone + NSAID
+    CNS/seizure risk and fluoroquinolone + warfarin INR potentiation.
+    """
+
+    medication: str = Field(
+        description="Medication name containing the matched fluoroquinolone agent"
+    )
+    agent: str = Field(description="Canonical fluoroquinolone agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed corticosteroid medication name")
+    partner_agent: str = Field(
+        description="Canonical corticosteroid agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
