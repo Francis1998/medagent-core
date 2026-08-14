@@ -707,6 +707,11 @@ The digoxin panel includes digoxin and lanoxin. Verapamil partners include verap
 
 The statin panel includes simvastatin and lovastatin (`CRITICAL`) and atorvastatin (`HIGH`). Macrolide partners include clarithromycin and erythromycin (azithromycin intentionally excluded). Every unique statin × macrolide pair across separate medication entries yields a `StatinMacrolideRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.68 Warfarin + Systemic Azole Antifungal Interaction
+`safety/warfarin_azole_checker.py` flags **warfarin/Coumadin** co-prescribed with **fluconazole, ketoconazole, itraconazole, or voriconazole**. Systemic azoles inhibit CYP2C9 and other warfarin-metabolizing CYP pathways, potentially elevating INR and bleeding risk. This focused hazard is distinct from amiodarone + warfarin, fluoroquinolone + warfarin, and warfarin + NSAID controls.
+
+Every unique warfarin × systemic azole pair across separate medication entries yields a `WarfarinAzoleRisk` record with both medication names, canonical agents, `CRITICAL` severity for fluconazole/voriconazole or `HIGH` severity for ketoconazole/itraconazole, and RESEARCH USE ONLY rationale. Topical clotrimazole is intentionally excluded. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_AZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---

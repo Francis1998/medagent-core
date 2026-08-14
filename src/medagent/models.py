@@ -1807,3 +1807,21 @@ class StatinMacrolideRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class WarfarinAzoleRisk(BaseModel, frozen=True):
+    """Warfarin co-prescribed with a systemic azole antifungal.
+
+    Systemic azoles can inhibit CYP2C9 and other warfarin-metabolizing CYP
+    pathways, elevating INR and bleeding risk. Topical clotrimazole is outside
+    this focused interaction panel.
+    """
+
+    medication: str = Field(description="Medication name containing the matched warfarin agent")
+    agent: str = Field(description="Canonical warfarin agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed systemic azole medication name")
+    partner_agent: str = Field(
+        description="Canonical systemic azole agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
