@@ -1825,3 +1825,21 @@ class WarfarinAzoleRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class MtxNsaidRisk(BaseModel, frozen=True):
+    """Methotrexate co-prescribed with an NSAID (reduced-clearance toxicity).
+
+    NSAIDs can reduce renal methotrexate elimination and increase exposure,
+    raising myelosuppression, mucositis, renal injury, and hepatotoxicity risk.
+    Distinct from methotrexate + TMP-SMX and other NSAID interaction controls.
+    """
+
+    medication: str = Field(description="Medication name containing methotrexate")
+    agent: str = Field(description="Canonical methotrexate agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed NSAID medication name")
+    partner_agent: str = Field(
+        description="Canonical NSAID agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
