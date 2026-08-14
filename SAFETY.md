@@ -716,6 +716,15 @@ Every unique warfarin × systemic azole pair across separate medication entries 
 
 ---
 
+### 3.70 ACE Inhibitor + Sacubitril/Entresto Contraindication
+`safety/acei_sacubitril_checker.py` flags an **ACE inhibitor** co-prescribed with **sacubitril or Entresto**. Concurrent ACE and neprilysin inhibition is contraindicated because it substantially increases angioedema risk; a minimum **36-hour washout** is required when switching. This focused hazard is distinct from broad ACEI/ARB/ARNI duplication screening.
+
+The ACE inhibitor panel includes lisinopril, enalapril, ramipril, benazepril, quinapril, captopril, fosinopril, perindopril, trandolapril, and moexipril. Every unique ACE inhibitor × sacubitril/Entresto pair across separate medication entries yields a `AceiSacubitrilRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_SACUBITRIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .
