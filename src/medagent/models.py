@@ -1843,3 +1843,23 @@ class MtxNsaidRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AceiSacubitrilRisk(BaseModel, frozen=True):
+    """ACE inhibitor overlapping with sacubitril-containing therapy.
+
+    Concurrent ACE and neprilysin inhibition substantially increases
+    angioedema risk. A 36-hour washout is required between an ACE inhibitor and
+    sacubitril-containing therapy.
+    """
+
+    medication: str = Field(description="Medication name containing the matched ACE inhibitor")
+    agent: str = Field(description="Canonical ACE inhibitor matched in the medication name")
+    partner_medication: str = Field(
+        description="Co-prescribed sacubitril-containing medication name"
+    )
+    partner_agent: str = Field(
+        description="Canonical sacubitril or Entresto agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
