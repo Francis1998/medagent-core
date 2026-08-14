@@ -716,6 +716,10 @@ Every unique warfarin × systemic azole pair across separate medication entries 
 
 ---
 
+### 3.69 Methotrexate + NSAID Toxicity
+
+See .
+
 ### 3.12 QT-Prolongation Checking
 `safety/qt_prolongation_checker.py` flags a patient's active medications that match a known QT-prolonging agent (for example amiodarone, sotalol, methadone, citalopram, haloperidol, ondansetron, and the macrolide/fluoroquinolone antibiotics). Excessive QT prolongation can precipitate torsades de pointes, a potentially fatal ventricular arrhythmia — a hazard distinct from a two-drug interaction, an allergy, a duplicate therapy, or a pregnancy risk.
 
