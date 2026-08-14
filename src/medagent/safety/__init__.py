@@ -54,6 +54,7 @@ from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
+from medagent.safety.warfarin_azole_checker import WarfarinAzoleChecker
 from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
 
 __all__ = [
@@ -103,6 +104,7 @@ __all__ = [
     "TaperScheduleChecker",
     "TramadolSsriChecker",
     "TripleWhammyChecker",
+    "WarfarinAzoleChecker",
     "WarfarinNsaidChecker",
     "hash_pii",
     "hash_pii_dict",
