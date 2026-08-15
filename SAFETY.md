@@ -723,6 +723,13 @@ The ACE inhibitor panel includes lisinopril, enalapril, ramipril, benazepril, qu
 
 ---
 
+### 3.71 DOAC + NSAID Bleeding Intensifier
+`safety/doac_nsaid_checker.py` flags a **direct oral anticoagulant (DOAC)** co-prescribed with an **NSAID**. Concurrent DOAC anticoagulation with an NSAID intensifies major bleeding risk through anticoagulation plus GI mucosal injury and platelet dysfunction. This focused hazard is distinct from DOAC + antiplatelet screening, warfarin + NSAID intensifier controls, and NSAID + SSRI/SNRI bleeding checks.
+
+The DOAC panel includes apixaban, rivaroxaban, edoxaban, and dabigatran. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and celecoxib (aspirin intentionally excluded). Every unique DOAC × NSAID pair across separate medication entries yields a `DoacNsaidRisk` record with both medication names, canonical agents, `CRITICAL` severity for ketorolac or `HIGH` severity for other panel NSAIDs, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 ### 3.69 Methotrexate + NSAID Toxicity
