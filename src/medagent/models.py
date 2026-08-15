@@ -1863,3 +1863,21 @@ class AceiSacubitrilRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class DoacNsaidRisk(BaseModel, frozen=True):
+    """DOAC co-prescribed with an NSAID (bleeding intensifier).
+
+    NSAIDs combined with direct oral anticoagulants increase major bleeding risk
+    through anticoagulation plus GI mucosal injury and platelet dysfunction.
+    Distinct from DOAC + antiplatelet and warfarin + NSAID controls.
+    """
+
+    medication: str = Field(description="Medication name containing the matched DOAC agent")
+    agent: str = Field(description="Canonical DOAC agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed NSAID medication name")
+    partner_agent: str = Field(
+        description="Canonical NSAID agent matched in the partner medication"
+    )
+    severity: Severity
+    rationale: str
