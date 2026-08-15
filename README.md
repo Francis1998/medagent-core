@@ -375,6 +375,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 67 | Statin + macrolide CYP3A4 interaction | `safety/statin_macrolide_checker.py` | Flags simvastatin/lovastatin (CRITICAL) or atorvastatin (HIGH) with clarithromycin/erythromycin — CYP3A4 myopathy/rhabdomyolysis risk |
 | 68 | Warfarin + systemic azole antifungal | `safety/warfarin_azole_checker.py` | Flags warfarin/Coumadin with fluconazole/voriconazole (CRITICAL) or ketoconazole/itraconazole (HIGH) — CYP2C9/CYP-mediated INR elevation and bleeding risk |
 | 71 | DOAC + NSAID bleed intensifier | `safety/doac_nsaid_checker.py` | Flags apixaban/rivaroxaban/edoxaban/dabigatran with NSAIDs (ketorolac CRITICAL; others HIGH) — anticoagulation plus GI/platelet bleeding intensifier |
+| 72 | SGLT2 + ACEI/ARB/ARNI volume/hyperkalemia risk | `safety/sglt2_raasi_checker.py` | Flags SGLT2 inhibitors with ACEI/ARB/ARNI partners — HIGH volume depletion, AKI, and hyperkalemia risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

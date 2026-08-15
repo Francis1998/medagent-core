@@ -1881,3 +1881,19 @@ class DoacNsaidRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class Sglt2RaasiRisk(BaseModel, frozen=True):
+    """SGLT2 inhibitor co-prescribed with ACEI/ARB/ARNI RAAS therapy.
+
+    Concurrent SGLT2 inhibitor and RAAS blockade increases volume depletion,
+    hypotension, acute kidney injury, and hyperkalemia risk. Distinct from
+    SGLT2 + loop diuretic and focused ACEI duplication controls.
+    """
+
+    medication: str = Field(description="Medication name containing the matched SGLT2 agent")
+    agent: str = Field(description="Canonical SGLT2 agent matched in the medication name")
+    partner_medication: str = Field(description="Co-prescribed ACEI/ARB/ARNI medication name")
+    partner_agent: str = Field(description="Canonical RAAS agent matched in the partner medication")
+    severity: Severity
+    rationale: str

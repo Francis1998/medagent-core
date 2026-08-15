@@ -732,6 +732,16 @@ The DOAC panel includes apixaban, rivaroxaban, edoxaban, and dabigatran. NSAID p
 
 ---
 
+### 3.72 SGLT2 Inhibitor + ACEI/ARB/ARNI Hyperkalemia / Volume-Depletion Risk
+`safety/sglt2_raasi_checker.py` flags an **SGLT2 inhibitor** co-prescribed with an **ACE inhibitor, ARB, or ARNI**. Concurrent SGLT2 inhibitor and RAAS blockade increases volume depletion, hypotension, acute kidney injury, and hyperkalemia risk. This focused hazard is distinct from SGLT2 + loop diuretic screening and ACEI/ARB duplication or potassium-sparing hyperkalemia controls.
+
+The SGLT2 panel includes empagliflozin, dapagliflozin, canagliflozin, and ertugliflozin. RAASI partners include lisinopril, enalapril, ramipril, benazepril, quinapril, captopril, fosinopril, perindopril, trandolapril, moexipril, losartan, valsartan, olmesartan, candesartan, irbesartan, telmisartan, sacubitril, and entresto. Every unique SGLT2 × RAASI pair across separate medication entries yields a `Sglt2RaasiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_RAASI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .
