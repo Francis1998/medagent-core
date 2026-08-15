@@ -1897,3 +1897,21 @@ class Sglt2RaasiRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical RAAS agent matched in the partner medication")
     severity: Severity
     rationale: str
+
+
+class ClopidogrelPpiRisk(BaseModel, frozen=True):
+    """Clopidogrel co-prescribed with a CYP2C19-inhibiting PPI.
+
+    Omeprazole and esomeprazole inhibit CYP2C19, reducing conversion of
+    clopidogrel to its active metabolite and potentially diminishing antiplatelet
+    effect. Distinct from DOAC + antiplatelet screening.
+    """
+
+    medication: str = Field(description="Medication name containing the matched clopidogrel agent")
+    agent: str = Field(description="Canonical clopidogrel agent matched in the medication name")
+    partner_medication: str = Field(
+        description="Co-prescribed CYP2C19-inhibiting PPI medication name"
+    )
+    partner_agent: str = Field(description="Canonical PPI agent matched in the partner medication")
+    severity: Severity
+    rationale: str

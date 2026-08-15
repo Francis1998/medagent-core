@@ -741,6 +741,15 @@ The SGLT2 panel includes empagliflozin, dapagliflozin, canagliflozin, and ertugl
 
 ---
 
+### 3.73 Clopidogrel + CYP2C19-Inhibiting PPI Reduced-Activation Risk
+`safety/clopidogrel_ppi_checker.py` flags **clopidogrel or Plavix** co-prescribed with **omeprazole, esomeprazole, Prilosec, or Nexium**. Omeprazole and esomeprazole inhibit CYP2C19, reducing conversion of clopidogrel to its active metabolite and potentially diminishing antiplatelet effect. This focused hazard is distinct from DOAC + antiplatelet screening and generic PPI taper planning controls.
+
+Every unique clopidogrel × CYP2C19-inhibiting PPI pair across separate medication entries yields a `ClopidogrelPpiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Pantoprazole is intentionally excluded from this focused panel. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CLOPIDOGREL_PPI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
 
 ### 3.69 Methotrexate + NSAID Toxicity
 
