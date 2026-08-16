@@ -1915,3 +1915,18 @@ class ClopidogrelPpiRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical PPI agent matched in the partner medication")
     severity: Severity
     rationale: str
+
+
+class LinezolidSsriRisk(BaseModel, frozen=True):
+    """Linezolid co-prescribed with an SSRI or SNRI.
+
+    Linezolid's reversible MAOI-like activity can combine with serotonergic
+    antidepressants to precipitate serotonin syndrome.
+    """
+
+    medication: str = Field(description="Medication name containing linezolid")
+    agent: str = Field(description="Canonical linezolid agent")
+    partner_medication: str = Field(description="Co-prescribed SSRI/SNRI medication name")
+    partner_agent: str = Field(description="Canonical SSRI/SNRI agent")
+    severity: Severity
+    rationale: str

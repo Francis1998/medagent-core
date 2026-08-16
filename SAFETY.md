@@ -748,6 +748,13 @@ Every unique clopidogrel × CYP2C19-inhibiting PPI pair across separate medicati
 
 ---
 
+### 3.75 Linezolid + SSRI/SNRI Serotonin-Syndrome Risk
+`safety/linezolid_ssri_checker.py` flags **linezolid** co-prescribed with **sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, or duloxetine**. Linezolid has reversible MAOI-like activity, and combining it with an SSRI or SNRI can precipitate potentially life-threatening serotonin syndrome. This focused hazard is distinct from tramadol + SSRI/SNRI and SSRI/SNRI + triptan controls.
+
+Every unique linezolid × SSRI/SNRI pair across separate medication entries yields a `LinezolidSsriRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LINEZOLID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 
