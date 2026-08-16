@@ -378,6 +378,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 72 | SGLT2 + ACEI/ARB/ARNI volume/hyperkalemia risk | `safety/sglt2_raasi_checker.py` | Flags SGLT2 inhibitors with ACEI/ARB/ARNI partners — HIGH volume depletion, AKI, and hyperkalemia risk |
 | 74 | PPI + methotrexate toxicity | `safety/ppi_mtx_checker.py` | Flags methotrexate with omeprazole/esomeprazole/pantoprazole/lansoprazole/rabeprazole — HIGH toxicity risk from potentially reduced clearance |
 | 75 | Linezolid + SSRI/SNRI serotonin syndrome | `safety/linezolid_ssri_checker.py` | Flags linezolid with supported SSRIs/SNRIs — CRITICAL serotonin-syndrome risk from reversible MAOI-like activity |
+| 76 | Lithium + ACEI/ARB toxicity | `safety/lithium_acei_checker.py` | Flags lithium/Lithobid/Eskalith with supported ACE inhibitors or ARBs — HIGH lithium-toxicity risk from potentially reduced renal clearance |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

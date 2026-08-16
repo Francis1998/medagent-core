@@ -37,6 +37,7 @@ from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.linezolid_ssri_checker import LinezolidSsriChecker
+from medagent.safety.lithium_acei_checker import LithiumAceiChecker
 from medagent.safety.lithium_nsaid_checker import LithiumNsaidChecker
 from medagent.safety.macrolide_digoxin_checker import MacrolideDigoxinChecker
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
@@ -94,6 +95,7 @@ __all__ = [
     "InsulinStackingChecker",
     "LactationSafetyChecker",
     "LinezolidSsriChecker",
+    "LithiumAceiChecker",
     "LithiumNsaidChecker",
     "MacrolideDigoxinChecker",
     "MaoiSerotoninCrosscheckChecker",

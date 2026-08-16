@@ -1945,3 +1945,18 @@ class PpiMtxRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical PPI agent")
     severity: Severity
     rationale: str
+
+
+class LithiumAceiRisk(BaseModel, frozen=True):
+    """Lithium co-prescribed with an ACE inhibitor or ARB.
+
+    ACE inhibitors and ARBs may reduce renal lithium clearance and increase
+    serum lithium concentrations and toxicity risk.
+    """
+
+    medication: str = Field(description="Medication name containing a lithium agent")
+    agent: str = Field(description="Canonical lithium agent")
+    partner_medication: str = Field(description="Co-prescribed ACEI/ARB medication name")
+    partner_agent: str = Field(description="Canonical ACEI/ARB agent")
+    severity: Severity
+    rationale: str
