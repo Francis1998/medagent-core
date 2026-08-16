@@ -755,6 +755,13 @@ Every unique linezolid × SSRI/SNRI pair across separate medication entries yiel
 
 ---
 
+### 3.74 PPI + Methotrexate Toxicity Risk
+`safety/ppi_mtx_checker.py` flags **methotrexate** co-prescribed with **omeprazole, esomeprazole, pantoprazole, lansoprazole, or rabeprazole**. PPIs may reduce methotrexate clearance, increasing exposure and toxicity risk. This focused hazard is distinct from methotrexate + NSAID and clopidogrel + PPI controls.
+
+Every unique methotrexate × PPI pair across separate medication entries yields a `PpiMtxRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PPI_MTX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 

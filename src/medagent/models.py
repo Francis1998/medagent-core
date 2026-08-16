@@ -1930,3 +1930,18 @@ class LinezolidSsriRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical SSRI/SNRI agent")
     severity: Severity
     rationale: str
+
+
+class PpiMtxRisk(BaseModel, frozen=True):
+    """Methotrexate co-prescribed with a proton-pump inhibitor.
+
+    PPIs may reduce methotrexate clearance and increase exposure and toxicity
+    risk. Distinct from methotrexate + NSAID and clopidogrel + PPI controls.
+    """
+
+    medication: str = Field(description="Medication name containing methotrexate")
+    agent: str = Field(description="Canonical methotrexate agent")
+    partner_medication: str = Field(description="Co-prescribed PPI medication name")
+    partner_agent: str = Field(description="Canonical PPI agent")
+    severity: Severity
+    rationale: str
