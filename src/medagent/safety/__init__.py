@@ -9,6 +9,7 @@ from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
 from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewardshipChecker
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
+from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacrolideChecker
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
@@ -80,6 +81,7 @@ __all__ = [
     "AntibioticDurationStewardshipChecker",
     "AnticoagBleedingChecker",
     "Beers2023DeltaChecker",
+    "CarbamazepineMacrolideChecker",
     "ChemoEmesisChecker",
     "ClopidogrelPpiChecker",
     "ClozapineAncChecker",

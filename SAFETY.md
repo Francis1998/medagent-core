@@ -785,6 +785,13 @@ Every unique amiodarone × digoxin pair across separate medication entries yield
 
 ---
 
+### 3.79 Carbamazepine + CYP3A4-Inhibiting Macrolide Toxicity
+`safety/carbamazepine_macrolide_checker.py` flags **carbamazepine-class agents** (carbamazepine, Tegretol, Carbatrol, Equetro) co-prescribed with **CYP3A4-inhibiting macrolides** (clarithromycin or erythromycin). CYP3A4 inhibition can reduce carbamazepine metabolism, raise serum concentrations, and increase neurologic and other dose-related toxicity. Azithromycin is intentionally excluded because it does not typically cause clinically important CYP3A4 inhibition.
+
+Every unique carbamazepine × supported macrolide pair across separate medication entries yields a `CarbamazepineMacrolideRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CARBAMAZEPINE_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 

@@ -1990,3 +1990,18 @@ class AmiodaroneDigoxinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical digoxin agent")
     severity: Severity
     rationale: str
+
+
+class CarbamazepineMacrolideRisk(BaseModel, frozen=True):
+    """Carbamazepine co-prescribed with a CYP3A4-inhibiting macrolide.
+
+    Clarithromycin and erythromycin can reduce carbamazepine metabolism, raise
+    serum concentrations, and increase dose-related toxicity risk.
+    """
+
+    medication: str = Field(description="Medication name containing a carbamazepine agent")
+    agent: str = Field(description="Canonical carbamazepine agent")
+    partner_medication: str = Field(description="Co-prescribed macrolide medication name")
+    partner_agent: str = Field(description="Canonical CYP3A4-inhibiting macrolide agent")
+    severity: Severity
+    rationale: str

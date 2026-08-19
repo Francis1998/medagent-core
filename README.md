@@ -381,6 +381,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 76 | Lithium + ACEI/ARB toxicity | `safety/lithium_acei_checker.py` | Flags lithium/Lithobid/Eskalith with supported ACE inhibitors or ARBs — HIGH lithium-toxicity risk from potentially reduced renal clearance |
 | 77 | Theophylline + CYP1A2-inhibiting quinolone toxicity | `safety/theophylline_cipro_checker.py` | Flags theophylline-class agents with ciprofloxacin/Cipro (HIGH) or enoxacin (CRITICAL) — reduced clearance and toxicity risk |
 | 78 | Amiodarone + digoxin P-gp interaction | `safety/amiodarone_digoxin_checker.py` | Flags amiodarone/Cordarone/Pacerone with digoxin/Lanoxin — HIGH digoxin-toxicity risk from P-gp inhibition and reduced clearance |
+| 79 | Carbamazepine + CYP3A4-inhibiting macrolide | `safety/carbamazepine_macrolide_checker.py` | Flags carbamazepine/Tegretol/Carbatrol/Equetro with clarithromycin or erythromycin (not azithromycin) — HIGH carbamazepine-toxicity risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
