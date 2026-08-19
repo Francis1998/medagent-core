@@ -67,11 +67,9 @@ def test_duplicates_are_deduplicated_and_output_is_deterministic() -> None:
     reverse = TheophyllineCiproChecker().check(_meds(*reversed(names)))
 
     assert [
-        (item.agent, item.partner_agent, item.severity, item.partner_medication)
-        for item in forward
+        (item.agent, item.partner_agent, item.severity, item.partner_medication) for item in forward
     ] == [
-        (item.agent, item.partner_agent, item.severity, item.partner_medication)
-        for item in reverse
+        (item.agent, item.partner_agent, item.severity, item.partner_medication) for item in reverse
     ]
     assert [(item.partner_agent, item.severity) for item in forward] == [
         ("enoxacin", Severity.CRITICAL),
