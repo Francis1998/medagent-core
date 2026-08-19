@@ -776,6 +776,12 @@ Every unique lithium × ACEI/ARB pair across separate medication entries yields 
 
 Every unique theophylline × supported quinolone pair across separate medication entries yields a `TheophyllineCiproRisk` record with both medication names, canonical agents, `HIGH` severity for ciprofloxacin/Cipro or `CRITICAL` severity for enoxacin, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/THEOPHYLLINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+---
+
+### 3.78 Amiodarone + Digoxin P-glycoprotein Interaction
+`safety/amiodarone_digoxin_checker.py` flags **amiodarone-class agents** (amiodarone, Cordarone, Pacerone) co-prescribed with **digoxin or Lanoxin**. Amiodarone inhibits P-glycoprotein and reduces digoxin clearance, which can substantially raise serum digoxin concentrations and toxicity risk. This named amiodarone-first record overlaps the older digoxin + amiodarone monitor but is distinct from digoxin + verapamil screening.
+
+Every unique amiodarone × digoxin pair across separate medication entries yields an `AmiodaroneDigoxinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIODARONE_DIGOXIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ---
 
