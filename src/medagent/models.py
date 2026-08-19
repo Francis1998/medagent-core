@@ -1960,3 +1960,18 @@ class LithiumAceiRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical ACEI/ARB agent")
     severity: Severity
     rationale: str
+
+
+class TheophyllineCiproRisk(BaseModel, frozen=True):
+    """Theophylline co-prescribed with a strong CYP1A2-inhibiting quinolone.
+
+    Ciprofloxacin and enoxacin can reduce theophylline clearance, raise serum
+    concentrations, and increase the risk of seizures and serious arrhythmias.
+    """
+
+    medication: str = Field(description="Medication name containing a theophylline agent")
+    agent: str = Field(description="Canonical theophylline agent")
+    partner_medication: str = Field(description="Co-prescribed quinolone medication name")
+    partner_agent: str = Field(description="Canonical CYP1A2-inhibiting quinolone agent")
+    severity: Severity
+    rationale: str
