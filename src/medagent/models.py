@@ -1975,3 +1975,18 @@ class TheophyllineCiproRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical CYP1A2-inhibiting quinolone agent")
     severity: Severity
     rationale: str
+
+
+class AmiodaroneDigoxinRisk(BaseModel, frozen=True):
+    """Amiodarone co-prescribed with digoxin.
+
+    Amiodarone inhibits P-glycoprotein and reduces digoxin clearance, which can
+    substantially increase serum digoxin concentrations and toxicity risk.
+    """
+
+    medication: str = Field(description="Medication name containing an amiodarone agent")
+    agent: str = Field(description="Canonical amiodarone agent")
+    partner_medication: str = Field(description="Co-prescribed digoxin medication name")
+    partner_agent: str = Field(description="Canonical digoxin agent")
+    severity: Severity
+    rationale: str
