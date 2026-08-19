@@ -60,6 +60,7 @@ from medagent.safety.ssri_triptan_checker import SsriTriptanChecker
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
+from medagent.safety.theophylline_cipro_checker import TheophyllineCiproChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
 from medagent.safety.warfarin_azole_checker import WarfarinAzoleChecker
@@ -118,6 +119,7 @@ __all__ = [
     "StatinCyp3a4Checker",
     "StatinMacrolideChecker",
     "TaperScheduleChecker",
+    "TheophyllineCiproChecker",
     "TramadolSsriChecker",
     "TripleWhammyChecker",
     "WarfarinAzoleChecker",

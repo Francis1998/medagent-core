@@ -771,6 +771,14 @@ Every unique lithium × ACEI/ARB pair across separate medication entries yields 
 
 ---
 
+### 3.77 Theophylline + CYP1A2-Inhibiting Quinolone Toxicity
+`safety/theophylline_cipro_checker.py` flags **theophylline-class agents** (theophylline, aminophylline, Uniphyl, TheoChron) co-prescribed with **focused CYP1A2-inhibiting quinolones** (ciprofloxacin/Cipro or enoxacin). CYP1A2 inhibition can reduce theophylline clearance, raise serum concentrations, and increase nausea, tremor, seizure, and serious-arrhythmia risk. Enoxacin is treated as the stronger interaction; levofloxacin, moxifloxacin, and ofloxacin are outside this focused panel.
+
+Every unique theophylline × supported quinolone pair across separate medication entries yields a `TheophyllineCiproRisk` record with both medication names, canonical agents, `HIGH` severity for ciprofloxacin/Cipro or `CRITICAL` severity for enoxacin, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/THEOPHYLLINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+---
+
 ---
 
 
