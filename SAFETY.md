@@ -792,6 +792,13 @@ Every unique carbamazepine × supported macrolide pair across separate medicatio
 
 ---
 
+### 3.80 Warfarin + Metronidazole/Tinidazole CYP2C9/INR Risk
+`safety/warfarin_metronidazole_checker.py` flags **warfarin-class agents** (warfarin, Coumadin, Jantoven) co-prescribed with **metronidazole or tinidazole**. Nitroimidazole-related CYP2C9 inhibition may reduce warfarin clearance, elevate INR, and increase bleeding risk. This focused hazard is distinct from warfarin + azole, fluoroquinolone, amiodarone, and NSAID controls.
+
+Every unique warfarin × supported nitroimidazole pair across separate medication entries yields a `WarfarinMetronidazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/WARFARIN_METRONIDAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 

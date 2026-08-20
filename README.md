@@ -382,6 +382,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 77 | Theophylline + CYP1A2-inhibiting quinolone toxicity | `safety/theophylline_cipro_checker.py` | Flags theophylline-class agents with ciprofloxacin/Cipro (HIGH) or enoxacin (CRITICAL) — reduced clearance and toxicity risk |
 | 78 | Amiodarone + digoxin P-gp interaction | `safety/amiodarone_digoxin_checker.py` | Flags amiodarone/Cordarone/Pacerone with digoxin/Lanoxin — HIGH digoxin-toxicity risk from P-gp inhibition and reduced clearance |
 | 79 | Carbamazepine + CYP3A4-inhibiting macrolide | `safety/carbamazepine_macrolide_checker.py` | Flags carbamazepine/Tegretol/Carbatrol/Equetro with clarithromycin or erythromycin (not azithromycin) — HIGH carbamazepine-toxicity risk |
+| 80 | Warfarin + metronidazole/tinidazole CYP2C9/INR risk | `safety/warfarin_metronidazole_checker.py` | Flags warfarin/Coumadin/Jantoven with metronidazole or tinidazole — HIGH INR elevation and bleeding risk from reduced warfarin clearance |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

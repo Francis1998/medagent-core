@@ -2005,3 +2005,20 @@ class CarbamazepineMacrolideRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical CYP3A4-inhibiting macrolide agent")
     severity: Severity
     rationale: str
+
+
+class WarfarinMetronidazoleRisk(BaseModel, frozen=True):
+    """Warfarin co-prescribed with metronidazole or tinidazole.
+
+    Nitroimidazole-related CYP2C9 inhibition can reduce warfarin clearance,
+    elevate INR, and increase bleeding risk.
+    """
+
+    medication: str = Field(description="Medication name containing a warfarin agent")
+    agent: str = Field(description="Canonical warfarin agent")
+    partner_medication: str = Field(
+        description="Co-prescribed nitroimidazole antibiotic medication name"
+    )
+    partner_agent: str = Field(description="Canonical nitroimidazole antibiotic agent")
+    severity: Severity
+    rationale: str
