@@ -57,12 +57,8 @@ def test_duplicates_are_deduplicated_and_output_is_deterministic() -> None:
     names = ["Tinidazole 500 mg", "Warfarin 5 mg", "Metronidazole 500 mg"]
     forward = WarfarinMetronidazoleChecker().check(_meds(*names))
     reverse = WarfarinMetronidazoleChecker().check(_meds(*reversed(names)))
-    assert [
-        (item.agent, item.partner_agent, item.partner_medication)
-        for item in forward
-    ] == [
-        (item.agent, item.partner_agent, item.partner_medication)
-        for item in reverse
+    assert [(item.agent, item.partner_agent, item.partner_medication) for item in forward] == [
+        (item.agent, item.partner_agent, item.partner_medication) for item in reverse
     ]
     assert [item.partner_agent for item in forward] == [
         "metronidazole",
@@ -93,8 +89,6 @@ def test_single_entry_is_not_coprescription() -> None:
 
 
 def test_checker_is_exported_from_safety_package() -> None:
-    finding = ExportedChecker().check(
-        _meds("Jantoven 5 mg", "Tinidazole 500 mg")
-    )[0]
+    finding = ExportedChecker().check(_meds("Jantoven 5 mg", "Tinidazole 500 mg"))[0]
     assert finding.agent == "jantoven"
     assert finding.partner_agent == "tinidazole"

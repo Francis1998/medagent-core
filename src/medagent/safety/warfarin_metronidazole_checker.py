@@ -31,9 +31,7 @@ _NITROIMIDAZOLE_AGENTS: Final[dict[str, str]] = {
 class WarfarinMetronidazoleChecker:
     """Flag warfarin co-prescribed with metronidazole or tinidazole."""
 
-    def check(
-        self, medications: list[Medication]
-    ) -> list[WarfarinMetronidazoleRisk]:
+    def check(self, medications: list[Medication]) -> list[WarfarinMetronidazoleRisk]:
         """Return one finding per unique warfarin × nitroimidazole pair."""
         warfarin_matches: list[tuple[int, Medication, str]] = []
         nitroimidazole_matches: list[tuple[int, Medication, str]] = []
@@ -45,35 +43,23 @@ class WarfarinMetronidazoleChecker:
 
             warfarin_candidates = sorted(tokens & set(_WARFARIN_AGENTS))
             if warfarin_candidates:
-                warfarin_matches.append(
-                    (index, medication, warfarin_candidates[0])
-                )
+                warfarin_matches.append((index, medication, warfarin_candidates[0]))
 
-            antibiotic_candidates = sorted(
-                tokens & set(_NITROIMIDAZOLE_AGENTS)
-            )
+            antibiotic_candidates = sorted(tokens & set(_NITROIMIDAZOLE_AGENTS))
             if antibiotic_candidates:
-                nitroimidazole_matches.append(
-                    (index, medication, antibiotic_candidates[0])
-                )
+                nitroimidazole_matches.append((index, medication, antibiotic_candidates[0]))
 
         if not warfarin_matches or not nitroimidazole_matches:
             logger.info("warfarin_metronidazole_checked", findings=0)
             return []
 
-        warfarin_matches.sort(
-            key=lambda match: (match[1].name.lower(), match[2], match[0])
-        )
-        nitroimidazole_matches.sort(
-            key=lambda match: (match[1].name.lower(), match[2], match[0])
-        )
+        warfarin_matches.sort(key=lambda match: (match[1].name.lower(), match[2], match[0]))
+        nitroimidazole_matches.sort(key=lambda match: (match[1].name.lower(), match[2], match[0]))
         findings: list[WarfarinMetronidazoleRisk] = []
         seen: set[tuple[str, str]] = set()
 
         for warfarin_index, warfarin_med, warfarin_agent in warfarin_matches:
-            for antibiotic_index, antibiotic_med, antibiotic_agent in (
-                nitroimidazole_matches
-            ):
+            for antibiotic_index, antibiotic_med, antibiotic_agent in nitroimidazole_matches:
                 pair_key = (warfarin_agent, antibiotic_agent)
                 if warfarin_index == antibiotic_index or pair_key in seen:
                     continue
@@ -102,9 +88,7 @@ class WarfarinMetronidazoleChecker:
                 finding.partner_agent,
             )
         )
-        logger.info(
-            "warfarin_metronidazole_checked", findings=len(findings)
-        )
+        logger.info("warfarin_metronidazole_checked", findings=len(findings))
         return findings
 
     @staticmethod
