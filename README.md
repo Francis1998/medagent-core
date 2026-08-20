@@ -383,6 +383,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 78 | Amiodarone + digoxin P-gp interaction | `safety/amiodarone_digoxin_checker.py` | Flags amiodarone/Cordarone/Pacerone with digoxin/Lanoxin — HIGH digoxin-toxicity risk from P-gp inhibition and reduced clearance |
 | 79 | Carbamazepine + CYP3A4-inhibiting macrolide | `safety/carbamazepine_macrolide_checker.py` | Flags carbamazepine/Tegretol/Carbatrol/Equetro with clarithromycin or erythromycin (not azithromycin) — HIGH carbamazepine-toxicity risk |
 | 80 | Warfarin + metronidazole/tinidazole CYP2C9/INR risk | `safety/warfarin_metronidazole_checker.py` | Flags warfarin/Coumadin/Jantoven with metronidazole or tinidazole — HIGH INR elevation and bleeding risk from reduced warfarin clearance |
+| 81 | Colchicine + strong CYP3A4 inhibitor toxicity | `safety/colchicine_cyp3a4_checker.py` | Flags colchicine-class agents with clarithromycin, ketoconazole, itraconazole, or ritonavir — CRITICAL severe or fatal colchicine-toxicity risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

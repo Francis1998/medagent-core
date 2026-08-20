@@ -799,6 +799,13 @@ Every unique warfarin × supported nitroimidazole pair across separate medicatio
 
 ---
 
+### 3.81 Colchicine + Strong CYP3A4 Inhibitor Critical Toxicity
+`safety/colchicine_cyp3a4_checker.py` flags **colchicine-class agents** (colchicine, Colcrys, Mitigare, Gloperba) co-prescribed with **strong CYP3A4 inhibitors** (clarithromycin, ketoconazole, itraconazole, ritonavir). Strong CYP3A4 inhibition can markedly increase colchicine exposure and cause severe or fatal gastrointestinal, neuromuscular, or bone-marrow toxicity.
+
+Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 
