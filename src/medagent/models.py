@@ -2039,3 +2039,18 @@ class ColchicineCyp3a4Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical strong CYP3A4 inhibitor agent")
     severity: Severity
     rationale: str
+
+
+class LithiumThiazideRisk(BaseModel, frozen=True):
+    """Lithium co-prescribed with a thiazide or thiazide-like diuretic.
+
+    Thiazides can reduce renal lithium clearance, raise serum lithium
+    concentrations, and cause toxicity.
+    """
+
+    medication: str = Field(description="Medication name containing a lithium agent")
+    agent: str = Field(description="Canonical lithium agent")
+    partner_medication: str = Field(description="Co-prescribed thiazide diuretic medication name")
+    partner_agent: str = Field(description="Canonical thiazide diuretic agent")
+    severity: Severity
+    rationale: str

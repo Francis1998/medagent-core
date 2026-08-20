@@ -806,6 +806,13 @@ Every unique colchicine × supported inhibitor pair across separate medication e
 
 ---
 
+### 3.82 Lithium + Thiazide Diuretic Toxicity Risk
+`safety/lithium_thiazide_checker.py` flags **lithium-class agents** (lithium, Lithobid, Eskalith) co-prescribed with **thiazide or thiazide-like diuretics** (hydrochlorothiazide/HCTZ, chlorthalidone, indapamide). Thiazide-related sodium loss can increase proximal lithium reabsorption, reduce renal lithium clearance, raise serum concentrations, and cause toxicity. This focused hazard is distinct from lithium + NSAID and lithium + ACEI/ARB controls.
+
+Every unique lithium × supported thiazide pair across separate medication entries yields a `LithiumThiazideRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_THIAZIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 
