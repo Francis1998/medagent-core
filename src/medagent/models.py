@@ -2022,3 +2022,20 @@ class WarfarinMetronidazoleRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical nitroimidazole antibiotic agent")
     severity: Severity
     rationale: str
+
+
+class ColchicineCyp3a4Risk(BaseModel, frozen=True):
+    """Colchicine co-prescribed with a strong CYP3A4 inhibitor.
+
+    Strong CYP3A4 inhibition can markedly increase colchicine exposure and
+    cause severe or fatal toxicity.
+    """
+
+    medication: str = Field(description="Medication name containing a colchicine agent")
+    agent: str = Field(description="Canonical colchicine agent")
+    partner_medication: str = Field(
+        description="Co-prescribed strong CYP3A4 inhibitor medication name"
+    )
+    partner_agent: str = Field(description="Canonical strong CYP3A4 inhibitor agent")
+    severity: Severity
+    rationale: str
