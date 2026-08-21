@@ -2069,3 +2069,19 @@ class TramadolBupropionRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical bupropion agent")
     severity: Severity
     rationale: str
+
+
+class MtxPenicillinRisk(BaseModel, frozen=True):
+    """Methotrexate co-prescribed with a penicillin-class antibiotic.
+
+    Penicillin-class antibiotics can reduce renal methotrexate clearance
+    and increase toxicity risk. This record is distinct from methotrexate
+    + NSAID and methotrexate + TMP-SMX controls.
+    """
+
+    medication: str = Field(description="Medication name containing a methotrexate agent")
+    agent: str = Field(description="Canonical methotrexate agent")
+    partner_medication: str = Field(description="Co-prescribed penicillin medication name")
+    partner_agent: str = Field(description="Canonical penicillin agent")
+    severity: Severity
+    rationale: str
