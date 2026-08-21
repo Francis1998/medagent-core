@@ -2054,3 +2054,17 @@ class LithiumThiazideRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical thiazide diuretic agent")
     severity: Severity
     rationale: str
+
+
+class TramadolBupropionRisk(BaseModel, frozen=True):
+    """Tramadol co-prescribed with bupropion, compounding seizure risk.
+
+    Both tramadol and bupropion lower the seizure threshold. This focused record is distinct from tramadol + SSRI/SNRI screening.
+    """
+
+    medication: str = Field(description="Medication name containing a tramadol agent")
+    agent: str = Field(description="Canonical tramadol agent")
+    partner_medication: str = Field(description="Co-prescribed bupropion medication name")
+    partner_agent: str = Field(description="Canonical bupropion agent")
+    severity: Severity
+    rationale: str
