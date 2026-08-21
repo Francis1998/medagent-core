@@ -164,9 +164,9 @@ class AnthropicAdapter(BaseLLMAdapter):
             response = await client.messages.create(
                 model=self._model,
                 max_tokens=max_tokens,
-                temperature=temperature,
                 system=sys_msg,
                 messages=[{"role": "user", "content": prompt}],
+                extra_body={"temperature": temperature},
             )
         except Exception as exc:
             logger.error("anthropic_api_error", error=str(exc))

@@ -813,6 +813,13 @@ Every unique lithium × supported thiazide pair across separate medication entri
 
 ---
 
+### 3.83 Tramadol + Bupropion Seizure Risk
+`safety/tramadol_bupropion_checker.py` flags **tramadol-class agents** (tramadol, Ultram) co-prescribed with **bupropion-class agents** (bupropion, Wellbutrin, Zyban). Both agents lower the seizure threshold, so concurrent use can compound seizure risk. This focused hazard is distinct from tramadol + SSRI/SNRI seizure and serotonin-risk screening.
+
+Every unique tramadol × bupropion pair across separate medication entries yields a `TramadolBupropionRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRAMADOL_BUPROPION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
 ---
 
 
