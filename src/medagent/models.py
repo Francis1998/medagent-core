@@ -2085,3 +2085,18 @@ class MtxPenicillinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical penicillin agent")
     severity: Severity
     rationale: str
+
+
+class SildenafilNitrateRisk(BaseModel, frozen=True):
+    """Sildenafil co-prescribed with an organic nitrate.
+
+    PDE-5 inhibition amplifies nitrate-mediated cyclic-GMP vasodilation
+    and can cause profound, life-threatening hypotension.
+    """
+
+    medication: str = Field(description="Medication name containing a sildenafil agent")
+    agent: str = Field(description="Canonical sildenafil agent")
+    partner_medication: str = Field(description="Co-prescribed nitrate medication name")
+    partner_agent: str = Field(description="Canonical nitrate agent")
+    severity: Severity
+    rationale: str

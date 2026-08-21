@@ -832,6 +832,15 @@ Every unique methotrexate × penicillin-class antibiotic pair across separate me
 
 ---
 
+### 3.85 Sildenafil + Nitrate Critical Hypotension Risk
+`safety/sildenafil_nitrate_checker.py` flags **sildenafil-class agents** (sildenafil, Viagra, Revatio) co-prescribed with **organic nitrates** (nitroglycerin, isosorbide, Imdur, Monoket). PDE-5 inhibition amplifies nitrate-mediated cyclic-GMP vasodilation and can cause profound, life-threatening hypotension, syncope, ischemia, or shock.
+
+Every unique sildenafil × nitrate pair across separate medication entries yields a `SildenafilNitrateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SILDENAFIL_NITRATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .
