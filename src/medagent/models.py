@@ -2059,7 +2059,8 @@ class LithiumThiazideRisk(BaseModel, frozen=True):
 class TramadolBupropionRisk(BaseModel, frozen=True):
     """Tramadol co-prescribed with bupropion, compounding seizure risk.
 
-    Both tramadol and bupropion lower the seizure threshold. This focused record is distinct from tramadol + SSRI/SNRI screening.
+    Both tramadol and bupropion lower the seizure threshold. This focused
+    record is distinct from tramadol + SSRI/SNRI screening.
     """
 
     medication: str = Field(description="Medication name containing a tramadol agent")

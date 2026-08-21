@@ -1,6 +1,8 @@
 """tramadol + bupropion seizure-risk checker.
 
-Both agents lower the seizure threshold, so concurrent use can compound seizure risk. This focused control is distinct from tramadol + SSRI/SNRI screening.
+Both agents lower the seizure threshold, so concurrent use can compound
+seizure risk. This focused control is distinct from tramadol + SSRI/SNRI
+screening.
 """
 
 from __future__ import annotations
