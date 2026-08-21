@@ -823,6 +823,15 @@ Every unique tramadol × bupropion pair across separate medication entries yield
 ---
 
 
+### 3.84 Methotrexate + Penicillin Toxicity Risk
+`safety/mtx_penicillin_checker.py` flags **methotrexate-class agents** (methotrexate, MTX) co-prescribed with **penicillin-class antibiotics** (penicillin, penicillin-V, Pen-VK, amoxicillin, ampicillin). Penicillin-class antibiotics can reduce renal methotrexate clearance, increase exposure, and raise toxicity risk. This focused hazard is distinct from methotrexate + NSAID and methotrexate + TMP-SMX controls.
+
+Every unique methotrexate × penicillin-class antibiotic pair across separate medication entries yields a `MtxPenicillinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_PENICILLIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .
