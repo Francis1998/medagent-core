@@ -14,6 +14,7 @@ from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacroli
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
+from medagent.safety.codeine_cyp2d6_checker import CodeineCyp2d6Checker
 from medagent.safety.colchicine_cyp3a4_checker import ColchicineCyp3a4Checker
 from medagent.safety.digoxin_amio_checker import DigoxinAmioChecker
 from medagent.safety.digoxin_toxicity_checker import DigoxinToxicityChecker
@@ -93,6 +94,7 @@ __all__ = [
     "ChemoEmesisChecker",
     "ClopidogrelPpiChecker",
     "ClozapineAncChecker",
+    "CodeineCyp2d6Checker",
     "ColchicineCyp3a4Checker",
     "DigoxinAmioChecker",
     "DigoxinToxicityChecker",
