@@ -4,6 +4,7 @@ from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationCheck
 from medagent.safety.acei_ksparing_checker import AceiKsparingChecker
 from medagent.safety.acei_sacubitril_checker import AceiSacubitrilChecker
 from medagent.safety.acei_trimethoprim_checker import AceiTrimethoprimChecker
+from medagent.safety.allopurinol_azathioprine_checker import AllopurinolAzathioprineChecker
 from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
 from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewardshipChecker
@@ -82,6 +83,7 @@ __all__ = [
     "AceiKsparingChecker",
     "AceiSacubitrilChecker",
     "AceiTrimethoprimChecker",
+    "AllopurinolAzathioprineChecker",
     "AmioWarfarinChecker",
     "AmiodaroneDigoxinChecker",
     "AntibioticDurationStewardshipChecker",
