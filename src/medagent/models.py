@@ -2115,3 +2115,18 @@ class AllopurinolAzathioprineRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical azathioprine/mercaptopurine agent")
     severity: Severity
     rationale: str
+
+
+class CodeineCyp2d6Risk(BaseModel, frozen=True):
+    """Codeine co-prescribed with a strong CYP2D6 inhibitor.
+
+    Codeine requires CYP2D6 conversion to morphine; strong inhibitors can
+    reduce analgesia and alter exposure. Distinct from other opioid checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a codeine agent")
+    agent: str = Field(description="Canonical codeine agent")
+    partner_medication: str = Field(description="Co-prescribed CYP2D6-inhibitor medication name")
+    partner_agent: str = Field(description="Canonical strong CYP2D6 inhibitor")
+    severity: Severity
+    rationale: str

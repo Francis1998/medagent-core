@@ -846,6 +846,11 @@ Every unique sildenafil × nitrate pair across separate medication entries yield
 
 Every unique allopurinol × thiopurine pair across separate medication entries yields an `AllopurinolAzathioprineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ALLOPURINOL_AZATHIOPRINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.87 Codeine + CYP2D6 Inhibitor Analgesia Risk
+`safety/codeine_cyp2d6_checker.py` flags **codeine-class agents** (codeine, Tylenol-with-codeine) co-prescribed with **strong CYP2D6 inhibitors** (fluoxetine, paroxetine, bupropion, quinidine, terbinafine). Codeine requires CYP2D6 bioactivation to morphine; inhibitors can reduce analgesia and alter exposure. This focused hazard is distinct from opioid + benzodiazepine, opioid MED, and tramadol interaction checkers.
+
+Every unique codeine × CYP2D6-inhibitor pair across separate medication entries yields a `CodeineCyp2d6Risk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CODEINE_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---
