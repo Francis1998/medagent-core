@@ -2130,3 +2130,20 @@ class CodeineCyp2d6Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical strong CYP2D6 inhibitor")
     severity: Severity
     rationale: str
+
+
+class AceiPotassiumRisk(BaseModel, frozen=True):
+    """ACE inhibitor/ARB co-prescribed with a potassium supplement.
+
+    Concurrent exogenous potassium increases hyperkalemia risk. Distinct from
+    ACEI/ARB + potassium-sparing diuretic and ACEI/ARB + trimethoprim screening.
+    """
+
+    medication: str = Field(description="Medication name containing an ACEI or ARB agent")
+    agent: str = Field(description="Canonical ACEI or ARB agent")
+    partner_medication: str = Field(
+        description="Co-prescribed potassium-supplement medication name"
+    )
+    partner_agent: str = Field(description="Canonical potassium-supplement agent")
+    severity: Severity
+    rationale: str

@@ -2,6 +2,7 @@
 
 from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationChecker
 from medagent.safety.acei_ksparing_checker import AceiKsparingChecker
+from medagent.safety.acei_potassium_checker import AceiPotassiumChecker
 from medagent.safety.acei_sacubitril_checker import AceiSacubitrilChecker
 from medagent.safety.acei_trimethoprim_checker import AceiTrimethoprimChecker
 from medagent.safety.allopurinol_azathioprine_checker import AllopurinolAzathioprineChecker
@@ -82,6 +83,7 @@ __all__ = [
     "MEDICAL_SYSTEM_PROMPT",
     "AceiArbDuplicationChecker",
     "AceiKsparingChecker",
+    "AceiPotassiumChecker",
     "AceiSacubitrilChecker",
     "AceiTrimethoprimChecker",
     "AllopurinolAzathioprineChecker",

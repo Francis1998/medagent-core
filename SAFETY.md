@@ -851,6 +851,11 @@ Every unique allopurinol × thiopurine pair across separate medication entries y
 
 Every unique codeine × CYP2D6-inhibitor pair across separate medication entries yields a `CodeineCyp2d6Risk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CODEINE_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.88 ACEI/ARB + Potassium Supplement Hyperkalemia Risk
+`safety/acei_potassium_checker.py` flags **ACE inhibitors or ARBs** (lisinopril, enalapril, ramipril, and related ACEIs; losartan, valsartan, and related ARBs) co-prescribed with **potassium supplements** (potassium, KCl, Klor-Con, potassium chloride). Concurrent exogenous potassium increases hyperkalemia risk. This focused hazard is distinct from ACEI/ARB + potassium-sparing diuretic screening (#3.60) and ACEI/ARB + trimethoprim / TMP-SMX screening (#3.63).
+
+Every unique ACEI/ARB × potassium-supplement pair across separate medication entries yields an `AceiPotassiumRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_POTASSIUM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---
