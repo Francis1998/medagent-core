@@ -388,6 +388,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 83 | Tramadol + bupropion seizure risk | `safety/tramadol_bupropion_checker.py` | Flags tramadol/Ultram with bupropion/Wellbutrin/Zyban — HIGH compounded seizure-threshold-lowering risk; distinct from tramadol + SSRI/SNRI |
 | 84 | Methotrexate + penicillin toxicity | `safety/mtx_penicillin_checker.py` | Flags methotrexate/MTX with penicillin/penicillin-V/Pen-VK/amoxicillin/ampicillin — HIGH toxicity risk from reduced methotrexate clearance |
 | 85 | Sildenafil + nitrate hypotension | `safety/sildenafil_nitrate_checker.py` | Flags sildenafil/Viagra/Revatio with nitroglycerin/isosorbide/Imdur/Monoket — CRITICAL profound hypotension risk |
+| 86 | Allopurinol + azathioprine/6-MP toxicity | `safety/allopurinol_azathioprine_checker.py` | Flags allopurinol/Zyloprim with azathioprine/Imuran/mercaptopurine/6-MP/Purinethol — CRITICAL xanthine-oxidase inhibition / thiopurine-toxicity risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

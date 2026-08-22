@@ -841,6 +841,15 @@ Every unique sildenafil × nitrate pair across separate medication entries yield
 
 ---
 
+### 3.86 Allopurinol + Azathioprine / 6-MP Toxicity Risk
+`safety/allopurinol_azathioprine_checker.py` flags **allopurinol-class agents** (allopurinol, Zyloprim) co-prescribed with **azathioprine or mercaptopurine** (azathioprine, Imuran, mercaptopurine, 6-MP, Purinethol). Xanthine oxidase inhibition markedly increases thiopurine exposure and can cause severe myelosuppression and other life-threatening toxicity.
+
+Every unique allopurinol × thiopurine pair across separate medication entries yields an `AllopurinolAzathioprineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ALLOPURINOL_AZATHIOPRINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .

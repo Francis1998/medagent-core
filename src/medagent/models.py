@@ -2100,3 +2100,18 @@ class SildenafilNitrateRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical nitrate agent")
     severity: Severity
     rationale: str
+
+
+class AllopurinolAzathioprineRisk(BaseModel, frozen=True):
+    """Allopurinol co-prescribed with azathioprine or mercaptopurine.
+
+    Xanthine oxidase inhibition increases thiopurine exposure and can cause
+    severe myelosuppression and other toxicity.
+    """
+
+    medication: str = Field(description="Medication name containing an allopurinol agent")
+    agent: str = Field(description="Canonical allopurinol agent")
+    partner_medication: str = Field(description="Co-prescribed thiopurine medication name")
+    partner_agent: str = Field(description="Canonical azathioprine/mercaptopurine agent")
+    severity: Severity
+    rationale: str
