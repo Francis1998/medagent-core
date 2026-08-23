@@ -2183,3 +2183,19 @@ class MetforminContrastRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical iodinated-contrast-media agent")
     severity: Severity
     rationale: str
+
+
+class MethadoneQtRisk(BaseModel, frozen=True):
+    """Methadone co-prescribed with another QT-prolonging medication.
+
+    Methadone's baseline QT-prolonging effect can be intensified by a second
+    QT-prolonging agent, increasing torsades de pointes risk. Distinct from the
+    general multi-drug QT-prolongation screen.
+    """
+
+    medication: str = Field(description="Medication name containing a methadone agent")
+    agent: str = Field(description="Canonical methadone agent")
+    partner_medication: str = Field(description="Co-prescribed QT-prolonging medication name")
+    partner_agent: str = Field(description="Canonical QT-prolonging partner agent")
+    severity: Severity
+    rationale: str

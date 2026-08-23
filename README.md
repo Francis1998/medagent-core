@@ -393,6 +393,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 88 | ACEI/ARB + potassium supplement hyperkalemia | `safety/acei_potassium_checker.py` | Flags ACEIs/ARBs with potassium/KCl/Klor-Con/potassium-chloride — HIGH hyperkalemia risk; distinct from ACEI + K-sparing (#60) and ACEI + TMP (#63) |
 | 90 | Isotretinoin + tetracycline-class pseudotumor cerebri | `safety/isotretinoin_tetracycline_checker.py` | Flags isotretinoin/Accutane/Absorica/Claravis/Myorisan/Zenatane with tetracycline/doxycycline/minocycline — CRITICAL pseudotumor cerebri / intracranial hypertension risk |
 | 89 | Metformin + iodinated contrast lactic acidosis | `safety/metformin_contrast_checker.py` | Flags metformin/Glucophage/Fortamet/Glumetza/Riomet with contrast/iohexol/iodixanol/iopamidol — HIGH peri-contrast lactic-acidosis risk; distinct from general metformin renal-dose checking |
+| 91 | Methadone + QT-prolonging drug intensification | `safety/methadone_qt_checker.py` | Flags methadone/Dolophine/Methadose with haloperidol/ziprasidone/citalopram (CRITICAL) or ondansetron/azithromycin/escitalopram (HIGH) — QT intensification/torsades risk; distinct from general QT screen (`qt_prolongation_checker.py`) |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
