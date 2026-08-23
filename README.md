@@ -391,6 +391,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 86 | Allopurinol + azathioprine/6-MP toxicity | `safety/allopurinol_azathioprine_checker.py` | Flags allopurinol/Zyloprim with azathioprine/Imuran/mercaptopurine/6-MP/Purinethol — CRITICAL xanthine-oxidase inhibition / thiopurine-toxicity risk |
 | 87 | Codeine + CYP2D6 inhibitor analgesia risk | `safety/codeine_cyp2d6_checker.py` | Flags codeine/Tylenol-with-codeine with fluoxetine/paroxetine/bupropion/quinidine/terbinafine — HIGH risk of reduced morphine formation and altered analgesia; distinct from other opioid checkers |
 | 88 | ACEI/ARB + potassium supplement hyperkalemia | `safety/acei_potassium_checker.py` | Flags ACEIs/ARBs with potassium/KCl/Klor-Con/potassium-chloride — HIGH hyperkalemia risk; distinct from ACEI + K-sparing (#60) and ACEI + TMP (#63) |
+| 90 | Isotretinoin + tetracycline-class pseudotumor cerebri | `safety/isotretinoin_tetracycline_checker.py` | Flags isotretinoin/Accutane/Absorica/Claravis/Myorisan/Zenatane with tetracycline/doxycycline/minocycline — CRITICAL pseudotumor cerebri / intracranial hypertension risk |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

@@ -2147,3 +2147,21 @@ class AceiPotassiumRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical potassium-supplement agent")
     severity: Severity
     rationale: str
+
+
+class IsotretinoinTetracyclineRisk(BaseModel, frozen=True):
+    """Isotretinoin co-prescribed with a tetracycline-class antibiotic.
+
+    Both agents are independently associated with idiopathic intracranial
+    hypertension; co-prescription can precipitate pseudotumor cerebri with
+    irreversible vision loss.
+    """
+
+    medication: str = Field(description="Medication name containing an isotretinoin agent")
+    agent: str = Field(description="Canonical isotretinoin agent")
+    partner_medication: str = Field(
+        description="Co-prescribed tetracycline-class antibiotic medication name"
+    )
+    partner_agent: str = Field(description="Canonical tetracycline-class agent")
+    severity: Severity
+    rationale: str

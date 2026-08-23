@@ -41,6 +41,9 @@ from medagent.safety.fluoroquinolone_warfarin_checker import (
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
+from medagent.safety.isotretinoin_tetracycline_checker import (
+    IsotretinoinTetracyclineChecker,
+)
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.linezolid_ssri_checker import LinezolidSsriChecker
 from medagent.safety.lithium_acei_checker import LithiumAceiChecker
@@ -111,6 +114,7 @@ __all__ = [
     "GeriatricDeprescribingChecker",
     "InrTtrChecker",
     "InsulinStackingChecker",
+    "IsotretinoinTetracyclineChecker",
     "LactationSafetyChecker",
     "LinezolidSsriChecker",
     "LithiumAceiChecker",
