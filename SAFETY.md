@@ -856,6 +856,11 @@ Every unique codeine × CYP2D6-inhibitor pair across separate medication entries
 
 Every unique ACEI/ARB × potassium-supplement pair across separate medication entries yields an `AceiPotassiumRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_POTASSIUM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.90 Isotretinoin + Tetracycline-Class Pseudotumor Cerebri Risk
+`safety/isotretinoin_tetracycline_checker.py` flags **isotretinoin-class agents** (isotretinoin, Accutane, Absorica, Claravis, Myorisan, Zenatane) co-prescribed with **tetracycline-class antibiotics** (tetracycline, doxycycline, minocycline). Both agents are independently associated with idiopathic intracranial hypertension, and co-prescription can precipitate pseudotumor cerebri with irreversible vision loss.
+
+Every unique isotretinoin × tetracycline-class pair across separate medication entries yields an `IsotretinoinTetracyclineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ISOTRETINOIN_TETRACYCLINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---
