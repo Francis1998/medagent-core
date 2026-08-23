@@ -871,6 +871,15 @@ Every unique isotretinoin × tetracycline-class pair across separate medication 
 
 Every unique metformin × contrast-media pair across separate medication entries yields a `MetforminContrastRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METFORMIN_CONTRAST_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.91 Methadone + QT-Prolonging Drug Intensification Risk
+`safety/methadone_qt_checker.py` flags **methadone** (methadone, Dolophine, Methadose) co-prescribed with **other QT-prolonging agents** (haloperidol, ziprasidone, citalopram — `CRITICAL`; ondansetron, azithromycin, escitalopram — `HIGH`). Methadone's baseline QT-prolonging effect can be intensified by a second QT-prolonging agent, increasing torsades de pointes risk. This methadone-focused intensifier is distinct from the general multi-drug QT-prolongation screen (`safety/qt_prolongation_checker.py`).
+
+Every unique methadone × QT-drug pair across separate medication entries yields a `MethadoneQtRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHADONE_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
 ---
 
 ---
