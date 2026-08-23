@@ -865,6 +865,17 @@ Every unique isotretinoin × tetracycline-class pair across separate medication 
 
 ---
 
+
+### 3.89 Metformin + Iodinated Contrast Media Lactic Acidosis Risk
+`safety/metformin_contrast_checker.py` flags **metformin-class agents** (metformin, Glucophage, Fortamet, Glumetza, Riomet) co-prescribed with **iodinated contrast media** (contrast, contrast-media, iohexol, iodixanol, iopamidol). Iodinated contrast can transiently impair renal clearance of metformin, and accumulation can precipitate life-threatening lactic acidosis. This focused peri-contrast hazard is distinct from general metformin renal-dose checking.
+
+Every unique metformin × contrast-media pair across separate medication entries yields a `MetforminContrastRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METFORMIN_CONTRAST_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+---
+
+---
+
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .

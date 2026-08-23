@@ -2165,3 +2165,21 @@ class IsotretinoinTetracyclineRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical tetracycline-class agent")
     severity: Severity
     rationale: str
+
+
+class MetforminContrastRisk(BaseModel, frozen=True):
+    """Metformin co-prescribed with iodinated contrast media.
+
+    Iodinated contrast can transiently impair renal clearance of metformin,
+    and accumulation can precipitate life-threatening lactic acidosis. Distinct
+    from general metformin renal-dose checking.
+    """
+
+    medication: str = Field(description="Medication name containing a metformin agent")
+    agent: str = Field(description="Canonical metformin agent")
+    partner_medication: str = Field(
+        description="Co-prescribed iodinated-contrast-media medication name"
+    )
+    partner_agent: str = Field(description="Canonical iodinated-contrast-media agent")
+    severity: Severity
+    rationale: str
