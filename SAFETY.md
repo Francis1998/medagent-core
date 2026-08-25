@@ -886,6 +886,11 @@ Every unique valproate × carbapenem pair across separate medication entries yie
 
 Every unique lamotrigine × valproate pair across separate medication entries yields a `LamotrigineValproateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LAMOTRIGINE_VALPROATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.94 Fentanyl + CYP3A4 Inhibitor Exposure / Respiratory-Depression Risk
+`safety/fentanyl_cyp3a4_checker.py` flags **fentanyl** (fentanyl, Duragesic, Abstral, Fentora, Actiq) co-prescribed with **CYP3A4 inhibitors** (ketoconazole, itraconazole, ritonavir, clarithromycin, nefazodone — `CRITICAL`; erythromycin, fluconazole, diltiazem, verapamil — `HIGH`). CYP3A4 inhibition raises fentanyl exposure and respiratory-depression risk. This fentanyl-focused CYP3A4 control is distinct from opioid + benzodiazepine CNS-depression (`opioid_benzo_checker.py`) and general opioid MED checking (`opioid_med_checker.py`).
+
+Every unique fentanyl × CYP3A4-inhibitor pair across separate medication entries yields a `FentanylCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FENTANYL_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---

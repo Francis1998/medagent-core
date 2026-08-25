@@ -29,6 +29,7 @@ from medagent.safety.doac_antiplatelet_checker import DoacAntiplateletChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
+from medagent.safety.fentanyl_cyp3a4_checker import FentanylCyp3a4Checker
 from medagent.safety.fluoroquinolone_corticosteroid_checker import (
     FluoroquinoloneCorticosteroidChecker,
 )
@@ -112,6 +113,7 @@ __all__ = [
     "DoacNsaidChecker",
     "ElectrolyteQtChecker",
     "FallRiskChecker",
+    "FentanylCyp3a4Checker",
     "FluoroquinoloneCorticosteroidChecker",
     "FluoroquinoloneNsaidChecker",
     "FluoroquinoloneWarfarinChecker",
