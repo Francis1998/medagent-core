@@ -881,6 +881,11 @@ Every unique methadone × QT-drug pair across separate medication entries yields
 
 Every unique valproate × carbapenem pair across separate medication entries yields a `ValproateCarbapenemRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/VALPROATE_CARBAPENEM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.93 Lamotrigine + Valproate SJS/TEN Risk
+`safety/lamotrigine_valproate_checker.py` flags **lamotrigine** (lamotrigine, Lamictal) co-prescribed with **valproate agents** (valproate, valproic acid, divalproex, Depakote — `CRITICAL`). Valproate inhibits lamotrigine metabolism, raising exposure and the risk of serious cutaneous reactions including SJS/TEN. This focused lamotrigine × valproate control is distinct from the valproate × carbapenem precipitous level-drop checker.
+
+Every unique lamotrigine × valproate pair across separate medication entries yields a `LamotrigineValproateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LAMOTRIGINE_VALPROATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---
