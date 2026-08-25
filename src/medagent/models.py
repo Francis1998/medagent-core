@@ -2199,3 +2199,18 @@ class MethadoneQtRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical QT-prolonging partner agent")
     severity: Severity
     rationale: str
+
+
+class ValproateCarbapenemRisk(BaseModel, frozen=True):
+    """Valproate co-prescribed with a carbapenem antibiotic.
+
+    Carbapenems can precipitously lower serum valproate levels, increasing
+    breakthrough seizure risk. Distinct from general AED interaction screens.
+    """
+
+    medication: str = Field(description="Medication name containing a valproate agent")
+    agent: str = Field(description="Canonical valproate agent")
+    partner_medication: str = Field(description="Co-prescribed carbapenem medication name")
+    partner_agent: str = Field(description="Canonical carbapenem partner agent")
+    severity: Severity
+    rationale: str

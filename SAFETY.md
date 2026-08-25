@@ -876,6 +876,11 @@ Every unique metformin × contrast-media pair across separate medication entries
 
 Every unique methadone × QT-drug pair across separate medication entries yields a `MethadoneQtRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHADONE_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.92 Valproate + Carbapenem Precipitous Level-Drop Risk
+`safety/valproate_carbapenem_checker.py` flags **valproate** (valproate, valproic acid, divalproex, Depakote, Depakene) co-prescribed with **carbapenem antibiotics** (meropenem, ertapenem, imipenem, doripenem, carbapenem — `CRITICAL`). Carbapenems can cause a precipitous drop in serum valproate levels, increasing breakthrough seizure risk. This focused valproate × carbapenem control is distinct from general AED interaction screens.
+
+Every unique valproate × carbapenem pair across separate medication entries yields a `ValproateCarbapenemRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/VALPROATE_CARBAPENEM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ---
 
 ---

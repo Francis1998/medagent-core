@@ -78,6 +78,7 @@ from medagent.safety.theophylline_cipro_checker import TheophyllineCiproChecker
 from medagent.safety.tramadol_bupropion_checker import TramadolBupropionChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
+from medagent.safety.valproate_carbapenem_checker import ValproateCarbapenemChecker
 from medagent.safety.warfarin_azole_checker import WarfarinAzoleChecker
 from medagent.safety.warfarin_metronidazole_checker import WarfarinMetronidazoleChecker
 from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
@@ -151,6 +152,7 @@ __all__ = [
     "TramadolBupropionChecker",
     "TramadolSsriChecker",
     "TripleWhammyChecker",
+    "ValproateCarbapenemChecker",
     "WarfarinAzoleChecker",
     "WarfarinMetronidazoleChecker",
     "WarfarinNsaidChecker",

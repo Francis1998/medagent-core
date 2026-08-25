@@ -394,6 +394,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 90 | Isotretinoin + tetracycline-class pseudotumor cerebri | `safety/isotretinoin_tetracycline_checker.py` | Flags isotretinoin/Accutane/Absorica/Claravis/Myorisan/Zenatane with tetracycline/doxycycline/minocycline — CRITICAL pseudotumor cerebri / intracranial hypertension risk |
 | 89 | Metformin + iodinated contrast lactic acidosis | `safety/metformin_contrast_checker.py` | Flags metformin/Glucophage/Fortamet/Glumetza/Riomet with contrast/iohexol/iodixanol/iopamidol — HIGH peri-contrast lactic-acidosis risk; distinct from general metformin renal-dose checking |
 | 91 | Methadone + QT-prolonging drug intensification | `safety/methadone_qt_checker.py` | Flags methadone/Dolophine/Methadose with haloperidol/ziprasidone/citalopram (CRITICAL) or ondansetron/azithromycin/escitalopram (HIGH) — QT intensification/torsades risk; distinct from general QT screen (`qt_prolongation_checker.py`) |
+| 92 | Valproate + carbapenem precipitous level drop | `safety/valproate_carbapenem_checker.py` | Flags valproate/valproic acid/divalproex/Depakote/Depakene with meropenem/ertapenem/imipenem/doripenem/carbapenem — CRITICAL seizure risk from precipitous valproate level drop; distinct from general AED screens |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
