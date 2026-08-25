@@ -2229,3 +2229,18 @@ class LamotrigineValproateRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical valproate partner agent")
     severity: Severity
     rationale: str
+
+
+class FentanylCyp3a4Risk(BaseModel, frozen=True):
+    """Fentanyl co-prescribed with a CYP3A4 inhibitor.
+
+    CYP3A4 inhibition raises fentanyl exposure and respiratory-depression risk.
+    Distinct from opioid + benzodiazepine and general opioid MED checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a fentanyl agent")
+    agent: str = Field(description="Canonical fentanyl agent")
+    partner_medication: str = Field(description="Co-prescribed CYP3A4-inhibitor medication name")
+    partner_agent: str = Field(description="Canonical CYP3A4-inhibitor partner agent")
+    severity: Severity
+    rationale: str
