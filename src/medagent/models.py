@@ -2214,3 +2214,18 @@ class ValproateCarbapenemRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical carbapenem partner agent")
     severity: Severity
     rationale: str
+
+
+class LamotrigineValproateRisk(BaseModel, frozen=True):
+    """Lamotrigine co-prescribed with a valproate agent.
+
+    Valproate inhibits lamotrigine metabolism, raising SJS/TEN risk. Distinct
+    from the valproate × carbapenem precipitous level-drop checker.
+    """
+
+    medication: str = Field(description="Medication name containing a lamotrigine agent")
+    agent: str = Field(description="Canonical lamotrigine agent")
+    partner_medication: str = Field(description="Co-prescribed valproate medication name")
+    partner_agent: str = Field(description="Canonical valproate partner agent")
+    severity: Severity
+    rationale: str

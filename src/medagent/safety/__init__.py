@@ -45,6 +45,7 @@ from medagent.safety.isotretinoin_tetracycline_checker import (
     IsotretinoinTetracyclineChecker,
 )
 from medagent.safety.lactation_checker import LactationSafetyChecker
+from medagent.safety.lamotrigine_valproate_checker import LamotrigineValproateChecker
 from medagent.safety.linezolid_ssri_checker import LinezolidSsriChecker
 from medagent.safety.lithium_acei_checker import LithiumAceiChecker
 from medagent.safety.lithium_nsaid_checker import LithiumNsaidChecker
@@ -119,6 +120,7 @@ __all__ = [
     "InsulinStackingChecker",
     "IsotretinoinTetracyclineChecker",
     "LactationSafetyChecker",
+    "LamotrigineValproateChecker",
     "LinezolidSsriChecker",
     "LithiumAceiChecker",
     "LithiumNsaidChecker",
