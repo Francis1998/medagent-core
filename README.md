@@ -397,6 +397,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 92 | Valproate + carbapenem precipitous level drop | `safety/valproate_carbapenem_checker.py` | Flags valproate/valproic acid/divalproex/Depakote/Depakene with meropenem/ertapenem/imipenem/doripenem/carbapenem — CRITICAL seizure risk from precipitous valproate level drop; distinct from general AED screens |
 | 93 | Lamotrigine + valproate SJS/TEN risk | `safety/lamotrigine_valproate_checker.py` | Flags lamotrigine/Lamictal with valproate/valproic acid/divalproex/Depakote — CRITICAL SJS/TEN risk from inhibited lamotrigine metabolism; distinct from valproate-carbapenem |
 | 94 | Fentanyl + CYP3A4 inhibitor exposure | `safety/fentanyl_cyp3a4_checker.py` | Flags fentanyl/Duragesic/Abstral/Fentora/Actiq with strong CYP3A4 inhibitors (ketoconazole/itraconazole/ritonavir/clarithromycin/nefazodone — CRITICAL) or moderate inhibitors (erythromycin/fluconazole/diltiazem/verapamil — HIGH) — respiratory-depression risk; distinct from opioid_benzo / opioid MED |
+| 96 | Clozapine + strong CYP1A2 inhibitor exposure | `safety/clozapine_cyp1a2_checker.py` | Flags clozapine/Clozaril/FazaClo/Versacloz with fluvoxamine/Luvox (CRITICAL) or ciprofloxacin/Cipro (HIGH) — elevated levels with seizure/myocarditis risk; distinct from clozapine ANC |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

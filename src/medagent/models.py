@@ -2244,3 +2244,20 @@ class FentanylCyp3a4Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical CYP3A4-inhibitor partner agent")
     severity: Severity
     rationale: str
+
+
+class ClozapineCyp1a2Risk(BaseModel, frozen=True):
+    """Clozapine co-prescribed with a strong CYP1A2 inhibitor.
+
+    Strong CYP1A2 inhibition elevates clozapine levels and increases seizure
+    and myocarditis risk. Distinct from the clozapine ANC monitoring checker.
+    """
+
+    medication: str = Field(description="Medication name containing a clozapine agent")
+    agent: str = Field(description="Canonical clozapine agent")
+    partner_medication: str = Field(
+        description="Co-prescribed strong CYP1A2-inhibitor medication name"
+    )
+    partner_agent: str = Field(description="Canonical strong CYP1A2-inhibitor partner agent")
+    severity: Severity
+    rationale: str
