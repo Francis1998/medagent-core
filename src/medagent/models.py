@@ -2025,18 +2025,19 @@ class WarfarinMetronidazoleRisk(BaseModel, frozen=True):
 
 
 class ColchicineCyp3a4Risk(BaseModel, frozen=True):
-    """Colchicine co-prescribed with a strong CYP3A4 inhibitor.
+    """Colchicine co-prescribed with a strong CYP3A4/P-gp inhibitor.
 
-    Strong CYP3A4 inhibition can markedly increase colchicine exposure and
-    cause severe or fatal toxicity.
+    Strong CYP3A4 and/or P-glycoprotein inhibition can markedly increase
+    colchicine exposure and cause severe or fatal toxicity (FDA
+    boxed-warning territory). Distinct from the fentanyl CYP3A4 checker.
     """
 
     medication: str = Field(description="Medication name containing a colchicine agent")
     agent: str = Field(description="Canonical colchicine agent")
     partner_medication: str = Field(
-        description="Co-prescribed strong CYP3A4 inhibitor medication name"
+        description="Co-prescribed strong CYP3A4/P-gp inhibitor medication name"
     )
-    partner_agent: str = Field(description="Canonical strong CYP3A4 inhibitor agent")
+    partner_agent: str = Field(description="Canonical strong CYP3A4/P-gp inhibitor agent")
     severity: Severity
     rationale: str
 
@@ -2276,5 +2277,3 @@ class DoacInducerRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical strong inducer partner agent")
     severity: Severity
     rationale: str
-
-

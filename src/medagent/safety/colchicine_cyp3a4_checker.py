@@ -1,8 +1,9 @@
-"""Colchicine + strong CYP3A4 inhibitor toxicity safety checker.
+"""Colchicine + strong CYP3A4/P-gp inhibitor toxicity safety checker.
 
-Strong CYP3A4 inhibitors can markedly increase colchicine exposure and
-cause severe or fatal toxicity. The focused inhibitor panel includes
-clarithromycin, ketoconazole, itraconazole, and ritonavir.
+Strong CYP3A4 and/or P-glycoprotein inhibitors can markedly increase
+colchicine exposure and cause severe or fatal toxicity (FDA boxed-warning
+territory). This colchicine-focused control is distinct from the fentanyl
+CYP3A4 exposure checker.
 """
 
 from __future__ import annotations
@@ -15,75 +16,109 @@ from medagent.models import ColchicineCyp3a4Risk, Medication, Severity
 
 logger = get_logger(__name__)
 
-_COLCHICINE_AGENTS: Final[dict[str, str]] = {
+_PRIMARY_AGENTS: Final[dict[str, str]] = {
     "colchicine": "an antigout medication with a narrow therapeutic index",
-    "colcrys": "a colchicine brand formulation",
-    "mitigare": "a colchicine brand formulation",
-    "gloperba": "a colchicine brand formulation",
+    "colcrys": "a colchicine brand formulation with a narrow therapeutic index",
+    "mitigare": "a colchicine brand formulation with a narrow therapeutic index",
+    "gloperba": "a colchicine brand formulation with a narrow therapeutic index",
 }
 
-_CYP3A4_INHIBITORS: Final[dict[str, str]] = {
-    "clarithromycin": "a macrolide antibiotic and strong CYP3A4 inhibitor",
-    "ketoconazole": "an azole antifungal and strong CYP3A4 inhibitor",
-    "itraconazole": "an azole antifungal and strong CYP3A4 inhibitor",
-    "ritonavir": "an HIV protease inhibitor and strong CYP3A4 inhibitor",
+_PARTNER_AGENTS: Final[dict[str, tuple[str, Severity]]] = {
+    "clarithromycin": (
+        "a macrolide antibiotic and strong CYP3A4/P-gp inhibitor",
+        Severity.CRITICAL,
+    ),
+    "ketoconazole": (
+        "an azole antifungal and strong CYP3A4/P-gp inhibitor",
+        Severity.CRITICAL,
+    ),
+    "itraconazole": (
+        "an azole antifungal and strong CYP3A4/P-gp inhibitor",
+        Severity.CRITICAL,
+    ),
+    "ritonavir": (
+        "an HIV protease inhibitor and strong CYP3A4/P-gp inhibitor",
+        Severity.CRITICAL,
+    ),
+    "cyclosporine": (
+        "an immunosuppressant and strong P-gp/CYP3A4 inhibitor",
+        Severity.CRITICAL,
+    ),
+    "ciclosporin": (
+        "a cyclosporine spelling variant and strong P-gp/CYP3A4 inhibitor",
+        Severity.CRITICAL,
+    ),
+    "cobicistat": (
+        "a pharmacokinetic booster and strong CYP3A4 inhibitor",
+        Severity.CRITICAL,
+    ),
+    "posaconazole": (
+        "an azole antifungal and strong CYP3A4 inhibitor",
+        Severity.CRITICAL,
+    ),
+}
+
+_SEVERITY_RANK: Final[dict[Severity, int]] = {
+    Severity.UNKNOWN: 0,
+    Severity.LOW: 1,
+    Severity.MODERATE: 2,
+    Severity.HIGH: 3,
+    Severity.CRITICAL: 4,
 }
 
 
 class ColchicineCyp3a4Checker:
-    """Flag colchicine co-prescribed with strong CYP3A4 inhibitors."""
+    """Flag colchicine co-prescribed with strong CYP3A4/P-gp inhibitors."""
 
     def check(self, medications: list[Medication]) -> list[ColchicineCyp3a4Risk]:
         """Return one finding per unique colchicine × inhibitor pair."""
-        colchicine_matches: list[tuple[int, Medication, str]] = []
-        inhibitor_matches: list[tuple[int, Medication, str]] = []
+        primary_matches: list[tuple[int, Medication, str]] = []
+        partner_matches: list[tuple[int, Medication, str]] = []
 
         for index, medication in enumerate(medications):
-            tokens = self._tokens(medication.name)
-            if not tokens:
-                continue
+            primary_agent = self._match_agent(medication.name, _PRIMARY_AGENTS)
+            if primary_agent is not None:
+                primary_matches.append((index, medication, primary_agent))
 
-            colchicine_candidates = sorted(tokens & set(_COLCHICINE_AGENTS))
-            if colchicine_candidates:
-                colchicine_matches.append((index, medication, colchicine_candidates[0]))
+            partner_agent = self._match_agent(medication.name, _PARTNER_AGENTS)
+            if partner_agent is not None:
+                partner_matches.append((index, medication, partner_agent))
 
-            inhibitor_candidates = sorted(tokens & set(_CYP3A4_INHIBITORS))
-            if inhibitor_candidates:
-                inhibitor_matches.append((index, medication, inhibitor_candidates[0]))
-
-        if not colchicine_matches or not inhibitor_matches:
+        if not primary_matches or not partner_matches:
             logger.info("colchicine_cyp3a4_checked", findings=0)
             return []
 
-        colchicine_matches.sort(key=lambda match: (match[1].name.lower(), match[2], match[0]))
-        inhibitor_matches.sort(key=lambda match: (match[1].name.lower(), match[2], match[0]))
+        primary_matches.sort(key=lambda match: (match[1].name.lower(), match[2], match[0]))
+        partner_matches.sort(key=lambda match: (match[1].name.lower(), match[2], match[0]))
         findings: list[ColchicineCyp3a4Risk] = []
         seen: set[tuple[str, str]] = set()
 
-        for colchicine_index, colchicine_med, colchicine_agent in colchicine_matches:
-            for inhibitor_index, inhibitor_med, inhibitor_agent in inhibitor_matches:
-                pair_key = (colchicine_agent, inhibitor_agent)
-                if colchicine_index == inhibitor_index or pair_key in seen:
+        for primary_index, primary_med, primary_agent in primary_matches:
+            for partner_index, partner_med, partner_agent in partner_matches:
+                pair_key = (primary_agent, partner_agent)
+                if primary_index == partner_index or pair_key in seen:
                     continue
                 seen.add(pair_key)
+                _partner_descriptor, severity = _PARTNER_AGENTS[partner_agent]
                 findings.append(
                     ColchicineCyp3a4Risk(
-                        medication=colchicine_med.name,
-                        agent=colchicine_agent,
-                        partner_medication=inhibitor_med.name,
-                        partner_agent=inhibitor_agent,
-                        severity=Severity.CRITICAL,
+                        medication=primary_med.name,
+                        agent=primary_agent,
+                        partner_medication=partner_med.name,
+                        partner_agent=partner_agent,
+                        severity=severity,
                         rationale=self._build_rationale(
-                            colchicine_medication=colchicine_med.name,
-                            colchicine_agent=colchicine_agent,
-                            inhibitor_medication=inhibitor_med.name,
-                            inhibitor_agent=inhibitor_agent,
+                            primary_medication=primary_med.name,
+                            primary_agent=primary_agent,
+                            partner_medication=partner_med.name,
+                            partner_agent=partner_agent,
                         ),
                     )
                 )
 
         findings.sort(
             key=lambda finding: (
+                -_SEVERITY_RANK[finding.severity],
                 finding.medication.lower(),
                 finding.partner_medication.lower(),
                 finding.agent,
@@ -96,23 +131,34 @@ class ColchicineCyp3a4Checker:
     @staticmethod
     def _build_rationale(
         *,
-        colchicine_medication: str,
-        colchicine_agent: str,
-        inhibitor_medication: str,
-        inhibitor_agent: str,
+        primary_medication: str,
+        primary_agent: str,
+        partner_medication: str,
+        partner_agent: str,
     ) -> str:
+        partner_descriptor, _severity = _PARTNER_AGENTS[partner_agent]
         return (
             "RESEARCH USE ONLY: "
-            f"Medication '{colchicine_medication}' contains {colchicine_agent}, "
-            f"{_COLCHICINE_AGENTS[colchicine_agent]}, and is co-prescribed "
-            f"with '{inhibitor_medication}' ({inhibitor_agent}, "
-            f"{_CYP3A4_INHIBITORS[inhibitor_agent]}). Strong CYP3A4 inhibition "
-            "can markedly increase colchicine exposure and cause severe or "
-            "fatal gastrointestinal, neuromuscular, or bone-marrow toxicity. "
-            "Obtain urgent qualified clinical and pharmacist review; do not "
-            "change therapy from this research output."
+            f"Medication '{primary_medication}' contains {primary_agent}, "
+            f"{_PRIMARY_AGENTS[primary_agent]}, and is co-prescribed with "
+            f"'{partner_medication}' ({partner_agent}, {partner_descriptor}). "
+            "Strong CYP3A4 and/or P-gp inhibition can markedly increase "
+            "colchicine exposure and cause severe or fatal gastrointestinal, "
+            "neuromuscular, or bone-marrow toxicity (FDA boxed-warning "
+            "territory). Obtain urgent qualified clinical and pharmacist "
+            "review; do not change therapy from this research output."
         )
 
     @staticmethod
-    def _tokens(name: str) -> set[str]:
-        return set(re.findall(r"[a-z0-9]+", name.lower()))
+    def _match_agent(
+        name: str, agents: dict[str, str] | dict[str, tuple[str, Severity]]
+    ) -> str | None:
+        """Return the most specific whole-token/whole-alias match in ``name``."""
+        lowered = name.lower()
+        aliases = sorted(agents, key=lambda alias: (-len(alias.split()), -len(alias), alias))
+        for alias in aliases:
+            components = [re.escape(component) for component in alias.replace("-", " ").split()]
+            pattern = r"(?<![a-z0-9])" + r"[\s_-]+".join(components) + r"(?![a-z0-9])"
+            if re.search(pattern, lowered):
+                return alias
+        return None

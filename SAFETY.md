@@ -920,6 +920,12 @@ Every unique DOAC × inducer pair across separate medication entries yields a `D
 
 ---
 
+### 3.95 Colchicine + Strong CYP3A4/P-gp Inhibitor Critical Toxicity
+`safety/colchicine_cyp3a4_checker.py` flags **colchicine-class agents** (colchicine, Colcrys, Mitigare, Gloperba) co-prescribed with **strong CYP3A4 and/or P-gp inhibitors** (clarithromycin, ketoconazole, itraconazole, ritonavir, cyclosporine/ciclosporin, cobicistat, posaconazole — `CRITICAL`). Strong dual-pathway inhibition can markedly increase colchicine exposure and cause severe or fatal gastrointestinal, neuromuscular, or bone-marrow toxicity (FDA boxed-warning territory). This colchicine-focused CYP3A4/P-gp control is distinct from the fentanyl CYP3A4 exposure checker (`fentanyl_cyp3a4_checker.py`).
+
+Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .
