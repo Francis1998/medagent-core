@@ -906,6 +906,20 @@ Every unique clozapine × CYP1A2-inhibitor pair across separate medication entri
 ---
 
 
+### 3.97 DOAC + Strong Inducer Thrombosis Risk
+`safety/doac_inducer_checker.py` flags **DOACs** (apixaban/Eliquis, rivaroxaban/Xarelto, edoxaban/Savaysa, dabigatran/Pradaxa) co-prescribed with **strong CYP3A4/P-gp inducers** (rifampin/rifampicin — `CRITICAL`; carbamazepine/Tegretol, phenytoin/Dilantin, St John's wort / hypericum — `HIGH`). Strong induction can reduce DOAC anticoagulant exposure and increase thrombosis risk. This DOAC-focused inducer control is distinct from warfarin interaction checkers and from DOAC + NSAID / antiplatelet bleeding controls.
+
+Every unique DOAC × inducer pair across separate medication entries yields a `DoacInducerRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_INDUCER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
+---
+
+---
+
+---
+
+---
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .

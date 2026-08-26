@@ -27,6 +27,7 @@ from medagent.safety.disclaimer import (
     MEDICAL_SYSTEM_PROMPT,
 )
 from medagent.safety.doac_antiplatelet_checker import DoacAntiplateletChecker
+from medagent.safety.doac_inducer_checker import DoacInducerChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
@@ -112,6 +113,7 @@ __all__ = [
     "DigoxinToxicityChecker",
     "DigoxinVerapamilChecker",
     "DoacAntiplateletChecker",
+    "DoacInducerChecker",
     "DoacNsaidChecker",
     "ElectrolyteQtChecker",
     "FallRiskChecker",
