@@ -2275,5 +2275,6 @@ class DoacInducerRisk(BaseModel, frozen=True):
     partner_medication: str = Field(description="Co-prescribed strong inducer medication name")
     partner_agent: str = Field(description="Canonical strong inducer partner agent")
     severity: Severity
+    rationale: str
 
 
