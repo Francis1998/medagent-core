@@ -891,6 +891,12 @@ Every unique lamotrigine × valproate pair across separate medication entries yi
 
 Every unique fentanyl × CYP3A4-inhibitor pair across separate medication entries yields a `FentanylCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FENTANYL_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.96 Clozapine + Strong CYP1A2 Inhibitor Exposure / Seizure-Myocarditis Risk
+`safety/clozapine_cyp1a2_checker.py` flags **clozapine** (clozapine, Clozaril, FazaClo, Versacloz) co-prescribed with **strong CYP1A2 inhibitors** (fluvoxamine/Luvox — `CRITICAL`; ciprofloxacin/Cipro — `HIGH`). Strong CYP1A2 inhibition can markedly elevate clozapine serum levels and increase seizure and myocarditis risk. This focused CYP1A2 control is distinct from the clozapine ANC monitoring checker (`clozapine_anc_checker.py`).
+
+Every unique clozapine × CYP1A2-inhibitor pair across separate medication entries yields a `ClozapineCyp1a2Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CLOZAPINE_CYP1A2_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ---
 
 ---
