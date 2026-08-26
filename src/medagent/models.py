@@ -2261,3 +2261,20 @@ class ClozapineCyp1a2Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical strong CYP1A2-inhibitor partner agent")
     severity: Severity
     rationale: str
+
+
+class DoacInducerRisk(BaseModel, frozen=True):
+    """DOAC co-prescribed with a strong CYP3A4/P-gp inducer.
+
+    Strong induction can reduce DOAC exposure and increase thrombosis risk.
+    Distinct from warfarin interaction checkers and DOAC bleeding controls.
+    """
+
+    medication: str = Field(description="Medication name containing a DOAC agent")
+    agent: str = Field(description="Canonical DOAC agent")
+    partner_medication: str = Field(description="Co-prescribed strong inducer medication name")
+    partner_agent: str = Field(description="Canonical strong inducer partner agent")
+    severity: Severity
+    rationale: str
+
+
