@@ -76,6 +76,7 @@ from medagent.safety.sglt2_raasi_checker import Sglt2RaasiChecker
 from medagent.safety.sildenafil_nitrate_checker import SildenafilNitrateChecker
 from medagent.safety.ssri_triptan_checker import SsriTriptanChecker
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
+from medagent.safety.statin_fibrate_checker import StatinFibrateChecker
 from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.theophylline_cipro_checker import TheophyllineCiproChecker
@@ -154,6 +155,7 @@ __all__ = [
     "SildenafilNitrateChecker",
     "SsriTriptanChecker",
     "StatinCyp3a4Checker",
+    "StatinFibrateChecker",
     "StatinMacrolideChecker",
     "TaperScheduleChecker",
     "TheophyllineCiproChecker",
