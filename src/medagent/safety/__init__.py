@@ -87,6 +87,7 @@ from medagent.safety.valproate_carbapenem_checker import ValproateCarbapenemChec
 from medagent.safety.warfarin_azole_checker import WarfarinAzoleChecker
 from medagent.safety.warfarin_metronidazole_checker import WarfarinMetronidazoleChecker
 from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
+from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 
 __all__ = [
     "ESCALATION_MESSAGE",
@@ -166,6 +167,7 @@ __all__ = [
     "WarfarinAzoleChecker",
     "WarfarinMetronidazoleChecker",
     "WarfarinNsaidChecker",
+    "WarfarinTmpsmxChecker",
     "hash_pii",
     "hash_pii_dict",
     "redact_fhir_pii",

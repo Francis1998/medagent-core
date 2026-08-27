@@ -2279,6 +2279,21 @@ class DoacInducerRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class WarfarinTmpsmxRisk(BaseModel, frozen=True):
+    """Warfarin co-prescribed with TMP-SMX (INR elevation / bleed risk).
+
+    TMP-SMX can potentiate warfarin anticoagulation and increase bleeding risk.
+    Distinct from methotrexate + TMP-SMX and fluoroquinolone + warfarin checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a warfarin agent")
+    agent: str = Field(description="Canonical warfarin agent")
+    partner_medication: str = Field(description="Co-prescribed TMP-SMX medication name")
+    partner_agent: str = Field(description="Canonical TMP-SMX partner agent")
+    severity: Severity
+    rationale: str
+
+
 class StatinFibrateRisk(BaseModel, frozen=True):
     """Statin co-prescribed with a fibrate (myopathy / rhabdomyolysis risk).
 
