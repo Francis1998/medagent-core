@@ -2277,3 +2277,18 @@ class DoacInducerRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical strong inducer partner agent")
     severity: Severity
     rationale: str
+
+
+class StatinFibrateRisk(BaseModel, frozen=True):
+    """Statin co-prescribed with a fibrate (myopathy / rhabdomyolysis risk).
+
+    Concurrent statin–fibrate therapy intensifies skeletal-muscle toxicity.
+    Distinct from statin CYP3A4 and statin macrolide checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a statin agent")
+    agent: str = Field(description="Canonical statin agent")
+    partner_medication: str = Field(description="Co-prescribed fibrate medication name")
+    partner_agent: str = Field(description="Canonical fibrate partner agent")
+    severity: Severity
+    rationale: str

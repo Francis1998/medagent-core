@@ -926,6 +926,12 @@ Every unique DOAC × inducer pair across separate medication entries yields a `D
 Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.98 Statin + Fibrate Myopathy / Rhabdomyolysis Risk
+`safety/statin_fibrate_checker.py` flags **statins** (simvastatin/Zocor, lovastatin/Mevacor/Altoprev, atorvastatin/Lipitor, rosuvastatin/Crestor, pravastatin/Pravachol, fluvastatin/Lescol, pitavastatin/Livalo) co-prescribed with **fibrates** (gemfibrozil/Lopid — `CRITICAL`; fenofibrate/Tricor/Lofibra or fenofibric acid/Trilipix — `HIGH`). Concurrent statin–fibrate therapy intensifies myopathy and rhabdomyolysis risk. This focused fibrate control is distinct from statin + CYP3A4 inhibitor (`statin_cyp3a4_checker.py`) and statin + macrolide (`statin_macrolide_checker.py`) checks.
+
+Every unique statin × fibrate pair across separate medication entries yields a `StatinFibrateRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_FIBRATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ### 3.69 Methotrexate + NSAID Toxicity
 
 See .
