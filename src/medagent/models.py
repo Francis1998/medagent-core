@@ -2294,6 +2294,24 @@ class WarfarinTmpsmxRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class QuetiapineCyp3a4Risk(BaseModel, frozen=True):
+    """Quetiapine co-prescribed with a strong CYP3A4 inhibitor.
+
+    Strong CYP3A4 inhibition elevates quetiapine exposure and intensifies
+    QT-prolongation and sedation risk. Distinct from colchicine and fentanyl
+    CYP3A4 checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a quetiapine agent")
+    agent: str = Field(description="Canonical quetiapine agent")
+    partner_medication: str = Field(
+        description="Co-prescribed strong CYP3A4-inhibitor medication name"
+    )
+    partner_agent: str = Field(description="Canonical strong CYP3A4-inhibitor partner agent")
+    severity: Severity
+    rationale: str
+
+
 class StatinFibrateRisk(BaseModel, frozen=True):
     """Statin co-prescribed with a fibrate (myopathy / rhabdomyolysis risk).
 

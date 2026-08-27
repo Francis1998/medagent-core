@@ -946,3 +946,9 @@ Because torsadogenic risk is **additive**, a finding's severity is elevated to a
 
 Every unique warfarin × TMP-SMX pair across separate medication entries yields a `WarfarinTmpsmxRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_TMPSMX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.100 Quetiapine + Strong CYP3A4 Inhibitor QT / Sedation Exposure Risk
+`safety/quetiapine_cyp3a4_checker.py` flags **quetiapine** (quetiapine, Seroquel) co-prescribed with **strong CYP3A4 inhibitors** (ketoconazole, itraconazole, ritonavir, cobicistat — `CRITICAL`; clarithromycin — `HIGH`). Strong CYP3A4 inhibition can markedly increase quetiapine exposure and intensify QT-prolongation and sedation risk. This quetiapine-focused CYP3A4 control is distinct from colchicine CYP3A4/P-gp (`colchicine_cyp3a4_checker.py`) and fentanyl CYP3A4 (`fentanyl_cyp3a4_checker.py`) checks.
+
+Every unique quetiapine × CYP3A4-inhibitor pair across separate medication entries yields a `QuetiapineCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/QUETIAPINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
