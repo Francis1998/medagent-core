@@ -2325,3 +2325,18 @@ class StatinFibrateRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical fibrate partner agent")
     severity: Severity
     rationale: str
+
+
+class MethotrexateNsaidRisk(BaseModel, frozen=True):
+    """Methotrexate co-prescribed with an NSAID (reduced clearance / toxicity).
+
+    NSAIDs can reduce renal methotrexate clearance and increase toxicity risk.
+    Distinct from legacy `MtxNsaidRisk` and methotrexate + TMP-SMX checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a methotrexate agent")
+    agent: str = Field(description="Canonical methotrexate agent")
+    partner_medication: str = Field(description="Co-prescribed NSAID medication name")
+    partner_agent: str = Field(description="Canonical NSAID partner agent")
+    severity: Severity
+    rationale: str
