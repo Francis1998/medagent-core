@@ -2340,3 +2340,20 @@ class MethotrexateNsaidRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical NSAID partner agent")
     severity: Severity
     rationale: str
+
+
+class MethotrexateTrimethoprimRisk(BaseModel, frozen=True):
+    """Methotrexate co-prescribed with trimethoprim / TMP-SMX (antifolate synergy).
+
+    Trimethoprim intensifies antifolate toxicity and can precipitate pancytopenia.
+    Distinct from legacy `MtxTmpsmxRisk` and warfarin + TMP-SMX checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a methotrexate agent")
+    agent: str = Field(description="Canonical methotrexate agent")
+    partner_medication: str = Field(
+        description="Co-prescribed trimethoprim/TMP-SMX medication name"
+    )
+    partner_agent: str = Field(description="Canonical trimethoprim/TMP-SMX partner agent")
+    severity: Severity
+    rationale: str
