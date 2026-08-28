@@ -2357,3 +2357,21 @@ class MethotrexateTrimethoprimRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical trimethoprim/TMP-SMX partner agent")
     severity: Severity
     rationale: str
+
+
+class TizanidineCiproRisk(BaseModel, frozen=True):
+    """Tizanidine co-prescribed with a strong CYP1A2 inhibitor.
+
+    Strong CYP1A2 inhibition elevates tizanidine exposure and intensifies
+    hypotension and sedation risk. Distinct from theophylline + cipro and
+    clozapine CYP1A2 checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a tizanidine agent")
+    agent: str = Field(description="Canonical tizanidine agent")
+    partner_medication: str = Field(
+        description="Co-prescribed strong CYP1A2-inhibitor medication name"
+    )
+    partner_agent: str = Field(description="Canonical strong CYP1A2-inhibitor partner agent")
+    severity: Severity
+    rationale: str

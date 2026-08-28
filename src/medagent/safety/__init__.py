@@ -83,6 +83,7 @@ from medagent.safety.statin_fibrate_checker import StatinFibrateChecker
 from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.theophylline_cipro_checker import TheophyllineCiproChecker
+from medagent.safety.tizanidine_cipro_checker import TizanidineCiproChecker
 from medagent.safety.tramadol_bupropion_checker import TramadolBupropionChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
@@ -166,6 +167,7 @@ __all__ = [
     "StatinMacrolideChecker",
     "TaperScheduleChecker",
     "TheophyllineCiproChecker",
+    "TizanidineCiproChecker",
     "TramadolBupropionChecker",
     "TramadolSsriChecker",
     "TripleWhammyChecker",

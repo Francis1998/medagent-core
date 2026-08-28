@@ -965,3 +965,10 @@ Every unique methotrexate × NSAID pair across separate medication entries yield
 Every unique methotrexate × trimethoprim/TMP-SMX pair across separate medication entries yields a `MethotrexateTrimethoprimRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHOTREXATE_TRIMETHOPRIM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+
+
+### 3.103 Tizanidine + Strong CYP1A2 Inhibitor Hypotension / Sedation Risk
+`safety/tizanidine_cipro_checker.py` flags **tizanidine** (tizanidine, Zanaflex) co-prescribed with **strong CYP1A2 inhibitors** (ciprofloxacin/Cipro or fluvoxamine/Luvox — `CRITICAL`). Strong CYP1A2 inhibition can markedly elevate tizanidine exposure and precipitate profound hypotension and sedation. This tizanidine-focused CYP1A2 control is distinct from theophylline + cipro (`theophylline_cipro_checker.py`) and clozapine CYP1A2 (`clozapine_cyp1a2_checker.py`) checks.
+
+Every unique tizanidine × CYP1A2-inhibitor pair across separate medication entries yields a `TizanidineCiproRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TIZANIDINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
