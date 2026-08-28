@@ -952,3 +952,10 @@ Every unique warfarin × TMP-SMX pair across separate medication entries yields 
 
 Every unique quetiapine × CYP3A4-inhibitor pair across separate medication entries yields a `QuetiapineCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/QUETIAPINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.101 Methotrexate + NSAID Reduced-Clearance Toxicity Risk
+`safety/methotrexate_nsaid_checker.py` flags **methotrexate** (methotrexate, Trexall, Otrexup, Rasuvo, Xatmep) co-prescribed with **NSAIDs** (ibuprofen, naproxen, diclofenac, indomethacin, meloxicam, celecoxib, or generic NSAID — `HIGH`; ketorolac — `CRITICAL`). NSAIDs can reduce methotrexate clearance and increase toxicity risk. This brand-aware methotrexate × NSAID control is distinct from the legacy MTX + NSAID checker (`mtx_nsaid_checker.py`) and methotrexate + TMP-SMX antifolate checks.
+
+Every unique methotrexate × NSAID pair across separate medication entries yields a `MethotrexateNsaidRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHOTREXATE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+

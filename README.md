@@ -401,6 +401,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 96 | Clozapine + strong CYP1A2 inhibitor exposure | `safety/clozapine_cyp1a2_checker.py` | Flags clozapine/Clozaril/FazaClo/Versacloz with fluvoxamine/Luvox (CRITICAL) or ciprofloxacin/Cipro (HIGH) — elevated levels with seizure/myocarditis risk; distinct from clozapine ANC |
 | 97 | DOAC + strong inducer thrombosis risk | `safety/doac_inducer_checker.py` | Flags apixaban/rivaroxaban/edoxaban/dabigatran (and brands) with rifampin/rifampicin (CRITICAL) or carbamazepine/phenytoin/St John's wort (HIGH) — reduced exposure / thrombosis risk; distinct from warfarin checkers |
 | 98 | Statin + fibrate myopathy/rhabdomyolysis | `safety/statin_fibrate_checker.py` | Flags simvastatin/lovastatin/atorvastatin/rosuvastatin/pravastatin/fluvastatin/pitavastatin (and brands) with gemfibrozil (CRITICAL) or fenofibrate/fenofibric acid (HIGH) — myopathy/rhabdomyolysis risk; distinct from statin CYP3A4 / statin macrolide |
+| 101 | Methotrexate + NSAID reduced-clearance toxicity | `safety/methotrexate_nsaid_checker.py` | Flags methotrexate/Trexall/Otrexup/Rasuvo/Xatmep with ibuprofen/naproxen/diclofenac/indomethacin/meloxicam/celecoxib/NSAID (HIGH) or ketorolac (CRITICAL) — reduced MTX clearance / toxicity risk; distinct from legacy mtx_nsaid / MTX+TMP-SMX |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

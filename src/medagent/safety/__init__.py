@@ -57,6 +57,7 @@ from medagent.safety.macrolide_digoxin_checker import MacrolideDigoxinChecker
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
 from medagent.safety.metformin_contrast_checker import MetforminContrastChecker
 from medagent.safety.methadone_qt_checker import MethadoneQtChecker
+from medagent.safety.methotrexate_nsaid_checker import MethotrexateNsaidChecker
 from medagent.safety.mtx_folate_checker import MtxFolateChecker
 from medagent.safety.mtx_nsaid_checker import MtxNsaidChecker
 from medagent.safety.mtx_penicillin_checker import MtxPenicillinChecker
@@ -138,6 +139,7 @@ __all__ = [
     "MaoiSerotoninCrosscheckChecker",
     "MetforminContrastChecker",
     "MethadoneQtChecker",
+    "MethotrexateNsaidChecker",
     "MtxFolateChecker",
     "MtxNsaidChecker",
     "MtxPenicillinChecker",
