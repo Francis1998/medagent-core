@@ -2375,3 +2375,20 @@ class TizanidineCiproRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical strong CYP1A2-inhibitor partner agent")
     severity: Severity
     rationale: str
+
+
+class TacrolimusCyp3a4Risk(BaseModel, frozen=True):
+    """Tacrolimus + Strong CYP3A4 Inhibitor Exposure.
+
+    Strong CYP3A4 inhibition can markedly elevate tacrolimus exposure
+    and intensify nephrotoxicity / neurotoxicity risk.
+    Distinct from cyclosporine interaction screens and general CYP3A4
+    checkers (colchicine/fentanyl/quetiapine).
+    """
+
+    medication: str = Field(description="Medication name containing a primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
