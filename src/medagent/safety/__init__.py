@@ -98,7 +98,6 @@ from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 
 __all__ = [
     "ESCALATION_MESSAGE",
-    "IvabradineCyp3a4Checker",
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
     "AceiArbDuplicationChecker",
@@ -136,6 +135,7 @@ __all__ = [
     "InrTtrChecker",
     "InsulinStackingChecker",
     "IsotretinoinTetracyclineChecker",
+    "IvabradineCyp3a4Checker",
     "LactationSafetyChecker",
     "LamotrigineValproateChecker",
     "LinezolidSsriChecker",

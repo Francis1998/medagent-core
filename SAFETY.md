@@ -976,11 +976,11 @@ Every unique tizanidine × CYP1A2-inhibitor pair across separate medication entr
 
 Every unique supported primary × partner pair across separate medication entries yields a `TacrolimusCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TACROLIMUS_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
-### 3.106 Ivabradine + Strong CYP3A4 Inhibitor Bradycardia Risk
 
-Every unique supported primary × partner pair yields a `IvabradineCyp3a4Risk` record. See `docs/guides/IVABRADINE_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
-
-### 3.105 Dabigatran + Strong P-gp Inhibitor Bleed Risk Risk
+### 3.105 Dabigatran + Strong P-gp Inhibitor Bleed Risk
 
 Every unique supported primary × partner pair yields a  record. See . Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.106 Ivabradine + Strong CYP3A4 Inhibitor Bradycardia Risk
+
+Every unique supported primary × partner pair yields a `IvabradineCyp3a4Risk` record. See `docs/guides/IVABRADINE_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
