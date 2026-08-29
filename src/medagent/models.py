@@ -2392,3 +2392,20 @@ class TacrolimusCyp3a4Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class DabigatranPgpRisk(BaseModel, frozen=True):
+    """Dabigatran + Strong P-gp Inhibitor Bleed Risk.
+
+    Strong P-gp inhibition can raise dabigatran exposure and increase
+    major bleeding risk.
+    Distinct from DOAC + inducer thrombosis (#97) and DOAC bleeding
+    intensifier checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
