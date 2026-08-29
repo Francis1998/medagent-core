@@ -404,6 +404,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 101 | Methotrexate + NSAID reduced-clearance toxicity | `safety/methotrexate_nsaid_checker.py` | Flags methotrexate/Trexall/Otrexup/Rasuvo/Xatmep with ibuprofen/naproxen/diclofenac/indomethacin/meloxicam/celecoxib/NSAID (HIGH) or ketorolac (CRITICAL) — reduced MTX clearance / toxicity risk; distinct from legacy mtx_nsaid / MTX+TMP-SMX |
 | 102 | Methotrexate + trimethoprim/TMP-SMX antifolate synergy | `safety/methotrexate_trimethoprim_checker.py` | Flags methotrexate/Trexall/Otrexup/Rasuvo/Xatmep with trimethoprim/TMP-SMX/Bactrim/Septra/co-trimoxazole (CRITICAL) — antifolate synergy / pancytopenia risk; distinct from legacy mtx_tmpsmx / warfarin+TMP-SMX |
 | 103 | Tizanidine + strong CYP1A2 inhibitor hypotension/sedation | `safety/tizanidine_cipro_checker.py` | Flags tizanidine/Zanaflex with ciprofloxacin/Cipro or fluvoxamine/Luvox (CRITICAL) — elevated tizanidine hypotension/sedation risk; distinct from theophylline+cipro / clozapine CYP1A2 |
+| 104 | Tacrolimus + Strong CYP3A4 Inhibitor Exposure | `safety/tacrolimus_cyp3a4_checker.py` | Flags supported pairs (nephrotoxicity risk); RESEARCH USE ONLY |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

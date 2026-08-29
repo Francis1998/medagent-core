@@ -972,3 +972,7 @@ Every unique methotrexate × trimethoprim/TMP-SMX pair across separate medicatio
 
 Every unique tizanidine × CYP1A2-inhibitor pair across separate medication entries yields a `TizanidineCiproRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TIZANIDINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.104 Tacrolimus + Strong CYP3A4 Inhibitor Exposure Risk
+
+Every unique supported primary × partner pair across separate medication entries yields a `TacrolimusCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TACROLIMUS_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
