@@ -48,6 +48,7 @@ from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
 from medagent.safety.isotretinoin_tetracycline_checker import (
     IsotretinoinTetracyclineChecker,
 )
+from medagent.safety.ivabradine_cyp3a4_checker import IvabradineCyp3a4Checker
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.lamotrigine_valproate_checker import LamotrigineValproateChecker
 from medagent.safety.linezolid_ssri_checker import LinezolidSsriChecker
@@ -97,6 +98,7 @@ from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 
 __all__ = [
     "ESCALATION_MESSAGE",
+    "IvabradineCyp3a4Checker",
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
     "AceiArbDuplicationChecker",

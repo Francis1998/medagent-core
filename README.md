@@ -406,6 +406,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 103 | Tizanidine + strong CYP1A2 inhibitor hypotension/sedation | `safety/tizanidine_cipro_checker.py` | Flags tizanidine/Zanaflex with ciprofloxacin/Cipro or fluvoxamine/Luvox (CRITICAL) — elevated tizanidine hypotension/sedation risk; distinct from theophylline+cipro / clozapine CYP1A2 |
 | 104 | Tacrolimus + Strong CYP3A4 Inhibitor Exposure | `safety/tacrolimus_cyp3a4_checker.py` | Flags supported pairs (nephrotoxicity risk); RESEARCH USE ONLY |
 | 105 | Dabigatran + Strong P-gp Inhibitor Bleed Risk |  | Flags supported pairs (bleeding risk); RESEARCH USE ONLY |
+| 106 | Ivabradine + Strong CYP3A4 Inhibitor Bradycardia | `safety/ivabradine_cyp3a4_checker.py` | Flags supported pairs (bradycardia risk); RESEARCH USE ONLY |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

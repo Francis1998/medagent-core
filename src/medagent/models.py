@@ -2409,3 +2409,20 @@ class DabigatranPgpRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class IvabradineCyp3a4Risk(BaseModel, frozen=True):
+    """Ivabradine + Strong CYP3A4 Inhibitor Bradycardia.
+
+    Strong CYP3A4 inhibition can elevate ivabradine exposure and
+    precipitate severe bradycardia / conduction disturbances.
+    Distinct from general QT screens and other CYP3A4 exposure checkers
+    (fentanyl/quetiapine/colchicine).
+    """
+
+    medication: str = Field(description="Medication name containing a primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
