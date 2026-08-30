@@ -61,6 +61,7 @@ from medagent.safety.metformin_contrast_checker import MetforminContrastChecker
 from medagent.safety.methadone_qt_checker import MethadoneQtChecker
 from medagent.safety.methotrexate_nsaid_checker import MethotrexateNsaidChecker
 from medagent.safety.methotrexate_trimethoprim_checker import MethotrexateTrimethoprimChecker
+from medagent.safety.midazolam_cyp3a4_checker import MidazolamCyp3a4Checker
 from medagent.safety.mtx_folate_checker import MtxFolateChecker
 from medagent.safety.mtx_nsaid_checker import MtxNsaidChecker
 from medagent.safety.mtx_penicillin_checker import MtxPenicillinChecker
@@ -149,6 +150,7 @@ __all__ = [
     "MethadoneQtChecker",
     "MethotrexateNsaidChecker",
     "MethotrexateTrimethoprimChecker",
+    "MidazolamCyp3a4Checker",
     "MtxFolateChecker",
     "MtxNsaidChecker",
     "MtxPenicillinChecker",

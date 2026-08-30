@@ -2442,3 +2442,19 @@ class SimvastatinAmiodaroneRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class MidazolamCyp3a4Risk(BaseModel, frozen=True):
+    """Midazolam + Strong CYP3A4 Inhibitor Sedation.
+
+    Strong CYP3A4 inhibition can elevate midazolam exposure and prolong
+    sedation / respiratory depression. Distinct from fentanyl, quetiapine,
+    and ivabradine CYP3A4 exposure checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
