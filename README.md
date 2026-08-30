@@ -407,6 +407,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 104 | Tacrolimus + Strong CYP3A4 Inhibitor Exposure | `safety/tacrolimus_cyp3a4_checker.py` | Flags supported pairs (nephrotoxicity risk); RESEARCH USE ONLY |
 | 105 | Dabigatran + Strong P-gp Inhibitor Bleed Risk | `safety/dabigatran_pgp_checker.py` | Flags dabigatran/Pradaxa with strong P-gp inhibitors (CRITICAL bleed risk); RESEARCH USE ONLY |
 | 106 | Ivabradine + Strong CYP3A4 Inhibitor Bradycardia | `safety/ivabradine_cyp3a4_checker.py` | Flags supported pairs (bradycardia risk); RESEARCH USE ONLY |
+| 109 | Warfarin + Metronidazole INR/Bleeding | `safety/warfarin_metronidazole_checker.py` | Flags warfarin/Coumadin/Jantoven with metronidazole/Flagyl (HIGH INR elevation/bleed risk); RESEARCH USE ONLY |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
