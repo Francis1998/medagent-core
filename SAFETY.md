@@ -992,3 +992,8 @@ Every unique supported primary × partner pair yields a `SimvastatinAmiodaroneRi
 ### 3.108 Midazolam + Strong CYP3A4 Inhibitor Sedation Risk
 
 Every unique supported primary × partner pair yields a `MidazolamCyp3a4Risk` record. See `docs/guides/MIDAZOLAM_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.109 Cyclosporine + Statin Myopathy / Rhabdomyolysis Risk
+`safety/cyclosporine_statin_checker.py` flags **cyclosporine** (cyclosporine, ciclosporin, Neoral, Sandimmune, Gengraf) co-prescribed with **statins** (simvastatin/Zocor or lovastatin/Mevacor — `CRITICAL`; atorvastatin/Lipitor — `HIGH`). Cyclosporine can increase statin exposure and intensify myopathy and rhabdomyolysis risk. This cyclosporine × statin control is distinct from statin + fibrate (`statin_fibrate_checker.py`), simvastatin + amiodarone, and digoxin + amiodarone checks.
+
+Every unique cyclosporine × statin pair across separate medication entries yields a `CyclosporineStatinRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CYCLOSPORINE_STATIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
