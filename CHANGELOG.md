@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Cyclosporine + Statin Myopathy / Rhabdomyolysis checker (`safety/cyclosporine_statin_checker.py`) advisory `CyclosporineStatinRisk` records. Safety Control #109; see `docs/guides/CYCLOSPORINE_STATIN_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Midazolam + Strong CYP3A4 Inhibitor Sedation checker (`safety/midazolam_cyp3a4_checker.py`) advisory `MidazolamCyp3a4Risk` records. Safety Control #108; see `docs/guides/MIDAZOLAM_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Simvastatin + Amiodarone Myopathy/Rhabdomyolysis checker (`safety/simvastatin_amiodarone_checker.py`) advisory `SimvastatinAmiodaroneRisk` records. Safety Control #107; see `docs/guides/SIMVASTATIN_AMIODARONE_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Ivabradine + Strong CYP3A4 Inhibitor Bradycardia checker (`safety/ivabradine_cyp3a4_checker.py`) advisory `IvabradineCyp3a4Risk` records. Safety Control #106; see `docs/guides/IVABRADINE_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.

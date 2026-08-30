@@ -409,6 +409,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 106 | Ivabradine + Strong CYP3A4 Inhibitor Bradycardia | `safety/ivabradine_cyp3a4_checker.py` | Flags supported pairs (bradycardia risk); RESEARCH USE ONLY |
 | 107 | Simvastatin + Amiodarone Myopathy/Rhabdomyolysis | `safety/simvastatin_amiodarone_checker.py` | Flags simvastatin/Zocor with amiodarone/Cordarone (CRITICAL myopathy/rhabdomyolysis risk); RESEARCH USE ONLY |
 | 108 | Midazolam + Strong CYP3A4 Inhibitor Sedation | `safety/midazolam_cyp3a4_checker.py` | Flags midazolam/Versed with strong CYP3A4 inhibitors (CRITICAL prolonged sedation risk); RESEARCH USE ONLY |
+| 109 | Cyclosporine + Statin Myopathy / Rhabdomyolysis | `safety/cyclosporine_statin_checker.py` | Flags cyclosporine/ciclosporin/Neoral/Sandimmune/Gengraf with simvastatin/lovastatin (CRITICAL) or atorvastatin (HIGH) — myopathy/rhabdomyolysis risk; distinct from statin_fibrate / simvastatin_amiodarone / digoxin_amio |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
