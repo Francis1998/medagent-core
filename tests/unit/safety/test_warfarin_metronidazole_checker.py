@@ -17,9 +17,7 @@ def test_no_findings_when_either_class_is_absent() -> None:
 
 
 def test_flags_supported_pair_at_expected_severity() -> None:
-    finding = WarfarinMetronidazoleChecker().check(
-        _meds("Warfarin dose", "Metronidazole dose")
-    )[0]
+    finding = WarfarinMetronidazoleChecker().check(_meds("Warfarin dose", "Metronidazole dose"))[0]
     assert isinstance(finding, WarfarinMetronidazoleRisk)
     assert finding.agent == "warfarin"
     assert finding.partner_agent == "metronidazole"
