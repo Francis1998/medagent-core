@@ -79,6 +79,7 @@ from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.sglt2_loop_checker import Sglt2LoopChecker
 from medagent.safety.sglt2_raasi_checker import Sglt2RaasiChecker
 from medagent.safety.sildenafil_nitrate_checker import SildenafilNitrateChecker
+from medagent.safety.simvastatin_amiodarone_checker import SimvastatinAmiodaroneChecker
 from medagent.safety.ssri_triptan_checker import SsriTriptanChecker
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.statin_fibrate_checker import StatinFibrateChecker
@@ -166,6 +167,7 @@ __all__ = [
     "Sglt2LoopChecker",
     "Sglt2RaasiChecker",
     "SildenafilNitrateChecker",
+    "SimvastatinAmiodaroneChecker",
     "SsriTriptanChecker",
     "StatinCyp3a4Checker",
     "StatinFibrateChecker",

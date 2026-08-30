@@ -984,3 +984,7 @@ Every unique supported primary × partner pair yields a  record. See . Prefer **
 ### 3.106 Ivabradine + Strong CYP3A4 Inhibitor Bradycardia Risk
 
 Every unique supported primary × partner pair yields a `IvabradineCyp3a4Risk` record. See `docs/guides/IVABRADINE_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.107 Simvastatin + Amiodarone Myopathy/Rhabdomyolysis Risk
+
+Every unique supported primary × partner pair yields a `SimvastatinAmiodaroneRisk` record. See `docs/guides/SIMVASTATIN_AMIODARONE_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.

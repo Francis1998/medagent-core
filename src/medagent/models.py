@@ -2426,3 +2426,19 @@ class IvabradineCyp3a4Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class SimvastatinAmiodaroneRisk(BaseModel, frozen=True):
+    """Simvastatin + Amiodarone Myopathy/Rhabdomyolysis.
+
+    Amiodarone inhibits CYP3A4-mediated simvastatin metabolism, increasing
+    statin exposure and myopathy/rhabdomyolysis risk (FDA dose-limit warning).
+    Distinct from statin_fibrate and digoxin_amio interaction checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
