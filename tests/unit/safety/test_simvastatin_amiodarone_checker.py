@@ -17,9 +17,7 @@ def test_no_findings_when_either_class_is_absent() -> None:
 
 
 def test_flags_supported_pair_at_expected_severity() -> None:
-    finding = SimvastatinAmiodaroneChecker().check(
-        _meds("Simvastatin dose", "Amiodarone dose")
-    )[0]
+    finding = SimvastatinAmiodaroneChecker().check(_meds("Simvastatin dose", "Amiodarone dose"))[0]
     assert isinstance(finding, SimvastatinAmiodaroneRisk)
     assert finding.agent == "simvastatin"
     assert finding.partner_agent == "amiodarone"
