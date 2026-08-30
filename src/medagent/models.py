@@ -2007,23 +2007,6 @@ class CarbamazepineMacrolideRisk(BaseModel, frozen=True):
     rationale: str
 
 
-class WarfarinMetronidazoleRisk(BaseModel, frozen=True):
-    """Warfarin co-prescribed with metronidazole or tinidazole.
-
-    Nitroimidazole-related CYP2C9 inhibition can reduce warfarin clearance,
-    elevate INR, and increase bleeding risk.
-    """
-
-    medication: str = Field(description="Medication name containing a warfarin agent")
-    agent: str = Field(description="Canonical warfarin agent")
-    partner_medication: str = Field(
-        description="Co-prescribed nitroimidazole antibiotic medication name"
-    )
-    partner_agent: str = Field(description="Canonical nitroimidazole antibiotic agent")
-    severity: Severity
-    rationale: str
-
-
 class ColchicineCyp3a4Risk(BaseModel, frozen=True):
     """Colchicine co-prescribed with a strong CYP3A4/P-gp inhibitor.
 
@@ -2418,6 +2401,22 @@ class IvabradineCyp3a4Risk(BaseModel, frozen=True):
     precipitate severe bradycardia / conduction disturbances.
     Distinct from general QT screens and other CYP3A4 exposure checkers
     (fentanyl/quetiapine/colchicine).
+    """
+
+    medication: str = Field(description="Medication name containing a primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
+
+
+class WarfarinMetronidazoleRisk(BaseModel, frozen=True):
+    """Warfarin + Metronidazole INR/Bleeding.
+
+    Metronidazole can inhibit CYP2C9-mediated warfarin metabolism, elevating
+    INR and bleeding risk. Distinct from warfarin_nsaid, warfarin_tmpsmx,
+    amio_warfarin, and fluoroquinolone_warfarin interaction checkers.
     """
 
     medication: str = Field(description="Medication name containing a primary agent")
