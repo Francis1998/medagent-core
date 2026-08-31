@@ -2520,3 +2520,21 @@ class EscitalopramQtRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class SpironolactonePotassiumRisk(BaseModel, frozen=True):
+    """Spironolactone / eplerenone + potassium hyperkalemia risk.
+
+    Mineralocorticoid receptor antagonists plus exogenous potassium or
+    potassium salt substitutes intensify hyperkalemia risk. Distinct from
+    acei_potassium and acei_ksparing checkers.
+    """
+
+    medication: str = Field(description="Medication name containing an MRA agent")
+    agent: str = Field(description="Canonical spironolactone or eplerenone agent")
+    partner_medication: str = Field(description="Co-prescribed potassium-source medication name")
+    partner_agent: str = Field(
+        description="Canonical potassium-supplement or salt-substitute agent"
+    )
+    severity: Severity
+    rationale: str
