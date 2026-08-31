@@ -2475,6 +2475,7 @@ class CyclosporineStatinRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class SotalolQtRisk(BaseModel, frozen=True):
     """Sotalol QT-prolongation risk (alone or with QT partners).
 

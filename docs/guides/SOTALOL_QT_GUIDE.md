@@ -25,9 +25,7 @@ Distinct from the general multi-drug QT-prolongation screen and electrolyte QT c
 from medagent.models import Medication
 from medagent.safety import SotalolQtChecker
 
-findings = SotalolQtChecker().check(
-    [Medication(name="sotalol"), Medication(name="ondansetron")]
-)
+findings = SotalolQtChecker().check([Medication(name="sotalol"), Medication(name="ondansetron")])
 ```
 
 ## Reasoning stack notes
