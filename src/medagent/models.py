@@ -2496,3 +2496,27 @@ class SotalolQtRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class EscitalopramQtRisk(BaseModel, frozen=True):
+    """Escitalopram / citalopram QT-prolongation risk (alone or with QT partners).
+
+    Escitalopram and citalopram carry dose-dependent QT-prolongation risk;
+    co-prescription with other QT-prolonging agents escalates severity. Distinct
+    from quetiapine CYP3A4 and general qt_prolongation checkers.
+    """
+
+    medication: str = Field(
+        description="Medication name containing an escitalopram/citalopram agent"
+    )
+    agent: str = Field(description="Canonical escitalopram or citalopram agent")
+    partner_medication: str = Field(
+        default="",
+        description="Co-prescribed QT-prolonging partner medication name, if any",
+    )
+    partner_agent: str = Field(
+        default="",
+        description="Canonical QT-prolonging partner agent; empty when primary alone",
+    )
+    severity: Severity
+    rationale: str

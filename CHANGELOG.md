@@ -7,6 +7,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Sotalol QT-prolongation checker (`safety/sotalol_qt_checker.py`) advisory `SotalolQtRisk` records. Safety Control #110; see `docs/guides/SOTALOL_QT_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+- Escitalopram / Citalopram QT-prolongation checker (`safety/escitalopram_qt_checker.py`) advisory `EscitalopramQtRisk` records. Safety Control #111; see `docs/guides/ESCITALOPRAM_QT_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Cyclosporine + Statin Myopathy / Rhabdomyolysis checker (`safety/cyclosporine_statin_checker.py`) advisory `CyclosporineStatinRisk` records. Safety Control #109; see `docs/guides/CYCLOSPORINE_STATIN_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Midazolam + Strong CYP3A4 Inhibitor Sedation checker (`safety/midazolam_cyp3a4_checker.py`) advisory `MidazolamCyp3a4Risk` records. Safety Control #108; see `docs/guides/MIDAZOLAM_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Simvastatin + Amiodarone Myopathy/Rhabdomyolysis checker (`safety/simvastatin_amiodarone_checker.py`) advisory `SimvastatinAmiodaroneRisk` records. Safety Control #107; see `docs/guides/SIMVASTATIN_AMIODARONE_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
