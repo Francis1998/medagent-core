@@ -2474,3 +2474,25 @@ class CyclosporineStatinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class SotalolQtRisk(BaseModel, frozen=True):
+    """Sotalol QT-prolongation risk (alone or with QT partners).
+
+    Sotalol carries intrinsic dose-dependent QT-prolongation and torsades risk;
+    co-prescription with other QT-prolonging agents escalates severity. Distinct
+    from general qt_prolongation and electrolyte_qt checkers.
+    """
+
+    medication: str = Field(description="Medication name containing a sotalol agent")
+    agent: str = Field(description="Canonical sotalol agent")
+    partner_medication: str = Field(
+        default="",
+        description="Co-prescribed QT-prolonging partner medication name, if any",
+    )
+    partner_agent: str = Field(
+        default="",
+        description="Canonical QT-prolonging partner agent; empty when sotalol alone",
+    )
+    severity: Severity
+    rationale: str
