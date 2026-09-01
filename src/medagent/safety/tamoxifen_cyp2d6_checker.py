@@ -8,6 +8,7 @@ therapy. Distinct from generic SSRI panels and codeine CYP2D6 checks.
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping
 from typing import Final
 
 from medagent.logging_config import get_logger
@@ -143,7 +144,7 @@ class TamoxifenCyp2d6Checker:
         )
 
     @staticmethod
-    def _match_agent(name: str, table: dict[str, object]) -> str | None:
+    def _match_agent(name: str, table: Mapping[str, object]) -> str | None:
         """Return canonical agent when a whole-token/whole-alias matches."""
         tokens = set(re.findall(r"[a-z0-9]+", name.lower()))
         for agent in sorted(table, key=len, reverse=True):
