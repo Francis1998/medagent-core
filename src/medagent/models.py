@@ -2555,3 +2555,19 @@ class TamoxifenCyp2d6Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class AmlodipineClarithromycinRisk(BaseModel, frozen=True):
+    """Amlodipine + Clarithromycin Hypotension / Shock Risk.
+
+    Amlodipine is a CYP3A4 substrate; clarithromycin is a strong CYP3A4 inhibitor. Co-
+    prescription is linked to hospitalization for hypotension/shock in older adults.
+    Distinct from simvastatin-macrolide and generic CCB panels.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
