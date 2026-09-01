@@ -2538,3 +2538,19 @@ class SpironolactonePotassiumRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class TamoxifenCyp2d6Risk(BaseModel, frozen=True):
+    """Tamoxifen + Strong CYP2D6 Inhibitor Reduced-Activation Risk.
+
+        Tamoxifen is a prodrug activated by CYP2D6 to endoxifen. Strong CYP2D6 inhibitors (fluoxetine,
+    paroxetine, bupropion, quinidine) can reduce activation and undermine breast-cancer endocrine
+    therapy. Distinct from generic SSRI panels and codeine CYP2D6 checks.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
