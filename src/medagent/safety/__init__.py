@@ -90,6 +90,7 @@ from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.statin_fibrate_checker import StatinFibrateChecker
 from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.tacrolimus_cyp3a4_checker import TacrolimusCyp3a4Checker
+from medagent.safety.tamoxifen_cyp2d6_checker import TamoxifenCyp2d6Checker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.theophylline_cipro_checker import TheophyllineCiproChecker
 from medagent.safety.tizanidine_cipro_checker import TizanidineCiproChecker
@@ -183,6 +184,7 @@ __all__ = [
     "StatinFibrateChecker",
     "StatinMacrolideChecker",
     "TacrolimusCyp3a4Checker",
+    "TamoxifenCyp2d6Checker",
     "TaperScheduleChecker",
     "TheophyllineCiproChecker",
     "TizanidineCiproChecker",

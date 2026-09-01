@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #113: Tamoxifen + Strong CYP2D6 Inhibitor checker (`safety/tamoxifen_cyp2d6_checker.py`). See `docs/guides/TAMOXIFEN_CYP2D6_GUIDE.md` and `assets/tamoxifen_cyp2d6_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #112: Spironolactone/Eplerenone + Potassium hyperkalemia checker (`safety/spironolactone_potassium_checker.py`). See `docs/guides/SPIRONOLACTONE_POTASSIUM_GUIDE.md` and `assets/spironolactone_potassium_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Sotalol QT-prolongation checker (`safety/sotalol_qt_checker.py`) advisory `SotalolQtRisk` records. Safety Control #110; see `docs/guides/SOTALOL_QT_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 - Escitalopram / Citalopram QT-prolongation checker (`safety/escitalopram_qt_checker.py`) advisory `EscitalopramQtRisk` records. Safety Control #111; see `docs/guides/ESCITALOPRAM_QT_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
