@@ -2571,3 +2571,19 @@ class AmlodipineClarithromycinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class MethyleneBlueSsriRisk(BaseModel, frozen=True):
+    """Methylene Blue + SSRI/SNRI Serotonin Syndrome Risk.
+
+    Intravenous methylene blue inhibits monoamine oxidase A. Co-use with serotonergic
+    antidepressants can cause serotonin syndrome (FDA warning). Distinct from linezolid+SSRI
+    and tramadol+SSRI checkers.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
