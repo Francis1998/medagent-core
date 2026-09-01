@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #115: Methylene Blue + SSRI/SNRI checker (`safety/methylene_blue_ssri_checker.py`). See `docs/guides/METHYLENE_BLUE_SSRI_GUIDE.md` and `assets/methylene_blue_ssri_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #114: Amlodipine + Clarithromycin checker (`safety/amlodipine_clarithromycin_checker.py`). See `docs/guides/AMLODIPINE_CLARITHROMYCIN_GUIDE.md` and `assets/amlodipine_clarithromycin_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #113: Tamoxifen + Strong CYP2D6 Inhibitor checker (`safety/tamoxifen_cyp2d6_checker.py`). See `docs/guides/TAMOXIFEN_CYP2D6_GUIDE.md` and `assets/tamoxifen_cyp2d6_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #112: Spironolactone/Eplerenone + Potassium hyperkalemia checker (`safety/spironolactone_potassium_checker.py`). See `docs/guides/SPIRONOLACTONE_POTASSIUM_GUIDE.md` and `assets/spironolactone_potassium_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

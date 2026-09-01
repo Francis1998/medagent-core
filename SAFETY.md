@@ -1022,3 +1022,9 @@ Every unique primary × partner pair across separate medication entries yields a
 `safety/amlodipine_clarithromycin_checker.py` flags **Amlodipine + Clarithromycin** pairs. Amlodipine is a CYP3A4 substrate; clarithromycin is a strong CYP3A4 inhibitor. Co-prescription is linked to hospitalization for hypotension/shock in older adults. Distinct from simvastatin–macrolide and generic CCB panels.
 
 Every unique primary x partner pair across separate medication entries yields a `AmlodipineClarithromycinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMLODIPINE_CLARITHROMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.115 Methylene Blue + SSRI/SNRI Risk
+`safety/methylene_blue_ssri_checker.py` flags **Methylene Blue + SSRI/SNRI** pairs. Intravenous methylene blue inhibits monoamine oxidase A. Co-use with serotonergic antidepressants can cause serotonin syndrome (FDA warning). Distinct from linezolid+SSRI and tramadol+SSRI checkers.
+
+Every unique primary x partner pair across separate medication entries yields a `MethyleneBlueSsriRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHYLENE_BLUE_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
