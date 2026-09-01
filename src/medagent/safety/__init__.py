@@ -8,6 +8,7 @@ from medagent.safety.acei_trimethoprim_checker import AceiTrimethoprimChecker
 from medagent.safety.allopurinol_azathioprine_checker import AllopurinolAzathioprineChecker
 from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
+from medagent.safety.amlodipine_clarithromycin_checker import AmlodipineClarithromycinChecker
 from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewardshipChecker
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
@@ -115,6 +116,7 @@ __all__ = [
     "AllopurinolAzathioprineChecker",
     "AmioWarfarinChecker",
     "AmiodaroneDigoxinChecker",
+    "AmlodipineClarithromycinChecker",
     "AntibioticDurationStewardshipChecker",
     "AnticoagBleedingChecker",
     "Beers2023DeltaChecker",
