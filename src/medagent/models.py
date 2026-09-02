@@ -2587,3 +2587,19 @@ class MethyleneBlueSsriRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class ApixabanCyp3a4Risk(BaseModel, frozen=True):
+    """Apixaban + Strong CYP3A4/P-gp Inhibitor Risk.
+
+    Apixaban is a CYP3A4/P-gp substrate; strong inhibitors (ketoconazole, itraconazole,
+    ritonavir) raise exposure and bleeding risk. Distinct from dabigatran P-gp and DOAC
+    inducer checkers.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
