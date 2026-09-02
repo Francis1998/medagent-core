@@ -2603,3 +2603,19 @@ class ApixabanCyp3a4Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class PimozideCyp3a4Risk(BaseModel, frozen=True):
+    """Pimozide + Strong CYP3A4 Inhibitor Risk.
+
+    Pimozide is a CYP3A4 substrate with QT risk; strong CYP3A4 inhibitors are
+    contraindicated (boxed-warning territory). Distinct from generic QT and quetiapine
+    CYP3A4 checkers.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str

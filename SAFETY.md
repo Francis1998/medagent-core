@@ -1034,3 +1034,9 @@ Every unique primary x partner pair across separate medication entries yields a 
 
 Every unique primary x partner pair across separate medication entries yields a `ApixabanCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/APIXABAN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.117 Pimozide + Strong CYP3A4 Inhibitor Risk
+`safety/pimozide_cyp3a4_checker.py` flags **Pimozide + Strong CYP3A4** pairs. Pimozide is a CYP3A4 substrate with QT risk; strong CYP3A4 inhibitors are contraindicated (boxed-warning territory). Distinct from generic QT and quetiapine CYP3A4 checkers.
+
+Every unique primary x partner pair across separate medication entries yields a `PimozideCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PIMOZIDE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+

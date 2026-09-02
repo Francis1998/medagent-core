@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #117: Pimozide + Strong CYP3A4 checker (`safety/pimozide_cyp3a4_checker.py`). See `docs/guides/PIMOZIDE_CYP3A4_GUIDE.md` and `assets/pimozide_cyp3a4_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #116: Apixaban + Strong CYP3A4/P-gp checker (`safety/apixaban_cyp3a4_checker.py`). See `docs/guides/APIXABAN_CYP3A4_GUIDE.md` and `assets/apixaban_cyp3a4_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #115: Methylene Blue + SSRI/SNRI checker (`safety/methylene_blue_ssri_checker.py`). See `docs/guides/METHYLENE_BLUE_SSRI_GUIDE.md` and `assets/methylene_blue_ssri_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #114: Amlodipine + Clarithromycin checker (`safety/amlodipine_clarithromycin_checker.py`). See `docs/guides/AMLODIPINE_CLARITHROMYCIN_GUIDE.md` and `assets/amlodipine_clarithromycin_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
