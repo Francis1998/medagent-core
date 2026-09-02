@@ -1040,3 +1040,9 @@ Every unique primary x partner pair across separate medication entries yields a 
 
 Every unique primary x partner pair across separate medication entries yields a `PimozideCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PIMOZIDE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.118 Ergotamine / DHE + Strong CYP3A4 Inhibitor Risk
+`safety/ergotamine_cyp3a4_checker.py` flags **Ergotamine + Strong CYP3A4** pairs. Ergot alkaloids are CYP3A4 substrates; strong inhibitors can cause ergot toxicity/vasospasm (contraindicated). Distinct from other CYP3A4 exposure checkers.
+
+Every unique primary x partner pair across separate medication entries yields a `ErgotamineCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ERGOTAMINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+

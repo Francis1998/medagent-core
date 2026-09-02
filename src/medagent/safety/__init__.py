@@ -34,6 +34,7 @@ from medagent.safety.doac_antiplatelet_checker import DoacAntiplateletChecker
 from medagent.safety.doac_inducer_checker import DoacInducerChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
+from medagent.safety.ergotamine_cyp3a4_checker import ErgotamineCyp3a4Checker
 from medagent.safety.escitalopram_qt_checker import EscitalopramQtChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.fentanyl_cyp3a4_checker import FentanylCyp3a4Checker
@@ -140,6 +141,7 @@ __all__ = [
     "DoacInducerChecker",
     "DoacNsaidChecker",
     "ElectrolyteQtChecker",
+    "ErgotamineCyp3a4Checker",
     "EscitalopramQtChecker",
     "FallRiskChecker",
     "FentanylCyp3a4Checker",
