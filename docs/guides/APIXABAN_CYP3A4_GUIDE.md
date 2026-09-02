@@ -16,10 +16,12 @@ inducer checkers.
 from medagent.safety import ApixabanCyp3a4Checker
 from medagent.models import Medication
 
-findings = ApixabanCyp3a4Checker().check([
-    Medication(name="apixaban"),
-    Medication(name="ketoconazole"),
-])
+findings = ApixabanCyp3a4Checker().check(
+    [
+        Medication(name="apixaban"),
+        Medication(name="ketoconazole"),
+    ]
+)
 ```
 
 ## Safety
