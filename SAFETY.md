@@ -1028,3 +1028,9 @@ Every unique primary x partner pair across separate medication entries yields a 
 
 Every unique primary x partner pair across separate medication entries yields a `MethyleneBlueSsriRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHYLENE_BLUE_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.116 Apixaban + Strong CYP3A4/P-gp Inhibitor Risk
+`safety/apixaban_cyp3a4_checker.py` flags **Apixaban + Strong CYP3A4/P-gp** pairs. Apixaban is a CYP3A4/P-gp substrate; strong inhibitors (ketoconazole, itraconazole, ritonavir) raise exposure and bleeding risk. Distinct from dabigatran P-gp and DOAC inducer checkers.
+
+Every unique primary x partner pair across separate medication entries yields a `ApixabanCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/APIXABAN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
