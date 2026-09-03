@@ -2649,3 +2649,18 @@ class RifampinOcRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class PhenytoinFluconazoleRisk(BaseModel, frozen=True):
+    """Phenytoin + Fluconazole CYP2C9 Inhibition Risk.
+
+    Fluconazole inhibits CYP2C9, increasing phenytoin levels and toxicity
+    risk (nystagmus, ataxia, seizures).
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
