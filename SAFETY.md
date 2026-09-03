@@ -1046,3 +1046,9 @@ Every unique primary x partner pair across separate medication entries yields a 
 
 Every unique primary x partner pair across separate medication entries yields a `ErgotamineCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ERGOTAMINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.119 Rifampin + Oral Contraceptive Efficacy Risk
+`safety/rifampin_oc_checker.py` flags **rifampin-class agents** (rifampin, rifampicin, Rifadin, Rimactane) co-prescribed with **oral contraceptives** (ethinylestradiol, levonorgestrel, norethindrone, desogestrel). Rifampin is a potent CYP3A4 inducer that dramatically reduces oral contraceptive efficacy, creating contraceptive failure risk. Alternative or additional contraception should be recommended when co-prescribed.
+
+Every unique rifampin × oral contraceptive pair across separate medication entries yields a `RifampinOcRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIFAMPIN_OC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+

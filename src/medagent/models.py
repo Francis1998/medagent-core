@@ -2634,3 +2634,18 @@ class ErgotamineCyp3a4Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class RifampinOcRisk(BaseModel, frozen=True):
+    """Rifampin + Oral Contraceptive Efficacy Risk.
+
+    Rifampin is a potent CYP3A4 inducer that dramatically reduces oral
+    contraceptive efficacy, creating contraceptive failure risk.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str

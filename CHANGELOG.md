@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #119: Rifampin + Oral Contraceptive efficacy checker (`safety/rifampin_oc_checker.py`). See `docs/guides/RIFAMPIN_OC_GUIDE.md` and `assets/rifampin_oc_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #118: Ergotamine + Strong CYP3A4 checker (`safety/ergotamine_cyp3a4_checker.py`). See `docs/guides/ERGOTAMINE_CYP3A4_GUIDE.md` and `assets/ergotamine_cyp3a4_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #117: Pimozide + Strong CYP3A4 checker (`safety/pimozide_cyp3a4_checker.py`). See `docs/guides/PIMOZIDE_CYP3A4_GUIDE.md` and `assets/pimozide_cyp3a4_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #116: Apixaban + Strong CYP3A4/P-gp checker (`safety/apixaban_cyp3a4_checker.py`). See `docs/guides/APIXABAN_CYP3A4_GUIDE.md` and `assets/apixaban_cyp3a4_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

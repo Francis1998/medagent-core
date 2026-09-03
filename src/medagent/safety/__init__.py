@@ -83,6 +83,7 @@ from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
+from medagent.safety.rifampin_oc_checker import RifampinOcChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.sglt2_loop_checker import Sglt2LoopChecker
 from medagent.safety.sglt2_raasi_checker import Sglt2RaasiChecker
@@ -181,6 +182,7 @@ __all__ = [
     "QtcMonitoringChecker",
     "QuetiapineCyp3a4Checker",
     "RenalHepaticLactationChecker",
+    "RifampinOcChecker",
     "ScopeEnforcer",
     "ScopeViolationError",
     "Sglt2LoopChecker",
