@@ -47,6 +47,7 @@ from medagent.safety.fluoroquinolone_nsaid_checker import (
 from medagent.safety.fluoroquinolone_warfarin_checker import (
     FluoroquinoloneWarfarinChecker,
 )
+from medagent.safety.gentamicin_vancomycin_checker import GentamicinVancomycinChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
@@ -150,6 +151,7 @@ __all__ = [
     "FluoroquinoloneCorticosteroidChecker",
     "FluoroquinoloneNsaidChecker",
     "FluoroquinoloneWarfarinChecker",
+    "GentamicinVancomycinChecker",
     "GeriatricDeprescribingChecker",
     "InrTtrChecker",
     "InsulinStackingChecker",
