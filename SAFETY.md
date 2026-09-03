@@ -1052,3 +1052,9 @@ Every unique primary x partner pair across separate medication entries yields a 
 
 Every unique rifampin × oral contraceptive pair across separate medication entries yields a `RifampinOcRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIFAMPIN_OC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.120 Phenytoin + Fluconazole CYP2C9 Inhibition Risk
+`safety/phenytoin_fluconazole_checker.py` flags **phenytoin-class agents** (phenytoin, Dilantin, Phenytek, fosphenytoin, Cerebyx) co-prescribed with **fluconazole** (fluconazole, Diflucan). Fluconazole inhibits CYP2C9 and can increase phenytoin serum concentrations, raising toxicity risk (nystagmus, ataxia, seizures). Distinct from warfarin-azole and other CYP2C9 interaction checkers.
+
+Every unique phenytoin × fluconazole pair across separate medication entries yields a `PhenytoinFluconazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PHENYTOIN_FLUCONAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
