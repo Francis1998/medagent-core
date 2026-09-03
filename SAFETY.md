@@ -1058,3 +1058,9 @@ Every unique rifampin × oral contraceptive pair across separate medication entr
 
 Every unique phenytoin × fluconazole pair across separate medication entries yields a `PhenytoinFluconazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PHENYTOIN_FLUCONAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.121 Aminoglycoside + Vancomycin Additive Nephrotoxicity / Ototoxicity Risk
+`safety/gentamicin_vancomycin_checker.py` flags **aminoglycoside agents** (gentamicin, tobramycin, amikacin, Garamycin, TOBI) co-prescribed with **vancomycin** (vancomycin, Vancocin). Combining an aminoglycoside with vancomycin produces additive nephrotoxicity and ototoxicity; enhanced renal monitoring is required. Distinct from generic renal-dose and antibiotic-duration checkers.
+
+Every unique aminoglycoside × vancomycin pair across separate medication entries yields a `GentamicinVancomycinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/GENTAMICIN_VANCOMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+

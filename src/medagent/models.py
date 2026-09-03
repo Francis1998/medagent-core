@@ -2664,3 +2664,18 @@ class PhenytoinFluconazoleRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class GentamicinVancomycinRisk(BaseModel, frozen=True):
+    """Aminoglycoside + Vancomycin Additive Nephrotoxicity / Ototoxicity Risk.
+
+    Combining aminoglycosides with vancomycin produces additive
+    nephrotoxicity and ototoxicity; enhanced renal monitoring is required.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
