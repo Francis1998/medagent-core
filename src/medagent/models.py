@@ -2709,3 +2709,18 @@ class RivaroxabanRifampinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class FlecainideCyp2d6Risk(BaseModel, frozen=True):
+    """Flecainide + Strong CYP2D6 Inhibitor Risk.
+
+    Flecainide is a CYP2D6 substrate; strong CYP2D6 inhibitors raise
+    flecainide levels and proarrhythmia risk.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
