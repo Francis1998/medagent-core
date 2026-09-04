@@ -2679,3 +2679,18 @@ class GentamicinVancomycinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class SofosbuvirAmiodaroneRisk(BaseModel, frozen=True):
+    """Sofosbuvir + Amiodarone Bradycardia Risk.
+
+    Coadministration of sofosbuvir-containing HCV regimens with amiodarone can cause serious
+    symptomatic bradycardia.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
