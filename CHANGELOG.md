@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #123: `RivaroxabanRifampinChecker` — Rivaroxaban + Rifampin Induction Risk. See `docs/guides/RIVAROXABAN_RIFAMPIN_GUIDE.md`.
 - Safety #122: `SofosbuvirAmiodaroneChecker` — Sofosbuvir + Amiodarone Bradycardia Risk. See `docs/guides/SOFOSBUVIR_AMIODARONE_GUIDE.md`.
 - Safety #121: Aminoglycoside + Vancomycin additive nephrotoxicity/ototoxicity checker (`safety/gentamicin_vancomycin_checker.py`). See `docs/guides/GENTAMICIN_VANCOMYCIN_GUIDE.md` and `assets/gentamicin_vancomycin_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #120: Phenytoin + Fluconazole CYP2C9 inhibition checker (`safety/phenytoin_fluconazole_checker.py`). See `docs/guides/PHENYTOIN_FLUCONAZOLE_GUIDE.md` and `assets/phenytoin_fluconazole_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

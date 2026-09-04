@@ -326,6 +326,12 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 
 *Last updated: 2026-07-25. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
 
+
+### 3.123 Rivaroxaban + Rifampin Induction Risk
+`safety/rivaroxaban_rifampin_checker.py` flags **rivaroxaban** (and aliases) co-prescribed with **rifampin** (and aliases). Rifampin strongly induces CYP3A4 and P-gp, reducing rivaroxaban exposure and increasing thrombotic risk. Distinct from related DDI checkers covering other pairs.
+
+Every unique primary × partner pair across separate medication entries yields a `RivaroxabanRifampinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIVAROXABAN_RIFAMPIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ### 3.42 Chemotherapy Emetogenicity and Antiemetic Prophylaxis
 `safety/chemo_emesis_checker.py` flags **high/moderate emetogenic chemotherapy** when **antiemetic prophylaxis cues are missing** from the medication list, or when `days_since_chemo` suggests the **delayed CINV window (days 2–5)** without delayed-phase antiemetic coverage (aprepitant, fosaprepitant, dexamethasone, or olanzapine). This hazard is distinct from lactation chemotherapy flagging and QT-prolonging antiemetic surveillance.
 
