@@ -2694,3 +2694,18 @@ class SofosbuvirAmiodaroneRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class RivaroxabanRifampinRisk(BaseModel, frozen=True):
+    """Rivaroxaban + Rifampin Induction Risk.
+
+    Rifampin strongly induces CYP3A4 and P-gp, reducing rivaroxaban exposure and increasing
+    thrombotic risk.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
