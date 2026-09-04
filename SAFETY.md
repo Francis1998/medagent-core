@@ -249,6 +249,12 @@ The conservative opioid panel includes oxycodone, hydrocodone, morphine, fentany
 
 ---
 
+
+### 3.122 Sofosbuvir + Amiodarone Bradycardia Risk
+`safety/sofosbuvir_amiodarone_checker.py` flags **sofosbuvir** (and aliases) co-prescribed with **amiodarone** (and aliases). Coadministration of sofosbuvir-containing HCV regimens with amiodarone can cause serious symptomatic bradycardia. Distinct from related DDI checkers covering other pairs.
+
+Every unique primary × partner pair across separate medication entries yields a `SofosbuvirAmiodaroneRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SOFOSBUVIR_AMIODARONE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
