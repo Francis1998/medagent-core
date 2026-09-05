@@ -36,6 +36,7 @@ from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.ergotamine_cyp3a4_checker import ErgotamineCyp3a4Checker
 from medagent.safety.escitalopram_qt_checker import EscitalopramQtChecker
+from medagent.safety.ethinylestradiol_lamotrigine_checker import EthinylestradiolLamotrigineChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.fentanyl_cyp3a4_checker import FentanylCyp3a4Checker
 from medagent.safety.flecainide_cyp2d6_checker import FlecainideCyp2d6Checker
@@ -150,6 +151,7 @@ __all__ = [
     "ElectrolyteQtChecker",
     "ErgotamineCyp3a4Checker",
     "EscitalopramQtChecker",
+    "EthinylestradiolLamotrigineChecker",
     "FallRiskChecker",
     "FentanylCyp3a4Checker",
     "FlecainideCyp2d6Checker",

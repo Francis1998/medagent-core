@@ -2739,3 +2739,18 @@ class TacrolimusRifampinRisk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class EthinylestradiolLamotrigineRisk(BaseModel, frozen=True):
+    """Ethinylestradiol + Lamotrigine Level Reduction Risk.
+
+    Ethinylestradiol-containing combined oral contraceptives induce UGT
+    glucuronidation of lamotrigine, reducing levels and increasing seizure risk.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
