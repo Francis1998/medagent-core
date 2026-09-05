@@ -418,6 +418,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 111 | Escitalopram / Citalopram QT-Prolongation | `safety/escitalopram_qt_checker.py` | Flags escitalopram/Lexapro or citalopram/Celexa alone (HIGH) or with QT partners e.g. ondansetron/haloperidol (CRITICAL) — torsades risk; distinct from quetiapine CYP3A4 / qt_prolongation |
 | 125 | Tacrolimus + Rifampin Induction Risk | `safety/tacrolimus_rifampin_checker.py` | Flags tacrolimus/Prograf/Envarsus/Astagraf with rifampin/rifampicin — HIGH transplant-rejection risk from CYP3A4 induction; distinct from tacrolimus CYP3A4 inhibitor checker |
 | 126 | Ethinylestradiol + Lamotrigine Level Reduction | `safety/ethinylestradiol_lamotrigine_checker.py` | Flags lamotrigine/Lamictal with ethinylestradiol COCs — HIGH seizure risk from reduced lamotrigine levels; distinct from lamotrigine+valproate / rifampin+OC |
+| 127 | Sirolimus + Strong CYP3A4 Inhibitor Risk | `safety/sirolimus_strong_cyp3a4_checker.py` | Flags sirolimus/Rapamune with ketoconazole/clarithromycin/itraconazole/ritonavir (CRITICAL) or grapefruit (HIGH) — elevated toxicity risk; distinct from tacrolimus CYP3A4 |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
