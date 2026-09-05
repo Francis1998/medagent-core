@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #125: `TacrolimusRifampinChecker` — Tacrolimus + Rifampin Induction Risk. See `docs/guides/TACROLIMUS_RIFAMPIN_GUIDE.md`.
 - Safety #124: `FlecainideCyp2d6Checker` — Flecainide + Strong CYP2D6 Inhibitor Risk. See `docs/guides/FLECAINIDE_CYP2D6_GUIDE.md`.
 - Safety #123: `RivaroxabanRifampinChecker` — Rivaroxaban + Rifampin Induction Risk. See `docs/guides/RIVAROXABAN_RIFAMPIN_GUIDE.md`.
 - Safety #122: `SofosbuvirAmiodaroneChecker` — Sofosbuvir + Amiodarone Bradycardia Risk. See `docs/guides/SOFOSBUVIR_AMIODARONE_GUIDE.md`.

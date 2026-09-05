@@ -2724,3 +2724,18 @@ class FlecainideCyp2d6Risk(BaseModel, frozen=True):
     partner_agent: str = Field(description="Canonical partner agent")
     severity: Severity
     rationale: str
+
+
+class TacrolimusRifampinRisk(BaseModel, frozen=True):
+    """Tacrolimus + Rifampin Induction Risk.
+
+    Rifampin strongly induces CYP3A4, markedly reducing tacrolimus
+    exposure and raising transplant rejection risk.
+    """
+
+    medication: str = Field(description="Medication name containing the primary agent")
+    agent: str = Field(description="Canonical primary agent")
+    partner_medication: str = Field(description="Co-prescribed partner medication name")
+    partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
