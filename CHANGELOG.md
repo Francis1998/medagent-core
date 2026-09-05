@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #127: `SirolimusStrongCyp3a4Checker` — Sirolimus + Strong CYP3A4 Inhibitor Risk. See `docs/guides/SIROLIMUS_STRONG_CYP3A4_GUIDE.md`.
 - Safety #126: `EthinylestradiolLamotrigineChecker` — Ethinylestradiol + Lamotrigine Level Reduction Risk. See `docs/guides/ETHINYLESTRADIOL_LAMOTRIGINE_GUIDE.md`.
 - Safety #125: `TacrolimusRifampinChecker` — Tacrolimus + Rifampin Induction Risk. See `docs/guides/TACROLIMUS_RIFAMPIN_GUIDE.md`.
 - Safety #124: `FlecainideCyp2d6Checker` — Flecainide + Strong CYP2D6 Inhibitor Risk. See `docs/guides/FLECAINIDE_CYP2D6_GUIDE.md`.
