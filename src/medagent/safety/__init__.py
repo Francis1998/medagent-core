@@ -30,6 +30,7 @@ from medagent.safety.disclaimer import (
     MANDATORY_DISCLAIMER,
     MEDICAL_SYSTEM_PROMPT,
 )
+from medagent.safety.disease_contraindication_checker import DiseaseContraindicationChecker
 from medagent.safety.doac_antiplatelet_checker import DoacAntiplateletChecker
 from medagent.safety.doac_inducer_checker import DoacInducerChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
@@ -147,6 +148,7 @@ __all__ = [
     "DigoxinAmioChecker",
     "DigoxinToxicityChecker",
     "DigoxinVerapamilChecker",
+    "DiseaseContraindicationChecker",
     "DoacAntiplateletChecker",
     "DoacInducerChecker",
     "DoacNsaidChecker",
