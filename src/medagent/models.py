@@ -2791,6 +2791,9 @@ class VitalsTriageRisk(BaseModel, frozen=True):
     value: float = Field(description="Observed vital-sign value")
     unit: str | None = Field(default=None, description="Unit associated with the value")
     news2_score: int = Field(ge=1, le=3, description="Educational NEWS2 single-parameter score")
+    severity: Severity
+    rationale: str
+
 
 class DiseaseContraindicationRisk(BaseModel, frozen=True):
     """Advisory condition × medication contraindication finding.
