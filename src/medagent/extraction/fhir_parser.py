@@ -15,7 +15,7 @@ import re
 from typing import Any
 
 from medagent.logging_config import get_logger
-from medagent.models import FHIRPatientContext, LabResult, Medication
+from medagent.models import FHIRPatientContext, LabResult, Medication, VitalSign
 from medagent.safety.pii_hasher import hash_pii
 
 logger = get_logger(__name__)
@@ -74,7 +74,9 @@ def parse_fhir_bundle(
 
     diagnoses = _extract_diagnoses(resources.get("Condition", []))
     medications = _extract_medications(resources.get("MedicationRequest", []))
-    lab_results = _extract_observations(resources.get("Observation", []))
+    observations = resources.get("Observation", [])
+    lab_results = _extract_observations(observations)
+    vital_signs = _extract_vital_signs(observations)
     allergies = _extract_allergies(resources.get("AllergyIntolerance", []))
     chief_complaint = _extract_chief_complaint(resources)
 
@@ -94,6 +96,7 @@ def parse_fhir_bundle(
         diagnoses_history=diagnoses,
         medications=medications,
         lab_results=lab_results,
+        vital_signs=vital_signs,
         allergies=allergies,
         raw_fhir=bundle,
     )
@@ -352,3 +355,66 @@ def sanitise_clinical_text(text: str) -> str:
     # leaving a trailing ``.org`` / ``.co.uk`` fragment revealing the organisation.
     text = re.sub(r"\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b", "[REDACTED-EMAIL]", text)
     return text
+
+
+_VITAL_NAME_HINTS: tuple[str, ...] = (
+    "spo2",
+    "oxygen saturation",
+    "o2 sat",
+    "respiratory rate",
+    "respiration rate",
+    "systolic",
+    "heart rate",
+    "pulse",
+    "temperature",
+    "body temperature",
+)
+
+
+def _extract_vital_signs(observations: list[dict[str, Any]]) -> list[VitalSign]:
+    """Extract adult vital-sign Observations as VitalSign records.
+
+    Conservative best-effort parsing: only Observations whose display/text
+    looks like SpO2, RR, systolic BP, heart rate, or temperature are kept.
+    Malformed entries are skipped. RESEARCH USE ONLY educational support.
+    """
+    vitals: list[VitalSign] = []
+    for obs in observations:
+        try:
+            code = obs.get("code", {})
+            name = code.get("text") or ((code.get("coding") or [{}])[0].get("display"))
+            if not name:
+                continue
+            lowered = str(name).lower()
+            if not any(hint in lowered for hint in _VITAL_NAME_HINTS):
+                continue
+            # Prefer systolic component for blood pressure panels.
+            if "blood pressure" in lowered and "systolic" not in lowered:
+                components = obs.get("component") or []
+                systolic = None
+                for component in components:
+                    ccode = component.get("code", {})
+                    cname = ccode.get("text") or (
+                        (ccode.get("coding") or [{}])[0].get("display") or ""
+                    )
+                    if "systolic" in str(cname).lower():
+                        quantity = component.get("valueQuantity") or {}
+                        if quantity.get("value") is not None:
+                            systolic = VitalSign(
+                                name="systolic_bp",
+                                value=float(quantity["value"]),
+                                unit=quantity.get("unit") or "mmHg",
+                            )
+                            break
+                if systolic is not None:
+                    vitals.append(systolic)
+                continue
+            value_quantity = obs.get("valueQuantity") or {}
+            value = value_quantity.get("value")
+            unit = value_quantity.get("unit")
+            if value is None:
+                continue
+            vitals.append(VitalSign(name=str(name), value=float(value), unit=unit))
+        except Exception as exc:
+            logger.warning("vital_parse_error", error=str(exc))
+    return vitals

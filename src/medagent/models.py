@@ -106,6 +106,7 @@ class FHIRPatientContext(BaseModel, frozen=True):
     diagnoses_history: list[str] = Field(default_factory=list)
     medications: list[Medication] = Field(default_factory=list)
     lab_results: list[LabResult] = Field(default_factory=list)
+    vital_signs: list[VitalSign] = Field(default_factory=list)
     allergies: list[str] = Field(default_factory=list)
     raw_fhir: dict[str, Any] | None = Field(
         default=None,
@@ -2767,5 +2768,28 @@ class SirolimusStrongCyp3a4Risk(BaseModel, frozen=True):
     agent: str = Field(description="Canonical primary agent")
     partner_medication: str = Field(description="Co-prescribed partner medication name")
     partner_agent: str = Field(description="Canonical partner agent")
+    severity: Severity
+    rationale: str
+
+
+class VitalSign(BaseModel, frozen=True):
+    """A single adult vital-sign reading for triage education."""
+
+    name: str = Field(description="Vital parameter name, e.g. spo2, heart_rate, temperature")
+    value: float = Field(description="Numeric vital-sign value")
+    unit: str | None = Field(default=None, description="Unit of measure, e.g. %, /min, mmHg, C")
+
+
+class VitalsTriageRisk(BaseModel, frozen=True):
+    """Advisory NEWS2-style single-parameter vitals triage finding.
+
+    RESEARCH USE ONLY — educational triage support, not a clinical early-warning
+    system and not a substitute for local NEWS2/MEWS protocols.
+    """
+
+    parameter: str = Field(description="Canonical vital parameter evaluated")
+    value: float = Field(description="Observed vital-sign value")
+    unit: str | None = Field(default=None, description="Unit associated with the value")
+    news2_score: int = Field(ge=1, le=3, description="Educational NEWS2 single-parameter score")
     severity: Severity
     rationale: str

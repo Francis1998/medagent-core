@@ -351,6 +351,12 @@ Every unique primary × partner pair across separate medication entries yields a
 `safety/sirolimus_strong_cyp3a4_checker.py` flags **sirolimus** (and aliases) co-prescribed with **strong CYP3A4 inhibitors** (ketoconazole, clarithromycin, itraconazole, ritonavir, and optional grapefruit). Sirolimus is a CYP3A4/P-gp substrate; strong CYP3A4 inhibitors raise sirolimus levels and toxicity risk. Distinct from tacrolimus CYP3A4 inhibitor exposure and other mTOR/CYP3A4 screens.
 
 Every unique primary × partner pair across separate medication entries yields a `SirolimusStrongCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SIROLIMUS_STRONG_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.128 Adult NEWS2-Style Vitals Triage
+`safety/vitals_triage_checker.py` maps adult **SpO2, respiratory rate, systolic BP, heart rate, and temperature** onto educational **NEWS2 single-parameter bands**, emitting advisory `VitalsTriageRisk` findings with NEWS2 scores and severities. This is deterministic triage education — distinct from MedPrompt-style free-text clinical triage prompting and from medication/DDI safety checkers.
+
+Unrecognized vital names are ignored. Temperature is interpreted in °C. Findings include RESEARCH USE ONLY rationales and are sorted by descending severity. Findings are **advisory** — they never modify vitals, order oxygen, or escalate care. Optional FHIR Observation parsing can populate `FHIRPatientContext.vital_signs`. See also `docs/guides/VITALS_TRIAGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ### 3.42 Chemotherapy Emetogenicity and Antiemetic Prophylaxis
 `safety/chemo_emesis_checker.py` flags **high/moderate emetogenic chemotherapy** when **antiemetic prophylaxis cues are missing** from the medication list, or when `days_since_chemo` suggests the **delayed CINV window (days 2–5)** without delayed-phase antiemetic coverage (aprepitant, fosaprepitant, dexamethasone, or olanzapine). This hazard is distinct from lactation chemotherapy flagging and QT-prolonging antiemetic surveillance.
 
