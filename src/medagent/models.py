@@ -2794,18 +2794,14 @@ class VitalsTriageRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+class SoapNote(BaseModel, frozen=True):
+    """Deterministic SOAP note structure for research documentation support.
 
-class DiseaseContraindicationRisk(BaseModel, frozen=True):
-    """Advisory condition × medication contraindication finding.
-
-    RESEARCH USE ONLY — educational disease–drug panel alert, not a
-    drug–drug interaction check and not a treatment directive.
+    Plan content is limited to non-prescriptive hints. RESEARCH USE ONLY.
     """
 
-    condition: str = Field(description="Matched patient condition string")
-    condition_key: str = Field(description="Canonical condition panel key")
-    medication: str = Field(description="Medication name that matched the panel")
-    agent: str = Field(description="Canonical contraindicated agent token")
-    panel_id: str = Field(description="Stable panel rule identifier")
-    severity: Severity
-    rationale: str
+    subjective: str = Field(description="Subjective content derived from complaints/symptoms")
+    objective: str = Field(description="Objective content derived from labs/exam/vitals cues")
+    assessment: str = Field(description="Assessment content derived from diagnoses/impressions")
+    plan: str = Field(description="Non-prescriptive plan hints only — never prescriptions")
+    rationale: str = Field(description="RESEARCH USE ONLY explanation of structuring rules applied")
