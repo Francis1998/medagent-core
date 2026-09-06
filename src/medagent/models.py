@@ -2794,6 +2794,7 @@ class VitalsTriageRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class SoapNote(BaseModel, frozen=True):
     """Deterministic SOAP note structure for research documentation support.
 
