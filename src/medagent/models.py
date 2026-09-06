@@ -2795,6 +2795,22 @@ class VitalsTriageRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class DiseaseContraindicationRisk(BaseModel, frozen=True):
+    """Advisory condition × medication contraindication finding.
+
+    RESEARCH USE ONLY — educational disease–drug panel alert, not a
+    drug–drug interaction check and not a treatment directive.
+    """
+
+    condition: str = Field(description="Matched patient condition string")
+    condition_key: str = Field(description="Canonical condition panel key")
+    medication: str = Field(description="Medication name that matched the panel")
+    agent: str = Field(description="Canonical contraindicated agent token")
+    panel_id: str = Field(description="Stable panel rule identifier")
+    severity: Severity
+    rationale: str
+
+
 class SoapNote(BaseModel, frozen=True):
     """Deterministic SOAP note structure for research documentation support.
 
