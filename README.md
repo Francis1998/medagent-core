@@ -426,6 +426,10 @@ See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalatio
 
 ---
 
+
+### Reasoning: SOAP Structurer
+`SoapStructurer` (`reasoning/soap_structurer.py`) deterministically maps notes, entities, labs, and medications into S/O/A/P sections with **non-prescriptive plan hints only**. RESEARCH USE ONLY documentation aid; gap vs MedPrompt free-form SOAP prompting. See `docs/guides/SOAP_STRUCTURER_GUIDE.md` and `assets/soap_structurer_demo.gif`.
+
 ## Quick Start
 
 ```bash

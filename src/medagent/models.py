@@ -2809,3 +2809,16 @@ class DiseaseContraindicationRisk(BaseModel, frozen=True):
     panel_id: str = Field(description="Stable panel rule identifier")
     severity: Severity
     rationale: str
+
+
+class SoapNote(BaseModel, frozen=True):
+    """Deterministic SOAP note structure for research documentation support.
+
+    Plan content is limited to non-prescriptive hints. RESEARCH USE ONLY.
+    """
+
+    subjective: str = Field(description="Subjective content derived from complaints/symptoms")
+    objective: str = Field(description="Objective content derived from labs/exam/vitals cues")
+    assessment: str = Field(description="Assessment content derived from diagnoses/impressions")
+    plan: str = Field(description="Non-prescriptive plan hints only — never prescriptions")
+    rationale: str = Field(description="RESEARCH USE ONLY explanation of structuring rules applied")
