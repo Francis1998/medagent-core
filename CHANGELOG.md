@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety #129: `DiseaseContraindicationChecker` — curated condition × medication contraindication panel (`safety/disease_contraindication_checker.py`). See `docs/guides/DISEASE_CONTRAINDICATION_GUIDE.md` and `assets/disease_contraindication_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #128: `VitalsTriageChecker` — adult NEWS2-style single-parameter vitals triage (`safety/vitals_triage_checker.py`) emitting advisory `VitalsTriageRisk` findings for SpO2, RR, SBP, HR, and temperature. Optional FHIR vital-sign Observation parsing. See `docs/guides/VITALS_TRIAGE_GUIDE.md` and `assets/vitals_triage_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #127: `SirolimusStrongCyp3a4Checker` — Sirolimus + Strong CYP3A4 Inhibitor Risk. See `docs/guides/SIROLIMUS_STRONG_CYP3A4_GUIDE.md`.
 - Safety #126: `EthinylestradiolLamotrigineChecker` — Ethinylestradiol + Lamotrigine Level Reduction Risk. See `docs/guides/ETHINYLESTRADIOL_LAMOTRIGINE_GUIDE.md`.

@@ -420,6 +420,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 126 | Ethinylestradiol + Lamotrigine Level Reduction | `safety/ethinylestradiol_lamotrigine_checker.py` | Flags lamotrigine/Lamictal with ethinylestradiol COCs — HIGH seizure risk from reduced lamotrigine levels; distinct from lamotrigine+valproate / rifampin+OC |
 | 127 | Sirolimus + Strong CYP3A4 Inhibitor Risk | `safety/sirolimus_strong_cyp3a4_checker.py` | Flags sirolimus/Rapamune with ketoconazole/clarithromycin/itraconazole/ritonavir (CRITICAL) or grapefruit (HIGH) — elevated toxicity risk; distinct from tacrolimus CYP3A4 |
 | 128 | Adult NEWS2-Style Vitals Triage | `safety/vitals_triage_checker.py` | Flags abnormal adult SpO2/RR/SBP/HR/temp via educational NEWS2 single-parameter bands; RESEARCH USE ONLY advisory triage (not a clinical EWS); gap vs MedPrompt free-text triage |
+| 129 | Disease × Medication Contraindication Panel | `safety/disease_contraindication_checker.py` | Flags curated condition×drug cautions (HF+NSAID, asthma+nonselective BB, etc.) via whole-token matching; RESEARCH USE ONLY; not a DDI checker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

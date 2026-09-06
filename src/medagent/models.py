@@ -2791,5 +2791,18 @@ class VitalsTriageRisk(BaseModel, frozen=True):
     value: float = Field(description="Observed vital-sign value")
     unit: str | None = Field(default=None, description="Unit associated with the value")
     news2_score: int = Field(ge=1, le=3, description="Educational NEWS2 single-parameter score")
+
+class DiseaseContraindicationRisk(BaseModel, frozen=True):
+    """Advisory condition × medication contraindication finding.
+
+    RESEARCH USE ONLY — educational disease–drug panel alert, not a
+    drug–drug interaction check and not a treatment directive.
+    """
+
+    condition: str = Field(description="Matched patient condition string")
+    condition_key: str = Field(description="Canonical condition panel key")
+    medication: str = Field(description="Medication name that matched the panel")
+    agent: str = Field(description="Canonical contraindicated agent token")
+    panel_id: str = Field(description="Stable panel rule identifier")
     severity: Severity
     rationale: str
