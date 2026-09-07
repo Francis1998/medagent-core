@@ -88,6 +88,7 @@ from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecke
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
+from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
 from medagent.safety.rifampin_oc_checker import RifampinOcChecker
 from medagent.safety.rivaroxaban_rifampin_checker import RivaroxabanRifampinChecker
@@ -198,6 +199,7 @@ __all__ = [
     "QtcDdiChecker",
     "QtcMonitoringChecker",
     "QuetiapineCyp3a4Checker",
+    "RenalDoseAdjuster",
     "RenalHepaticLactationChecker",
     "RifampinOcChecker",
     "RivaroxabanRifampinChecker",

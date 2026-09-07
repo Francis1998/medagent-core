@@ -2829,6 +2829,22 @@ class AllergyInterClassRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class RenalDoseAdjustment(BaseModel, frozen=True):
+    """Advisory banded renal regimen suggestion for a curated agent.
+
+    RESEARCH USE ONLY — educational eGFR band cue with suggested_regimen,
+    distinct from RenalDoseRisk avoid/reduce flags and not a prescription.
+    """
+
+    medication: str = Field(description="Medication name that matched the panel")
+    agent: str = Field(description="Canonical renally adjusted agent token")
+    egfr: float = Field(description="Patient eGFR in mL/min/1.73m^2 used for banding")
+    band_label: str = Field(description="Stable renal band identifier for the selected regimen")
+    suggested_regimen: str = Field(description="Educational suggested regimen cue for the band")
+    severity: Severity
+    rationale: str
+
+
 class SoapNote(BaseModel, frozen=True):
     """Deterministic SOAP note structure for research documentation support.
 
