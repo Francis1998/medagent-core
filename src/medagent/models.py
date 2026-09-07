@@ -2845,6 +2845,27 @@ class RenalDoseAdjustment(BaseModel, frozen=True):
     rationale: str
 
 
+class GuidelineMatch(BaseModel, frozen=True):
+    """Advisory educational clinical-guideline condition match.
+
+    RESEARCH USE ONLY — positive guideline-awareness cue, distinct from
+    DiseaseContraindicationRisk condition×drug contraindication panels and not
+    a treatment directive.
+    """
+
+    condition: str = Field(description="Matched patient condition string")
+    condition_key: str = Field(description="Canonical condition panel key")
+    guideline_id: str = Field(description="Stable guideline panel identifier")
+    guideline_label: str = Field(description="Short educational guideline label")
+    educational_cue: str = Field(description="Educational guideline reminder text")
+    present_cue_agents: list[str] = Field(
+        default_factory=list,
+        description="Guideline cue agents already present on the medication list",
+    )
+    severity: Severity
+    rationale: str
+
+
 class SoapNote(BaseModel, frozen=True):
     """Deterministic SOAP note structure for research documentation support.
 

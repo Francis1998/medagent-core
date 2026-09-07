@@ -372,6 +372,12 @@ Every matching panel × allergy × medication combination yields an `AllergyInte
 
 Every matching medication × eGFR band yields a `RenalDoseAdjustment` record with agent, eGFR, band label, suggested regimen, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/RENAL_DOSE_ADJUSTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.132 Clinical Guideline Matcher
+`safety/clinical_guideline_matcher.py` matches patient conditions to a curated **educational clinical-guideline panel** (HFrEF GDMT cues, hypertension first-line classes, T2DM cardiorenal therapy cues, CKD ACEi/ARB + SGLT2 cues, atrial-fibrillation stroke-prevention awareness, ASCVD secondary-prevention cues). Whole-token matching is used for conditions. Optional medication lists annotate which cue agents are already present but do not block matches. This control is distinct from `DiseaseContraindicationChecker`, which flags condition × drug **contraindications** rather than positive guideline reminders.
+
+Every matching guideline × condition combination yields a `GuidelineMatch` record with guideline id/label, educational cue, present cue agents, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/CLINICAL_GUIDELINE_MATCHER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ### 3.42 Chemotherapy Emetogenicity and Antiemetic Prophylaxis
 `safety/chemo_emesis_checker.py` flags **high/moderate emetogenic chemotherapy** when **antiemetic prophylaxis cues are missing** from the medication list, or when `days_since_chemo` suggests the **delayed CINV window (days 2–5)** without delayed-phase antiemetic coverage (aprepitant, fosaprepitant, dexamethasone, or olanzapine). This hazard is distinct from lactation chemotherapy flagging and QT-prolonging antiemetic surveillance.
 
