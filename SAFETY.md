@@ -361,6 +361,12 @@ Unrecognized vital names are ignored. Temperature is interpreted in °C. Finding
 
 Every matching panel × condition × medication × agent combination yields a `DiseaseContraindicationRisk` record with panel id, condition, agent, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/DISEASE_CONTRAINDICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.130 Allergy Inter-Class Cross-Reactivity
+`safety/allergy_interclass_checker.py` flags curated **inter-class** allergy × medication educational risks (for example penicillin allergy ↔ cephalosporin medication, penicillin allergy ↔ carbapenem, cephalosporin allergy ↔ penicillin, sulfonamide allergy ↔ selected non-antibiotic sulfonamides). Whole-token matching is used for allergy and medication names. This hazard is distinct from the intra-class / direct `AllergyChecker` screen, which deliberately does not model inter-class cross-reactivity.
+
+Every matching panel × allergy × medication combination yields an `AllergyInterClassRisk` record with allergy/medication classes and agents, panel id, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ALLERGY_INTERCLASS_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ### 3.42 Chemotherapy Emetogenicity and Antiemetic Prophylaxis
 `safety/chemo_emesis_checker.py` flags **high/moderate emetogenic chemotherapy** when **antiemetic prophylaxis cues are missing** from the medication list, or when `days_since_chemo` suggests the **delayed CINV window (days 2–5)** without delayed-phase antiemetic coverage (aprepitant, fosaprepitant, dexamethasone, or olanzapine). This hazard is distinct from lactation chemotherapy flagging and QT-prolonging antiemetic surveillance.
 

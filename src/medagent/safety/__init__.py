@@ -5,6 +5,7 @@ from medagent.safety.acei_ksparing_checker import AceiKsparingChecker
 from medagent.safety.acei_potassium_checker import AceiPotassiumChecker
 from medagent.safety.acei_sacubitril_checker import AceiSacubitrilChecker
 from medagent.safety.acei_trimethoprim_checker import AceiTrimethoprimChecker
+from medagent.safety.allergy_interclass_checker import AllergyInterClassCrossReactivityChecker
 from medagent.safety.allopurinol_azathioprine_checker import AllopurinolAzathioprineChecker
 from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
@@ -128,6 +129,7 @@ __all__ = [
     "AceiPotassiumChecker",
     "AceiSacubitrilChecker",
     "AceiTrimethoprimChecker",
+    "AllergyInterClassCrossReactivityChecker",
     "AllopurinolAzathioprineChecker",
     "AmioWarfarinChecker",
     "AmiodaroneDigoxinChecker",

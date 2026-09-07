@@ -2811,6 +2811,24 @@ class DiseaseContraindicationRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class AllergyInterClassRisk(BaseModel, frozen=True):
+    """Advisory inter-class allergy × medication cross-reactivity finding.
+
+    RESEARCH USE ONLY — educational inter-class allergy screen, distinct from
+    intra-class AllergyConflict findings and not a treatment directive.
+    """
+
+    allergy: str = Field(description="Matched patient allergy string")
+    allergy_class: str = Field(description="Canonical allergy-side drug class")
+    allergy_agent: str = Field(description="Canonical allergy agent token matched")
+    medication: str = Field(description="Medication name that matched the panel")
+    medication_class: str = Field(description="Canonical medication-side drug class")
+    medication_agent: str = Field(description="Canonical medication agent token matched")
+    panel_id: str = Field(description="Stable inter-class panel rule identifier")
+    severity: Severity
+    rationale: str
+
+
 class SoapNote(BaseModel, frozen=True):
     """Deterministic SOAP note structure for research documentation support.
 
