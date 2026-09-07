@@ -16,6 +16,7 @@ from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
 from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacrolideChecker
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
+from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
 from medagent.safety.clozapine_cyp1a2_checker import ClozapineCyp1a2Checker
@@ -122,9 +123,6 @@ from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
 from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 
 __all__ = [
-    "ESCALATION_MESSAGE",
-    "MANDATORY_DISCLAIMER",
-    "MEDICAL_SYSTEM_PROMPT",
     "AceiArbDuplicationChecker",
     "AceiKsparingChecker",
     "AceiPotassiumChecker",
@@ -132,8 +130,8 @@ __all__ = [
     "AceiTrimethoprimChecker",
     "AllergyInterClassCrossReactivityChecker",
     "AllopurinolAzathioprineChecker",
-    "AmioWarfarinChecker",
     "AmiodaroneDigoxinChecker",
+    "AmioWarfarinChecker",
     "AmlodipineClarithromycinChecker",
     "AntibioticDurationStewardshipChecker",
     "AnticoagBleedingChecker",
@@ -141,6 +139,7 @@ __all__ = [
     "Beers2023DeltaChecker",
     "CarbamazepineMacrolideChecker",
     "ChemoEmesisChecker",
+    "ClinicalGuidelineMatcher",
     "ClopidogrelPpiChecker",
     "ClozapineAncChecker",
     "ClozapineCyp1a2Checker",
@@ -157,6 +156,7 @@ __all__ = [
     "DoacNsaidChecker",
     "ElectrolyteQtChecker",
     "ErgotamineCyp3a4Checker",
+    "ESCALATION_MESSAGE",
     "EscitalopramQtChecker",
     "EthinylestradiolLamotrigineChecker",
     "FallRiskChecker",
@@ -167,6 +167,8 @@ __all__ = [
     "FluoroquinoloneWarfarinChecker",
     "GentamicinVancomycinChecker",
     "GeriatricDeprescribingChecker",
+    "hash_pii",
+    "hash_pii_dict",
     "InrTtrChecker",
     "InsulinStackingChecker",
     "IsotretinoinTetracyclineChecker",
@@ -178,7 +180,9 @@ __all__ = [
     "LithiumNsaidChecker",
     "LithiumThiazideChecker",
     "MacrolideDigoxinChecker",
+    "MANDATORY_DISCLAIMER",
     "MaoiSerotoninCrosscheckChecker",
+    "MEDICAL_SYSTEM_PROMPT",
     "MetforminContrastChecker",
     "MethadoneQtChecker",
     "MethotrexateNsaidChecker",
@@ -199,6 +203,7 @@ __all__ = [
     "QtcDdiChecker",
     "QtcMonitoringChecker",
     "QuetiapineCyp3a4Checker",
+    "redact_fhir_pii",
     "RenalDoseAdjuster",
     "RenalHepaticLactationChecker",
     "RifampinOcChecker",
@@ -232,7 +237,4 @@ __all__ = [
     "WarfarinMetronidazoleChecker",
     "WarfarinNsaidChecker",
     "WarfarinTmpsmxChecker",
-    "hash_pii",
-    "hash_pii_dict",
-    "redact_fhir_pii",
 ]
