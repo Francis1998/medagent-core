@@ -422,6 +422,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 128 | Adult NEWS2-Style Vitals Triage | `safety/vitals_triage_checker.py` | Flags abnormal adult SpO2/RR/SBP/HR/temp via educational NEWS2 single-parameter bands; RESEARCH USE ONLY advisory triage (not a clinical EWS); gap vs MedPrompt free-text triage |
 | 129 | Disease × Medication Contraindication Panel | `safety/disease_contraindication_checker.py` | Flags curated condition×drug cautions (HF+NSAID, asthma+nonselective BB, etc.) via whole-token matching; RESEARCH USE ONLY; not a DDI checker |
 | 130 | Allergy Inter-Class Cross-Reactivity | `safety/allergy_interclass_checker.py` | Flags curated inter-class allergy×drug cautions (penicillin↔cephalosporin, etc.); RESEARCH USE ONLY; distinct from intra-class AllergyChecker |
+| 131 | Renal Dose Adjuster (Banded Regimens) | `safety/renal_dose_adjuster.py` | Emits banded educational regimen suggestions (gabapentin/metformin/etc.) by eGFR; RESEARCH USE ONLY; distinct from RenalDoseChecker avoid/reduce |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
