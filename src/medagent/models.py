@@ -2893,3 +2893,34 @@ class SoapNote(BaseModel, frozen=True):
     assessment: str = Field(description="Assessment content derived from diagnoses/impressions")
     plan: str = Field(description="Non-prescriptive plan hints only — never prescriptions")
     rationale: str = Field(description="RESEARCH USE ONLY explanation of structuring rules applied")
+
+
+class QtPanelRisk(BaseModel, frozen=True):
+    """Aggregate multi-drug QT prolongation panel finding.
+
+    RESEARCH USE ONLY — panel-level torsades-load summary, distinct from
+    per-drug QTProlongationRisk and named-pair QtcDdiRisk findings.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'multi_agent_aggregate', 'same_class_cluster', "
+            "'context_amplified', or 'single_agent_panel'"
+        )
+    )
+    agents: list[str] = Field(description="Canonical QT-prolonging agents in this finding")
+    medication_names: list[str] = Field(description="Source medication names contributing agents")
+    pharmacologic_classes: list[str] = Field(
+        default_factory=list,
+        description="Pharmacologic class labels for the matched agents",
+    )
+    agent_count: int = Field(ge=0, description="Count of distinct agents in this finding")
+    qtc_ms: float | None = Field(default=None, description="Measured QTc in ms when known")
+    potassium_mmol_l: float | None = Field(
+        default=None, description="Serum potassium in mmol/L when known"
+    )
+    magnesium_mg_dl: float | None = Field(
+        default=None, description="Serum magnesium in mg/dL when known"
+    )
+    severity: Severity
+    rationale: str
