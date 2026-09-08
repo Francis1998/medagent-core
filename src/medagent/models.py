@@ -2924,3 +2924,27 @@ class QtPanelRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class FhirMedicationParseResult(BaseModel, frozen=True):
+    """Result of adapting FHIR MedicationRequest-like dicts to Medication list.
+
+    RESEARCH USE ONLY — thin safety-panel adapter output, distinct from
+    extraction.fhir_parser full-bundle FHIRPatientContext parsing.
+    """
+
+    medications: list[Medication] = Field(
+        default_factory=list,
+        description="Medications mapped from MedicationRequest-like resources",
+    )
+    resource_count: int = Field(ge=0, description="Number of input resources considered")
+    skipped_count: int = Field(ge=0, description="Number of resources skipped")
+    notes: list[str] = Field(
+        default_factory=list,
+        description="Parse/skip notes for auditability",
+    )
+    severity: Severity = Field(
+        default=Severity.LOW,
+        description="Informational severity for adapter result (not a clinical hazard grade)",
+    )
+    rationale: str
