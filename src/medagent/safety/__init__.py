@@ -81,6 +81,7 @@ from medagent.safety.mtx_tmpsmx_checker import MtxTmpsmxChecker
 from medagent.safety.nsaid_ssri_checker import NsaidSsriBleedChecker
 from medagent.safety.opioid_benzo_checker import OpioidBenzoChecker
 from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
+from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAdjuster
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.pimozide_cyp3a4_checker import PimozideCyp3a4Checker
@@ -194,6 +195,7 @@ __all__ = [
     "NsaidSsriBleedChecker",
     "OpioidBenzoChecker",
     "PediatricRenalDosingChecker",
+    "PediatricWeightDoseAdjuster",
     "PhenytoinFluconazoleChecker",
     "PimozideCyp3a4Checker",
     "PpiMtxChecker",
