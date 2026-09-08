@@ -87,6 +87,7 @@ from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.pimozide_cyp3a4_checker import PimozideCyp3a4Checker
 from medagent.safety.ppi_mtx_checker import PpiMtxChecker
 from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecker
+from medagent.safety.qt_prolongation_panel import QtProlongationPanel
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
@@ -200,6 +201,7 @@ __all__ = [
     "PimozideCyp3a4Checker",
     "PpiMtxChecker",
     "PregnancyLactationChecker",
+    "QtProlongationPanel",
     "QtcDdiChecker",
     "QtcMonitoringChecker",
     "QuetiapineCyp3a4Checker",

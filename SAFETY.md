@@ -255,6 +255,11 @@ The conservative opioid panel includes oxycodone, hydrocodone, morphine, fentany
 
 Every unique primary × partner pair across separate medication entries yields a `SofosbuvirAmiodaroneRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SOFOSBUVIR_AMIODARONE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.134 QT Prolongation Panel (Aggregate Multi-Drug Risk)
+`safety/qt_prolongation_panel.py` aggregates **multi-drug QT / torsades risk** into panel-level findings (multi-agent load, same-class clustering, optional prolonged QTc / low-electrolyte context). This control is distinct from per-drug `QTProlongationChecker` findings and named-pair `QtcDdiChecker` interactions.
+
+Every applicable aggregate yields a `QtPanelRisk` record with finding kind, agents, pharmacologic classes, optional QTc/electrolytes, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/QT_PROLONGATION_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
