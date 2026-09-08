@@ -260,6 +260,11 @@ Every unique primary × partner pair across separate medication entries yields a
 
 Every applicable aggregate yields a `QtPanelRisk` record with finding kind, agents, pharmacologic classes, optional QTc/electrolytes, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/QT_PROLONGATION_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.135 FHIR MedicationRequest Adapter
+`safety/fhir_medication_request_adapter.py` maps **FHIR MedicationRequest-like** dicts (single resource, list, Bundle entries, or keyed MedicationRequest lists) into `Medication` objects for safety-panel use, returning a `FhirMedicationParseResult` with parse/skip notes and RESEARCH USE ONLY rationale. This control is a thin safety-panel adapter and is distinct from `extraction/fhir_parser.py` full-bundle `FHIRPatientContext` parsing.
+
+Results are **advisory** — they never create clinical orders or auto-modify therapy. See also `docs/guides/FHIR_MEDICATION_REQUEST_ADAPTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
