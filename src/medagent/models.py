@@ -2866,6 +2866,22 @@ class GuidelineMatch(BaseModel, frozen=True):
     rationale: str
 
 
+class PediatricWeightDoseAdjustment(BaseModel, frozen=True):
+    """Advisory weight-banded paediatric regimen suggestion for a curated agent.
+
+    RESEARCH USE ONLY — educational weight-band cue with suggested_regimen,
+    distinct from PediatricDoseRisk age/excess flags and not a prescription.
+    """
+
+    medication: str = Field(description="Medication name that matched the panel")
+    agent: str = Field(description="Canonical paediatric weight-adjusted agent token")
+    weight_kg: float = Field(description="Patient weight in kilograms used for banding")
+    band_label: str = Field(description="Stable weight-band identifier for the selected regimen")
+    suggested_regimen: str = Field(description="Educational suggested regimen cue for the band")
+    severity: Severity
+    rationale: str
+
+
 class SoapNote(BaseModel, frozen=True):
     """Deterministic SOAP note structure for research documentation support.
 
