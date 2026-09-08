@@ -1,4 +1,4 @@
-"""Pediatric weight-banded dose adjuster — educational regimen suggestions.
+"""Pediatric weight-banded dose adjuster - educational regimen suggestions.
 
 The existing :class:`~medagent.safety.pediatric_dose_checker.PediatricDoseChecker`
 flags age contraindications and mg/kg daily-dose *excesses*. It does **not**
@@ -37,19 +37,19 @@ _PANEL: Final[dict[str, tuple[tuple[float, str, str, Severity], ...]]] = {
         (
             10.0,
             "wt_lt_10kg",
-            "educational cue: consider ~10–15 mg/kg/dose every 4–6 h (max ~75 mg/kg/day)",
+            "educational cue: consider ~10-15 mg/kg/dose every 4-6 h (max ~75 mg/kg/day)",
             Severity.MODERATE,
         ),
         (
             20.0,
             "wt_10_20kg",
-            "educational cue: consider ~10–15 mg/kg/dose every 4–6 h; typical 160–320 mg/dose range",
+            "educational cue: ~10-15 mg/kg/dose q4-6h; typical 160-320 mg/dose range",
             Severity.LOW,
         ),
         (
             40.0,
             "wt_20_40kg",
-            "educational cue: consider ~10–15 mg/kg/dose every 4–6 h; review adult-tablet strength",
+            "educational cue: ~10-15 mg/kg/dose q4-6h; review adult-tablet strength",
             Severity.LOW,
         ),
     ),
@@ -57,19 +57,19 @@ _PANEL: Final[dict[str, tuple[tuple[float, str, str, Severity], ...]]] = {
         (
             10.0,
             "wt_lt_10kg",
-            "educational cue: consider ~10–15 mg/kg/dose every 4–6 h (max ~75 mg/kg/day)",
+            "educational cue: consider ~10-15 mg/kg/dose every 4-6 h (max ~75 mg/kg/day)",
             Severity.MODERATE,
         ),
         (
             20.0,
             "wt_10_20kg",
-            "educational cue: consider ~10–15 mg/kg/dose every 4–6 h; typical 160–320 mg/dose range",
+            "educational cue: ~10-15 mg/kg/dose q4-6h; typical 160-320 mg/dose range",
             Severity.LOW,
         ),
         (
             40.0,
             "wt_20_40kg",
-            "educational cue: consider ~10–15 mg/kg/dose every 4–6 h; review adult-tablet strength",
+            "educational cue: ~10-15 mg/kg/dose q4-6h; review adult-tablet strength",
             Severity.LOW,
         ),
     ),
@@ -77,19 +77,19 @@ _PANEL: Final[dict[str, tuple[tuple[float, str, str, Severity], ...]]] = {
         (
             10.0,
             "wt_lt_10kg",
-            "educational cue: consider ~5–10 mg/kg/dose every 6–8 h (max ~40 mg/kg/day)",
+            "educational cue: consider ~5-10 mg/kg/dose every 6-8 h (max ~40 mg/kg/day)",
             Severity.MODERATE,
         ),
         (
             20.0,
             "wt_10_20kg",
-            "educational cue: consider ~5–10 mg/kg/dose every 6–8 h; typical 100–200 mg/dose range",
+            "educational cue: ~5-10 mg/kg/dose q6-8h; typical 100-200 mg/dose range",
             Severity.LOW,
         ),
         (
             40.0,
             "wt_20_40kg",
-            "educational cue: consider ~5–10 mg/kg/dose every 6–8 h; review adult-tablet strength",
+            "educational cue: ~5-10 mg/kg/dose q6-8h; review adult-tablet strength",
             Severity.LOW,
         ),
     ),
@@ -97,13 +97,13 @@ _PANEL: Final[dict[str, tuple[tuple[float, str, str, Severity], ...]]] = {
         (
             10.0,
             "wt_lt_10kg",
-            "educational cue: consider ~20–40 mg/kg/day divided (higher-dose pneumonia cues ~80–90)",
+            "educational cue: ~20-40 mg/kg/day divided (high-dose pneumonia ~80-90)",
             Severity.MODERATE,
         ),
         (
             20.0,
             "wt_10_20kg",
-            "educational cue: consider ~25–45 mg/kg/day divided BID–TID for common infections",
+            "educational cue: consider ~25-45 mg/kg/day divided BID-TID for common infections",
             Severity.LOW,
         ),
         (
