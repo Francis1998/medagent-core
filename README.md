@@ -425,6 +425,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 131 | Renal Dose Adjuster (Banded Regimens) | `safety/renal_dose_adjuster.py` | Emits banded educational regimen suggestions (gabapentin/metformin/etc.) by eGFR; RESEARCH USE ONLY; distinct from RenalDoseChecker avoid/reduce |
 | 132 | Clinical Guideline Matcher | `safety/clinical_guideline_matcher.py` | Matches conditions to educational guideline cues (HF GDMT, HTN first-line, etc.); RESEARCH USE ONLY; distinct from DiseaseContraindicationChecker |
 | 133 | Pediatric Weight Dose Adjuster | `safety/pediatric_weight_dose_adjuster.py` | Emits weight-banded educational paediatric regimen suggestions by kg; RESEARCH USE ONLY; distinct from PediatricDoseChecker age/excess |
+| 136 | Pregnancy/Lactation Risk Panel | `safety/pregnancy_lactation_risk_panel.py` | Aggregate pregnancy vs lactation hit counts, dual hits, optional trimester context; RESEARCH USE ONLY; distinct from PregnancyLactationChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
