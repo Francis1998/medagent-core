@@ -228,9 +228,7 @@ class PregnancyLactationRiskPanel:
                         med for med, agent, _sev in pregnancy_matched if agent in pregnancy_agents
                     ],
                     trimester=normalized_trimester,
-                    severity=Severity.HIGH
-                    if len(pregnancy_agents) >= 3
-                    else Severity.MODERATE,
+                    severity=Severity.HIGH if len(pregnancy_agents) >= 3 else Severity.MODERATE,
                     rationale=(
                         "RESEARCH USE ONLY: Pregnancy aggregate panel detected "
                         f"{len(pregnancy_agents)} distinct pregnancy-risk agents "
@@ -256,9 +254,7 @@ class PregnancyLactationRiskPanel:
                         med for med, agent, _sev in lactation_matched if agent in lactation_agents
                     ],
                     trimester=normalized_trimester,
-                    severity=Severity.HIGH
-                    if len(lactation_agents) >= 3
-                    else Severity.MODERATE,
+                    severity=Severity.HIGH if len(lactation_agents) >= 3 else Severity.MODERATE,
                     rationale=(
                         "RESEARCH USE ONLY: Lactation aggregate panel detected "
                         f"{len(lactation_agents)} distinct lactation-risk agents "
@@ -316,9 +312,7 @@ class PregnancyLactationRiskPanel:
                         pregnancy_agents=pregnancy_agents,
                         lactation_agents=lactation_agents,
                         dual_hit_agents=dual_hit_agents,
-                        medication_names=[
-                            med_by_agent[a] for a in sensitive if a in med_by_agent
-                        ],
+                        medication_names=[med_by_agent[a] for a in sensitive if a in med_by_agent],
                         trimester=normalized_trimester,
                         severity=Severity.HIGH,
                         rationale=(
@@ -332,9 +326,7 @@ class PregnancyLactationRiskPanel:
                     )
                 )
 
-        findings.sort(
-            key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind)
-        )
+        findings.sort(key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind))
         logger.info("pregnancy_lactation_risk_panel_checked", findings=len(findings))
         return findings
 
