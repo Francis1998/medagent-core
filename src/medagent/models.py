@@ -3016,6 +3016,7 @@ class AnticoagBleedStackRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class LabTrendAlert(BaseModel, frozen=True):
     """Advisory serial-lab trend safety cue.
 
