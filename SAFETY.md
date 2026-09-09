@@ -275,6 +275,11 @@ Every applicable aggregate yields a `PregnancyLactationPanelRisk` record with fi
 
 Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.138 Lab Trend Alert Bridge (Serial Labs)
+`safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
+
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -424,6 +429,11 @@ The loop diuretic panel includes furosemide, bumetanide, and torsemide. Repletio
 
 Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.138 Lab Trend Alert Bridge (Serial Labs)
+`safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
+
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -520,6 +530,11 @@ The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, and meloxic
 `safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
 
 Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.138 Lab Trend Alert Bridge (Serial Labs)
+`safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
+
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 
@@ -621,6 +636,11 @@ Every cross-class agent pair yields an `AceiArbDuplicationRisk` record with both
 `safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
 
 Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.138 Lab Trend Alert Bridge (Serial Labs)
+`safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
+
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 

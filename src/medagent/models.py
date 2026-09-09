@@ -3015,3 +3015,33 @@ class AnticoagBleedStackRisk(BaseModel, frozen=True):
     stack_size: int = Field(ge=0, description="Count of distinct stacked agent classes/agents")
     severity: Severity
     rationale: str
+
+
+class LabTrendAlert(BaseModel, frozen=True):
+    """Advisory serial-lab trend safety cue.
+
+    RESEARCH USE ONLY — trend bridge over ordered lab draws, distinct from
+    single-draw LabCriticalValueRisk panic thresholds. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Trend finding kind: 'rising_creatinine', 'falling_platelets', "
+            "'rising_inr', 'rising_potassium', 'falling_hemoglobin', or "
+            "'rising_alt'"
+        )
+    )
+    lab_name: str = Field(description="Canonical lab analyte for this trend")
+    values: list[float] = Field(description="Numeric values in chronological order")
+    unit: str = Field(default="", description="Reported unit for the series")
+    drawn_ats: list[str] = Field(
+        default_factory=list, description="Draw timestamps in chronological order"
+    )
+    delta: float | None = Field(
+        default=None, description="Absolute change from first to last value"
+    )
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last value"
+    )
+    severity: Severity
+    rationale: str
