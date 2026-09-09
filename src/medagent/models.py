@@ -2987,6 +2987,7 @@ class FhirMedicationParseResult(BaseModel, frozen=True):
     )
     rationale: str
 
+
 class AnticoagBleedStackRisk(BaseModel, frozen=True):
     """Aggregate anticoagulant / antiplatelet / NSAID bleed-stack finding.
 
