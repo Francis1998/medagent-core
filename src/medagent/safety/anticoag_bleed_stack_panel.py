@@ -232,9 +232,7 @@ class AnticoagBleedStackPanel:
                 )
             )
 
-        findings.sort(
-            key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind)
-        )
+        findings.sort(key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind))
         logger.info("anticoag_bleed_stack_panel_checked", findings=len(findings))
         return findings
 
