@@ -2986,3 +2986,31 @@ class FhirMedicationParseResult(BaseModel, frozen=True):
         description="Informational severity for adapter result (not a clinical hazard grade)",
     )
     rationale: str
+
+class AnticoagBleedStackRisk(BaseModel, frozen=True):
+    """Aggregate anticoagulant / antiplatelet / NSAID bleed-stack finding.
+
+    RESEARCH USE ONLY — panel-level multi-agent bleed-stack summary, distinct
+    from pairwise AnticoagBleedingRisk and DoacNsaid checker findings.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'triple_stack', 'anticoag_antiplatelet_stack', "
+            "'anticoag_nsaid_stack', 'dual_antiplatelet_on_anticoag', or "
+            "'multi_anticoag_stack'"
+        )
+    )
+    anticoagulants: list[str] = Field(
+        default_factory=list, description="Canonical anticoagulants in the stack"
+    )
+    antiplatelets: list[str] = Field(
+        default_factory=list, description="Canonical antiplatelets in the stack"
+    )
+    nsaids: list[str] = Field(default_factory=list, description="Canonical NSAIDs in the stack")
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    stack_size: int = Field(ge=0, description="Count of distinct stacked agent classes/agents")
+    severity: Severity
+    rationale: str

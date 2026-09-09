@@ -270,6 +270,11 @@ Results are **advisory** — they never create clinical orders or auto-modify th
 
 Every applicable aggregate yields a `PregnancyLactationPanelRisk` record with finding kind, hit counts, agent lists, optional trimester, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/PREGNANCY_LACTATION_RISK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
+`safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
+
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -414,6 +419,11 @@ The loop diuretic panel includes furosemide, bumetanide, and torsemide. Repletio
 
 ---
 
+### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
+`safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
+
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -505,6 +515,11 @@ The rapid-acting panel includes lispro, aspart, and glulisine. Premix markers in
 The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, and meloxicam. The ACEI/ARB/ARNI panel includes lisinopril, enalapril, ramipril, losartan, valsartan, and sacubitril. The diuretic panel includes furosemide, bumetanide, torsemide, hctz, hydrochlorothiazide, and chlorthalidone. Every NSAID × ACEI/ARB/ARNI × diuretic triad yields a `TripleWhammyRisk` record with all three medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRIPLE_WHAMMY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ---
+
+### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
+`safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
+
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 
@@ -601,6 +616,11 @@ The warfarin-class panel includes warfarin, coumadin, and jantoven. NSAID partne
 Every cross-class agent pair yields an `AceiArbDuplicationRisk` record with both medication names, matched agents, class labels, `classes_present`, `CRITICAL` severity when ACEI + ARB are both present (or `HIGH` for ACEI/ARB + ARNI two-class combinations without ACEI+ARB), and RESEARCH USE ONLY rationale. Same-class duplicates do not flag. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_ARB_DUPLICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ---
+
+### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
+`safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
+
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 

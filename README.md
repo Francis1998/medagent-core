@@ -426,6 +426,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 132 | Clinical Guideline Matcher | `safety/clinical_guideline_matcher.py` | Matches conditions to educational guideline cues (HF GDMT, HTN first-line, etc.); RESEARCH USE ONLY; distinct from DiseaseContraindicationChecker |
 | 133 | Pediatric Weight Dose Adjuster | `safety/pediatric_weight_dose_adjuster.py` | Emits weight-banded educational paediatric regimen suggestions by kg; RESEARCH USE ONLY; distinct from PediatricDoseChecker age/excess |
 | 136 | Pregnancy/Lactation Risk Panel | `safety/pregnancy_lactation_risk_panel.py` | Aggregate pregnancy vs lactation hit counts, dual hits, optional trimester context; RESEARCH USE ONLY; distinct from PregnancyLactationChecker |
+| 137 | Anticoag Bleed Stack Panel | `safety/anticoag_bleed_stack_panel.py` | Aggregate anticoag + antiplatelet + NSAID bleed stacks; RESEARCH USE ONLY; distinct from pairwise AnticoagBleedingChecker / DoacNsaidChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
