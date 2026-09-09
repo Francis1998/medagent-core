@@ -88,9 +88,7 @@ class LabTrendAlertBridge:
             if alert is not None:
                 findings.append(alert)
 
-        findings.sort(
-            key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind)
-        )
+        findings.sort(key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind))
         logger.info("lab_trend_alert_bridge_checked", findings=len(findings))
         return findings
 
