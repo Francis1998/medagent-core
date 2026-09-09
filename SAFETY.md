@@ -265,6 +265,11 @@ Every applicable aggregate yields a `QtPanelRisk` record with finding kind, agen
 
 Results are **advisory** — they never create clinical orders or auto-modify therapy. See also `docs/guides/FHIR_MEDICATION_REQUEST_ADAPTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.136 Pregnancy/Lactation Risk Panel (Aggregate Reproductive Summary)
+`safety/pregnancy_lactation_risk_panel.py` aggregates **pregnancy vs lactation hit counts**, dual hits, and optional trimester context across a medication list into panel-level findings. This control is distinct from per-medication `PregnancyLactationChecker` findings.
+
+Every applicable aggregate yields a `PregnancyLactationPanelRisk` record with finding kind, hit counts, agent lists, optional trimester, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/PREGNANCY_LACTATION_RISK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

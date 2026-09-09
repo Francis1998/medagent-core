@@ -2926,6 +2926,44 @@ class QtPanelRisk(BaseModel, frozen=True):
     rationale: str
 
 
+class PregnancyLactationPanelRisk(BaseModel, frozen=True):
+    """Aggregate pregnancy/lactation reproductive-risk panel finding.
+
+    RESEARCH USE ONLY — panel-level hit counts and dual-hit summary across a
+    medication list, distinct from per-medication PregnancyLactationRisk.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'panel_summary', 'pregnancy_aggregate', "
+            "'lactation_aggregate', 'dual_hit_aggregate', or 'trimester_context'"
+        )
+    )
+    pregnancy_hit_count: int = Field(ge=0, description="Count of distinct pregnancy-panel agents")
+    lactation_hit_count: int = Field(ge=0, description="Count of distinct lactation-panel agents")
+    dual_hit_count: int = Field(
+        ge=0, description="Count of agents present on both pregnancy and lactation panels"
+    )
+    pregnancy_agents: list[str] = Field(
+        default_factory=list, description="Canonical pregnancy-panel agents matched"
+    )
+    lactation_agents: list[str] = Field(
+        default_factory=list, description="Canonical lactation-panel agents matched"
+    )
+    dual_hit_agents: list[str] = Field(
+        default_factory=list, description="Agents matched on both pregnancy and lactation panels"
+    )
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    trimester: str | None = Field(
+        default=None,
+        description="Optional trimester context when provided (e.g. '1', '2', '3')",
+    )
+    severity: Severity
+    rationale: str
+
+
 class FhirMedicationParseResult(BaseModel, frozen=True):
     """Result of adapting FHIR MedicationRequest-like dicts to Medication list.
 
