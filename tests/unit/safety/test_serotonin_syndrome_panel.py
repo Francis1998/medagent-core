@@ -53,9 +53,7 @@ def test_ssri_snri_serotonergic_opioid_stack() -> None:
     findings = SerotoninSyndromePanel().check(
         medications=_meds("Duloxetine", "Tramadol"),
     )
-    stack = next(
-        f for f in findings if f.finding_kind == "ssri_snri_serotonergic_opioid_stack"
-    )
+    stack = next(f for f in findings if f.finding_kind == "ssri_snri_serotonergic_opioid_stack")
     assert stack.serotonergic_opioids == ["tramadol"]
 
 
@@ -63,9 +61,7 @@ def test_multi_class_requires_three_classes() -> None:
     findings = SerotoninSyndromePanel().check(
         medications=_meds("Sertraline", "Sumatriptan", "Tramadol"),
     )
-    multi_class = next(
-        f for f in findings if f.finding_kind == "multi_class_serotonergic_stack"
-    )
+    multi_class = next(f for f in findings if f.finding_kind == "multi_class_serotonergic_stack")
     assert len(multi_class.pharmacologic_classes) >= 3
 
 
