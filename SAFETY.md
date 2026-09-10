@@ -297,6 +297,19 @@ auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
 Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
+
+Combines hypoglycemic agents (insulin / sulfonylurea / meglitinide) with serial
+glucose draws into advisory findings (`falling_glucose_on_insulin`,
+`falling_glucose_on_sulfonylurea`, `low_glucose_on_hypoglycemic_agent`,
+`multi_hypoglycemic_agent_stack`). Every applicable alert yields a
+`HypoglycemiaRiskAlert` with agent lists, glucose series, severity, and
+RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
+non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
+See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
+models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -463,6 +476,19 @@ auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
 Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
+
+Combines hypoglycemic agents (insulin / sulfonylurea / meglitinide) with serial
+glucose draws into advisory findings (`falling_glucose_on_insulin`,
+`falling_glucose_on_sulfonylurea`, `low_glucose_on_hypoglycemic_agent`,
+`multi_hypoglycemic_agent_stack`). Every applicable alert yields a
+`HypoglycemiaRiskAlert` with agent lists, glucose series, severity, and
+RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
+non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
+See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
+models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -576,6 +602,19 @@ Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
 auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
 Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
+
+Combines hypoglycemic agents (insulin / sulfonylurea / meglitinide) with serial
+glucose draws into advisory findings (`falling_glucose_on_insulin`,
+`falling_glucose_on_sulfonylurea`, `low_glucose_on_hypoglycemic_agent`,
+`multi_hypoglycemic_agent_stack`). Every applicable alert yields a
+`HypoglycemiaRiskAlert` with agent lists, glucose series, severity, and
+RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
+non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
+See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
+models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 
@@ -694,6 +733,19 @@ Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
 auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
 Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
+
+Combines hypoglycemic agents (insulin / sulfonylurea / meglitinide) with serial
+glucose draws into advisory findings (`falling_glucose_on_insulin`,
+`falling_glucose_on_sulfonylurea`, `low_glucose_on_hypoglycemic_agent`,
+`multi_hypoglycemic_agent_stack`). Every applicable alert yields a
+`HypoglycemiaRiskAlert` with agent lists, glucose series, severity, and
+RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
+non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
+See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
+models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 
