@@ -428,6 +428,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 136 | Pregnancy/Lactation Risk Panel | `safety/pregnancy_lactation_risk_panel.py` | Aggregate pregnancy vs lactation hit counts, dual hits, optional trimester context; RESEARCH USE ONLY; distinct from PregnancyLactationChecker |
 | 138 | Lab Trend Alert Bridge | `safety/lab_trend_alert_bridge.py` | Serial-lab trend cues (rising Cr/INR/K, falling platelets/Hgb, rising ALT); RESEARCH USE ONLY; never modifies meds; distinct from LabCriticalValueChecker |
 | 137 | Anticoag Bleed Stack Panel | `safety/anticoag_bleed_stack_panel.py` | Aggregate anticoag + antiplatelet + NSAID bleed stacks; RESEARCH USE ONLY; distinct from pairwise AnticoagBleedingChecker / DoacNsaidChecker |
+| 139 | Serotonin Syndrome Panel | `safety/serotonin_syndrome_panel.py` | Aggregate multi-serotonergic stacks (SSRI/SNRI/MAOI/triptan/tramadol/etc.); RESEARCH USE ONLY; distinct from SerotoninSyndromeChecker / MethyleneBlueSsriChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

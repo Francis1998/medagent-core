@@ -280,6 +280,11 @@ Every applicable aggregate yields an `AnticoagBleedStackRisk` record with findin
 
 Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.139 Serotonin Syndrome Panel (Multi-Serotonergic Aggregate)
+`safety/serotonin_syndrome_panel.py` aggregates **multi-serotonergic agents** (SSRI/SNRI/MAOI/triptan/tramadol/etc.) into panel-level findings (multi-agent stack, MAOI combination, multi-class stack, SSRI/SNRI+triptan, SSRI/SNRI+serotonergic opioid). This control is distinct from per-medication `SerotoninSyndromeChecker` and pairwise `MethyleneBlueSsriChecker` findings.
+
+Every applicable aggregate yields a `SerotoninSyndromePanelRisk` record with finding kind, agent/class lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/SEROTONIN_SYNDROME_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

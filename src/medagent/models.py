@@ -3045,3 +3045,42 @@ class LabTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class SerotoninSyndromePanelRisk(BaseModel, frozen=True):
+    """Aggregate multi-serotonergic agent panel finding.
+
+    RESEARCH USE ONLY — panel-level multi-class serotonergic-stack summary,
+    distinct from per-medication SerotoninSyndromeRisk and pairwise
+    MethyleneBlueSsriChecker findings.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'multi_serotonergic_stack', "
+            "'maoi_serotonergic_stack', 'multi_class_serotonergic_stack', "
+            "'ssri_snri_triptan_stack', or 'ssri_snri_serotonergic_opioid_stack'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical serotonergic agents in the stack"
+    )
+    pharmacologic_classes: list[str] = Field(
+        default_factory=list, description="Distinct pharmacologic classes represented"
+    )
+    ssris: list[str] = Field(default_factory=list, description="Canonical SSRI agents")
+    snris: list[str] = Field(default_factory=list, description="Canonical SNRI agents")
+    maois: list[str] = Field(default_factory=list, description="Canonical MAOI agents")
+    triptans: list[str] = Field(default_factory=list, description="Canonical triptan agents")
+    serotonergic_opioids: list[str] = Field(
+        default_factory=list, description="Canonical serotonergic opioid agents"
+    )
+    other_agents: list[str] = Field(
+        default_factory=list, description="Other serotonergic agents (TCA/other)"
+    )
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    stack_size: int = Field(ge=0, description="Count of distinct stacked agents")
+    severity: Severity
+    rationale: str
