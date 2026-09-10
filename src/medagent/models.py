@@ -3084,3 +3084,32 @@ class SerotoninSyndromePanelRisk(BaseModel, frozen=True):
     stack_size: int = Field(ge=0, description="Count of distinct stacked agents")
     severity: Severity
     rationale: str
+
+
+class OpioidSedationStackRisk(BaseModel, frozen=True):
+    """Aggregate opioid / benzodiazepine / gabapentinoid sedation-stack finding.
+
+    RESEARCH USE ONLY — panel-level multi-agent sedation-stack summary, distinct
+    from pairwise OpioidBenzoChecker / OpioidMedChecker findings.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'triple_sedation_stack', 'opioid_benzo_stack', "
+            "'opioid_gabapentinoid_stack', 'benzo_gabapentinoid_stack', or "
+            "'multi_opioid_stack'"
+        )
+    )
+    opioids: list[str] = Field(default_factory=list, description="Canonical opioids in the stack")
+    benzodiazepines: list[str] = Field(
+        default_factory=list, description="Canonical benzodiazepines in the stack"
+    )
+    gabapentinoids: list[str] = Field(
+        default_factory=list, description="Canonical gabapentinoids in the stack"
+    )
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    stack_size: int = Field(ge=0, description="Count of distinct stacked agent classes/agents")
+    severity: Severity
+    rationale: str

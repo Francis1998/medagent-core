@@ -298,6 +298,7 @@ python scripts/demo.py --case escalate
 
 ---
 
+- **OpioidSedationStackPanel** (#140): opioid + benzo + gabapentinoid aggregate sedation stacks — see `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`
 ## Safety — 28 Hard Controls
 ## Safety — 29 Hard Controls
 
