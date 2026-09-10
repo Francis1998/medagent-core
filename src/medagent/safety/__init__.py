@@ -100,6 +100,7 @@ from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactatio
 from medagent.safety.rifampin_oc_checker import RifampinOcChecker
 from medagent.safety.rivaroxaban_rifampin_checker import RivaroxabanRifampinChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
+from medagent.safety.serotonin_syndrome_panel import SerotoninSyndromePanel
 from medagent.safety.sglt2_loop_checker import Sglt2LoopChecker
 from medagent.safety.sglt2_raasi_checker import Sglt2RaasiChecker
 from medagent.safety.sildenafil_nitrate_checker import SildenafilNitrateChecker
@@ -219,6 +220,7 @@ __all__ = [
     "RivaroxabanRifampinChecker",
     "ScopeEnforcer",
     "ScopeViolationError",
+    "SerotoninSyndromePanel",
     "Sglt2LoopChecker",
     "Sglt2RaasiChecker",
     "SildenafilNitrateChecker",
