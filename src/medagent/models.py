@@ -3113,3 +3113,33 @@ class OpioidSedationStackRisk(BaseModel, frozen=True):
     stack_size: int = Field(ge=0, description="Count of distinct stacked agent classes/agents")
     severity: Severity
     rationale: str
+
+
+class HypoglycemiaRiskAlert(BaseModel, frozen=True):
+    """Advisory hypoglycemia risk cue from insulin/SU + glucose trend.
+
+    RESEARCH USE ONLY — bridge over serial glucose draws plus hypoglycemic
+    agents, distinct from single-draw LabCriticalValueRisk and LabTrendAlert
+    creatinine/platelet trends. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'falling_glucose_on_insulin', "
+            "'falling_glucose_on_sulfonylurea', 'low_glucose_on_hypoglycemic_agent', "
+            "or 'multi_hypoglycemic_agent_stack'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical hypoglycemic agents")
+    agent_classes: list[str] = Field(
+        default_factory=list, description="Agent classes (insulin, sulfonylurea, other)"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    glucose_values: list[float] = Field(
+        default_factory=list, description="Glucose values in chronological order"
+    )
+    glucose_unit: str = Field(default="mg/dL", description="Glucose unit")
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_glucose: float | None = Field(default=None, description="Most recent glucose value")
+    severity: Severity
+    rationale: str

@@ -56,6 +56,7 @@ from medagent.safety.fluoroquinolone_warfarin_checker import (
 )
 from medagent.safety.gentamicin_vancomycin_checker import GentamicinVancomycinChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
+from medagent.safety.hypoglycemia_risk_bridge import HypoglycemiaRiskBridge
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
 from medagent.safety.isotretinoin_tetracycline_checker import (
@@ -179,6 +180,7 @@ __all__ = [
     "FluoroquinoloneWarfarinChecker",
     "GentamicinVancomycinChecker",
     "GeriatricDeprescribingChecker",
+    "HypoglycemiaRiskBridge",
     "InrTtrChecker",
     "InsulinStackingChecker",
     "IsotretinoinTetracyclineChecker",
