@@ -285,6 +285,18 @@ Every applicable trend yields a `LabTrendAlert` record with finding kind, values
 
 Every applicable aggregate yields a `SerotoninSyndromePanelRisk` record with finding kind, agent/class lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/SEROTONIN_SYNDROME_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
+
+Aggregates opioid, benzodiazepine, and gabapentinoid agents into panel-level
+sedation-stack findings (`triple_sedation_stack`, `opioid_benzo_stack`,
+`opioid_gabapentinoid_stack`, `benzo_gabapentinoid_stack`, `multi_opioid_stack`).
+Every applicable aggregate yields an `OpioidSedationStackRisk` record with
+finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
+Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
+auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
+Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -439,6 +451,18 @@ Every applicable aggregate yields an `AnticoagBleedStackRisk` record with findin
 
 Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
+
+Aggregates opioid, benzodiazepine, and gabapentinoid agents into panel-level
+sedation-stack findings (`triple_sedation_stack`, `opioid_benzo_stack`,
+`opioid_gabapentinoid_stack`, `benzo_gabapentinoid_stack`, `multi_opioid_stack`).
+Every applicable aggregate yields an `OpioidSedationStackRisk` record with
+finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
+Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
+auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
+Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
@@ -540,6 +564,18 @@ Every applicable aggregate yields an `AnticoagBleedStackRisk` record with findin
 `safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
 
 Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
+
+Aggregates opioid, benzodiazepine, and gabapentinoid agents into panel-level
+sedation-stack findings (`triple_sedation_stack`, `opioid_benzo_stack`,
+`opioid_gabapentinoid_stack`, `benzo_gabapentinoid_stack`, `multi_opioid_stack`).
+Every applicable aggregate yields an `OpioidSedationStackRisk` record with
+finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
+Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
+auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
+Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 
@@ -646,6 +682,18 @@ Every applicable aggregate yields an `AnticoagBleedStackRisk` record with findin
 `safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
 
 Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
+
+Aggregates opioid, benzodiazepine, and gabapentinoid agents into panel-level
+sedation-stack findings (`triple_sedation_stack`, `opioid_benzo_stack`,
+`opioid_gabapentinoid_stack`, `benzo_gabapentinoid_stack`, `multi_opioid_stack`).
+Every applicable aggregate yields an `OpioidSedationStackRisk` record with
+finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
+Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
+auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
+Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 ## 4. Escalation Policy
 

@@ -298,6 +298,7 @@ python scripts/demo.py --case escalate
 
 ---
 
+- **OpioidSedationStackPanel** (#140): opioid + benzo + gabapentinoid aggregate sedation stacks — see `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`
 ## Safety — 28 Hard Controls
 ## Safety — 29 Hard Controls
 
@@ -429,6 +430,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 138 | Lab Trend Alert Bridge | `safety/lab_trend_alert_bridge.py` | Serial-lab trend cues (rising Cr/INR/K, falling platelets/Hgb, rising ALT); RESEARCH USE ONLY; never modifies meds; distinct from LabCriticalValueChecker |
 | 137 | Anticoag Bleed Stack Panel | `safety/anticoag_bleed_stack_panel.py` | Aggregate anticoag + antiplatelet + NSAID bleed stacks; RESEARCH USE ONLY; distinct from pairwise AnticoagBleedingChecker / DoacNsaidChecker |
 | 139 | Serotonin Syndrome Panel | `safety/serotonin_syndrome_panel.py` | Aggregate multi-serotonergic stacks (SSRI/SNRI/MAOI/triptan/tramadol/etc.); RESEARCH USE ONLY; distinct from SerotoninSyndromeChecker / MethyleneBlueSsriChecker |
+| 140 | Opioid Sedation Stack Panel | `safety/opioid_sedation_stack_panel.py` | Aggregate opioid + benzo/Z-drug + gabapentinoid sedation stacks; RESEARCH USE ONLY; distinct from pairwise OpioidBenzoChecker / OpioidMedChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 
