@@ -96,6 +96,7 @@ from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecke
 from medagent.safety.pregnancy_lactation_risk_panel import PregnancyLactationRiskPanel
 from medagent.safety.qt_prolongation_panel import QtProlongationPanel
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
+from medagent.safety.qtc_electrolyte_bridge import QTcElectrolyteBridge
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
 from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
@@ -216,6 +217,7 @@ __all__ = [
     "PpiMtxChecker",
     "PregnancyLactationChecker",
     "PregnancyLactationRiskPanel",
+    "QTcElectrolyteBridge",
     "QtProlongationPanel",
     "QtcDdiChecker",
     "QtcMonitoringChecker",

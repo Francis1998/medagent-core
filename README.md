@@ -432,6 +432,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 139 | Serotonin Syndrome Panel | `safety/serotonin_syndrome_panel.py` | Aggregate multi-serotonergic stacks (SSRI/SNRI/MAOI/triptan/tramadol/etc.); RESEARCH USE ONLY; distinct from SerotoninSyndromeChecker / MethyleneBlueSsriChecker |
 | 140 | Opioid Sedation Stack Panel | `safety/opioid_sedation_stack_panel.py` | Aggregate opioid + benzo/Z-drug + gabapentinoid sedation stacks; RESEARCH USE ONLY; distinct from pairwise OpioidBenzoChecker / OpioidMedChecker |
 | 142 | Anticholinergic Burden Panel | `safety/anticholinergic_burden_panel.py` | Aggregate ACB stack findings (threshold / high burden / multi-strong); RESEARCH USE ONLY; distinct from per-med AnticholinergicBurdenChecker |
+| 143 | QTc Electrolyte Bridge | `safety/qtc_electrolyte_bridge.py` | QT agents + serial K/Mg trend cues; RESEARCH USE ONLY; distinct from point-in-time ElectrolyteQtChecker / QtProlongationPanel / LabTrendAlertBridge |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

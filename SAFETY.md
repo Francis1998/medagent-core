@@ -322,6 +322,20 @@ See `docs/guides/ANTICHOLINERGIC_BURDEN_PANEL_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.143 QTc Electrolyte Bridge (QT Agents + K/Mg Trends)
+
+Combines QT-prolonging agents (azithromycin, ondansetron, haloperidol,
+methadone, sotalol, etc.) with serial potassium and magnesium draws into
+advisory findings (`falling_k_on_qt_agent`, `falling_mg_on_qt_agent`,
+`low_k_on_qt_agent`, `low_mg_on_qt_agent`, `multi_qt_agent_electrolyte_risk`).
+Every applicable alert yields a `QTcElectrolyteAlert` with agent list, K/Mg
+series, severity, and RESEARCH USE ONLY rationale. Distinct from point-in-time
+`ElectrolyteQtChecker`, multi-drug `QtProlongationPanel`, and generic
+`LabTrendAlertBridge`. Never auto-modifies medications.
+See `docs/guides/QTC_ELECTROLYTE_BRIDGE_GUIDE.md`. Prefer frontier reasoning
+models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

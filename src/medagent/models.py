@@ -3171,3 +3171,32 @@ class AnticholinergicBurdenPanelRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+class QTcElectrolyteAlert(BaseModel, frozen=True):
+    """Advisory QT-agent + serial K/Mg electrolyte bridge finding.
+
+    RESEARCH USE ONLY — bridges QT-prolonging agents with serial potassium and
+    magnesium trends, distinct from point-in-time :class:`ElectrolyteQtRisk`,
+    :class:`~medagent.safety.qt_prolongation_panel.QtProlongationPanel`
+    aggregates, and :class:`LabTrendAlert` generic serial-lab trends.
+    Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'falling_k_on_qt_agent', 'falling_mg_on_qt_agent', "
+            "'low_k_on_qt_agent', 'low_mg_on_qt_agent', or "
+            "'multi_qt_agent_electrolyte_risk'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical QT-prolonging agents matched"
+    )
+    k_values: list[float] = Field(
+        default_factory=list, description="Potassium values in chronological order"
+    )
+    mg_values: list[float] = Field(
+        default_factory=list, description="Magnesium values in chronological order"
+    )
+    severity: Severity
+    rationale: str
