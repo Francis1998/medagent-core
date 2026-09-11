@@ -91,6 +91,7 @@ from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAd
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.pimozide_cyp3a4_checker import PimozideCyp3a4Checker
+from medagent.safety.polypharmacy_deprescribe_suggester import PolypharmacyDeprescribeSuggester
 from medagent.safety.ppi_mtx_checker import PpiMtxChecker
 from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecker
 from medagent.safety.pregnancy_lactation_risk_panel import PregnancyLactationRiskPanel
@@ -214,6 +215,7 @@ __all__ = [
     "PediatricWeightDoseAdjuster",
     "PhenytoinFluconazoleChecker",
     "PimozideCyp3a4Checker",
+    "PolypharmacyDeprescribeSuggester",
     "PpiMtxChecker",
     "PregnancyLactationChecker",
     "PregnancyLactationRiskPanel",

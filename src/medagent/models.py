@@ -3201,3 +3201,34 @@ class QTcElectrolyteAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class PolypharmacyDeprescribeSuggestion(BaseModel, frozen=True):
+    """HITL polypharmacy deprescribe-candidate finding (any age).
+
+    RESEARCH USE ONLY — advisory stop/step-down *candidates* for human review.
+    Distinct from age-gated :class:`GeriatricDeprescribingRisk` (catalog for
+    adults aged 65+). Never auto-stops or modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'duplicate_therapy_deprescribe_candidate', "
+            "'high_burden_deprescribe_candidate', 'polypharmacy_count_candidate', "
+            "'sliding_scale_insulin_deprescribe_candidate', or "
+            "'ppi_without_indication_deprescribe_candidate'"
+        )
+    )
+    medication_names: list[str] = Field(
+        default_factory=list,
+        description="Medication names involved in this deprescribe-candidate finding",
+    )
+    candidate_stops: list[str] = Field(
+        default_factory=list,
+        description=(
+            "HITL candidate agents/medications for supervised stop or step-down "
+            "review; never auto-applied"
+        ),
+    )
+    severity: Severity
+    rationale: str

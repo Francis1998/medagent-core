@@ -433,6 +433,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 140 | Opioid Sedation Stack Panel | `safety/opioid_sedation_stack_panel.py` | Aggregate opioid + benzo/Z-drug + gabapentinoid sedation stacks; RESEARCH USE ONLY; distinct from pairwise OpioidBenzoChecker / OpioidMedChecker |
 | 142 | Anticholinergic Burden Panel | `safety/anticholinergic_burden_panel.py` | Aggregate ACB stack findings (threshold / high burden / multi-strong); RESEARCH USE ONLY; distinct from per-med AnticholinergicBurdenChecker |
 | 143 | QTc Electrolyte Bridge | `safety/qtc_electrolyte_bridge.py` | QT agents + serial K/Mg trend cues; RESEARCH USE ONLY; distinct from point-in-time ElectrolyteQtChecker / QtProlongationPanel / LabTrendAlertBridge |
+| 144 | Polypharmacy Deprescribe Suggester | `safety/polypharmacy_deprescribe_suggester.py` | HITL deprescribe candidates (duplicate class / high ACB / SSI / PPI without indication / polypharmacy count) at any age; RESEARCH USE ONLY; never auto-stops; distinct from age-gated GeriatricDeprescribingChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
 

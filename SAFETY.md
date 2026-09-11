@@ -336,6 +336,24 @@ See `docs/guides/QTC_ELECTROLYTE_BRIDGE_GUIDE.md`. Prefer frontier reasoning
 models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.144 Polypharmacy Deprescribe Suggester (HITL Candidates, Any Age)
+
+Surfaces advisory deprescribe *candidates* from polypharmacy heuristics that apply
+at **any age** — duplicate-class agents, high anticholinergic-burden contributors,
+sliding-scale insulin stacking cues, PPI without documented indication, and
+elevated medication counts (`duplicate_therapy_deprescribe_candidate`,
+`high_burden_deprescribe_candidate`, `polypharmacy_count_candidate`,
+`sliding_scale_insulin_deprescribe_candidate`,
+`ppi_without_indication_deprescribe_candidate`). Every applicable cue yields a
+`PolypharmacyDeprescribeSuggestion` with finding kind, medication names,
+candidate stops, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+age-gated `GeriatricDeprescribingChecker` (catalog for adults ≥65). Findings are
+HITL review aids only — **never auto-stop** and never modify medications.
+See `docs/guides/POLYPHARMACY_DEPRESCRIBE_SUGGESTER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
