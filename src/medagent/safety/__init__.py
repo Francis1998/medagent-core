@@ -11,6 +11,7 @@ from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
 from medagent.safety.amlodipine_clarithromycin_checker import AmlodipineClarithromycinChecker
 from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewardshipChecker
+from medagent.safety.anticholinergic_burden_panel import AnticholinergicBurdenPanel
 from medagent.safety.anticoag_bleed_stack_panel import AnticoagBleedStackPanel
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
@@ -146,6 +147,7 @@ __all__ = [
     "AmiodaroneDigoxinChecker",
     "AmlodipineClarithromycinChecker",
     "AntibioticDurationStewardshipChecker",
+    "AnticholinergicBurdenPanel",
     "AnticoagBleedStackPanel",
     "AnticoagBleedingChecker",
     "ApixabanCyp3a4Checker",
