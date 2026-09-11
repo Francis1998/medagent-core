@@ -3172,6 +3172,7 @@ class AnticholinergicBurdenPanelRisk(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class QTcElectrolyteAlert(BaseModel, frozen=True):
     """Advisory QT-agent + serial K/Mg electrolyte bridge finding.
 
