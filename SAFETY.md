@@ -310,6 +310,18 @@ See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
 models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.142 Anticholinergic Burden Panel (Aggregate ACB Stack)
+
+Aggregates anticholinergic cognitive burden (ACB) agents into panel-level
+findings (`acb_threshold_exceeded`, `high_acb_burden`,
+`multi_strong_anticholinergic_stack`). Every applicable aggregate yields an
+`AnticholinergicBurdenPanelRisk` with finding kind, agents, total ACB score,
+severity, and RESEARCH USE ONLY rationale. Distinct from per-medication
+`AnticholinergicBurdenChecker`. Findings never auto-modify medications.
+See `docs/guides/ANTICHOLINERGIC_BURDEN_PANEL_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

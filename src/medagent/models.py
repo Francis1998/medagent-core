@@ -3143,3 +3143,31 @@ class HypoglycemiaRiskAlert(BaseModel, frozen=True):
     latest_glucose: float | None = Field(default=None, description="Most recent glucose value")
     severity: Severity
     rationale: str
+
+
+class AnticholinergicBurdenPanelRisk(BaseModel, frozen=True):
+    """Aggregate anticholinergic-burden panel finding.
+
+    RESEARCH USE ONLY — panel-level ACB-stack summary (threshold exceeded,
+    high cumulative burden, multi-strong agent stack), distinct from
+    per-medication AnticholinergicBurdenRisk findings. Never modifies
+    medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'high_acb_burden', "
+            "'multi_strong_anticholinergic_stack', or 'acb_threshold_exceeded'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical anticholinergic agents in the stack"
+    )
+    total_acb_score: int = Field(
+        ge=0, description="Sum of ACB scores across distinct matched agents"
+    )
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    severity: Severity
+    rationale: str
