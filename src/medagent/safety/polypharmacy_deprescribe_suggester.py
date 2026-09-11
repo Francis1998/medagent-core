@@ -304,26 +304,26 @@ class PolypharmacyDeprescribeSuggester:
         class_hits: dict[str, dict[str, str]] = {}
         for medication in medications:
             tokens = self._tokens(self._medication_text(medication))
-            for class_name, agents in _DUPLICATE_CLASSES:
-                for agent in sorted(tokens & agents):
+            for class_name, class_agents in _DUPLICATE_CLASSES:
+                for agent in sorted(tokens & class_agents):
                     class_hits.setdefault(class_name, {}).setdefault(agent, medication.name)
 
         findings: list[PolypharmacyDeprescribeSuggestion] = []
         for class_name, agent_map in sorted(class_hits.items()):
             if len(agent_map) < 2:
                 continue
-            agents = sorted(agent_map)
+            candidate_agents = sorted(agent_map)
             med_names = sorted(set(agent_map.values()), key=str.casefold)
             findings.append(
                 PolypharmacyDeprescribeSuggestion(
                     finding_kind="duplicate_therapy_deprescribe_candidate",
                     medication_names=med_names,
-                    candidate_stops=agents,
+                    candidate_stops=candidate_agents,
                     severity=Severity.HIGH,
                     rationale=(
                         "RESEARCH USE ONLY: Duplicate-class polypharmacy deprescribe "
-                        f"candidate — {len(agents)} distinct {class_name} agents "
-                        f"({', '.join(agents)}) on the active list. HITL review may "
+                        f"candidate — {len(candidate_agents)} distinct {class_name} agents "
+                        f"({', '.join(candidate_agents)}) on the active list. HITL review may "
                         "consider supervised stop or consolidation of redundant "
                         "therapy. Distinct from age-gated GeriatricDeprescribingChecker. "
                         "Never auto-stops medications; requires human review. Prefer "
