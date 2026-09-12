@@ -368,6 +368,20 @@ See `docs/guides/HEPARIN_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.145 NSAID + ACEI/ARB AKI Panel (Dual Pair Aggregate)
+
+Aggregates concurrent **NSAID + ACEI/ARB/ARNI** into panel-level AKI/bleeding
+advisory findings (`nsaid_acei_dual_aki_panel`, `nsaid_acei_diuretic_escalation`,
+`multi_nsaid_on_acei_arb`). Every applicable aggregate yields a
+`NsaidAceiAkiPanelRisk` with finding kind, agent lists, optional diuretics,
+severity, and RESEARCH USE ONLY rationale. **Fires on the dual pair even without
+a diuretic**; severity escalates when a loop/thiazide diuretic is also present
+(triple-whammy awareness). **Distinct from** triad-requiring
+`TripleWhammyChecker`. Findings never auto-modify medications.
+See `docs/guides/NSAID_ACEI_AKI_PANEL_GUIDE.md`. Prefer frontier reasoning
+models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
