@@ -3232,3 +3232,39 @@ class PolypharmacyDeprescribeSuggestion(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class HeparinPlateletTrendAlert(BaseModel, frozen=True):
+    """Heparin exposure + falling platelet trend HIT-risk bridge finding.
+
+    RESEARCH USE ONLY — bridges heparin/LMWH/UFH exposure with serial platelet
+    counts showing a declining trend. Distinct from generic serial-lab
+    :class:`LabTrendAlert` (no drug context) and single-draw critical lab
+    checks. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'falling_platelets_on_heparin', "
+            "'falling_platelets_on_lmwh', 'hit_risk_platelet_decline', or "
+            "'heparin_exposure_platelet_trend'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical heparin/LMWH/UFH agents matched"
+    )
+    agent_classes: list[str] = Field(
+        default_factory=list, description="Agent classes (ufh, lmwh, other)"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    platelet_values: list[float] = Field(
+        default_factory=list, description="Platelet counts in chronological order"
+    )
+    platelet_unit: str = Field(default="x10e9/L", description="Platelet unit")
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_platelet: float | None = Field(default=None, description="Most recent platelet count")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last platelet value"
+    )
+    severity: Severity
+    rationale: str
