@@ -3268,3 +3268,34 @@ class HeparinPlateletTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class NsaidAceiAkiPanelRisk(BaseModel, frozen=True):
+    """NSAID + ACEI/ARB AKI/bleeding advisory panel finding.
+
+    RESEARCH USE ONLY — panel-level dual NSAID+ACEI/ARB AKI and bleeding
+    advisory that aggregates the pair even without a diuretic. Distinct from
+    :class:`TripleWhammyRisk`, which requires the full NSAID + ACEI/ARB +
+    diuretic triad. Severity escalates when a loop/thiazide diuretic is also
+    present (triple-whammy awareness). Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'nsaid_acei_dual_aki_panel', "
+            "'nsaid_acei_diuretic_escalation', or 'multi_nsaid_on_acei_arb'"
+        )
+    )
+    nsaids: list[str] = Field(default_factory=list, description="Canonical NSAID agents")
+    acei_arb_agents: list[str] = Field(
+        default_factory=list, description="Canonical ACEI/ARB/ARNI agents"
+    )
+    diuretics: list[str] = Field(
+        default_factory=list,
+        description="Canonical loop/thiazide diuretics when present (escalation cue)",
+    )
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    severity: Severity
+    rationale: str

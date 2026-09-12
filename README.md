@@ -51,6 +51,8 @@
 
 ![medagent renal hepatic lactation demo](assets/renal_hepatic_lactation_demo.gif)
 
+![NsaidAceiAkiPanel](assets/nsaid_acei_aki_panel_demo.gif)
+
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
 ![medagent escalation demo](assets/demo_escalation.svg)
