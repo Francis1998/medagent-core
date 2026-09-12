@@ -354,6 +354,20 @@ See `docs/guides/POLYPHARMACY_DEPRESCRIBE_SUGGESTER_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.147 Heparin Platelet Trend Bridge (HIT-Risk Cue)
+
+Combines **heparin / UFH / LMWH** exposure with serial platelet counts into
+HIT-risk advisory findings (`falling_platelets_on_heparin`,
+`falling_platelets_on_lmwh`, `hit_risk_platelet_decline`,
+`heparin_exposure_platelet_trend`). Every applicable alert yields a
+`HeparinPlateletTrendAlert` with agents, platelet series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from** drug-agnostic
+`LabTrendAlertBridge` falling-platelet cues and single-draw critical-value
+checks. Never auto-modifies medications.
+See `docs/guides/HEPARIN_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
