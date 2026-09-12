@@ -24,6 +24,7 @@ from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
 from medagent.safety.clozapine_cyp1a2_checker import ClozapineCyp1a2Checker
 from medagent.safety.codeine_cyp2d6_checker import CodeineCyp2d6Checker
 from medagent.safety.colchicine_cyp3a4_checker import ColchicineCyp3a4Checker
+from medagent.safety.corticosteroid_nsaid_gi_bleed_panel import CorticosteroidNsaidGiBleedPanel
 from medagent.safety.cyclosporine_statin_checker import CyclosporineStatinChecker
 from medagent.safety.dabigatran_pgp_checker import DabigatranPgpChecker
 from medagent.safety.digoxin_amio_checker import DigoxinAmioChecker
@@ -164,6 +165,7 @@ __all__ = [
     "ClozapineCyp1a2Checker",
     "CodeineCyp2d6Checker",
     "ColchicineCyp3a4Checker",
+    "CorticosteroidNsaidGiBleedPanel",
     "CyclosporineStatinChecker",
     "DabigatranPgpChecker",
     "DigoxinAmioChecker",

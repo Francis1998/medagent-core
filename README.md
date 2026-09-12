@@ -53,6 +53,8 @@
 
 ![NsaidAceiAkiPanel](assets/nsaid_acei_aki_panel_demo.gif)
 
+![CorticosteroidNsaidGiBleedPanel](assets/corticosteroid_nsaid_gi_bleed_panel_demo.gif)
+
 **ESCALATE trigger — ambiguous B-symptoms, confidence 0.38 < 0.60:**
 
 ![medagent escalation demo](assets/demo_escalation.svg)

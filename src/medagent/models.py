@@ -3299,3 +3299,30 @@ class NsaidAceiAkiPanelRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class CorticosteroidNsaidGiBleedRisk(BaseModel, frozen=True):
+    """Systemic corticosteroid + NSAID GI-bleed advisory panel finding.
+
+    RESEARCH USE ONLY — panel-level concurrent systemic corticosteroid and
+    NSAID gastrointestinal bleeding risk aggregate. Distinct from
+    fluoroquinolone + corticosteroid tendon risk
+    (:class:`FluoroquinoloneCorticosteroidRisk`) and NSAID + SSRI/SNRI
+    bleeding (:class:`NsaidSsriBleedRisk`). Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Panel finding kind: 'corticosteroid_nsaid_gi_bleed', "
+            "'multi_nsaid_on_corticosteroid', or 'multi_steroid_nsaid_stack'"
+        )
+    )
+    corticosteroids: list[str] = Field(
+        default_factory=list, description="Canonical systemic corticosteroid agents"
+    )
+    nsaids: list[str] = Field(default_factory=list, description="Canonical NSAID agents")
+    medication_names: list[str] = Field(
+        default_factory=list, description="Source medication names contributing agents"
+    )
+    severity: Severity
+    rationale: str
