@@ -382,6 +382,20 @@ See `docs/guides/NSAID_ACEI_AKI_PANEL_GUIDE.md`. Prefer frontier reasoning
 models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.146 Corticosteroid + NSAID GI Bleed Panel
+
+Aggregates concurrent **systemic corticosteroid + NSAID** into panel-level
+GI-bleed advisory findings (`corticosteroid_nsaid_gi_bleed`,
+`multi_nsaid_on_corticosteroid`, `multi_steroid_nsaid_stack`). Every applicable
+aggregate yields a `CorticosteroidNsaidGiBleedRisk` with finding kind, agent
+lists, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+fluoroquinolone + corticosteroid tendon risk (`FluoroquinoloneCorticosteroidChecker`)
+and NSAID + SSRI/SNRI bleeding (`NsaidSsriBleedChecker`). Findings never
+auto-modify medications.
+See `docs/guides/CORTICOSTEROID_NSAID_GI_BLEED_PANEL_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
