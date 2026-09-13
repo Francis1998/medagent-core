@@ -9,6 +9,7 @@ from medagent.safety.allergy_interclass_checker import AllergyInterClassCrossRea
 from medagent.safety.allopurinol_azathioprine_checker import AllopurinolAzathioprineChecker
 from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
+from medagent.safety.amiodarone_thyroid_bridge import AmiodaroneThyroidBridge
 from medagent.safety.amlodipine_clarithromycin_checker import AmlodipineClarithromycinChecker
 from medagent.safety.antibiotic_duration_checker import AntibioticDurationStewardshipChecker
 from medagent.safety.anticholinergic_burden_panel import AnticholinergicBurdenPanel
@@ -152,6 +153,7 @@ __all__ = [
     "AllopurinolAzathioprineChecker",
     "AmioWarfarinChecker",
     "AmiodaroneDigoxinChecker",
+    "AmiodaroneThyroidBridge",
     "AmlodipineClarithromycinChecker",
     "AntibioticDurationStewardshipChecker",
     "AnticholinergicBurdenPanel",

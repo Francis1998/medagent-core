@@ -3333,6 +3333,39 @@ class WarfarinInrTrendAlert(BaseModel, frozen=True):
     rationale: str
 
 
+class AmiodaroneThyroidAlert(BaseModel, frozen=True):
+    """Amiodarone + TSH/FT4 trend thyroid-monitoring bridge finding.
+
+    RESEARCH USE ONLY — bridges amiodarone exposure with abnormal serial TSH
+    and/or FT4 trends. Distinct from pairwise
+    :class:`AmiodaroneDigoxinRisk` and :class:`AmioWarfarinRisk` DDI checks.
+    Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_tsh_on_amiodarone', "
+            "'falling_tsh_on_amiodarone', 'abnormal_ft4_trend_on_amiodarone', or "
+            "'amiodarone_thyroid_monitoring_advisory'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical amiodarone agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    tsh_values: list[float] = Field(
+        default_factory=list, description="TSH values in chronological order"
+    )
+    ft4_values: list[float] = Field(
+        default_factory=list, description="FT4 values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_tsh: float | None = Field(default=None, description="Most recent TSH value")
+    latest_ft4: float | None = Field(default=None, description="Most recent FT4 value")
+    severity: Severity
+    rationale: str
+
+
 class NsaidAceiAkiPanelRisk(BaseModel, frozen=True):
     """NSAID + ACEI/ARB AKI/bleeding advisory panel finding.
 
