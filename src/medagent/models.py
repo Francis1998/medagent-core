@@ -3304,6 +3304,35 @@ class Sglt2EuglycemicDkaAlert(BaseModel, frozen=True):
     rationale: str
 
 
+class WarfarinInrTrendAlert(BaseModel, frozen=True):
+    """Warfarin exposure + rising/supratherapeutic INR bleeding-risk bridge finding.
+
+    RESEARCH USE ONLY — bridges warfarin exposure with serial INR values showing
+    a rising and/or supratherapeutic trend. Distinct from pairwise
+    :class:`WarfarinNsaidRisk` DDIs and drug-agnostic :class:`LabTrendAlert`
+    rising-INR cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_inr_on_warfarin', "
+            "'supratherapeutic_inr_on_warfarin', or 'warfarin_inr_bleeding_risk'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical warfarin agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    inr_values: list[float] = Field(
+        default_factory=list, description="INR values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_inr: float | None = Field(default=None, description="Most recent INR value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last INR value"
+    )
+    severity: Severity
+    rationale: str
+
+
 class NsaidAceiAkiPanelRisk(BaseModel, frozen=True):
     """NSAID + ACEI/ARB AKI/bleeding advisory panel finding.
 
