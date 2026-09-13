@@ -396,6 +396,16 @@ See `docs/guides/CORTICOSTEROID_NSAID_GI_BLEED_PANEL_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.149 Amiodarone Thyroid Bridge
+
+Combines **amiodarone** exposure with abnormal serial **TSH / FT4** trends into
+thyroid-monitoring advisory findings (`rising_tsh_on_amiodarone`,
+`falling_tsh_on_amiodarone`, `abnormal_ft4_trend_on_amiodarone`,
+`amiodarone_thyroid_monitoring_advisory`). Every applicable alert yields an
+`AmiodaroneThyroidAlert` with agents, TSH/FT4 series, severity, and RESEARCH
+USE ONLY rationale. **Distinct from** pairwise `AmiodaroneDigoxinChecker` and
+`AmioWarfarinChecker`. Never auto-modifies medications.
+See `docs/guides/AMIODARONE_THYROID_BRIDGE_GUIDE.md`. Prefer frontier
 ### 3.150 Warfarin INR Trend Bridge
 
 Combines **warfarin** exposure with serial **INR** values showing a rise and/or

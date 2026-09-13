@@ -439,6 +439,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 143 | QTc Electrolyte Bridge | `safety/qtc_electrolyte_bridge.py` | QT agents + serial K/Mg trend cues; RESEARCH USE ONLY; distinct from point-in-time ElectrolyteQtChecker / QtProlongationPanel / LabTrendAlertBridge |
 | 144 | Polypharmacy Deprescribe Suggester | `safety/polypharmacy_deprescribe_suggester.py` | HITL deprescribe candidates (duplicate class / high ACB / SSI / PPI without indication / polypharmacy count) at any age; RESEARCH USE ONLY; never auto-stops; distinct from age-gated GeriatricDeprescribingChecker |
 | 147 | Heparin Platelet Trend Bridge | `safety/heparin_platelet_trend_bridge.py` | Heparin/LMWH + falling platelet HIT-risk bridge; RESEARCH USE ONLY; distinct from drug-agnostic LabTrendAlertBridge |
+| 149 | Amiodarone Thyroid Bridge | `safety/amiodarone_thyroid_bridge.py` | Amiodarone + TSH/FT4 trend thyroid-monitoring bridge; RESEARCH USE ONLY; distinct from AmiodaroneDigoxinChecker / AmioWarfarinChecker |
 | 150 | Warfarin INR Trend Bridge | `safety/warfarin_inr_trend_bridge.py` | Warfarin + rising/supratherapeutic INR bleeding-risk bridge; RESEARCH USE ONLY; distinct from WarfarinNsaidChecker / LabTrendAlertBridge |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
