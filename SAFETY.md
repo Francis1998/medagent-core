@@ -396,6 +396,21 @@ See `docs/guides/CORTICOSTEROID_NSAID_GI_BLEED_PANEL_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.148 SGLT2 Euglycemic DKA Bridge
+
+Combines **SGLT2 inhibitors** (empagliflozin, dapagliflozin, canagliflozin,
+ertugliflozin) with perioperative/illness flags or low/normal glucose plus
+acidosis cues into euglycemic DKA advisory findings
+(`sglt2_perioperative_dka_risk`, `sglt2_illness_dka_risk`,
+`sglt2_euglycemic_acidosis_cue`). Every applicable alert yields a
+`Sglt2EuglycemicDkaAlert` with agents, glucose series, acidosis cues,
+severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`HypoglycemiaRiskBridge` (insulin/SU + glucose) and
+`MetforminContrastChecker`. Never auto-modifies medications.
+See `docs/guides/SGLT2_EUGLYCEMIC_DKA_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

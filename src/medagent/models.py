@@ -3270,6 +3270,40 @@ class HeparinPlateletTrendAlert(BaseModel, frozen=True):
     rationale: str
 
 
+class Sglt2EuglycemicDkaAlert(BaseModel, frozen=True):
+    """SGLT2 inhibitor euglycemic DKA risk bridge finding.
+
+    RESEARCH USE ONLY — bridges SGLT2i exposure with perioperative/illness
+    flags or low/normal glucose plus acidosis cues. Distinct from
+    :class:`HypoglycemiaRiskAlert` (insulin/SU glucose trends) and metformin
+    contrast checks. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'sglt2_perioperative_dka_risk', "
+            "'sglt2_illness_dka_risk', or 'sglt2_euglycemic_acidosis_cue'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical SGLT2 inhibitor agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    glucose_values: list[float] = Field(
+        default_factory=list, description="Glucose values in chronological order"
+    )
+    glucose_unit: str = Field(default="mg/dL", description="Glucose unit")
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_glucose: float | None = Field(default=None, description="Most recent glucose value")
+    acidosis_cues: list[str] = Field(
+        default_factory=list, description="Detected acidosis-related lab cues"
+    )
+    surgery_flag: bool = Field(default=False, description="Perioperative/surgery context flag")
+    illness_flag: bool = Field(default=False, description="Acute illness context flag")
+    severity: Severity
+    rationale: str
+
+
 class NsaidAceiAkiPanelRisk(BaseModel, frozen=True):
     """NSAID + ACEI/ARB AKI/bleeding advisory panel finding.
 
