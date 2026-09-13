@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Safety **#150** `WarfarinInrTrendBridge`: warfarin + serial INR rise/supratherapeutic bleeding-risk bridge (`safety/warfarin_inr_trend_bridge.py`) emitting advisory `WarfarinInrTrendAlert` findings (`rising_inr_on_warfarin`, `supratherapeutic_inr_on_warfarin`, `warfarin_inr_bleeding_risk`). Distinct from `WarfarinNsaidChecker` / drug-agnostic `LabTrendAlertBridge`; never modifies medications. See `docs/guides/WARFARIN_INR_TREND_BRIDGE_GUIDE.md` and `assets/warfarin_inr_trend_bridge_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety **#148** `Sglt2EuglycemicDkaBridge`: SGLT2i + surgery/illness or euglycemic acidosis DKA bridge (`safety/sglt2_euglycemic_dka_bridge.py`) emitting advisory `Sglt2EuglycemicDkaAlert` findings (`sglt2_perioperative_dka_risk`, `sglt2_illness_dka_risk`, `sglt2_euglycemic_acidosis_cue`). Distinct from `HypoglycemiaRiskBridge` / `MetforminContrastChecker`; never modifies medications. See `docs/guides/SGLT2_EUGLYCEMIC_DKA_BRIDGE_GUIDE.md` and `assets/sglt2_euglycemic_dka_bridge_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety #146: `CorticosteroidNsaidGiBleedPanel`. See `docs/guides/CORTICOSTEROID_NSAID_GI_BLEED_PANEL_GUIDE.md`.
 - Safety #145: `NsaidAceiAkiPanel` (`safety/nsaid_acei_aki_panel.py`). See `docs/guides/NSAID_ACEI_AKI_PANEL_GUIDE.md` and `assets/nsaid_acei_aki_panel_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

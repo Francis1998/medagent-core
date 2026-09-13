@@ -396,6 +396,21 @@ See `docs/guides/CORTICOSTEROID_NSAID_GI_BLEED_PANEL_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.150 Warfarin INR Trend Bridge
+
+Combines **warfarin** exposure with serial **INR** values showing a rise and/or
+supratherapeutic level into bleeding-risk advisory findings
+(`rising_inr_on_warfarin`, `supratherapeutic_inr_on_warfarin`,
+`warfarin_inr_bleeding_risk`). Every applicable alert yields a
+`WarfarinInrTrendAlert` with agents, INR series, percent change, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** pairwise `WarfarinNsaidChecker`
+and drug-agnostic `LabTrendAlertBridge` (no warfarin context). Never
+auto-modifies medications.
+See `docs/guides/WARFARIN_INR_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+
 ### 3.148 SGLT2 Euglycemic DKA Bridge
 
 Combines **SGLT2 inhibitors** (empagliflozin, dapagliflozin, canagliflozin,
