@@ -3482,3 +3482,35 @@ class IsotretinoinPregnancyGateAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class VancomycinTroughTrendAlert(BaseModel, frozen=True):
+    """Vancomycin + serial trough toxicity/underdosing bridge finding.
+
+    RESEARCH USE ONLY — bridges vancomycin exposure with serial trough values
+    showing subtherapeutic or supratherapeutic trends. Distinct from pairwise
+    :class:`GentamicinVancomycinRisk` aminoglycoside co-prescription checks and
+    drug-agnostic :class:`LabTrendAlert` cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'supratherapeutic_vancomycin_trough', "
+            "'subtherapeutic_vancomycin_trough', 'rising_vancomycin_trough', or "
+            "'vancomycin_trough_monitoring_advisory'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical vancomycin agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    trough_values: list[float] = Field(
+        default_factory=list, description="Trough values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_trough: float | None = Field(default=None, description="Most recent trough value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last trough value"
+    )
+    severity: Severity
+    rationale: str

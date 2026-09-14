@@ -443,6 +443,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 150 | Warfarin INR Trend Bridge | `safety/warfarin_inr_trend_bridge.py` | Warfarin + rising/supratherapeutic INR bleeding-risk bridge; RESEARCH USE ONLY; distinct from WarfarinNsaidChecker / LabTrendAlertBridge |
 | 151 | Lithium Creatinine Trend Bridge | `safety/lithium_creatinine_trend_bridge.py` | Lithium + rising/elevated creatinine renal-risk bridge; RESEARCH USE ONLY; distinct from LithiumAcei/Nsaid/Thiazide checkers / LabTrendAlertBridge |
 | 152 | Isotretinoin Pregnancy Gate | `safety/isotretinoin_pregnancy_gate.py` | Absolute pregnancy contraindication / iPLEDGE-style prevention gate for isotretinoin; RESEARCH USE ONLY; distinct from PregnancySafetyChecker / IsotretinoinTetracyclineChecker |
+| 153 | Vancomycin Trough Trend Bridge | `safety/vancomycin_trough_trend_bridge.py` | Vancomycin + serial trough toxicity/underdosing bridge; RESEARCH USE ONLY; distinct from GentamicinVancomycinChecker / LabTrendAlertBridge |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
