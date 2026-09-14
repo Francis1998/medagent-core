@@ -72,6 +72,7 @@ from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.lamotrigine_valproate_checker import LamotrigineValproateChecker
 from medagent.safety.linezolid_ssri_checker import LinezolidSsriChecker
 from medagent.safety.lithium_acei_checker import LithiumAceiChecker
+from medagent.safety.lithium_creatinine_trend_bridge import LithiumCreatinineTrendBridge
 from medagent.safety.lithium_nsaid_checker import LithiumNsaidChecker
 from medagent.safety.lithium_thiazide_checker import LithiumThiazideChecker
 from medagent.safety.macrolide_digoxin_checker import MacrolideDigoxinChecker
@@ -203,6 +204,7 @@ __all__ = [
     "LamotrigineValproateChecker",
     "LinezolidSsriChecker",
     "LithiumAceiChecker",
+    "LithiumCreatinineTrendBridge",
     "LithiumNsaidChecker",
     "LithiumThiazideChecker",
     "MacrolideDigoxinChecker",

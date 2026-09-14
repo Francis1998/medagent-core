@@ -3422,3 +3422,35 @@ class CorticosteroidNsaidGiBleedRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class LithiumCreatinineTrendAlert(BaseModel, frozen=True):
+    """Lithium exposure + rising/elevated creatinine renal-risk bridge finding.
+
+    RESEARCH USE ONLY — bridges lithium exposure with serial creatinine values
+    showing a rising and/or elevated trend. Distinct from pairwise
+    :class:`LithiumAceiRisk`, :class:`LithiumNsaidRisk`,
+    :class:`LithiumThiazideRisk` DDIs and drug-agnostic :class:`LabTrendAlert`
+    rising-creatinine cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_creatinine_on_lithium', "
+            "'elevated_creatinine_on_lithium', or 'lithium_renal_risk'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical lithium agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    creatinine_values: list[float] = Field(
+        default_factory=list, description="Creatinine values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_creatinine: float | None = Field(
+        default=None, description="Most recent creatinine value"
+    )
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last creatinine value"
+    )
+    severity: Severity
+    rationale: str

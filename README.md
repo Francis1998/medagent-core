@@ -441,6 +441,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 147 | Heparin Platelet Trend Bridge | `safety/heparin_platelet_trend_bridge.py` | Heparin/LMWH + falling platelet HIT-risk bridge; RESEARCH USE ONLY; distinct from drug-agnostic LabTrendAlertBridge |
 | 149 | Amiodarone Thyroid Bridge | `safety/amiodarone_thyroid_bridge.py` | Amiodarone + TSH/FT4 trend thyroid-monitoring bridge; RESEARCH USE ONLY; distinct from AmiodaroneDigoxinChecker / AmioWarfarinChecker |
 | 150 | Warfarin INR Trend Bridge | `safety/warfarin_inr_trend_bridge.py` | Warfarin + rising/supratherapeutic INR bleeding-risk bridge; RESEARCH USE ONLY; distinct from WarfarinNsaidChecker / LabTrendAlertBridge |
+| 151 | Lithium Creatinine Trend Bridge | `safety/lithium_creatinine_trend_bridge.py` | Lithium + rising/elevated creatinine renal-risk bridge; RESEARCH USE ONLY; distinct from LithiumAcei/Nsaid/Thiazide checkers / LabTrendAlertBridge |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.
