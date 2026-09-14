@@ -3454,3 +3454,30 @@ class LithiumCreatinineTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+class IsotretinoinPregnancyGateAlert(BaseModel, frozen=True):
+    """Isotretinoin absolute pregnancy contraindication / prevention gate finding.
+
+    RESEARCH USE ONLY — isotretinoin-specific absolute pregnancy contraindication
+    and pregnancy-prevention gate. Distinct from generic multi-agent
+    :class:`PregnancyRisk` screening and pairwise
+    :class:`IsotretinoinTetracyclineRisk` DDI checks. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'isotretinoin_absolute_pregnancy_contraindication', "
+            "'isotretinoin_pregnancy_prevention_required', or "
+            "'isotretinoin_teratogen_gate'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical isotretinoin agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    pregnant: bool = Field(default=False, description="Documented pregnancy flag")
+    pregnancy_capable: bool = Field(
+        default=False, description="Pregnancy-capable context flag (iPLEDGE-style)"
+    )
+    severity: Severity
+    rationale: str
