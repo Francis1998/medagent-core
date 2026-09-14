@@ -465,6 +465,21 @@ See `docs/guides/ISOTRETINOIN_PREGNANCY_GATE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.153 Vancomycin Trough Trend Bridge
+
+Combines **vancomycin** (vancomycin / Vancocin / vanco) exposure with serial
+**trough** values showing subtherapeutic or supratherapeutic levels into
+toxicity/underdosing advisory findings (`supratherapeutic_vancomycin_trough`,
+`subtherapeutic_vancomycin_trough`, `rising_vancomycin_trough`,
+`vancomycin_trough_monitoring_advisory`). Every applicable alert yields a
+`VancomycinTroughTrendAlert` with agents, trough series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from** pairwise
+`GentamicinVancomycinChecker` and drug-agnostic `LabTrendAlertBridge`. Never
+auto-modifies medications.
+See `docs/guides/VANCOMYCIN_TROUGH_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
