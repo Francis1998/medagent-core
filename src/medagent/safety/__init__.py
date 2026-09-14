@@ -63,6 +63,7 @@ from medagent.safety.heparin_platelet_trend_bridge import HeparinPlateletTrendBr
 from medagent.safety.hypoglycemia_risk_bridge import HypoglycemiaRiskBridge
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
+from medagent.safety.isotretinoin_pregnancy_gate import IsotretinoinPregnancyGate
 from medagent.safety.isotretinoin_tetracycline_checker import (
     IsotretinoinTetracyclineChecker,
 )
@@ -197,6 +198,7 @@ __all__ = [
     "HypoglycemiaRiskBridge",
     "InrTtrChecker",
     "InsulinStackingChecker",
+    "IsotretinoinPregnancyGate",
     "IsotretinoinTetracyclineChecker",
     "IvabradineCyp3a4Checker",
     "LabTrendAlertBridge",

@@ -451,6 +451,20 @@ See `docs/guides/LITHIUM_CREATININE_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.152 Isotretinoin Pregnancy Gate
+
+Isotretinoin-specific **absolute pregnancy contraindication / pregnancy-prevention
+gate** for isotretinoin / Accutane / Absorica / Claravis / Myorisan / Zenatane
+(`isotretinoin_absolute_pregnancy_contraindication`,
+`isotretinoin_pregnancy_prevention_required`, `isotretinoin_teratogen_gate`).
+Every applicable alert yields an `IsotretinoinPregnancyGateAlert` with agents,
+pregnancy flags, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+generic multi-agent `PregnancySafetyChecker` and pairwise
+`IsotretinoinTetracyclineChecker`. Never auto-modifies medications.
+See `docs/guides/ISOTRETINOIN_PREGNANCY_GATE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
