@@ -3455,6 +3455,7 @@ class LithiumCreatinineTrendAlert(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class IsotretinoinPregnancyGateAlert(BaseModel, frozen=True):
     """Isotretinoin absolute pregnancy contraindication / prevention gate finding.
 
