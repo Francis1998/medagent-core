@@ -436,6 +436,21 @@ See `docs/guides/SGLT2_EUGLYCEMIC_DKA_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.151 Lithium Creatinine Trend Bridge
+
+Combines **lithium** (lithium / Lithobid / Eskalith) exposure with serial
+**creatinine** values showing a rise and/or elevated level into renal-risk
+advisory findings (`rising_creatinine_on_lithium`,
+`elevated_creatinine_on_lithium`, `lithium_renal_risk`). Every applicable alert
+yields a `LithiumCreatinineTrendAlert` with agents, creatinine series, percent
+change, severity, and RESEARCH USE ONLY rationale. **Distinct from** pairwise
+`LithiumAceiChecker` / `LithiumNsaidChecker` / `LithiumThiazideChecker` and
+drug-agnostic `LabTrendAlertBridge` (no lithium context). Never auto-modifies
+medications.
+See `docs/guides/LITHIUM_CREATININE_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
