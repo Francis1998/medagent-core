@@ -124,6 +124,7 @@ from medagent.safety.spironolactone_potassium_checker import SpironolactonePotas
 from medagent.safety.ssri_triptan_checker import SsriTriptanChecker
 from medagent.safety.statin_cyp3a4_checker import StatinCyp3a4Checker
 from medagent.safety.statin_fibrate_checker import StatinFibrateChecker
+from medagent.safety.statin_lft_trend_bridge import StatinLftTrendBridge
 from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.tacrolimus_cyp3a4_checker import TacrolimusCyp3a4Checker
 from medagent.safety.tacrolimus_rifampin_checker import TacrolimusRifampinChecker
@@ -258,6 +259,7 @@ __all__ = [
     "SsriTriptanChecker",
     "StatinCyp3a4Checker",
     "StatinFibrateChecker",
+    "StatinLftTrendBridge",
     "StatinMacrolideChecker",
     "TacrolimusCyp3a4Checker",
     "TacrolimusRifampinChecker",

@@ -3514,3 +3514,35 @@ class VancomycinTroughTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class StatinLftTrendAlert(BaseModel, frozen=True):
+    """Statin exposure + serial ALT/AST LFT hepatotoxicity-trend bridge finding.
+
+    RESEARCH USE ONLY — bridges statin exposure with serial ALT/AST values
+    showing a rising and/or elevated trend. Distinct from pairwise
+    :class:`CyclosporineStatinRisk` myopathy checks and drug-agnostic
+    :class:`LabTrendAlert` rising-ALT cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_alt_on_statin', 'rising_ast_on_statin', "
+            "'elevated_lft_on_statin', or 'statin_hepatotoxicity_advisory'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical statin agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    alt_values: list[float] = Field(
+        default_factory=list, description="ALT values in chronological order"
+    )
+    ast_values: list[float] = Field(
+        default_factory=list, description="AST values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_lft: float | None = Field(default=None, description="Most recent primary LFT value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last primary LFT value"
+    )
+    severity: Severity
+    rationale: str
