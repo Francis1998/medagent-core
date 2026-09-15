@@ -194,7 +194,6 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [v0.7.19] — 2026-03-13
 
 ### Added
-- Safety **#156** `SteroidGlucoseTrendBridge`: systemic corticosteroid + rising/elevated glucose hyperglycemia-trend bridge (`safety/steroid_glucose_trend_bridge.py`) emitting advisory `SteroidGlucoseTrendAlert` findings (`rising_glucose_on_steroid`, `elevated_glucose_on_steroid`, `steroid_hyperglycemia_advisory`). Distinct from `HypoglycemiaRiskBridge` / `CorticosteroidNsaidGiBleedPanel`; never modifies medications. See `docs/guides/STEROID_GLUCOSE_TREND_BRIDGE_GUIDE.md` and `assets/steroid_glucose_trend_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Extended drug module with improved error handling
 - Added structured logging for reasoning operations
 - New unit tests covering edge cases in audit pipeline
@@ -211,7 +210,6 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [v0.1.0] — 2026-02-06
 
 ### Added
-- Safety **#156** `SteroidGlucoseTrendBridge`: systemic corticosteroid + rising/elevated glucose hyperglycemia-trend bridge (`safety/steroid_glucose_trend_bridge.py`) emitting advisory `SteroidGlucoseTrendAlert` findings (`rising_glucose_on_steroid`, `elevated_glucose_on_steroid`, `steroid_hyperglycemia_advisory`). Distinct from `HypoglycemiaRiskBridge` / `CorticosteroidNsaidGiBleedPanel`; never modifies medications. See `docs/guides/STEROID_GLUCOSE_TREND_BRIDGE_GUIDE.md` and `assets/steroid_glucose_trend_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Initial project scaffold with biomedical AI core
 - Basic medagent implementation
 - README and setup documentation

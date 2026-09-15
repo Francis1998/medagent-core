@@ -191,9 +191,7 @@ class SteroidGlucoseTrendBridge:
                 ),
             )
 
-        findings.sort(
-            key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind)
-        )
+        findings.sort(key=lambda finding: (-_SEVERITY_RANK[finding.severity], finding.finding_kind))
         logger.info("steroid_glucose_trend_bridge_checked", findings=len(findings))
         return findings
 
