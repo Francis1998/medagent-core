@@ -1,6 +1,7 @@
 """Safety module — disclaimer injector, PII hasher, scope enforcer."""
 
 from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationChecker
+from medagent.safety.acei_creatinine_rise_bridge import AceiCreatinineRiseBridge
 from medagent.safety.acei_ksparing_checker import AceiKsparingChecker
 from medagent.safety.acei_potassium_checker import AceiPotassiumChecker
 from medagent.safety.acei_sacubitril_checker import AceiSacubitrilChecker
@@ -149,6 +150,7 @@ __all__ = [
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
     "AceiArbDuplicationChecker",
+    "AceiCreatinineRiseBridge",
     "AceiKsparingChecker",
     "AceiPotassiumChecker",
     "AceiSacubitrilChecker",
