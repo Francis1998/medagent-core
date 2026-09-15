@@ -495,6 +495,20 @@ See `docs/guides/STATIN_LFT_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.155 ACEI Creatinine Rise Bridge
+
+Combines **ACEI/ARB** (lisinopril / losartan / valsartan / etc.) exposure with
+serial **creatinine** values showing rising or elevated trends into renal-risk
+advisory findings (`rising_creatinine_on_acei`, `elevated_creatinine_on_acei`,
+`acei_renal_risk_advisory`). Every applicable alert yields an
+`AceiCreatinineRiseAlert` with agents, creatinine series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`NsaidAceiAkiPanel` NSAID stacks and `LithiumCreatinineTrendBridge` lithium
+context. Never auto-modifies medications.
+See `docs/guides/ACEI_CREATININE_RISE_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

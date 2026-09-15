@@ -3546,3 +3546,34 @@ class StatinLftTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AceiCreatinineRiseAlert(BaseModel, frozen=True):
+    """ACEI/ARB exposure + rising/elevated creatinine renal-risk bridge finding.
+
+    RESEARCH USE ONLY — bridges ACEI/ARB exposure with serial creatinine values
+    showing a rising and/or elevated trend. Distinct from NSAID+ACEI/ARB
+    :class:`NsaidAceiAkiPanel` stacks and lithium-context
+    :class:`LithiumCreatinineTrendAlert` cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_creatinine_on_acei', "
+            "'elevated_creatinine_on_acei', or 'acei_renal_risk_advisory'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical ACEI/ARB agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    creatinine_values: list[float] = Field(
+        default_factory=list, description="Creatinine values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_creatinine: float | None = Field(
+        default=None, description="Most recent creatinine value"
+    )
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last creatinine value"
+    )
+    severity: Severity
+    rationale: str
