@@ -3577,3 +3577,34 @@ class AceiCreatinineRiseAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class SteroidGlucoseTrendAlert(BaseModel, frozen=True):
+    """Systemic corticosteroid + rising/elevated glucose hyperglycemia bridge finding.
+
+    RESEARCH USE ONLY — bridges systemic corticosteroid exposure with serial
+    glucose values showing a rising and/or elevated trend. Distinct from
+    :class:`HypoglycemiaRiskAlert` low-glucose cues and corticosteroid×NSAID
+    :class:`CorticosteroidNsaidGiBleedPanel` stacks. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_glucose_on_steroid', "
+            "'elevated_glucose_on_steroid', or 'steroid_hyperglycemia_advisory'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical systemic corticosteroid agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    glucose_values: list[float] = Field(
+        default_factory=list, description="Glucose values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_glucose: float | None = Field(default=None, description="Most recent glucose value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last glucose value"
+    )
+    severity: Severity
+    rationale: str
