@@ -480,6 +480,21 @@ See `docs/guides/VANCOMYCIN_TROUGH_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.154 Statin LFT Trend Bridge
+
+Combines **statin** (atorvastatin / simvastatin / rosuvastatin / etc.) exposure
+with serial **ALT/AST** LFT values showing rising or elevated trends into
+hepatotoxicity advisory findings (`rising_alt_on_statin`,
+`rising_ast_on_statin`, `elevated_lft_on_statin`,
+`statin_hepatotoxicity_advisory`). Every applicable alert yields a
+`StatinLftTrendAlert` with agents, ALT/AST series, percent change, severity,
+and RESEARCH USE ONLY rationale. **Distinct from** pairwise
+`CyclosporineStatinChecker` myopathy checks and drug-agnostic
+`LabTrendAlertBridge`. Never auto-modifies medications.
+See `docs/guides/STATIN_LFT_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
