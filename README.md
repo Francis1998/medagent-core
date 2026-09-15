@@ -446,6 +446,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 153 | Vancomycin Trough Trend Bridge | `safety/vancomycin_trough_trend_bridge.py` | Vancomycin + serial trough toxicity/underdosing bridge; RESEARCH USE ONLY; distinct from GentamicinVancomycinChecker / LabTrendAlertBridge |
 | 154 | Statin LFT Trend Bridge | `safety/statin_lft_trend_bridge.py` | Statin + serial ALT/AST hepatotoxicity-trend bridge; RESEARCH USE ONLY; distinct from CyclosporineStatinChecker / LabTrendAlertBridge |
 | 155 | ACEI Creatinine Rise Bridge | `safety/acei_creatinine_rise_bridge.py` | ACEI/ARB + rising/elevated creatinine renal-risk bridge; RESEARCH USE ONLY; distinct from NsaidAceiAkiPanel / LithiumCreatinineTrendBridge |
+| 156 | Steroid Glucose Trend Bridge | `safety/steroid_glucose_trend_bridge.py` | Systemic corticosteroid + rising/elevated glucose hyperglycemia-trend bridge; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / CorticosteroidNsaidGiBleedPanel |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.

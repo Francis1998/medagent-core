@@ -509,6 +509,20 @@ See `docs/guides/ACEI_CREATININE_RISE_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.156 Steroid Glucose Trend Bridge
+
+Combines **systemic corticosteroid** (prednisone / dexamethasone / etc.) exposure
+with serial **glucose** values showing rising or elevated trends into
+hyperglycemia advisory findings (`rising_glucose_on_steroid`,
+`elevated_glucose_on_steroid`, `steroid_hyperglycemia_advisory`). Every
+applicable alert yields a `SteroidGlucoseTrendAlert` with agents, glucose
+series, percent change, severity, and RESEARCH USE ONLY rationale. **Distinct
+from** `HypoglycemiaRiskBridge` low-glucose cues and
+`CorticosteroidNsaidGiBleedPanel` GI stacks. Never auto-modifies medications.
+See `docs/guides/STEROID_GLUCOSE_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
