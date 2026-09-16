@@ -448,6 +448,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 155 | ACEI Creatinine Rise Bridge | `safety/acei_creatinine_rise_bridge.py` | ACEI/ARB + rising/elevated creatinine renal-risk bridge; RESEARCH USE ONLY; distinct from NsaidAceiAkiPanel / LithiumCreatinineTrendBridge |
 | 156 | Steroid Glucose Trend Bridge | `safety/steroid_glucose_trend_bridge.py` | Systemic corticosteroid + rising/elevated glucose hyperglycemia-trend bridge; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / CorticosteroidNsaidGiBleedPanel |
 | 157 | Digoxin Level Trend Bridge | `safety/digoxin_level_trend_bridge.py` | Digoxin + serial serum digoxin level elevated/rising/supratherapeutic bridge; RESEARCH USE ONLY; distinct from DigoxinToxicityChecker / DigoxinAmioChecker |
+| 158 | Methotrexate LFT Trend Bridge | `safety/mtx_lft_trend_bridge.py` | Methotrexate + serial ALT/AST LFT hepatotoxicity-trend bridge; RESEARCH USE ONLY; distinct from MtxFolateChecker / MtxTmpsmxChecker / StatinLftTrendBridge |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.

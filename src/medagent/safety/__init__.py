@@ -87,6 +87,7 @@ from medagent.safety.methotrexate_trimethoprim_checker import MethotrexateTrimet
 from medagent.safety.methylene_blue_ssri_checker import MethyleneBlueSsriChecker
 from medagent.safety.midazolam_cyp3a4_checker import MidazolamCyp3a4Checker
 from medagent.safety.mtx_folate_checker import MtxFolateChecker
+from medagent.safety.mtx_lft_trend_bridge import MtxLftTrendBridge
 from medagent.safety.mtx_nsaid_checker import MtxNsaidChecker
 from medagent.safety.mtx_penicillin_checker import MtxPenicillinChecker
 from medagent.safety.mtx_tmpsmx_checker import MtxTmpsmxChecker
@@ -225,6 +226,7 @@ __all__ = [
     "MethyleneBlueSsriChecker",
     "MidazolamCyp3a4Checker",
     "MtxFolateChecker",
+    "MtxLftTrendBridge",
     "MtxNsaidChecker",
     "MtxPenicillinChecker",
     "MtxTmpsmxChecker",
