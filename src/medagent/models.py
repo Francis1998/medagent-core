@@ -3608,3 +3608,34 @@ class SteroidGlucoseTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class DigoxinLevelTrendAlert(BaseModel, frozen=True):
+    """Digoxin exposure + serial serum digoxin level toxicity-trend bridge finding.
+
+    RESEARCH USE ONLY — bridges digoxin exposure with serial serum digoxin
+    levels showing a rising, elevated, and/or clearly supratherapeutic trend.
+    Distinct from electrolyte/toxicity :class:`DigoxinToxicityRisk` cues and
+    digoxin × amiodarone :class:`DigoxinAmioRisk` DDI pairs. Never modifies
+    medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_digoxin_level', 'elevated_digoxin_level', "
+            "'supratherapeutic_digoxin_level', or "
+            "'digoxin_level_monitoring_advisory'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical digoxin agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    digoxin_level_values: list[float] = Field(
+        default_factory=list, description="Serum digoxin level values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_level: float | None = Field(default=None, description="Most recent digoxin level")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last digoxin level"
+    )
+    severity: Severity
+    rationale: str

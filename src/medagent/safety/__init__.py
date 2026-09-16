@@ -30,6 +30,7 @@ from medagent.safety.corticosteroid_nsaid_gi_bleed_panel import CorticosteroidNs
 from medagent.safety.cyclosporine_statin_checker import CyclosporineStatinChecker
 from medagent.safety.dabigatran_pgp_checker import DabigatranPgpChecker
 from medagent.safety.digoxin_amio_checker import DigoxinAmioChecker
+from medagent.safety.digoxin_level_trend_bridge import DigoxinLevelTrendBridge
 from medagent.safety.digoxin_toxicity_checker import DigoxinToxicityChecker
 from medagent.safety.digoxin_verapamil_checker import DigoxinVerapamilChecker
 from medagent.safety.disclaimer import (
@@ -180,6 +181,7 @@ __all__ = [
     "CyclosporineStatinChecker",
     "DabigatranPgpChecker",
     "DigoxinAmioChecker",
+    "DigoxinLevelTrendBridge",
     "DigoxinToxicityChecker",
     "DigoxinVerapamilChecker",
     "DiseaseContraindicationChecker",
