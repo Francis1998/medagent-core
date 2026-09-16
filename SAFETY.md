@@ -538,6 +538,20 @@ See `docs/guides/DIGOXIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.158 Methotrexate LFT Trend Bridge
+
+Combines **methotrexate** (methotrexate / trexall / rheumatrex / etc.) exposure
+with serial **ALT/AST** LFT values showing rising or elevated trends into
+hepatotoxicity advisory findings (`rising_alt_on_mtx`, `rising_ast_on_mtx`,
+`elevated_lft_on_mtx`, `mtx_hepatotoxicity_advisory`). Every applicable alert
+yields an `MtxLftTrendAlert` with agents, ALT/AST series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from** `MtxFolateChecker`
+folate gaps, `MtxTmpsmxChecker` TMP-SMX pairs, and `StatinLftTrendBridge`
+statin context. Never auto-modifies medications.
+See `docs/guides/MTX_LFT_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

@@ -3639,3 +3639,37 @@ class DigoxinLevelTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class MtxLftTrendAlert(BaseModel, frozen=True):
+    """Methotrexate exposure + serial ALT/AST LFT hepatotoxicity-trend bridge finding.
+
+    RESEARCH USE ONLY — bridges methotrexate exposure with serial ALT/AST values
+    showing a rising and/or elevated trend. Distinct from folate-gap
+    :class:`MtxFolateRisk` checks, TMP-SMX :class:`MtxTmpsmxRisk` pairs, and
+    statin-context :class:`StatinLftTrendAlert` cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_alt_on_mtx', 'rising_ast_on_mtx', "
+            "'elevated_lft_on_mtx', or 'mtx_hepatotoxicity_advisory'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical methotrexate agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    alt_values: list[float] = Field(
+        default_factory=list, description="ALT values in chronological order"
+    )
+    ast_values: list[float] = Field(
+        default_factory=list, description="AST values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_lft: float | None = Field(default=None, description="Most recent primary LFT value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last primary LFT value"
+    )
+    severity: Severity
+    rationale: str
