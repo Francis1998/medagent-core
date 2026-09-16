@@ -23,6 +23,7 @@ from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
+from medagent.safety.clozapine_anc_trend_bridge import ClozapineAncTrendBridge
 from medagent.safety.clozapine_cyp1a2_checker import ClozapineCyp1a2Checker
 from medagent.safety.codeine_cyp2d6_checker import CodeineCyp2d6Checker
 from medagent.safety.colchicine_cyp3a4_checker import ColchicineCyp3a4Checker
@@ -175,6 +176,7 @@ __all__ = [
     "ClinicalGuidelineMatcher",
     "ClopidogrelPpiChecker",
     "ClozapineAncChecker",
+    "ClozapineAncTrendBridge",
     "ClozapineCyp1a2Checker",
     "CodeineCyp2d6Checker",
     "ColchicineCyp3a4Checker",

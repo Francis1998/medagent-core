@@ -552,6 +552,21 @@ See `docs/guides/MTX_LFT_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.159 Clozapine ANC Trend Bridge
+
+Combines **clozapine** (clozapine / clozaril / fazaclo / etc.) exposure with
+serial **ANC** (absolute neutrophil count) values showing declining or low
+trends into REMS-style advisory findings (`declining_anc_on_clozapine`,
+`low_anc_on_clozapine`, `critical_low_anc_on_clozapine`,
+`clozapine_anc_rems_advisory`). Every applicable alert yields a
+`ClozapineAncTrendAlert` with agents, ANC series, percent change, severity,
+and RESEARCH USE ONLY rationale. **Distinct from** `ClozapineAncChecker`
+single-threshold reminders and `ClozapineCyp1a2Checker` CYP1A2 pairs. Never
+auto-modifies medications.
+See `docs/guides/CLOZAPINE_ANC_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
