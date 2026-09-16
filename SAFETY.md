@@ -523,6 +523,21 @@ See `docs/guides/STEROID_GLUCOSE_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.157 Digoxin Level Trend Bridge
+
+Combines **digoxin** (digoxin / lanoxin / digitek / etc.) exposure with serial
+**serum digoxin level** values showing rising, elevated, or clearly
+supratherapeutic trends into toxicity advisory findings (`rising_digoxin_level`,
+`elevated_digoxin_level`, `supratherapeutic_digoxin_level`,
+`digoxin_level_monitoring_advisory`). Every applicable alert yields a
+`DigoxinLevelTrendAlert` with agents, digoxin-level series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`DigoxinToxicityChecker` electrolyte/toxicity cues and `DigoxinAmioChecker` DDI
+pairs. Never auto-modifies medications.
+See `docs/guides/DIGOXIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
