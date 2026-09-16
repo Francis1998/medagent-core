@@ -3676,20 +3676,18 @@ class MtxLftTrendAlert(BaseModel, frozen=True):
 
 
 class ClozapineAncTrendAlert(BaseModel, frozen=True):
-    """Clozapine exposure + serial ANC neutropenia-trend bridge finding.
+    """Clozapine exposure + serial ANC declining/low REMS-style trend bridge finding.
 
     RESEARCH USE ONLY — bridges clozapine exposure with serial absolute
     neutrophil count (ANC) values showing a declining and/or low trend.
-    Distinct from presence-only :class:`ClozapineAncRisk` reminders and
-    CYP1A2 :class:`ClozapineCyp1a2Risk` DDI cues. Never modifies medications.
+    Distinct from single-threshold :class:`ClozapineAncRisk` reminders and
+    CYP1A2 :class:`ClozapineCyp1a2Risk` pairs. Never modifies medications.
     """
 
     finding_kind: str = Field(
         description=(
             "Finding kind: 'declining_anc_on_clozapine', 'low_anc_on_clozapine', "
-            "'severe_neutropenia_anc_on_clozapine', "
-            "'critical_neutropenia_anc_on_clozapine', or "
-            "'clozapine_anc_trend_advisory'"
+            "'critical_low_anc_on_clozapine', or 'clozapine_anc_rems_advisory'"
         )
     )
     agents: list[str] = Field(
