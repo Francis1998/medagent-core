@@ -3766,3 +3766,39 @@ class ValproateAmmoniaTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class HeparinAntiXaTrendAlert(BaseModel, frozen=True):
+    """Heparin/LMWH exposure + serial anti-Xa monitoring-trend bridge finding.
+
+    RESEARCH USE ONLY — bridges heparin/UFH/LMWH exposure with serial anti-Xa
+    levels showing a rising, elevated, subtherapeutic, and/or clearly
+    supratherapeutic trend. Distinct from HIT-risk
+    :class:`HeparinPlateletTrendAlert` platelet cues. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_antixa_on_heparin', "
+            "'elevated_antixa_on_heparin', 'supratherapeutic_antixa_on_heparin', "
+            "'subtherapeutic_antixa_on_heparin', or "
+            "'heparin_antixa_monitoring_advisory'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical heparin/LMWH/UFH agents matched"
+    )
+    agent_classes: list[str] = Field(
+        default_factory=list, description="Agent classes (ufh, lmwh, other)"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    antixa_values: list[float] = Field(
+        default_factory=list, description="Anti-Xa values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_antixa: float | None = Field(default=None, description="Most recent anti-Xa value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last anti-Xa value"
+    )
+    severity: Severity
+    rationale: str
