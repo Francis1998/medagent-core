@@ -3734,3 +3734,35 @@ class LithiumTshTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class ValproateAmmoniaTrendAlert(BaseModel, frozen=True):
+    """Valproate exposure + serial ammonia hyperammonemia-trend bridge finding.
+
+    RESEARCH USE ONLY — bridges valproate exposure with serial ammonia values
+    showing a rising, elevated, and/or clearly critical trend. Distinct from
+    pairwise :class:`ValproateCarbapenemRisk` DDI checks and
+    :class:`LamotrigineValproateRisk` pairs. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_ammonia_on_valproate', "
+            "'elevated_ammonia_on_valproate', 'critical_ammonia_on_valproate', or "
+            "'valproate_hyperammonemia_advisory'"
+        )
+    )
+    agents: list[str] = Field(
+        default_factory=list, description="Canonical valproate agents matched"
+    )
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    ammonia_values: list[float] = Field(
+        default_factory=list, description="Ammonia values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_ammonia: float | None = Field(default=None, description="Most recent ammonia value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last ammonia value"
+    )
+    severity: Severity
+    rationale: str

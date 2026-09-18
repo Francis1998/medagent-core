@@ -141,6 +141,7 @@ from medagent.safety.tizanidine_cipro_checker import TizanidineCiproChecker
 from medagent.safety.tramadol_bupropion_checker import TramadolBupropionChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
+from medagent.safety.valproate_ammonia_trend_bridge import ValproateAmmoniaTrendBridge
 from medagent.safety.valproate_carbapenem_checker import ValproateCarbapenemChecker
 from medagent.safety.vancomycin_trough_trend_bridge import VancomycinTroughTrendBridge
 from medagent.safety.vitals_triage_checker import VitalsTriageChecker
@@ -282,6 +283,7 @@ __all__ = [
     "TramadolBupropionChecker",
     "TramadolSsriChecker",
     "TripleWhammyChecker",
+    "ValproateAmmoniaTrendBridge",
     "ValproateCarbapenemChecker",
     "VancomycinTroughTrendBridge",
     "VitalsTriageChecker",

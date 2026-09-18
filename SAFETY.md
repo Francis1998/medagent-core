@@ -583,6 +583,22 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.161 Valproate Ammonia Trend Bridge
+
+Combines **valproate** (valproate / valproic / divalproex / depakote / etc.)
+exposure with serial **ammonia** values showing rising, elevated, or clearly
+critical hyperammonemia trends into advisory findings
+(`rising_ammonia_on_valproate`, `elevated_ammonia_on_valproate`,
+`critical_ammonia_on_valproate`, `valproate_hyperammonemia_advisory`). Every
+applicable alert yields a `ValproateAmmoniaTrendAlert` with agents, ammonia
+series, percent change, severity, and RESEARCH USE ONLY rationale. **Distinct
+from** `ValproateCarbapenemChecker` DDI pairs and
+`LamotrigineValproateChecker` rash/DDI screening. Never auto-modifies
+medications.
+See `docs/guides/VALPROATE_AMMONIA_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
