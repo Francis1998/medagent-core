@@ -3704,3 +3704,33 @@ class ClozapineAncTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class LithiumTshTrendAlert(BaseModel, frozen=True):
+    """Lithium exposure + serial TSH thyroid-monitoring bridge finding.
+
+    RESEARCH USE ONLY — bridges lithium exposure with serial TSH values
+    showing a rising, falling, and/or elevated trend. Distinct from
+    creatinine-context :class:`LithiumCreatinineTrendAlert` cues and
+    amiodarone-context :class:`AmiodaroneThyroidAlert` thyroid monitoring.
+    Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_tsh_on_lithium', 'falling_tsh_on_lithium', "
+            "'elevated_tsh_on_lithium', or 'lithium_tsh_monitoring_advisory'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical lithium agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    tsh_values: list[float] = Field(
+        default_factory=list, description="TSH values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_tsh: float | None = Field(default=None, description="Most recent TSH value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last TSH value"
+    )
+    severity: Severity
+    rationale: str
