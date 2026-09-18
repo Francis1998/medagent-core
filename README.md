@@ -450,6 +450,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 157 | Digoxin Level Trend Bridge | `safety/digoxin_level_trend_bridge.py` | Digoxin + serial serum digoxin level elevated/rising/supratherapeutic bridge; RESEARCH USE ONLY; distinct from DigoxinToxicityChecker / DigoxinAmioChecker |
 | 158 | Methotrexate LFT Trend Bridge | `safety/mtx_lft_trend_bridge.py` | Methotrexate + serial ALT/AST LFT hepatotoxicity-trend bridge; RESEARCH USE ONLY; distinct from MtxFolateChecker / MtxTmpsmxChecker / StatinLftTrendBridge |
 | 159 | Clozapine ANC Trend Bridge | `safety/clozapine_anc_trend_bridge.py` | Clozapine + serial ANC declining/low REMS-style trend bridge; RESEARCH USE ONLY; distinct from ClozapineAncChecker / ClozapineCyp1a2Checker |
+| 160 | Lithium TSH Trend Bridge | `safety/lithium_tsh_trend_bridge.py` | Lithium + serial TSH thyroid-monitoring bridge; RESEARCH USE ONLY; distinct from LithiumCreatinineTrendBridge / AmiodaroneThyroidBridge |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
 See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalation procedures.

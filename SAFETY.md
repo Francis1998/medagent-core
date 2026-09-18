@@ -567,6 +567,22 @@ See `docs/guides/CLOZAPINE_ANC_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.160 Lithium TSH Trend Bridge
+
+Combines **lithium** (lithium / lithobid / eskalith) exposure with serial
+**TSH** values showing rising, falling, or elevated thyroid-monitoring trends
+into advisory findings (`rising_tsh_on_lithium`, `falling_tsh_on_lithium`,
+`elevated_tsh_on_lithium`, `lithium_tsh_monitoring_advisory`). Every applicable
+alert yields a `LithiumTshTrendAlert` with agents, TSH series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`LithiumCreatinineTrendBridge` creatinine renal-risk cues and
+`AmiodaroneThyroidBridge` amiodarone TSH/FT4 monitoring. Never auto-modifies
+medications.
+See `docs/guides/LITHIUM_TSH_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
