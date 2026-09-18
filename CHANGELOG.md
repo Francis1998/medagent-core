@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `HeparinAntiXaTrendBridge` (Safety #162): heparin/LMWH + serial anti-Xa trend bridge. RESEARCH USE ONLY. See `docs/guides/HEPARIN_ANTIXA_TREND_BRIDGE_GUIDE.md`.
 - `ValproateAmmoniaTrendBridge` (Safety #161): ValproateAmmoniaTrendBridge (#161). RESEARCH USE ONLY. See `docs/guides/VALPROATE_AMMONIA_TREND_BRIDGE_GUIDE.md`.
 - Safety **#160** `LithiumTshTrendBridge`: lithium + serial TSH thyroid-monitoring bridge (`safety/lithium_tsh_trend_bridge.py`) emitting advisory `LithiumTshTrendAlert` findings (`rising_tsh_on_lithium`, `falling_tsh_on_lithium`, `elevated_tsh_on_lithium`, `lithium_tsh_monitoring_advisory`). Distinct from `LithiumCreatinineTrendBridge` / `AmiodaroneThyroidBridge`; never modifies medications. See `docs/guides/LITHIUM_TSH_TREND_BRIDGE_GUIDE.md` and `assets/lithium_tsh_trend_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Safety **#159** `ClozapineAncTrendBridge`: clozapine + serial ANC declining/low REMS-style trend bridge (`safety/clozapine_anc_trend_bridge.py`) emitting advisory `ClozapineAncTrendAlert` findings (`declining_anc_on_clozapine`, `low_anc_on_clozapine`, `critical_low_anc_on_clozapine`, `clozapine_anc_rems_advisory`). Distinct from `ClozapineAncChecker` / `ClozapineCyp1a2Checker`; never modifies medications. See `docs/guides/CLOZAPINE_ANC_TREND_BRIDGE_GUIDE.md` and `assets/clozapine_anc_trend_demo.gif`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

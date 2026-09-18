@@ -599,6 +599,21 @@ See `docs/guides/VALPROATE_AMMONIA_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.162 Heparin Anti-Xa Trend Bridge
+
+Combines **heparin / UFH / LMWH** exposure with serial **anti-Xa** levels
+showing rising, elevated, subtherapeutic, or clearly supratherapeutic trends
+into advisory findings (`rising_antixa_on_heparin`, `elevated_antixa_on_heparin`,
+`supratherapeutic_antixa_on_heparin`, `subtherapeutic_antixa_on_heparin`,
+`heparin_antixa_monitoring_advisory`). Every applicable alert yields a
+`HeparinAntiXaTrendAlert` with agents, anti-Xa series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`HeparinPlateletTrendBridge` HIT-risk platelet cues. Never auto-modifies
+medications.
+See `docs/guides/HEPARIN_ANTIXA_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
