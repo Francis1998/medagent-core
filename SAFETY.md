@@ -628,6 +628,33 @@ See `docs/guides/TACROLIMUS_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.164 Phenytoin Level Trend Bridge
+
+Combines **phenytoin** exposure with serial serum **phenytoin** levels
+showing rising, elevated, or clearly supratherapeutic trends into advisory
+findings (`rising_phenytoin_level`, `elevated_phenytoin_level`,
+`supratherapeutic_phenytoin_level`, `phenytoin_level_monitoring_advisory`).
+Every applicable alert yields a `PhenytoinLevelTrendAlert` with agents, level series,
+percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`PhenytoinFluconazoleChecker` DDI pairs. Never auto-modifies medications.
+See `docs/guides/PHENYTOIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+### 3.165 Cyclosporine Level Trend Bridge
+
+Combines **cyclosporine** exposure with serial serum **cyclosporine** levels
+showing rising, elevated, or clearly supratherapeutic trends into advisory
+findings (`rising_cyclosporine_level`, `elevated_cyclosporine_level`,
+`supratherapeutic_cyclosporine_level`, `cyclosporine_level_monitoring_advisory`).
+Every applicable alert yields a `CyclosporineLevelTrendAlert` with agents, level series,
+percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`CyclosporineStatinChecker` DDI pairs. Never auto-modifies medications.
+See `docs/guides/CYCLOSPORINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

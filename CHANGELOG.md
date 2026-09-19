@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Docs: add SAFETY.md §3.164 Phenytoin Level Trend Bridge and §3.165 Cyclosporine Level Trend Bridge (completing a919 TDM bridge docs).
 - `CyclosporineLevelTrendBridge` (Safety #165): cyclosporine + serial serum cyclosporine level trend bridge. RESEARCH USE ONLY. See `docs/guides/CYCLOSPORINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `PhenytoinLevelTrendBridge` (Safety #164): phenytoin + serial serum phenytoin level trend bridge. RESEARCH USE ONLY. See `docs/guides/PHENYTOIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `TacrolimusLevelTrendBridge` (Safety #163): tacrolimus + serial serum tacrolimus level trend bridge. RESEARCH USE ONLY. See `docs/guides/TACROLIMUS_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
