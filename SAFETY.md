@@ -614,6 +614,20 @@ See `docs/guides/HEPARIN_ANTIXA_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.163 Tacrolimus Level Trend Bridge
+
+Combines **tacrolimus** exposure with serial serum **tacrolimus** levels
+showing rising, elevated, or clearly supratherapeutic trends into advisory
+findings (`rising_tacrolimus_level`, `elevated_tacrolimus_level`,
+`supratherapeutic_tacrolimus_level`, `tacrolimus_level_monitoring_advisory`).
+Every applicable alert yields a `TacrolimusLevelTrendAlert` with agents, level series,
+percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+related DDI checkers. Never auto-modifies medications.
+See `docs/guides/TACROLIMUS_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
