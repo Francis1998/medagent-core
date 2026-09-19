@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `PhenytoinLevelTrendBridge` (Safety #164): phenytoin + serial serum phenytoin level trend bridge. RESEARCH USE ONLY. See `docs/guides/PHENYTOIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `TacrolimusLevelTrendBridge` (Safety #163): tacrolimus + serial serum tacrolimus level trend bridge. RESEARCH USE ONLY. See `docs/guides/TACROLIMUS_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `HeparinAntiXaTrendBridge` (Safety #162): heparin/LMWH + serial anti-Xa trend bridge. RESEARCH USE ONLY. See `docs/guides/HEPARIN_ANTIXA_TREND_BRIDGE_GUIDE.md`.
 - `ValproateAmmoniaTrendBridge` (Safety #161): ValproateAmmoniaTrendBridge (#161). RESEARCH USE ONLY. See `docs/guides/VALPROATE_AMMONIA_TREND_BRIDGE_GUIDE.md`.
