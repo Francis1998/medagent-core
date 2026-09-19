@@ -101,6 +101,7 @@ from medagent.safety.opioid_sedation_stack_panel import OpioidSedationStackPanel
 from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
 from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAdjuster
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
+from medagent.safety.phenytoin_level_trend_bridge import PhenytoinLevelTrendBridge
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.pimozide_cyp3a4_checker import PimozideCyp3a4Checker
 from medagent.safety.polypharmacy_deprescribe_suggester import PolypharmacyDeprescribeSuggester
@@ -245,6 +246,7 @@ __all__ = [
     "PediatricRenalDosingChecker",
     "PediatricWeightDoseAdjuster",
     "PhenytoinFluconazoleChecker",
+    "PhenytoinLevelTrendBridge",
     "PimozideCyp3a4Checker",
     "PolypharmacyDeprescribeSuggester",
     "PpiMtxChecker",

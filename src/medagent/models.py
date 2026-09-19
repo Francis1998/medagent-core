@@ -3831,3 +3831,32 @@ class TacrolimusLevelTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class PhenytoinLevelTrendAlert(BaseModel, frozen=True):
+    """Phenytoin exposure + serial serum level toxicity-trend bridge finding.
+
+    RESEARCH USE ONLY — bridges phenytoin exposure with serial serum
+    levels showing a rising, elevated, and/or clearly supratherapeutic trend.
+    Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'rising_phenytoin_level', 'elevated_phenytoin_level', "
+            "'supratherapeutic_phenytoin_level', or "
+            "'phenytoin_level_monitoring_advisory'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    level_values: list[float] = Field(
+        default_factory=list, description="Serum level values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_level: float | None = Field(default=None, description="Most recent level")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last level"
+    )
+    severity: Severity
+    rationale: str
