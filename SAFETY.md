@@ -669,6 +669,20 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.168 Linezolid Platelet Trend Bridge
+
+Combines **linezolid** exposure with serial **platelet** counts showing
+declining or low trends into advisory findings (`declining_platelet_on_linezolid`,
+`low_platelets_on_linezolid`, `critical_low_platelets_on_linezolid`,
+`linezolid_platelet_rems_advisory`). Every applicable alert yields a
+`LinezolidPlateletTrendAlert` with agents, platelet series, percent change,
+severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`LinezolidSsriChecker` DDI pairs. Never auto-modifies medications.
+See `docs/guides/LINEZOLID_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
