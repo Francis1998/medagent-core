@@ -88,10 +88,7 @@ class CarbamazepineLevelTrendBridge:
         for entry in labs or []:
             name = str(entry.get("name", "")).strip().lower()
             looks_like_level = "carbamazepine" in name and (
-                "level" in name
-                or "serum" in name
-                or "trough" in name
-                or "concentration" in name
+                "level" in name or "serum" in name or "trough" in name or "concentration" in name
             )
             if name not in _LEVEL_ALIASES and not looks_like_level:
                 continue
