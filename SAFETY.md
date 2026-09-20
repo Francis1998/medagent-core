@@ -655,6 +655,20 @@ See `docs/guides/CYCLOSPORINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.166 Gentamicin Level Trend Bridge
+
+Combines **gentamicin** exposure with serial serum **gentamicin** levels
+showing rising, elevated, or clearly supratherapeutic trends into advisory
+findings (`rising_gentamicin_level`, `elevated_gentamicin_level`,
+`supratherapeutic_gentamicin_level`, `gentamicin_level_monitoring_advisory`).
+Every applicable alert yields a `GentamicinLevelTrendAlert` with agents, level series,
+percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`GentamicinVancomycinChecker` DDI pairs. Never auto-modifies medications.
+See `docs/guides/GENTAMICIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
