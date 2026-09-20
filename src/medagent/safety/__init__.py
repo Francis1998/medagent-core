@@ -18,6 +18,7 @@ from medagent.safety.anticoag_bleed_stack_panel import AnticoagBleedStackPanel
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
+from medagent.safety.carbamazepine_level_trend_bridge import CarbamazepineLevelTrendBridge
 from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacrolideChecker
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
@@ -179,6 +180,7 @@ __all__ = [
     "AnticoagBleedingChecker",
     "ApixabanCyp3a4Checker",
     "Beers2023DeltaChecker",
+    "CarbamazepineLevelTrendBridge",
     "CarbamazepineMacrolideChecker",
     "ChemoEmesisChecker",
     "ClinicalGuidelineMatcher",

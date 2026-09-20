@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `CarbamazepineLevelTrendBridge` (Safety #167): carbamazepine + serial serum carbamazepine level trend bridge. RESEARCH USE ONLY. See `docs/guides/CARBAMAZEPINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `LinezolidPlateletTrendBridge` (Safety #168): linezolid + serial platelet thrombocytopenia-trend bridge. RESEARCH USE ONLY. See `docs/guides/LINEZOLID_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `GentamicinLevelTrendBridge` (Safety #166): gentamicin + serial serum gentamicin level trend bridge. RESEARCH USE ONLY. See `docs/guides/GENTAMICIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - Docs: add SAFETY.md §3.164 Phenytoin Level Trend Bridge and §3.165 Cyclosporine Level Trend Bridge (completing a919 TDM bridge docs).

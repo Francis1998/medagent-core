@@ -669,6 +669,20 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.167 Carbamazepine Level Trend Bridge
+
+Combines **carbamazepine** exposure with serial serum **carbamazepine** levels
+showing rising, elevated, or clearly supratherapeutic trends into advisory
+findings (`rising_carbamazepine_level`, `elevated_carbamazepine_level`,
+`supratherapeutic_carbamazepine_level`, `carbamazepine_level_monitoring_advisory`).
+Every applicable alert yields a `CarbamazepineLevelTrendAlert` with agents, level series,
+percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`CarbamazepineMacrolideChecker` DDI pairs. Never auto-modifies medications.
+See `docs/guides/CARBAMAZEPINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+
 ### 3.168 Linezolid Platelet Trend Bridge
 
 Combines **linezolid** exposure with serial **platelet** counts showing
