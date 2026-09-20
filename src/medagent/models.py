@@ -3918,3 +3918,32 @@ class GentamicinLevelTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class LinezolidPlateletTrendAlert(BaseModel, frozen=True):
+    """Linezolid exposure + serial platelet declining/low trend bridge finding.
+
+    RESEARCH USE ONLY — bridges linezolid exposure with serial platelet
+    values showing a declining and/or low trend. Distinct from
+    LinezolidSsriChecker DDI pairs. Never modifies medications.
+    """
+
+    finding_kind: str = Field(
+        description=(
+            "Finding kind: 'declining_platelet_on_linezolid', "
+            "'low_platelets_on_linezolid', 'critical_low_platelets_on_linezolid', "
+            "or 'linezolid_platelet_rems_advisory'"
+        )
+    )
+    agents: list[str] = Field(default_factory=list, description="Canonical agents matched")
+    medication_names: list[str] = Field(default_factory=list, description="Source medication names")
+    platelet_values: list[float] = Field(
+        default_factory=list, description="Platelet values in chronological order"
+    )
+    drawn_ats: list[str] = Field(default_factory=list, description="Draw timestamps")
+    latest_platelet: float | None = Field(default=None, description="Most recent platelet value")
+    percent_change: float | None = Field(
+        default=None, description="Percent change from first to last platelet value"
+    )
+    severity: Severity
+    rationale: str
