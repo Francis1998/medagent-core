@@ -151,9 +151,7 @@ class LinezolidPlateletTrendBridge:
         if low and agents:
             sev = Severity.CRITICAL if critical else Severity.HIGH
             kind = (
-                "critical_low_platelets_on_linezolid"
-                if critical
-                else "low_platelets_on_linezolid"
+                "critical_low_platelets_on_linezolid" if critical else "low_platelets_on_linezolid"
             )
             _add(
                 kind,

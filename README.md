@@ -452,6 +452,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 159 | Clozapine ANC Trend Bridge | `safety/clozapine_anc_trend_bridge.py` | Clozapine + serial ANC declining/low REMS-style trend bridge; RESEARCH USE ONLY; distinct from ClozapineAncChecker / ClozapineCyp1a2Checker |
 | 160 | Lithium TSH Trend Bridge | `safety/lithium_tsh_trend_bridge.py` | Lithium + serial TSH thyroid-monitoring bridge; RESEARCH USE ONLY; distinct from LithiumCreatinineTrendBridge / AmiodaroneThyroidBridge |
 | 166 | Gentamicin Level Trend Bridge | `safety/gentamicin_level_trend_bridge.py` | Gentamicin + serial level toxicity-trend bridge; RESEARCH USE ONLY; distinct from GentamicinVancomycinChecker |
+| 167 | Carbamazepine Level Trend Bridge | `safety/carbamazepine_level_trend_bridge.py` | Carbamazepine + serial level toxicity-trend bridge; RESEARCH USE ONLY; distinct from CarbamazepineMacrolideChecker |
 | 168 | Linezolid Platelet Trend Bridge | `safety/linezolid_platelet_trend_bridge.py` | Linezolid + serial platelet myelosuppression-trend bridge; RESEARCH USE ONLY; distinct from LinezolidSsriChecker |
 | 148 | SGLT2 Euglycemic DKA Bridge | `safety/sglt2_euglycemic_dka_bridge.py` | SGLT2i + surgery/illness or euglycemic acidosis cues; RESEARCH USE ONLY; distinct from HypoglycemiaRiskBridge / MetforminContrastChecker |
 
