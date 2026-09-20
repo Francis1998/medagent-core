@@ -3890,6 +3890,7 @@ class CyclosporineLevelTrendAlert(BaseModel, frozen=True):
     severity: Severity
     rationale: str
 
+
 class GentamicinLevelTrendAlert(BaseModel, frozen=True):
     """Gentamicin exposure + serial serum level toxicity-trend bridge finding.
 
@@ -3917,4 +3918,3 @@ class GentamicinLevelTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
-
