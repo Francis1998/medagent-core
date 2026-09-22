@@ -3976,3 +3976,20 @@ class CarbamazepineLevelTrendAlert(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class HasBledBleedRisk(BaseModel, frozen=True):
+    """HAS-BLED bleed-risk score finding.
+
+    RESEARCH USE ONLY — advisory HAS-BLED total from clinical factors.
+    Distinct from AnticoagBleedingChecker / AnticoagBleedStackPanel.
+    Never modifies medications.
+    """
+
+    score: int = Field(description="HAS-BLED total score")
+    band: str = Field(description="Risk band: low / moderate / high")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed a point"
+    )
+    severity: Severity
+    rationale: str
