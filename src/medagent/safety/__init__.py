@@ -22,6 +22,7 @@ from medagent.safety.carbamazepine_level_trend_bridge import CarbamazepineLevelT
 from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacrolideChecker
 from medagent.safety.cha2ds2_vasc_stroke_risk_scorer import Cha2ds2VascStrokeRiskScorer
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
+from medagent.safety.child_pugh_liver_severity_scorer import ChildPughLiverSeverityScorer
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
@@ -186,6 +187,7 @@ __all__ = [
     "CarbamazepineMacrolideChecker",
     "Cha2ds2VascStrokeRiskScorer",
     "ChemoEmesisChecker",
+    "ChildPughLiverSeverityScorer",
     "ClinicalGuidelineMatcher",
     "ClopidogrelPpiChecker",
     "ClozapineAncChecker",

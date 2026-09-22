@@ -4010,3 +4010,21 @@ class Cha2ds2VascStrokeRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class ChildPughLiverSeverity(BaseModel, frozen=True):
+    """Child-Pugh liver-severity score finding.
+
+    RESEARCH USE ONLY — advisory Child-Pugh total and class A/B/C.
+    Distinct from HasBledBleedRiskScorer / Cha2ds2VascStrokeRiskScorer.
+    Never modifies medications.
+    """
+
+    score: int = Field(description="Child-Pugh total score")
+    child_class: str = Field(description="Child-Pugh class: A / B / C")
+    band: str = Field(description="Severity band: mild / moderate / severe")
+    domain_points: dict[str, int] = Field(
+        default_factory=dict, description="Per-domain points (1-3 each)"
+    )
+    severity: Severity
+    rationale: str
