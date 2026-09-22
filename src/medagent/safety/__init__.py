@@ -20,6 +20,7 @@ from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
 from medagent.safety.carbamazepine_level_trend_bridge import CarbamazepineLevelTrendBridge
 from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacrolideChecker
+from medagent.safety.cha2ds2_vasc_stroke_risk_scorer import Cha2ds2VascStrokeRiskScorer
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
@@ -183,6 +184,7 @@ __all__ = [
     "Beers2023DeltaChecker",
     "CarbamazepineLevelTrendBridge",
     "CarbamazepineMacrolideChecker",
+    "Cha2ds2VascStrokeRiskScorer",
     "ChemoEmesisChecker",
     "ClinicalGuidelineMatcher",
     "ClopidogrelPpiChecker",

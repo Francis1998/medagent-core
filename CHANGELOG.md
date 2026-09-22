@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `Cha2ds2VascStrokeRiskScorer` (Safety #170): advisory CHA2DS2-VASc stroke-risk totals from clinical factors. RESEARCH USE ONLY. See `docs/guides/CHA2DS2_VASC_STROKE_RISK_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `HasBledBleedRiskScorer` (Safety #169): advisory HAS-BLED bleed-risk totals from clinical factors. RESEARCH USE ONLY. See `docs/guides/HAS_BLED_BLEED_RISK_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `CarbamazepineLevelTrendBridge` (Safety #167): carbamazepine + serial serum carbamazepine level trend bridge. RESEARCH USE ONLY. See `docs/guides/CARBAMAZEPINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `LinezolidPlateletTrendBridge` (Safety #168): linezolid + serial platelet thrombocytopenia-trend bridge. RESEARCH USE ONLY. See `docs/guides/LINEZOLID_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

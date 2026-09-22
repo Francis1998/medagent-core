@@ -3993,3 +3993,20 @@ class HasBledBleedRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class Cha2ds2VascStrokeRisk(BaseModel, frozen=True):
+    """CHA2DS2-VASc stroke-risk score finding.
+
+    RESEARCH USE ONLY — advisory CHA2DS2-VASc total from clinical factors.
+    Distinct from HasBledBleedRiskScorer and anticoagulant DDI checkers.
+    Never modifies medications.
+    """
+
+    score: int = Field(description="CHA2DS2-VASc total score")
+    band: str = Field(description="Risk band: low / moderate / high")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed points"
+    )
+    severity: Severity
+    rationale: str
