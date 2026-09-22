@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `ChildPughLiverSeverityScorer` (Safety #171): advisory Child-Pugh class A/B/C from domain points. RESEARCH USE ONLY. See `docs/guides/CHILD_PUGH_LIVER_SEVERITY_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `Cha2ds2VascStrokeRiskScorer` (Safety #170): advisory CHA2DS2-VASc stroke-risk totals from clinical factors. RESEARCH USE ONLY. See `docs/guides/CHA2DS2_VASC_STROKE_RISK_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `HasBledBleedRiskScorer` (Safety #169): advisory HAS-BLED bleed-risk totals from clinical factors. RESEARCH USE ONLY. See `docs/guides/HAS_BLED_BLEED_RISK_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `CarbamazepineLevelTrendBridge` (Safety #167): carbamazepine + serial serum carbamazepine level trend bridge. RESEARCH USE ONLY. See `docs/guides/CARBAMAZEPINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.

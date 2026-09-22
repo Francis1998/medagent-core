@@ -721,6 +721,18 @@ Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.171 Child-Pugh Liver Severity Scorer
+
+`ChildPughLiverSeverityScorer` computes an advisory Child-Pugh total and class
+(A/B/C) from bilirubin, albumin, INR, ascites, and encephalopathy domain points
+(1-3 each). Every call yields a `ChildPughLiverSeverity` with score, class, band,
+domain points, severity, and RESEARCH USE ONLY rationale. **Distinct from**
+`HasBledBleedRiskScorer` / `Cha2ds2VascStrokeRiskScorer`. Never auto-modifies
+medications. See `docs/guides/CHILD_PUGH_LIVER_SEVERITY_SCORER_GUIDE.md`. Prefer
+frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
