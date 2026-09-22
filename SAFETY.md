@@ -709,6 +709,18 @@ Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.170 CHA2DS2-VASc Stroke Risk Scorer
+
+`Cha2ds2VascStrokeRiskScorer` computes an advisory CHA2DS2-VASc total from CHF,
+hypertension, age, diabetes, prior stroke/TIA, vascular disease, and sex category
+factors. Every call yields a `Cha2ds2VascStrokeRisk` with score, band
+(`low`/`moderate`/`high`), positive factors, severity, and RESEARCH USE ONLY
+rationale. **Distinct from** `HasBledBleedRiskScorer` and anticoagulant DDI checkers.
+Never auto-modifies medications. See `docs/guides/CHA2DS2_VASC_STROKE_RISK_SCORER_GUIDE.md`.
+Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
