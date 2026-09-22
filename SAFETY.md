@@ -697,6 +697,18 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.169 HAS-BLED Bleed Risk Scorer
+
+`HasBledBleedRiskScorer` computes an advisory HAS-BLED total from hypertension,
+abnormal renal/liver, stroke, bleeding history, labile INR, elderly, drugs, and
+alcohol factors. Every call yields a `HasBledBleedRisk` with score, band
+(`low`/`moderate`/`high`), positive factors, severity, and RESEARCH USE ONLY
+rationale. **Distinct from** `AnticoagBleedingChecker` / `AnticoagBleedStackPanel`.
+Never auto-modifies medications. See `docs/guides/HAS_BLED_BLEED_RISK_SCORER_GUIDE.md`.
+Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
+**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

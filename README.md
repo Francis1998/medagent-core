@@ -32,6 +32,7 @@
 **QTc DDI panel — azithromycin + amiodarone and methadone + ondansetron:**
 
 ![medagent QTc DDI demo](assets/qtc_ddi_demo.gif)
+![HasBledBleedRiskScorer](assets/has_bled_bleed_risk_demo.gif)
 
 **Taper-schedule advisory — chronic opioid, Z-drug, SSRI/SNRI, and PPI review flags:**
 
