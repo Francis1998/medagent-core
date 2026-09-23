@@ -753,6 +753,15 @@ auto-modifies medications. See `docs/guides/CURB65_PNEUMONIA_SCORER_GUIDE.md`. P
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.174 HeartScoreAcs Scorer
+
+`HeartScoreAcsScorer` computes an advisory score (MDCalc / ESC / EHR HEART score calculator gap). Every call
+yields a `HeartScoreAcsRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `Cha2ds2VascStrokeRiskScorer / HasBledBleedRiskScorer`. Never
+auto-modifies medications. See `docs/guides/HEART_SCORE_ACS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
