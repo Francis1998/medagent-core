@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `WellsPeProbabilityScorer` (`safety/wells_pe_probability_scorer.py`): research-only MDCalc / UpToDate / EHR Wells PE calculator scorer (Safety #172; distinct from HasBledBleedRiskScorer / Cha2ds2VascStrokeRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WELLS_PE_PROBABILITY_SCORER_GUIDE.md`.
 - `ChildPughLiverSeverityScorer` (Safety #171): advisory Child-Pugh class A/B/C from domain points. RESEARCH USE ONLY. See `docs/guides/CHILD_PUGH_LIVER_SEVERITY_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `Cha2ds2VascStrokeRiskScorer` (Safety #170): advisory CHA2DS2-VASc stroke-risk totals from clinical factors. RESEARCH USE ONLY. See `docs/guides/CHA2DS2_VASC_STROKE_RISK_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 - `HasBledBleedRiskScorer` (Safety #169): advisory HAS-BLED bleed-risk totals from clinical factors. RESEARCH USE ONLY. See `docs/guides/HAS_BLED_BLEED_RISK_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
