@@ -744,6 +744,15 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 
+### 3.173 Curb65Pneumonia Scorer
+
+`Curb65PneumoniaScorer` computes an advisory score (MDCalc / BTS / EHR CURB-65 calculator gap). Every call
+yields a `Curb65PneumoniaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `ChildPughLiverSeverityScorer / VitalsTriageChecker`. Never
+auto-modifies medications. See `docs/guides/CURB65_PNEUMONIA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
