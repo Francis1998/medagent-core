@@ -160,6 +160,7 @@ from medagent.safety.warfarin_inr_trend_bridge import WarfarinInrTrendBridge
 from medagent.safety.warfarin_metronidazole_checker import WarfarinMetronidazoleChecker
 from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
 from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
+from medagent.safety.wells_pe_probability_scorer import WellsPeProbabilityScorer
 
 __all__ = [
     "ESCALATION_MESSAGE",
@@ -312,6 +313,7 @@ __all__ = [
     "WarfarinMetronidazoleChecker",
     "WarfarinNsaidChecker",
     "WarfarinTmpsmxChecker",
+    "WellsPeProbabilityScorer",
     "hash_pii",
     "hash_pii_dict",
     "redact_fhir_pii",

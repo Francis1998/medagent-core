@@ -4028,3 +4028,19 @@ class ChildPughLiverSeverity(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class WellsPeProbability(BaseModel, frozen=True):
+    """WellsPeProbabilityScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    HasBledBleedRiskScorer / Cha2ds2VascStrokeRiskScorer. Never modifies medications.
+    """
+
+    score: float = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str

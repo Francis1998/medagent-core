@@ -733,6 +733,17 @@ frontier reasoning models when summarizing findings: **GPT-5.5**,
 **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
 
+
+### 3.172 WellsPeProbability Scorer
+
+`WellsPeProbabilityScorer` computes an advisory score (MDCalc / UpToDate / EHR Wells PE calculator gap). Every call
+yields a `WellsPeProbability` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `HasBledBleedRiskScorer / Cha2ds2VascStrokeRiskScorer`. Never
+auto-modifies medications. See `docs/guides/WELLS_PE_PROBABILITY_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
