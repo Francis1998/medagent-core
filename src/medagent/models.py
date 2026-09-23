@@ -4060,3 +4060,19 @@ class Curb65PneumoniaRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class HeartScoreAcsRisk(BaseModel, frozen=True):
+    """HeartScoreAcsScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    Cha2ds2VascStrokeRiskScorer / HasBledBleedRiskScorer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str

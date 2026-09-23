@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `HeartScoreAcsScorer` (`safety/heart_score_acs_scorer.py`): research-only MDCalc / ESC / EHR HEART score calculator scorer (Safety #174; distinct from Cha2ds2VascStrokeRiskScorer / HasBledBleedRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HEART_SCORE_ACS_SCORER_GUIDE.md`.
 - `Curb65PneumoniaScorer` (`safety/curb65_pneumonia_scorer.py`): research-only MDCalc / BTS / EHR CURB-65 calculator scorer (Safety #173; distinct from ChildPughLiverSeverityScorer / VitalsTriageChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CURB65_PNEUMONIA_SCORER_GUIDE.md`.
 - `WellsPeProbabilityScorer` (`safety/wells_pe_probability_scorer.py`): research-only MDCalc / UpToDate / EHR Wells PE calculator scorer (Safety #172; distinct from HasBledBleedRiskScorer / Cha2ds2VascStrokeRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WELLS_PE_PROBABILITY_SCORER_GUIDE.md`.
 - `ChildPughLiverSeverityScorer` (Safety #171): advisory Child-Pugh class A/B/C from domain points. RESEARCH USE ONLY. See `docs/guides/CHILD_PUGH_LIVER_SEVERITY_SCORER_GUIDE.md`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
