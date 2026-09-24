@@ -780,6 +780,15 @@ auto-modifies medications. See `docs/guides/GCS_NEUROLOGIC_STATUS_SCORER_GUIDE.m
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.177 CentorStrepPharyngitis Scorer
+
+`CentorStrepPharyngitisScorer` computes an advisory score (MDCalc / IDSA / EHR Centor strep calculator gap). Every call
+yields a `CentorStrepPharyngitisRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `Curb65PneumoniaScorer / AntibioticStewardshipChecker`. Never
+auto-modifies medications. See `docs/guides/CENTOR_STREP_PHARYNGITIS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
