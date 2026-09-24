@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `GcsNeurologicStatusScorer` (`safety/gcs_neurologic_status_scorer.py`): research-only MDCalc / ATLS / EHR Glasgow Coma Scale calculator scorer (Safety #176; distinct from HeartScoreAcsScorer / VitalsTriageChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GCS_NEUROLOGIC_STATUS_SCORER_GUIDE.md`.
 - `SofaOrganFailureScorer` (`safety/sofa_organ_failure_scorer.py`): research-only MDCalc / SCCM / EHR SOFA calculator scorer (Safety #175; distinct from WellsPeProbabilityScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SOFA_ORGAN_FAILURE_SCORER_GUIDE.md`.
 - `HeartScoreAcsScorer` (`safety/heart_score_acs_scorer.py`): research-only MDCalc / ESC / EHR HEART score calculator scorer (Safety #174; distinct from Cha2ds2VascStrokeRiskScorer / HasBledBleedRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HEART_SCORE_ACS_SCORER_GUIDE.md`.
 - `Curb65PneumoniaScorer` (`safety/curb65_pneumonia_scorer.py`): research-only MDCalc / BTS / EHR CURB-65 calculator scorer (Safety #173; distinct from ChildPughLiverSeverityScorer / VitalsTriageChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CURB65_PNEUMONIA_SCORER_GUIDE.md`.

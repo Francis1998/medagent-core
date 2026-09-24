@@ -771,6 +771,15 @@ auto-modifies medications. See `docs/guides/SOFA_ORGAN_FAILURE_SCORER_GUIDE.md`.
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.176 GcsNeurologicStatus Scorer
+
+`GcsNeurologicStatusScorer` computes an advisory score (MDCalc / ATLS / EHR Glasgow Coma Scale calculator gap). Every call
+yields a `GcsNeurologicStatusRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `HeartScoreAcsScorer / VitalsTriageChecker`. Never
+auto-modifies medications. See `docs/guides/GCS_NEUROLOGIC_STATUS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
