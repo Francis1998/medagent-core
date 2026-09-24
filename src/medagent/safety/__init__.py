@@ -134,6 +134,7 @@ from medagent.safety.sglt2_raasi_checker import Sglt2RaasiChecker
 from medagent.safety.sildenafil_nitrate_checker import SildenafilNitrateChecker
 from medagent.safety.simvastatin_amiodarone_checker import SimvastatinAmiodaroneChecker
 from medagent.safety.sirolimus_strong_cyp3a4_checker import SirolimusStrongCyp3a4Checker
+from medagent.safety.sofa_organ_failure_scorer import SofaOrganFailureScorer
 from medagent.safety.sofosbuvir_amiodarone_checker import SofosbuvirAmiodaroneChecker
 from medagent.safety.sotalol_qt_checker import SotalolQtChecker
 from medagent.safety.spironolactone_potassium_checker import SpironolactonePotassiumChecker
@@ -289,6 +290,7 @@ __all__ = [
     "SildenafilNitrateChecker",
     "SimvastatinAmiodaroneChecker",
     "SirolimusStrongCyp3a4Checker",
+    "SofaOrganFailureScorer",
     "SofosbuvirAmiodaroneChecker",
     "SotalolQtChecker",
     "SpironolactonePotassiumChecker",
