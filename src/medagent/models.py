@@ -4140,3 +4140,19 @@ class QSofaSepsisScreenRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class News2EarlyWarningRisk(BaseModel, frozen=True):
+    """News2EarlyWarningScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    VitalsTriageChecker / QSofaSepsisScreenScorer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str
