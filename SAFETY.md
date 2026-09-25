@@ -799,6 +799,16 @@ auto-modifies medications. See `docs/guides/QSOFA_SEPSIS_SCREEN_SCORER_GUIDE.md`
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.179 News2EarlyWarning Scorer
+
+`News2EarlyWarningScorer` computes an advisory score (MDCalc / RCP / EHR NEWS2 early-warning gap). Every call
+yields a `News2EarlyWarningRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `VitalsTriageChecker / QSofaSepsisScreenScorer`. Never
+auto-modifies medications. See `docs/guides/NEWS2_EARLY_WARNING_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

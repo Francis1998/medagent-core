@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `News2EarlyWarningScorer` (`safety/news2_early_warning_scorer.py`): research-only MDCalc / RCP / EHR NEWS2 early-warning scorer (Safety #179; distinct from VitalsTriageChecker / QSofaSepsisScreenScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEWS2_EARLY_WARNING_SCORER_GUIDE.md`.
 - `QSofaSepsisScreenScorer` (`safety/qsofa_sepsis_screen_scorer.py`): research-only MDCalc / SCCM / EHR qSOFA sepsis screen scorer (Safety #178; distinct from SofaOrganFailureScorer / VitalsTriageChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/QSOFA_SEPSIS_SCREEN_SCORER_GUIDE.md`.
 - `CentorStrepPharyngitisScorer` (`safety/centor_strep_pharyngitis_scorer.py`): research-only MDCalc / IDSA / EHR Centor strep calculator scorer (Safety #177; distinct from Curb65PneumoniaScorer / AntibioticStewardshipChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CENTOR_STREP_PHARYNGITIS_SCORER_GUIDE.md`.
 - `GcsNeurologicStatusScorer` (`safety/gcs_neurologic_status_scorer.py`): research-only MDCalc / ATLS / EHR Glasgow Coma Scale calculator scorer (Safety #176; distinct from HeartScoreAcsScorer / VitalsTriageChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GCS_NEUROLOGIC_STATUS_SCORER_GUIDE.md`.
