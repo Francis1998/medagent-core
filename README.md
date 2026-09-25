@@ -34,6 +34,7 @@
 ![medagent QTc DDI demo](assets/qtc_ddi_demo.gif)
 ![HasBledBleedRiskScorer](assets/has_bled_bleed_risk_demo.gif)
 ![Cha2ds2VascStrokeRiskScorer](assets/cha2ds2_vasc_stroke_risk_demo.gif)
+![CapriniVteRiskScorer](assets/caprini_vte_risk_demo.gif)
 ![News2EarlyWarningScorer](assets/news2_early_warning_demo.gif)
 ![QSofaSepsisScreenScorer](assets/qsofa_sepsis_screen_demo.gif)
 ![CentorStrepPharyngitisScorer](assets/centor_strep_pharyngitis_demo.gif)
