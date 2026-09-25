@@ -119,6 +119,7 @@ from medagent.safety.polypharmacy_deprescribe_suggester import PolypharmacyDepre
 from medagent.safety.ppi_mtx_checker import PpiMtxChecker
 from medagent.safety.pregnancy_lactation_checker import PregnancyLactationChecker
 from medagent.safety.pregnancy_lactation_risk_panel import PregnancyLactationRiskPanel
+from medagent.safety.qsofa_sepsis_screen_scorer import QSofaSepsisScreenScorer
 from medagent.safety.qt_prolongation_panel import QtProlongationPanel
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_electrolyte_bridge import QTcElectrolyteBridge
@@ -276,6 +277,7 @@ __all__ = [
     "PpiMtxChecker",
     "PregnancyLactationChecker",
     "PregnancyLactationRiskPanel",
+    "QSofaSepsisScreenScorer",
     "QTcElectrolyteBridge",
     "QtProlongationPanel",
     "QtcDdiChecker",
