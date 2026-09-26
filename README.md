@@ -36,6 +36,7 @@
 ![Cha2ds2VascStrokeRiskScorer](assets/cha2ds2_vasc_stroke_risk_demo.gif)
 ![CapriniVteRiskScorer](assets/caprini_vte_risk_demo.gif)
 ![OttawaAnkleRuleScorer](assets/ottawa_ankle_rule_demo.gif)
+![PsiPortPneumoniaScorer](assets/psi_port_pneumonia_demo.gif)
 ![News2EarlyWarningScorer](assets/news2_early_warning_demo.gif)
 ![QSofaSepsisScreenScorer](assets/qsofa_sepsis_screen_demo.gif)
 ![CentorStrepPharyngitisScorer](assets/centor_strep_pharyngitis_demo.gif)

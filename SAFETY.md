@@ -830,6 +830,17 @@ auto-modifies medications. See `docs/guides/OTTAWA_ANKLE_RULE_SCORER_GUIDE.md`. 
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+
+### 3.182 PsiPortPneumonia Scorer
+
+`PsiPortPneumoniaScorer` computes an advisory score (MDCalc / ATS / EHR PSI/PORT pneumonia severity gap). Every call
+yields a `PsiPortPneumoniaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `Curb65PneumoniaScorer / SofaOrganFailureScorer`. Never
+auto-modifies medications. See `docs/guides/PSI_PORT_PNEUMONIA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
