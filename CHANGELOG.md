@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `PsiPortPneumoniaScorer` (`safety/psi_port_pneumonia_scorer.py`): research-only MDCalc / ATS / EHR PSI/PORT pneumonia severity scorer (Safety #182; distinct from Curb65PneumoniaScorer / SofaOrganFailureScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PSI_PORT_PNEUMONIA_SCORER_GUIDE.md`.
 - `OttawaAnkleRuleScorer` (`safety/ottawa_ankle_rule_scorer.py`): research-only MDCalc / AAOS / EHR Ottawa Ankle Rule scorer (Safety #181; distinct from WellsPeProbabilityScorer / CapriniVteRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWA_ANKLE_RULE_SCORER_GUIDE.md`.
 - `CapriniVteRiskScorer` (`safety/caprini_vte_risk_scorer.py`): research-only MDCalc / ACCP / EHR Caprini VTE risk scorer (Safety #180; distinct from WellsPeProbabilityScorer / HasBledBleedRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CAPRINI_VTE_RISK_SCORER_GUIDE.md`.
 - `News2EarlyWarningScorer` (`safety/news2_early_warning_scorer.py`): research-only MDCalc / RCP / EHR NEWS2 early-warning scorer (Safety #179; distinct from VitalsTriageChecker / QSofaSepsisScreenScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEWS2_EARLY_WARNING_SCORER_GUIDE.md`.
