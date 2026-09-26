@@ -111,6 +111,7 @@ from medagent.safety.nsaid_acei_aki_panel import NsaidAceiAkiPanel
 from medagent.safety.nsaid_ssri_checker import NsaidSsriBleedChecker
 from medagent.safety.opioid_benzo_checker import OpioidBenzoChecker
 from medagent.safety.opioid_sedation_stack_panel import OpioidSedationStackPanel
+from medagent.safety.ottawa_ankle_rule_scorer import OttawaAnkleRuleScorer
 from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
 from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAdjuster
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
@@ -272,6 +273,7 @@ __all__ = [
     "NsaidSsriBleedChecker",
     "OpioidBenzoChecker",
     "OpioidSedationStackPanel",
+    "OttawaAnkleRuleScorer",
     "PediatricRenalDosingChecker",
     "PediatricWeightDoseAdjuster",
     "PhenytoinFluconazoleChecker",
