@@ -841,6 +841,17 @@ auto-modifies medications. See `docs/guides/PSI_PORT_PNEUMONIA_SCORER_GUIDE.md`.
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+
+### 3.183 PaduaVteRisk Scorer
+
+`PaduaVteRiskScorer` computes an advisory score (MDCalc / ACCP / EHR Padua VTE risk gap). Every call
+yields a `PaduaVteRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `CapriniVteRiskScorer / WellsPeProbabilityScorer`. Never
+auto-modifies medications. See `docs/guides/PADUA_VTE_RISK_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
