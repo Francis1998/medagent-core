@@ -37,6 +37,7 @@
 ![CapriniVteRiskScorer](assets/caprini_vte_risk_demo.gif)
 ![OttawaAnkleRuleScorer](assets/ottawa_ankle_rule_demo.gif)
 ![PsiPortPneumoniaScorer](assets/psi_port_pneumonia_demo.gif)
+![WellsDvtProbabilityScorer](assets/wells_dvt_probability_demo.gif)
 ![AlvaradoAppendicitisScorer](assets/alvarado_appendicitis_demo.gif)
 ![PaduaVteRiskScorer](assets/padua_vte_risk_demo.gif)
 ![News2EarlyWarningScorer](assets/news2_early_warning_demo.gif)
