@@ -852,6 +852,15 @@ auto-modifies medications. See `docs/guides/PADUA_VTE_RISK_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.184 AlvaradoAppendicitis Scorer
+
+`AlvaradoAppendicitisScorer` computes an advisory score (MDCalc / AAOS / EHR Alvarado appendicitis gap). Every call
+yields a `AlvaradoAppendicitisRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `OttawaAnkleRuleScorer / CentorStrepPharyngitisScorer`. Never
+auto-modifies medications. See `docs/guides/ALVARADO_APPENDICITIS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

@@ -8,6 +8,7 @@ from medagent.safety.acei_sacubitril_checker import AceiSacubitrilChecker
 from medagent.safety.acei_trimethoprim_checker import AceiTrimethoprimChecker
 from medagent.safety.allergy_interclass_checker import AllergyInterClassCrossReactivityChecker
 from medagent.safety.allopurinol_azathioprine_checker import AllopurinolAzathioprineChecker
+from medagent.safety.alvarado_appendicitis_scorer import AlvaradoAppendicitisScorer
 from medagent.safety.amio_warfarin_checker import AmioWarfarinChecker
 from medagent.safety.amiodarone_digoxin_checker import AmiodaroneDigoxinChecker
 from medagent.safety.amiodarone_thyroid_bridge import AmiodaroneThyroidBridge
@@ -185,6 +186,7 @@ __all__ = [
     "AceiTrimethoprimChecker",
     "AllergyInterClassCrossReactivityChecker",
     "AllopurinolAzathioprineChecker",
+    "AlvaradoAppendicitisScorer",
     "AmioWarfarinChecker",
     "AmiodaroneDigoxinChecker",
     "AmiodaroneThyroidBridge",
