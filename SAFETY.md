@@ -870,6 +870,15 @@ auto-modifies medications. See `docs/guides/WELLS_DVT_PROBABILITY_SCORER_GUIDE.m
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.186 PercPeExclusion Scorer
+
+`PercPeExclusionScorer` computes an advisory score (MDCalc / ACEP / EHR PERC PE rule-out gap). Every call
+yields a `PercPeExclusionRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / PaduaVteRiskScorer`. Never
+auto-modifies medications. See `docs/guides/PERC_PE_EXCLUSION_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
