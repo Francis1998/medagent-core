@@ -38,6 +38,7 @@
 ![OttawaAnkleRuleScorer](assets/ottawa_ankle_rule_demo.gif)
 ![PsiPortPneumoniaScorer](assets/psi_port_pneumonia_demo.gif)
 ![PercPeExclusionScorer](assets/perc_pe_exclusion_demo.gif)
+![NihssStrokeScorer](assets/nihss_stroke_demo.gif)
 ![WellsDvtProbabilityScorer](assets/wells_dvt_probability_demo.gif)
 ![AlvaradoAppendicitisScorer](assets/alvarado_appendicitis_demo.gif)
 ![PaduaVteRiskScorer](assets/padua_vte_risk_demo.gif)

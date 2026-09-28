@@ -108,6 +108,7 @@ from medagent.safety.mtx_nsaid_checker import MtxNsaidChecker
 from medagent.safety.mtx_penicillin_checker import MtxPenicillinChecker
 from medagent.safety.mtx_tmpsmx_checker import MtxTmpsmxChecker
 from medagent.safety.news2_early_warning_scorer import News2EarlyWarningScorer
+from medagent.safety.nihss_stroke_scorer import NihssStrokeScorer
 from medagent.safety.nsaid_acei_aki_panel import NsaidAceiAkiPanel
 from medagent.safety.nsaid_ssri_checker import NsaidSsriBleedChecker
 from medagent.safety.opioid_benzo_checker import OpioidBenzoChecker
@@ -275,6 +276,7 @@ __all__ = [
     "MtxPenicillinChecker",
     "MtxTmpsmxChecker",
     "News2EarlyWarningScorer",
+    "NihssStrokeScorer",
     "NsaidAceiAkiPanel",
     "NsaidSsriBleedChecker",
     "OpioidBenzoChecker",
