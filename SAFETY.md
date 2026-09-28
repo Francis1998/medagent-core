@@ -897,6 +897,15 @@ auto-modifies medications. See `docs/guides/TIMI_UA_NSTEMI_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.189 CanadianCspineRule Scorer
+
+`CanadianCspineRuleScorer` computes an advisory score (MDCalc / CAEP / EHR Canadian C-spine rule gap). Every call
+yields a `CanadianCspineRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `OttawaAnkleRuleScorer / FallRiskChecker`. Never
+auto-modifies medications. See `docs/guides/CANADIAN_CSPINE_RULE_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
