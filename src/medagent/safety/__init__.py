@@ -161,6 +161,7 @@ from medagent.safety.tacrolimus_rifampin_checker import TacrolimusRifampinChecke
 from medagent.safety.tamoxifen_cyp2d6_checker import TamoxifenCyp2d6Checker
 from medagent.safety.taper_schedule_checker import TaperScheduleChecker
 from medagent.safety.theophylline_cipro_checker import TheophyllineCiproChecker
+from medagent.safety.timi_ua_nstemi_scorer import TimiUaNstemiScorer
 from medagent.safety.tizanidine_cipro_checker import TizanidineCiproChecker
 from medagent.safety.tramadol_bupropion_checker import TramadolBupropionChecker
 from medagent.safety.tramadol_ssri_checker import TramadolSsriChecker
@@ -329,6 +330,7 @@ __all__ = [
     "TamoxifenCyp2d6Checker",
     "TaperScheduleChecker",
     "TheophyllineCiproChecker",
+    "TimiUaNstemiScorer",
     "TizanidineCiproChecker",
     "TramadolBupropionChecker",
     "TramadolSsriChecker",
