@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `NihssStrokeScorer` (`safety/nihss_stroke_scorer.py`): research-only MDCalc / AHA / EHR NIHSS stroke severity scorer (Safety #187; distinct from Cha2ds2VascStrokeRiskScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NIHSS_STROKE_SCORER_GUIDE.md`.
 - `PercPeExclusionScorer` (`safety/perc_pe_exclusion_scorer.py`): research-only MDCalc / ACEP / EHR PERC PE exclusion scorer (Safety #186; distinct from WellsPeProbabilityScorer / PaduaVteRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PERC_PE_EXCLUSION_SCORER_GUIDE.md`.
 - `WellsDvtProbabilityScorer` (`safety/wells_dvt_probability_scorer.py`): research-only MDCalc / ACCP / EHR Wells DVT probability scorer (Safety #185; distinct from WellsPeProbabilityScorer / CapriniVteRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WELLS_DVT_PROBABILITY_SCORER_GUIDE.md`.
 - `AlvaradoAppendicitisScorer` (`safety/alvarado_appendicitis_scorer.py`): research-only MDCalc / AAOS / EHR Alvarado appendicitis scorer (Safety #184; distinct from OttawaAnkleRuleScorer / CentorStrepPharyngitisScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ALVARADO_APPENDICITIS_SCORER_GUIDE.md`.
