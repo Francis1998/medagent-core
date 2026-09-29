@@ -915,6 +915,15 @@ auto-modifies medications. See `docs/guides/SAN_FRANCISCO_SYNCOPE_RULE_SCORER_GU
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.191 Abcd2TiaRisk Scorer
+
+`Abcd2TiaRiskScorer` computes an advisory score (MDCalc / AHA / EHR ABCD2 TIA risk gap). Every call
+yields a `Abcd2TiaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `NihssStrokeScorer / Cha2ds2VascStrokeRiskScorer`. Never
+auto-modifies medications. See `docs/guides/ABCD2_TIA_RISK_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

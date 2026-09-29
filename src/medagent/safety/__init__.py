@@ -1,5 +1,6 @@
 """Safety module — disclaimer injector, PII hasher, scope enforcer."""
 
+from medagent.safety.abcd2_tia_risk_scorer import Abcd2TiaRiskScorer
 from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationChecker
 from medagent.safety.acei_creatinine_rise_bridge import AceiCreatinineRiseBridge
 from medagent.safety.acei_ksparing_checker import AceiKsparingChecker
@@ -184,6 +185,7 @@ __all__ = [
     "ESCALATION_MESSAGE",
     "MANDATORY_DISCLAIMER",
     "MEDICAL_SYSTEM_PROMPT",
+    "Abcd2TiaRiskScorer",
     "AceiArbDuplicationChecker",
     "AceiCreatinineRiseBridge",
     "AceiKsparingChecker",
