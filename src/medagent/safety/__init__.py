@@ -138,6 +138,7 @@ from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
 from medagent.safety.rifampin_oc_checker import RifampinOcChecker
 from medagent.safety.rivaroxaban_rifampin_checker import RivaroxabanRifampinChecker
+from medagent.safety.san_francisco_syncope_rule_scorer import SanFranciscoSyncopeRuleScorer
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.serotonin_syndrome_panel import SerotoninSyndromePanel
 from medagent.safety.sglt2_euglycemic_dka_bridge import Sglt2EuglycemicDkaBridge
@@ -307,6 +308,7 @@ __all__ = [
     "RenalHepaticLactationChecker",
     "RifampinOcChecker",
     "RivaroxabanRifampinChecker",
+    "SanFranciscoSyncopeRuleScorer",
     "ScopeEnforcer",
     "ScopeViolationError",
     "SerotoninSyndromePanel",

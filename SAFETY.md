@@ -906,6 +906,15 @@ auto-modifies medications. See `docs/guides/CANADIAN_CSPINE_RULE_SCORER_GUIDE.md
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.190 SanFranciscoSyncopeRule Scorer
+
+`SanFranciscoSyncopeRuleScorer` computes an advisory score (MDCalc / ACEP / EHR San Francisco Syncope Rule gap). Every call
+yields a `SanFranciscoSyncopeRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `NihssStrokeScorer / FallRiskChecker`. Never
+auto-modifies medications. See `docs/guides/SAN_FRANCISCO_SYNCOPE_RULE_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
