@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `SanFranciscoSyncopeRuleScorer` (`safety/san_francisco_syncope_rule_scorer.py`): research-only MDCalc / ACEP / EHR San Francisco Syncope Rule scorer (Safety #190; distinct from NihssStrokeScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SAN_FRANCISCO_SYNCOPE_RULE_SCORER_GUIDE.md`.
 - `CanadianCspineRuleScorer` (`safety/canadian_cspine_rule_scorer.py`): research-only MDCalc / CAEP / EHR Canadian C-spine rule scorer (Safety #189; distinct from OttawaAnkleRuleScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIAN_CSPINE_RULE_SCORER_GUIDE.md`.
 - `TimiUaNstemiScorer` (`safety/timi_ua_nstemi_scorer.py`): research-only MDCalc / ACC / EHR TIMI UA/NSTEMI scorer (Safety #188; distinct from PercPeExclusionScorer / WellsDvtProbabilityScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/TIMI_UA_NSTEMI_SCORER_GUIDE.md`.
 - `NihssStrokeScorer` (`safety/nihss_stroke_scorer.py`): research-only MDCalc / AHA / EHR NIHSS stroke severity scorer (Safety #187; distinct from Cha2ds2VascStrokeRiskScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NIHSS_STROKE_SCORER_GUIDE.md`.

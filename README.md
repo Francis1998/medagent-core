@@ -38,6 +38,7 @@
 ![OttawaAnkleRuleScorer](assets/ottawa_ankle_rule_demo.gif)
 ![PsiPortPneumoniaScorer](assets/psi_port_pneumonia_demo.gif)
 ![PercPeExclusionScorer](assets/perc_pe_exclusion_demo.gif)
+![SanFranciscoSyncopeRuleScorer](assets/san_francisco_syncope_rule_demo.gif)
 ![CanadianCspineRuleScorer](assets/canadian_cspine_rule_demo.gif)
 ![TimiUaNstemiScorer](assets/timi_ua_nstemi_demo.gif)
 ![NihssStrokeScorer](assets/nihss_stroke_demo.gif)
