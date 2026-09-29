@@ -40,6 +40,7 @@
 ![PercPeExclusionScorer](assets/perc_pe_exclusion_demo.gif)
 ![SanFranciscoSyncopeRuleScorer](assets/san_francisco_syncope_rule_demo.gif)
 ![Abcd2TiaRiskScorer](assets/abcd2_tia_risk_demo.gif)
+![RevisedGenevaPeScorer](assets/revised_geneva_pe_demo.gif)
 ![CanadianCspineRuleScorer](assets/canadian_cspine_rule_demo.gif)
 ![TimiUaNstemiScorer](assets/timi_ua_nstemi_demo.gif)
 ![NihssStrokeScorer](assets/nihss_stroke_demo.gif)

@@ -924,6 +924,15 @@ auto-modifies medications. See `docs/guides/ABCD2_TIA_RISK_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.192 RevisedGenevaPe Scorer
+
+`RevisedGenevaPeScorer` computes an advisory score (MDCalc / ESC / EHR Revised Geneva PE gap). Every call
+yields a `RevisedGenevaPeRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / PercPeExclusionScorer`. Never
+auto-modifies medications. See `docs/guides/REVISED_GENEVA_PE_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

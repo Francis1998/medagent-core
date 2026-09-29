@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `RevisedGenevaPeScorer` (`safety/revised_geneva_pe_scorer.py`): research-only MDCalc / ESC / EHR Revised Geneva PE scorer (Safety #192; distinct from WellsPeProbabilityScorer / PercPeExclusionScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/REVISED_GENEVA_PE_SCORER_GUIDE.md`.
 - `Abcd2TiaRiskScorer` (`safety/abcd2_tia_risk_scorer.py`): research-only MDCalc / AHA / EHR ABCD2 TIA risk scorer (Safety #191; distinct from NihssStrokeScorer / Cha2ds2VascStrokeRiskScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ABCD2_TIA_RISK_SCORER_GUIDE.md`.
 - `SanFranciscoSyncopeRuleScorer` (`safety/san_francisco_syncope_rule_scorer.py`): research-only MDCalc / ACEP / EHR San Francisco Syncope Rule scorer (Safety #190; distinct from NihssStrokeScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SAN_FRANCISCO_SYNCOPE_RULE_SCORER_GUIDE.md`.
 - `CanadianCspineRuleScorer` (`safety/canadian_cspine_rule_scorer.py`): research-only MDCalc / CAEP / EHR Canadian C-spine rule scorer (Safety #189; distinct from OttawaAnkleRuleScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIAN_CSPINE_RULE_SCORER_GUIDE.md`.

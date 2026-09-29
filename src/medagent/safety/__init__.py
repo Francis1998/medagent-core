@@ -137,6 +137,7 @@ from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
 from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
+from medagent.safety.revised_geneva_pe_scorer import RevisedGenevaPeScorer
 from medagent.safety.rifampin_oc_checker import RifampinOcChecker
 from medagent.safety.rivaroxaban_rifampin_checker import RivaroxabanRifampinChecker
 from medagent.safety.san_francisco_syncope_rule_scorer import SanFranciscoSyncopeRuleScorer
@@ -308,6 +309,7 @@ __all__ = [
     "QuetiapineCyp3a4Checker",
     "RenalDoseAdjuster",
     "RenalHepaticLactationChecker",
+    "RevisedGenevaPeScorer",
     "RifampinOcChecker",
     "RivaroxabanRifampinChecker",
     "SanFranciscoSyncopeRuleScorer",
