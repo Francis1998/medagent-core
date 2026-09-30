@@ -951,6 +951,15 @@ auto-modifies medications. See `docs/guides/MELD_NA_SCORER_GUIDE.md`. Prefer fro
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.195 LrinecNecfasc Scorer
+
+`LrinecNecfascScorer` computes an advisory score (MDCalc / IDSA / EHR LRINEC necrotizing fasciitis score gap). Every call
+yields a `LrinecNecfascRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `CentorStrepPharyngitisScorer / SofaOrganFailureScorer`. Never
+auto-modifies medications. See `docs/guides/LRINEC_NECFASC_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
