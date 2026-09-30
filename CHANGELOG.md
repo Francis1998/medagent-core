@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `LrinecNecfascScorer` (`safety/lrinec_necfasc_scorer.py`): research-only MDCalc / IDSA / EHR LRINEC necrotizing fasciitis score scorer (Safety #195; distinct from CentorStrepPharyngitisScorer / SofaOrganFailureScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/LRINEC_NECFASC_SCORER_GUIDE.md`.
 - `MeldNaScorer` (`safety/meld_na_scorer.py`): research-only MDCalc / AASLD / EHR MELD-Na score scorer (Safety #194; distinct from ChildPughLiverSeverityScorer / SofaOrganFailureScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MELD_NA_SCORER_GUIDE.md`.
 - `RansonPancreatitisScorer` (`safety/ranson_pancreatitis_scorer.py`): research-only MDCalc / ACG / EHR Ranson pancreatitis criteria scorer (Safety #193; distinct from AlvaradoAppendicitisScorer / SofaOrganFailureScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RANSON_PANCREATITIS_SCORER_GUIDE.md`.
 - `RevisedGenevaPeScorer` (`safety/revised_geneva_pe_scorer.py`): research-only MDCalc / ESC / EHR Revised Geneva PE scorer (Safety #192; distinct from WellsPeProbabilityScorer / PercPeExclusionScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/REVISED_GENEVA_PE_SCORER_GUIDE.md`.
