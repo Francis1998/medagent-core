@@ -135,6 +135,7 @@ from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_electrolyte_bridge import QTcElectrolyteBridge
 from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
+from medagent.safety.ranson_pancreatitis_scorer import RansonPancreatitisScorer
 from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
 from medagent.safety.revised_geneva_pe_scorer import RevisedGenevaPeScorer
@@ -307,6 +308,7 @@ __all__ = [
     "QtcDdiChecker",
     "QtcMonitoringChecker",
     "QuetiapineCyp3a4Checker",
+    "RansonPancreatitisScorer",
     "RenalDoseAdjuster",
     "RenalHepaticLactationChecker",
     "RevisedGenevaPeScorer",

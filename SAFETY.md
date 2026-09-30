@@ -933,6 +933,15 @@ auto-modifies medications. See `docs/guides/REVISED_GENEVA_PE_SCORER_GUIDE.md`. 
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.193 RansonPancreatitis Scorer
+
+`RansonPancreatitisScorer` computes an advisory score (MDCalc / ACG / EHR Ranson pancreatitis criteria gap). Every call
+yields a `RansonPancreatitisRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `AlvaradoAppendicitisScorer / SofaOrganFailureScorer`. Never
+auto-modifies medications. See `docs/guides/RANSON_PANCREATITIS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
