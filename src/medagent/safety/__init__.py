@@ -98,6 +98,7 @@ from medagent.safety.lithium_thiazide_checker import LithiumThiazideChecker
 from medagent.safety.lithium_tsh_trend_bridge import LithiumTshTrendBridge
 from medagent.safety.macrolide_digoxin_checker import MacrolideDigoxinChecker
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
+from medagent.safety.meld_na_scorer import MeldNaScorer
 from medagent.safety.metformin_contrast_checker import MetforminContrastChecker
 from medagent.safety.methadone_qt_checker import MethadoneQtChecker
 from medagent.safety.methotrexate_nsaid_checker import MethotrexateNsaidChecker
@@ -272,6 +273,7 @@ __all__ = [
     "LithiumTshTrendBridge",
     "MacrolideDigoxinChecker",
     "MaoiSerotoninCrosscheckChecker",
+    "MeldNaScorer",
     "MetforminContrastChecker",
     "MethadoneQtChecker",
     "MethotrexateNsaidChecker",
