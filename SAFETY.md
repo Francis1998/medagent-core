@@ -942,6 +942,15 @@ auto-modifies medications. See `docs/guides/RANSON_PANCREATITIS_SCORER_GUIDE.md`
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.194 MeldNa Scorer
+
+`MeldNaScorer` computes an advisory score (MDCalc / AASLD / EHR MELD-Na score gap). Every call
+yields a `MeldNaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `ChildPughLiverSeverityScorer / SofaOrganFailureScorer`. Never
+auto-modifies medications. See `docs/guides/MELD_NA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
