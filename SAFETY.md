@@ -960,6 +960,15 @@ auto-modifies medications. See `docs/guides/LRINEC_NECFASC_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.196 PecarnHeadTrauma Scorer
+
+`PecarnHeadTraumaScorer` computes an advisory score (MDCalc / ACEP / EHR PECARN pediatric head trauma score gap). Every call
+yields a `PecarnHeadTraumaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `CanadianCspineRuleScorer / FallRiskChecker`. Never
+auto-modifies medications. See `docs/guides/PECARN_HEAD_TRAUMA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
