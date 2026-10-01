@@ -978,6 +978,15 @@ auto-modifies medications. See `docs/guides/BODE_COPD_SCORER_GUIDE.md`. Prefer f
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.198 KampalaTrauma Scorer
+
+`KampalaTraumaScorer` computes an advisory score. Every call
+yields a `KampalaTraumaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Never
+auto-modifies medications. See `docs/guides/KAMPALA_TRAUMA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

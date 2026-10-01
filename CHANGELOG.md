@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `KampalaTraumaScorer` (`safety/kampala_trauma_scorer.py`): research-only MDCalc / WHO / EHR Kampala Trauma Score scorer (Safety #198; distinct from LrinecNecfascScorer / SofaOrganFailureScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KAMPALA_TRAUMA_SCORER_GUIDE.md`.
 - `BodeCopdScorer` (`safety/bode_copd_scorer.py`): research-only MDCalc / GOLD / EHR BODE COPD index scorer (Safety #197; distinct from SofaOrganFailureScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BODE_COPD_SCORER_GUIDE.md`.
 - `PecarnHeadTraumaScorer` (`safety/pecarn_head_trauma_scorer.py`): research-only MDCalc / ACEP / EHR PECARN pediatric head trauma scorer (Safety #196; distinct from CanadianCspineRuleScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PECARN_HEAD_TRAUMA_SCORER_GUIDE.md`.
 - `LrinecNecfascScorer` (`safety/lrinec_necfasc_scorer.py`): research-only MDCalc / IDSA / EHR LRINEC necrotizing fasciitis score scorer (Safety #195; distinct from CentorStrepPharyngitisScorer / SofaOrganFailureScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/LRINEC_NECFASC_SCORER_GUIDE.md`.
