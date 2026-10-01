@@ -44,6 +44,7 @@
 ![RansonPancreatitisScorer](assets/ranson_pancreatitis_demo.gif)
 ![MeldNaScorer](assets/meld_na_demo.gif)
 ![BodeCopdScorer](assets/bode_copd_demo.gif)
+![KampalaTraumaScorer](assets/kampala_trauma_demo.gif)
 ![PecarnHeadTraumaScorer](assets/pecarn_head_trauma_demo.gif)
 ![LrinecNecfascScorer](assets/lrinec_necfasc_demo.gif)
 ![CanadianCspineRuleScorer](assets/canadian_cspine_rule_demo.gif)
