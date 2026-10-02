@@ -4470,6 +4470,9 @@ class PesiPeSeverityRisk(BaseModel, frozen=True):
 class ApacheIiLiteRisk(BaseModel, frozen=True):
     """ApacheIiLiteScorer finding.
     SofaOrganFailureScorer / QSofaSepsisScreenScorer. Prefer. Never modifies medications.
+class OttawaKneeRuleRisk(BaseModel, frozen=True):
+    """OttawaKneeRuleScorer finding.
+    OttawaAnkleRuleScorer / CanadianCspineRuleScorer. Prefer. Never modifies medications.
     """
 
     score: int = Field(description="Score total")
