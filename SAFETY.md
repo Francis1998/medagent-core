@@ -987,6 +987,15 @@ auto-modifies medications. See `docs/guides/KAMPALA_TRAUMA_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.199 PesiPeSeverity Scorer
+
+`PesiPeSeverityScorer` computes an advisory score (MDCalc / ESC / EHR PESI PE severity score gap). Every call
+yields a `PesiPeSeverityRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / RevisedGenevaPeScorer`. Never
+auto-modifies medications. See `docs/guides/PESI_PE_SEVERITY_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
