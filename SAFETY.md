@@ -993,6 +993,11 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `PesiPeSeverityRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / RevisedGenevaPeScorer`. Never
 auto-modifies medications. See `docs/guides/PESI_PE_SEVERITY_SCORER_GUIDE.md`. Prefer frontier
+### 3.200 ApacheIiLite Scorer
+`ApacheIiLiteScorer` computes an advisory score (MDCalc / SCCM / EHR APACHE II lite score gap). Every call
+yields a `ApacheIiLiteRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `SofaOrganFailureScorer / QSofaSepsisScreenScorer`. Never
+auto-modifies medications. See `docs/guides/APACHE_II_LITE_SCORER_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 

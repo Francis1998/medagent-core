@@ -4467,6 +4467,9 @@ class PesiPeSeverityRisk(BaseModel, frozen=True):
 
     RESEARCH USE ONLY — advisory clinical score. Distinct from
     WellsPeProbabilityScorer / RevisedGenevaPeScorer. Prefer. Never modifies medications.
+class ApacheIiLiteRisk(BaseModel, frozen=True):
+    """ApacheIiLiteScorer finding.
+    SofaOrganFailureScorer / QSofaSepsisScreenScorer. Prefer. Never modifies medications.
     """
 
     score: int = Field(description="Score total")
