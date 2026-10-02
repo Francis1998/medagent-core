@@ -4467,8 +4467,21 @@ class PesiPeSeverityRisk(BaseModel, frozen=True):
 
     RESEARCH USE ONLY — advisory clinical score. Distinct from
     WellsPeProbabilityScorer / RevisedGenevaPeScorer. Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str
+
+
 class ApacheIiLiteRisk(BaseModel, frozen=True):
     """ApacheIiLiteScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
     SofaOrganFailureScorer / QSofaSepsisScreenScorer. Prefer. Never modifies medications.
     """
 
@@ -4495,4 +4508,3 @@ class OttawaKneeRuleRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
-
