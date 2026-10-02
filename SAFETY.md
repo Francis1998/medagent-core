@@ -998,6 +998,11 @@ auto-modifies medications. See `docs/guides/PESI_PE_SEVERITY_SCORER_GUIDE.md`. P
 yields a `ApacheIiLiteRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `SofaOrganFailureScorer / QSofaSepsisScreenScorer`. Never
 auto-modifies medications. See `docs/guides/APACHE_II_LITE_SCORER_GUIDE.md`. Prefer frontier
+### 3.201 OttawaKneeRule Scorer
+`OttawaKneeRuleScorer` computes an advisory score (MDCalc / ACEP / EHR Ottawa Knee Rule score gap). Every call
+yields a `OttawaKneeRuleRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `OttawaAnkleRuleScorer / CanadianCspineRuleScorer`. Never
+auto-modifies medications. See `docs/guides/OTTAWA_KNEE_RULE_SCORER_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
