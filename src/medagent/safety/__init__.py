@@ -150,6 +150,7 @@ from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactatio
 from medagent.safety.revised_geneva_pe_scorer import RevisedGenevaPeScorer
 from medagent.safety.rifampin_oc_checker import RifampinOcChecker
 from medagent.safety.rivaroxaban_rifampin_checker import RivaroxabanRifampinChecker
+from medagent.safety.rockall_gi_bleed_scorer import RockallGiBleedScorer
 from medagent.safety.san_francisco_syncope_rule_scorer import SanFranciscoSyncopeRuleScorer
 from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 from medagent.safety.serotonin_syndrome_panel import SerotoninSyndromePanel
@@ -332,6 +333,7 @@ __all__ = [
     "RevisedGenevaPeScorer",
     "RifampinOcChecker",
     "RivaroxabanRifampinChecker",
+    "RockallGiBleedScorer",
     "SanFranciscoSyncopeRuleScorer",
     "ScopeEnforcer",
     "ScopeViolationError",
