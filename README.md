@@ -46,6 +46,7 @@
 ![BodeCopdScorer](assets/bode_copd_demo.gif)
 ![PesiPeSeverityScorer](assets/pesi_pe_severity_demo.gif)
 ![ApacheIiLiteScorer](assets/apache_ii_lite_demo.gif)
+![GlasgowBlatchfordScorer](assets/glasgow_blatchford_demo.gif)
 ![OttawaKneeRuleScorer](assets/ottawa_knee_rule_demo.gif)
 ![KampalaTraumaScorer](assets/kampala_trauma_demo.gif)
 ![PecarnHeadTraumaScorer](assets/pecarn_head_trauma_demo.gif)
