@@ -1014,6 +1014,14 @@ auto-modifies medications. See `docs/guides/GLASGOW_BLATCHFORD_SCORER_GUIDE.md`.
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.204 CiwaArWithdrawal Scorer
+ computes an advisory score (MDCalc / ASAM / EHR CIWA-Ar alcohol withdrawal score gap). Every call
+yields a  with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** . Never
+auto-modifies medications. See . Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
