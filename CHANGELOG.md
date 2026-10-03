@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `GlasgowBlatchfordScorer` (`safety/glasgow_blatchford_scorer.py`): research-only MDCalc / ACG / EHR Glasgow-Blatchford GI bleed score scorer (Safety #202; distinct from RockallGiBleedScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GLASGOW_BLATCHFORD_SCORER_GUIDE.md`.
 - `PesiPeSeverityScorer` (`safety/pesi_pe_severity_scorer.py`): research-only MDCalc / ESC / EHR PESI PE severity scorer (Safety #199; distinct from WellsPeProbabilityScorer / RevisedGenevaPeScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PESI_PE_SEVERITY_SCORER_GUIDE.md`.
 - `ApacheIiLiteScorer` (`safety/apache_ii_lite_scorer.py`): research-only MDCalc / SCCM / EHR APACHE II lite scorer (Safety #200; distinct from SofaOrganFailureScorer / QSofaSepsisScreenScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/APACHE_II_LITE_SCORER_GUIDE.md`.
 - `OttawaKneeRuleScorer` (`safety/ottawa_knee_rule_scorer.py`): research-only MDCalc / ACEP / EHR Ottawa Knee Rule scorer (Safety #201; distinct from OttawaAnkleRuleScorer / CanadianCspineRuleScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWA_KNEE_RULE_SCORER_GUIDE.md`.

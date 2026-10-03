@@ -1006,6 +1006,14 @@ auto-modifies medications. See `docs/guides/OTTAWA_KNEE_RULE_SCORER_GUIDE.md`. P
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.202 GlasgowBlatchford Scorer
+`GlasgowBlatchfordScorer` computes an advisory score (MDCalc / ACG / EHR Glasgow-Blatchford GI bleed score gap). Every call
+yields a `GlasgowBlatchfordRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `RockallGiBleedScorer / Curb65PneumoniaScorer`. Never
+auto-modifies medications. See `docs/guides/GLASGOW_BLATCHFORD_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
