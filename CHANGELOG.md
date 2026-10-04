@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `HuntHessSahScorer` (`safety/hunt_hess_sah_scorer.py`): research-only MDCalc / AHA / EHR Hunt-Hess SAH grade scorer (Safety #205; distinct from NihssStrokeScorer / GcsNeurologicStatusScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HUNT_HESS_SAH_SCORER_GUIDE.md`.
 - `KillipClassScorer` (`safety/killip_class_scorer.py`): research-only MDCalc / ACC / EHR Killip classification scorer (Safety #206; distinct from TimiUaNstemiScorer / HeartScoreAcsScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KILLIP_CLASS_SCORER_GUIDE.md`.
 - `GlasgowBlatchfordScorer` (`safety/glasgow_blatchford_scorer.py`): research-only MDCalc / ACG / EHR Glasgow-Blatchford GI bleed score scorer (Safety #202; distinct from RockallGiBleedScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GLASGOW_BLATCHFORD_SCORER_GUIDE.md`.
 - `RockallGiBleedScorer` (`safety/rockall_gi_bleed_scorer.py`): research-only MDCalc / BSG / EHR Rockall upper-GI bleed score scorer (Safety #203; distinct from GlasgowBlatchfordScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ROCKALL_GI_BLEED_SCORER_GUIDE.md`.
