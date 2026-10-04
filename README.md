@@ -48,6 +48,7 @@
 ![ApacheIiLiteScorer](assets/apache_ii_lite_demo.gif)
 ![RockallGiBleedScorer](assets/rockall_gi_bleed_demo.gif)
 ![CiwaArWithdrawalScorer](assets/ciwa_ar_withdrawal_demo.gif)
+![KillipClassScorer](assets/killip_class_demo.gif)
 ![GlasgowBlatchfordScorer](assets/glasgow_blatchford_demo.gif)
 ![OttawaKneeRuleScorer](assets/ottawa_knee_rule_demo.gif)
 ![KampalaTraumaScorer](assets/kampala_trauma_demo.gif)

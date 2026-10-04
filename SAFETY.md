@@ -1023,10 +1023,18 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 ### 3.204 CiwaArWithdrawal Scorer
- computes an advisory score (MDCalc / ASAM / EHR CIWA-Ar alcohol withdrawal score gap). Every call
-yields a  with score, band, positive factors, severity, and
-RESEARCH USE ONLY rationale. **Distinct from** . Never
-auto-modifies medications. See . Prefer frontier
+`CiwaArWithdrawalScorer` computes an advisory score (MDCalc / ASAM / EHR CIWA-Ar alcohol withdrawal score gap). Every call
+yields a `CiwaArWithdrawalRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `GcsNeurologicStatusScorer / FallRiskChecker`. Never
+auto-modifies medications. See `docs/guides/CIWA_AR_WITHDRAWAL_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
+### 3.206 KillipClass Scorer
+`KillipClassScorer` computes an advisory score (MDCalc / ACC / EHR Killip classification gap). Every call
+yields a `KillipClassRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `TimiUaNstemiScorer / HeartScoreAcsScorer`. Never
+auto-modifies medications. See `docs/guides/KILLIP_CLASS_SCORER_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 

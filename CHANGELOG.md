@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `KillipClassScorer` (`safety/killip_class_scorer.py`): research-only MDCalc / ACC / EHR Killip classification scorer (Safety #206; distinct from TimiUaNstemiScorer / HeartScoreAcsScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KILLIP_CLASS_SCORER_GUIDE.md`.
 - `GlasgowBlatchfordScorer` (`safety/glasgow_blatchford_scorer.py`): research-only MDCalc / ACG / EHR Glasgow-Blatchford GI bleed score scorer (Safety #202; distinct from RockallGiBleedScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GLASGOW_BLATCHFORD_SCORER_GUIDE.md`.
 - `RockallGiBleedScorer` (`safety/rockall_gi_bleed_scorer.py`): research-only MDCalc / BSG / EHR Rockall upper-GI bleed score scorer (Safety #203; distinct from GlasgowBlatchfordScorer / Curb65PneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ROCKALL_GI_BLEED_SCORER_GUIDE.md`.
 - `CiwaArWithdrawalScorer` (`safety/ciwa_ar_withdrawal_scorer.py`): research-only MDCalc / ASAM / EHR CIWA-Ar alcohol withdrawal score scorer (Safety #204; distinct from GcsNeurologicStatusScorer / FallRiskChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CIWA_AR_WITHDRAWAL_SCORER_GUIDE.md`.
