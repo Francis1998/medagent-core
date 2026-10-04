@@ -82,6 +82,7 @@ from medagent.safety.has_bled_bleed_risk_scorer import HasBledBleedRiskScorer
 from medagent.safety.heart_score_acs_scorer import HeartScoreAcsScorer
 from medagent.safety.heparin_antixa_trend_bridge import HeparinAntiXaTrendBridge
 from medagent.safety.heparin_platelet_trend_bridge import HeparinPlateletTrendBridge
+from medagent.safety.hunt_hess_sah_scorer import HuntHessSahScorer
 from medagent.safety.hypoglycemia_risk_bridge import HypoglycemiaRiskBridge
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
@@ -270,6 +271,7 @@ __all__ = [
     "HeartScoreAcsScorer",
     "HeparinAntiXaTrendBridge",
     "HeparinPlateletTrendBridge",
+    "HuntHessSahScorer",
     "HypoglycemiaRiskBridge",
     "InrTtrChecker",
     "InsulinStackingChecker",
