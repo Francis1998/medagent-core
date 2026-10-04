@@ -4588,3 +4588,19 @@ class HuntHessSahRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class Crb65PneumoniaRisk(BaseModel, frozen=True):
+    """Crb65PneumoniaScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    Curb65PneumoniaScorer / PsiPortPneumoniaScorer. Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str
