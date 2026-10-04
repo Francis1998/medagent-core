@@ -1046,6 +1046,14 @@ auto-modifies medications. See `docs/guides/HUNT_HESS_SAH_SCORER_GUIDE.md`. Pref
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.207 Crb65Pneumonia Scorer
+`Crb65PneumoniaScorer` computes an advisory score (MDCalc / BTS / EHR CRB-65 pneumonia score gap). Every call
+yields a `Crb65PneumoniaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `Curb65PneumoniaScorer / PsiPortPneumoniaScorer`. Never
+auto-modifies medications. See `docs/guides/CRB65_PNEUMONIA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
