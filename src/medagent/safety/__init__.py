@@ -91,6 +91,7 @@ from medagent.safety.isotretinoin_tetracycline_checker import (
 )
 from medagent.safety.ivabradine_cyp3a4_checker import IvabradineCyp3a4Checker
 from medagent.safety.kampala_trauma_scorer import KampalaTraumaScorer
+from medagent.safety.killip_class_scorer import KillipClassScorer
 from medagent.safety.lab_trend_alert_bridge import LabTrendAlertBridge
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.lamotrigine_valproate_checker import LamotrigineValproateChecker
@@ -276,6 +277,7 @@ __all__ = [
     "IsotretinoinTetracyclineChecker",
     "IvabradineCyp3a4Checker",
     "KampalaTraumaScorer",
+    "KillipClassScorer",
     "LabTrendAlertBridge",
     "LactationSafetyChecker",
     "LamotrigineValproateChecker",
