@@ -197,6 +197,7 @@ from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
 from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 from medagent.safety.wells_dvt_probability_scorer import WellsDvtProbabilityScorer
 from medagent.safety.wells_pe_probability_scorer import WellsPeProbabilityScorer
+from medagent.safety.wfns_sah_scorer import WfnsSahScorer
 
 __all__ = [
     "ESCALATION_MESSAGE",
@@ -386,6 +387,7 @@ __all__ = [
     "WarfarinTmpsmxChecker",
     "WellsDvtProbabilityScorer",
     "WellsPeProbabilityScorer",
+    "WfnsSahScorer",
     "hash_pii",
     "hash_pii_dict",
     "redact_fhir_pii",
