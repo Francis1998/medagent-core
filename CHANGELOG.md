@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `GraceAcsScorer` (`safety/grace_acs_scorer.py`): research-only MDCalc / ACC / EHR GRACE ACS risk scorer (Safety #209; distinct from KillipClassScorer / HeartScoreAcsScorer / TimiUaNstemiScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GRACE_ACS_SCORER_GUIDE.md`.
 - `WfnsSahScorer` (`safety/wfns_sah_scorer.py`): research-only MDCalc / AHA / EHR WFNS SAH grade scorer (Safety #208; distinct from HuntHessSahScorer / NihssStrokeScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WFNS_SAH_SCORER_GUIDE.md`.
 - `NexusCspineScorer` (`safety/nexus_cspine_scorer.py`): research-only MDCalc / ACEP / EHR NEXUS C-spine rule scorer (Safety #210; distinct from CanadianCspineRuleScorer / OttawaAnkleRuleScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEXUS_CSPINE_SCORER_GUIDE.md`.
 - `Crb65PneumoniaScorer` (`safety/crb65_pneumonia_scorer.py`): research-only MDCalc / BTS / EHR CRB-65 pneumonia score scorer (Safety #207; distinct from Curb65PneumoniaScorer / PsiPortPneumoniaScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CRB65_PNEUMONIA_SCORER_GUIDE.md`.

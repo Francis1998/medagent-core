@@ -79,6 +79,7 @@ from medagent.safety.gentamicin_level_trend_bridge import GentamicinLevelTrendBr
 from medagent.safety.gentamicin_vancomycin_checker import GentamicinVancomycinChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.glasgow_blatchford_scorer import GlasgowBlatchfordScorer
+from medagent.safety.grace_acs_scorer import GraceAcsScorer
 from medagent.safety.has_bled_bleed_risk_scorer import HasBledBleedRiskScorer
 from medagent.safety.heart_score_acs_scorer import HeartScoreAcsScorer
 from medagent.safety.heparin_antixa_trend_bridge import HeparinAntiXaTrendBridge
@@ -271,6 +272,7 @@ __all__ = [
     "GentamicinVancomycinChecker",
     "GeriatricDeprescribingChecker",
     "GlasgowBlatchfordScorer",
+    "GraceAcsScorer",
     "HasBledBleedRiskScorer",
     "HeartScoreAcsScorer",
     "HeparinAntiXaTrendBridge",
