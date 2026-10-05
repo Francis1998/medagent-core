@@ -50,6 +50,7 @@
 ![CiwaArWithdrawalScorer](assets/ciwa_ar_withdrawal_demo.gif)
 ![KillipClassScorer](assets/killip_class_demo.gif)
 ![HuntHessSahScorer](assets/hunt_hess_sah_demo.gif)
+![GraceAcsScorer](assets/grace_acs_demo.gif)
 ![WfnsSahScorer](assets/wfns_sah_demo.gif)
 ![NexusCspineScorer](assets/nexus_cspine_demo.gif)
 ![Crb65PneumoniaScorer](assets/crb65_pneumonia_demo.gif)

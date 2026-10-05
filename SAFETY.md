@@ -1070,6 +1070,14 @@ auto-modifies medications. See `docs/guides/WFNS_SAH_SCORER_GUIDE.md`. Prefer fr
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.209 GraceAcs Scorer
+`GraceAcsScorer` computes an advisory score (MDCalc / ACC / EHR GRACE ACS risk gap). Every call
+yields a `GraceAcsRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `KillipClassScorer / HeartScoreAcsScorer / TimiUaNstemiScorer`. Never
+auto-modifies medications. See `docs/guides/GRACE_ACS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
