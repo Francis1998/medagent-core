@@ -1062,6 +1062,14 @@ auto-modifies medications. See `docs/guides/NEXUS_CSPINE_SCORER_GUIDE.md`. Prefe
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.208 WfnsSah Scorer
+`WfnsSahScorer` computes an advisory score (MDCalc / AHA / EHR WFNS SAH grade gap). Every call
+yields a `WfnsSahRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `HuntHessSahScorer / NihssStrokeScorer`. Never
+auto-modifies medications. See `docs/guides/WFNS_SAH_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
