@@ -1087,10 +1087,10 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
 ### 3.212 FisherGrade Scorer
- computes an advisory score (MDCalc / AHA Fisher grade gap). Every call
-yields a  with score, band, positive factors, severity, and
-RESEARCH USE ONLY rationale. **Distinct from** . Never
-auto-modifies medications. See . Prefer frontier
+`FisherGradeScorer` computes an advisory score (MDCalc / AHA Fisher grade gap). Every call
+yields a `FisherGradeRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `HuntHessSahScorer / WfnsSahScorer`. Never
+auto-modifies medications. See `docs/guides/FISHER_GRADE_SCORER_GUIDE.md`. Prefer frontier
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
