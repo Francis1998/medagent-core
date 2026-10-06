@@ -64,6 +64,7 @@ from medagent.safety.ethinylestradiol_lamotrigine_checker import Ethinylestradio
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.fentanyl_cyp3a4_checker import FentanylCyp3a4Checker
 from medagent.safety.fhir_medication_request_adapter import FhirMedicationRequestAdapter
+from medagent.safety.fisher_grade_scorer import FisherGradeScorer
 from medagent.safety.flecainide_cyp2d6_checker import FlecainideCyp2d6Checker
 from medagent.safety.fluoroquinolone_corticosteroid_checker import (
     FluoroquinoloneCorticosteroidChecker,
@@ -264,6 +265,7 @@ __all__ = [
     "FallRiskChecker",
     "FentanylCyp3a4Checker",
     "FhirMedicationRequestAdapter",
+    "FisherGradeScorer",
     "FlecainideCyp2d6Checker",
     "FluoroquinoloneCorticosteroidChecker",
     "FluoroquinoloneNsaidChecker",
