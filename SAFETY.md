@@ -1078,6 +1078,14 @@ auto-modifies medications. See `docs/guides/GRACE_ACS_SCORER_GUIDE.md`. Prefer f
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.211 Mews Scorer
+`MewsScorer` computes an advisory score (MDCalc / NICE / EHR MEWS gap). Every call
+yields a `MewsRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `News2EarlyWarningScorer / VitalsTriageChecker`. Never
+auto-modifies medications. See `docs/guides/MEWS_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
