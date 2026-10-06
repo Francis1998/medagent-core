@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `IchScoreScorer` (`safety/ich_score_scorer.py`): research-only MDCalc / AHA ICH score scorer (Safety #213; distinct from WfnsSahScorer / HuntHessSahScorer / NihssStrokeScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ICH_SCORE_SCORER_GUIDE.md`.
 - `FisherGradeScorer` (`safety/fisher_grade_scorer.py`): research-only MDCalc / AHA Fisher grade scorer (Safety #212; distinct from HuntHessSahScorer / WfnsSahScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FISHER_GRADE_SCORER_GUIDE.md`.
 - `MewsScorer` (`safety/mews_scorer.py`): research-only MDCalc / NICE / EHR MEWS scorer (Safety #211; distinct from News2EarlyWarningScorer / VitalsTriageChecker). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MEWS_SCORER_GUIDE.md`.
 - `GraceAcsScorer` (`safety/grace_acs_scorer.py`): research-only MDCalc / ACC / EHR GRACE ACS risk scorer (Safety #209; distinct from KillipClassScorer / HeartScoreAcsScorer / TimiUaNstemiScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GRACE_ACS_SCORER_GUIDE.md`.

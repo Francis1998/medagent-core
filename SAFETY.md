@@ -1094,6 +1094,14 @@ auto-modifies medications. See `docs/guides/FISHER_GRADE_SCORER_GUIDE.md`. Prefe
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.213 IchScore Scorer
+`IchScoreScorer` computes an advisory score (MDCalc / AHA ICH score gap). Every call
+yields a `IchScoreRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `WfnsSahScorer / HuntHessSahScorer / NihssStrokeScorer`. Never
+auto-modifies medications. See `docs/guides/ICH_SCORE_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

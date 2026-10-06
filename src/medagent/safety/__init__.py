@@ -87,6 +87,7 @@ from medagent.safety.heparin_antixa_trend_bridge import HeparinAntiXaTrendBridge
 from medagent.safety.heparin_platelet_trend_bridge import HeparinPlateletTrendBridge
 from medagent.safety.hunt_hess_sah_scorer import HuntHessSahScorer
 from medagent.safety.hypoglycemia_risk_bridge import HypoglycemiaRiskBridge
+from medagent.safety.ich_score_scorer import IchScoreScorer
 from medagent.safety.inr_ttr_checker import InrTtrChecker
 from medagent.safety.insulin_stacking_checker import InsulinStackingChecker
 from medagent.safety.isotretinoin_pregnancy_gate import IsotretinoinPregnancyGate
@@ -282,6 +283,7 @@ __all__ = [
     "HeparinPlateletTrendBridge",
     "HuntHessSahScorer",
     "HypoglycemiaRiskBridge",
+    "IchScoreScorer",
     "InrTtrChecker",
     "InsulinStackingChecker",
     "IsotretinoinPregnancyGate",
