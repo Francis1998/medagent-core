@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `CanadianCtHeadScorer` (`safety/canadian_ct_head_scorer.py`): research-only MDCalc / ACEP Canadian CT Head Rule scorer (Safety #216; distinct from PecarnHeadTraumaScorer / NexusCspineScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIAN_CT_HEAD_SCORER_GUIDE.md`.
 - `OttawaSahRuleScorer` (`safety/ottawa_sah_rule_scorer.py`): research-only MDCalc / ACEP Ottawa SAH Rule scorer (Safety #215; distinct from HuntHessSahScorer / WfnsSahScorer / FisherGradeScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWA_SAH_RULE_SCORER_GUIDE.md`.
 - `FourScoreScorer` (`safety/four_score_scorer.py`): research-only MDCalc / Neurocritical Care FOUR score scorer (Safety #214; distinct from GcsNeurologicStatusScorer / WfnsSahScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOUR_SCORE_SCORER_GUIDE.md`.
 - `IchScoreScorer` (`safety/ich_score_scorer.py`): research-only MDCalc / AHA ICH score scorer (Safety #213; distinct from WfnsSahScorer / HuntHessSahScorer / NihssStrokeScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ICH_SCORE_SCORER_GUIDE.md`.

@@ -1118,6 +1118,14 @@ auto-modifies medications. See `docs/guides/OTTAWA_SAH_RULE_SCORER_GUIDE.md`. Pr
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.216 CanadianCtHead Scorer
+`CanadianCtHeadScorer` computes an advisory score (MDCalc / ACEP Canadian CT Head Rule gap). Every call
+yields a `CanadianCtHeadRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `PecarnHeadTraumaScorer / NexusCspineScorer`. Never
+auto-modifies medications. See `docs/guides/CANADIAN_CT_HEAD_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
