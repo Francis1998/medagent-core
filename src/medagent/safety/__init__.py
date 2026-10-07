@@ -133,6 +133,7 @@ from medagent.safety.opioid_benzo_checker import OpioidBenzoChecker
 from medagent.safety.opioid_sedation_stack_panel import OpioidSedationStackPanel
 from medagent.safety.ottawa_ankle_rule_scorer import OttawaAnkleRuleScorer
 from medagent.safety.ottawa_knee_rule_scorer import OttawaKneeRuleScorer
+from medagent.safety.ottawa_sah_rule_scorer import OttawaSahRuleScorer
 from medagent.safety.padua_vte_risk_scorer import PaduaVteRiskScorer
 from medagent.safety.pecarn_head_trauma_scorer import PecarnHeadTraumaScorer
 from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
@@ -328,6 +329,7 @@ __all__ = [
     "OpioidSedationStackPanel",
     "OttawaAnkleRuleScorer",
     "OttawaKneeRuleScorer",
+    "OttawaSahRuleScorer",
     "PaduaVteRiskScorer",
     "PecarnHeadTraumaScorer",
     "PediatricRenalDosingChecker",

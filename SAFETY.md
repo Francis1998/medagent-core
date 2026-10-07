@@ -1110,6 +1110,14 @@ auto-modifies medications. See `docs/guides/FOUR_SCORE_SCORER_GUIDE.md`. Prefer 
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.215 OttawaSahRule Scorer
+`OttawaSahRuleScorer` computes an advisory score (MDCalc / ACEP Ottawa SAH Rule gap). Every call
+yields a `OttawaSahRuleRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `HuntHessSahScorer / WfnsSahScorer / FisherGradeScorer`. Never
+auto-modifies medications. See `docs/guides/OTTAWA_SAH_RULE_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
