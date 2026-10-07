@@ -1102,6 +1102,14 @@ auto-modifies medications. See `docs/guides/ICH_SCORE_SCORER_GUIDE.md`. Prefer f
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.214 FourScore Scorer
+`FourScoreScorer` computes an advisory score (MDCalc / Neurocritical Care FOUR score gap). Every call
+yields a `FourScoreRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `GcsNeurologicStatusScorer / WfnsSahScorer`. Never
+auto-modifies medications. See `docs/guides/FOUR_SCORE_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
