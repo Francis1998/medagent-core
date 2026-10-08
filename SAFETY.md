@@ -1142,6 +1142,14 @@ auto-modifies medications. See `docs/guides/LIGHT_CRITERIA_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.219 JonesCriteria Scorer
+`JonesCriteriaScorer` computes an advisory score (MDCalc / AHA Jones criteria for acute rheumatic fever). Every call
+yields a `JonesCriteriaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `CentorStrepPharyngitisScorer / HeartScoreAcsScorer`. Never
+auto-modifies medications. See `docs/guides/JONES_CRITERIA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
