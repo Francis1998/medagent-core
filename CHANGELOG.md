@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `JonesCriteriaScorer` (`safety/jones_criteria_scorer.py`): research-only Jones criteria advisory scorer (Safety #219). Gap vs MDCalc/AHA. Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/JONES_CRITERIA_SCORER_GUIDE.md`.
 - `LightCriteriaScorer` (`safety/light_criteria_scorer.py`): research-only Light criteria advisory scorer (Safety #218). Gap vs MDCalc/ATS. Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/LIGHT_CRITERIA_SCORER_GUIDE.md`.
 - `RochesterCriteriaScorer` (`safety/rochester_criteria_scorer.py`): research-only Rochester criteria advisory scorer (Safety #217). Gap vs MDCalc/AAP. Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ROCHESTER_CRITERIA_SCORER_GUIDE.md`.
 - `CanadianCtHeadScorer` (`safety/canadian_ct_head_scorer.py`): research-only MDCalc / ACEP Canadian CT Head Rule scorer (Safety #216; distinct from PecarnHeadTraumaScorer / NexusCspineScorer). Optional polish via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIAN_CT_HEAD_SCORER_GUIDE.md`.

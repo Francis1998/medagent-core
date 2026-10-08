@@ -97,6 +97,7 @@ from medagent.safety.isotretinoin_tetracycline_checker import (
     IsotretinoinTetracyclineChecker,
 )
 from medagent.safety.ivabradine_cyp3a4_checker import IvabradineCyp3a4Checker
+from medagent.safety.jones_criteria_scorer import JonesCriteriaScorer
 from medagent.safety.kampala_trauma_scorer import KampalaTraumaScorer
 from medagent.safety.killip_class_scorer import KillipClassScorer
 from medagent.safety.lab_trend_alert_bridge import LabTrendAlertBridge
@@ -296,6 +297,7 @@ __all__ = [
     "IsotretinoinPregnancyGate",
     "IsotretinoinTetracyclineChecker",
     "IvabradineCyp3a4Checker",
+    "JonesCriteriaScorer",
     "KampalaTraumaScorer",
     "KillipClassScorer",
     "LabTrendAlertBridge",
