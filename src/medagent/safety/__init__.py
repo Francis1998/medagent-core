@@ -102,6 +102,7 @@ from medagent.safety.killip_class_scorer import KillipClassScorer
 from medagent.safety.lab_trend_alert_bridge import LabTrendAlertBridge
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.lamotrigine_valproate_checker import LamotrigineValproateChecker
+from medagent.safety.light_criteria_scorer import LightCriteriaScorer
 from medagent.safety.linezolid_platelet_trend_bridge import LinezolidPlateletTrendBridge
 from medagent.safety.linezolid_ssri_checker import LinezolidSsriChecker
 from medagent.safety.lithium_acei_checker import LithiumAceiChecker
@@ -300,6 +301,7 @@ __all__ = [
     "LabTrendAlertBridge",
     "LactationSafetyChecker",
     "LamotrigineValproateChecker",
+    "LightCriteriaScorer",
     "LinezolidPlateletTrendBridge",
     "LinezolidSsriChecker",
     "LithiumAceiChecker",
