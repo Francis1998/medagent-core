@@ -1134,6 +1134,14 @@ auto-modifies medications. See `docs/guides/ROCHESTER_CRITERIA_SCORER_GUIDE.md`.
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.218 LightCriteria Scorer
+`LightCriteriaScorer` computes an advisory score (MDCalc / ATS Light criteria for pleural effusion). Every call
+yields a `LightCriteriaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / PsiPortPneumoniaScorer`. Never
+auto-modifies medications. See `docs/guides/LIGHT_CRITERIA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
