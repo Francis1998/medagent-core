@@ -1126,6 +1126,14 @@ auto-modifies medications. See `docs/guides/CANADIAN_CT_HEAD_SCORER_GUIDE.md`. P
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+### 3.217 RochesterCriteria Scorer
+`RochesterCriteriaScorer` computes an advisory score (MDCalc / AAP Rochester criteria for febrile infants). Every call
+yields a `RochesterCriteriaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. **Distinct from** `PecarnHeadTraumaScorer / CentorStrepPharyngitisScorer`. Never
+auto-modifies medications. See `docs/guides/ROCHESTER_CRITERIA_SCORER_GUIDE.md`. Prefer frontier
+reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
+**Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
