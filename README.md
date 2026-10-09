@@ -24,6 +24,12 @@
 ![FeverPainScorer](assets/feverpain_demo.gif)
 
 Research-only MDCalc / NICE FeverPAIN pharyngitis score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+### BishopScoreScorer (Safety #221)
+
+![BishopScoreScorer](assets/bishop-score_demo.gif)
+
+Research-only MDCalc / ACOG Bishop score for induction readiness. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 
 ## Live Demos
 

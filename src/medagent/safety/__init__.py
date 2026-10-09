@@ -21,6 +21,7 @@ from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.apache_ii_lite_scorer import ApacheIiLiteScorer
 from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
+from medagent.safety.bishop_score_scorer import BishopScoreScorer
 from medagent.safety.bode_copd_scorer import BodeCopdScorer
 from medagent.safety.canadian_cspine_rule_scorer import CanadianCspineRuleScorer
 from medagent.safety.canadian_ct_head_scorer import CanadianCtHeadScorer
@@ -235,6 +236,7 @@ __all__ = [
     "ApacheIiLiteScorer",
     "ApixabanCyp3a4Checker",
     "Beers2023DeltaChecker",
+    "BishopScoreScorer",
     "BodeCopdScorer",
     "CanadianCspineRuleScorer",
     "CanadianCtHeadScorer",

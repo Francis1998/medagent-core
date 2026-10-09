@@ -1157,6 +1157,12 @@ yields a `FeverPainRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.221 BishopScore Scorer
+`BishopScoreScorer` computes an advisory score (MDCalc / ACOG Bishop score for induction readiness). Every call
+yields a `BishopScoreRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
