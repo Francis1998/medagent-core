@@ -19,6 +19,7 @@ from medagent.safety.anticholinergic_burden_panel import AnticholinergicBurdenPa
 from medagent.safety.anticoag_bleed_stack_panel import AnticoagBleedStackPanel
 from medagent.safety.anticoag_bleeding_checker import AnticoagBleedingChecker
 from medagent.safety.apache_ii_lite_scorer import ApacheIiLiteScorer
+from medagent.safety.apgar_score_scorer import ApgarScoreScorer
 from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
 from medagent.safety.bishop_score_scorer import BishopScoreScorer
@@ -234,6 +235,7 @@ __all__ = [
     "AnticoagBleedStackPanel",
     "AnticoagBleedingChecker",
     "ApacheIiLiteScorer",
+    "ApgarScoreScorer",
     "ApixabanCyp3a4Checker",
     "Beers2023DeltaChecker",
     "BishopScoreScorer",

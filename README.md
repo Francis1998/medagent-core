@@ -31,6 +31,13 @@ Research-only MDCalc / NICE FeverPAIN pharyngitis score. Stack: GPT-5.5 / Claude
 Research-only MDCalc / ACOG Bishop score for induction readiness. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+### ApgarScoreScorer (Safety #222)
+
+![ApgarScoreScorer](assets/apgar-score_demo.gif)
+
+Research-only MDCalc / AAP Apgar newborn score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
 ## Live Demos
 
 **Clinical reasoning pipeline — STEMI chest pain case:**
