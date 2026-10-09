@@ -19,6 +19,12 @@
 
 ---
 
+### FeverPainScorer (Safety #220)
+
+![FeverPainScorer](assets/feverpain_demo.gif)
+
+Research-only MDCalc / NICE FeverPAIN pharyngitis score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## Live Demos
 
 **Clinical reasoning pipeline — STEMI chest pain case:**

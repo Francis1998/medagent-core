@@ -1150,6 +1150,13 @@ auto-modifies medications. See `docs/guides/JONES_CRITERIA_SCORER_GUIDE.md`. Pre
 reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.220 FeverPain Scorer
+`FeverPainScorer` computes an advisory score (MDCalc / NICE FeverPAIN pharyngitis score). Every call
+yields a `FeverPainRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
