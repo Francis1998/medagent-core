@@ -64,6 +64,7 @@ from medagent.safety.escitalopram_qt_checker import EscitalopramQtChecker
 from medagent.safety.ethinylestradiol_lamotrigine_checker import EthinylestradiolLamotrigineChecker
 from medagent.safety.fall_risk_checker import FallRiskChecker
 from medagent.safety.fentanyl_cyp3a4_checker import FentanylCyp3a4Checker
+from medagent.safety.feverpain_scorer import FeverPainScorer
 from medagent.safety.fhir_medication_request_adapter import FhirMedicationRequestAdapter
 from medagent.safety.fisher_grade_scorer import FisherGradeScorer
 from medagent.safety.flecainide_cyp2d6_checker import FlecainideCyp2d6Checker
@@ -272,6 +273,7 @@ __all__ = [
     "EthinylestradiolLamotrigineChecker",
     "FallRiskChecker",
     "FentanylCyp3a4Checker",
+    "FeverPainScorer",
     "FhirMedicationRequestAdapter",
     "FisherGradeScorer",
     "FlecainideCyp2d6Checker",
