@@ -60,6 +60,7 @@ from medagent.safety.disease_contraindication_checker import DiseaseContraindica
 from medagent.safety.doac_antiplatelet_checker import DoacAntiplateletChecker
 from medagent.safety.doac_inducer_checker import DoacInducerChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
+from medagent.safety.duke_endocarditis_criteria_scorer import DukeEndocarditisCriteriaScorer
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.ergotamine_cyp3a4_checker import ErgotamineCyp3a4Checker
 from medagent.safety.escitalopram_qt_checker import EscitalopramQtChecker
@@ -272,6 +273,7 @@ __all__ = [
     "DoacAntiplateletChecker",
     "DoacInducerChecker",
     "DoacNsaidChecker",
+    "DukeEndocarditisCriteriaScorer",
     "ElectrolyteQtChecker",
     "ErgotamineCyp3a4Checker",
     "EscitalopramQtChecker",
