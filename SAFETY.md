@@ -1181,6 +1181,12 @@ yields a `DukeEndocarditisCriteriaRisk` with score, band, positive factors, seve
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.225 SirsCriteria Scorer
+`SirsCriteriaScorer` computes an advisory score (MDCalc / SCCM SIRS criteria screen). Every call
+yields a `SirsCriteriaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
