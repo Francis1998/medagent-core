@@ -146,6 +146,7 @@ from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
 from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAdjuster
 from medagent.safety.perc_pe_exclusion_scorer import PercPeExclusionScorer
 from medagent.safety.pesi_pe_severity_scorer import PesiPeSeverityScorer
+from medagent.safety.pews_early_warning_scorer import PewsEarlyWarningScorer
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
 from medagent.safety.phenytoin_level_trend_bridge import PhenytoinLevelTrendBridge
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
@@ -349,6 +350,7 @@ __all__ = [
     "PediatricWeightDoseAdjuster",
     "PercPeExclusionScorer",
     "PesiPeSeverityScorer",
+    "PewsEarlyWarningScorer",
     "PhenytoinFluconazoleChecker",
     "PhenytoinLevelTrendBridge",
     "PimozideCyp3a4Checker",
