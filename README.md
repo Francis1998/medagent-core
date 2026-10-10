@@ -50,6 +50,12 @@ Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / 
 
 Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### SirsCriteriaScorer (Safety #225)
+
+![SirsCriteriaScorer](assets/sirs-criteria_demo.gif)
+
+Research-only MDCalc / SCCM SIRS criteria screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## Live Demos
 
 **Clinical reasoning pipeline — STEMI chest pain case:**
