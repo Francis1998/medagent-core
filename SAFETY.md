@@ -1169,6 +1169,12 @@ yields a `ApgarScoreRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.223 PewsEarlyWarning Scorer
+`PewsEarlyWarningScorer` computes an advisory score (MDCalc / RCN PEWS pediatric early warning score). Every call
+yields a `PewsEarlyWarningRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

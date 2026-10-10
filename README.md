@@ -38,6 +38,12 @@ Research-only MDCalc / ACOG Bishop score for induction readiness. Stack: GPT-5.5
 Research-only MDCalc / AAP Apgar newborn score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+### PewsEarlyWarningScorer (Safety #223)
+
+![PewsEarlyWarningScorer](assets/pews-early-warning_demo.gif)
+
+Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## Live Demos
 
 **Clinical reasoning pipeline — STEMI chest pain case:**
