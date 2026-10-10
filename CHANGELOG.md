@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `DukeEndocarditisCriteriaScorer` Safety **#224** (`src/medagent/safety/duke_endocarditis_criteria_scorer.py`): research-only MDCalc / AHA modified Duke endocarditis criteria advisory scorer (never modifies medications). Distinct from `CentorStrepPharyngitisScorer` / `JonesCriteriaScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/DUKEENDOCARDITISCRITERIASCORER_GUIDE.md`.
 - `PewsEarlyWarningScorer` Safety **#223** (`src/medagent/safety/pews_early_warning_scorer.py`): research-only MDCalc / RCN PEWS pediatric early warning score advisory scorer (never modifies medications). Distinct from `News2EarlyWarningScorer` / `MewsScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PEWSEARLYWARNINGSCORER_GUIDE.md`.
 - `ApgarScoreScorer` (`src/medagent/safety/apgar_score_scorer.py`): research-only advisory score (Safety #222; never modifies therapy). Gap vs MDCalc / AAP Apgar newborn score. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/APGARSCORESCORER_GUIDE.md`.
 - `BishopScoreScorer` (`src/medagent/safety/bishop_score_scorer.py`): research-only advisory score (Safety #221; never modifies therapy). Gap vs MDCalc / ACOG Bishop score for induction readiness. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BISHOPSCORESCORER_GUIDE.md`.

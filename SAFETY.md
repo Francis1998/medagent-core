@@ -1175,6 +1175,12 @@ yields a `PewsEarlyWarningRisk` with score, band, positive factors, severity, an
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.224 DukeEndocarditisCriteria Scorer
+`DukeEndocarditisCriteriaScorer` computes an advisory score (MDCalc / AHA modified Duke endocarditis criteria). Every call
+yields a `DukeEndocarditisCriteriaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

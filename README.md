@@ -44,6 +44,12 @@ Research-only MDCalc / AAP Apgar newborn score. Stack: GPT-5.5 / Claude Sonnet 4
 
 Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### DukeEndocarditisCriteriaScorer (Safety #224)
+
+![DukeEndocarditisCriteriaScorer](assets/duke-endocarditis_demo.gif)
+
+Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## Live Demos
 
 **Clinical reasoning pipeline — STEMI chest pain case:**
