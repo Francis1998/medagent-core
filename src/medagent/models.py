@@ -4945,3 +4945,20 @@ class PrismIiiPediatricRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class MaddreyDiscriminantRisk(BaseModel, frozen=True):
+    """MaddreyDiscriminantScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    MeldNaScorer / ChildPughLiverSeverityScorer.
+    Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str

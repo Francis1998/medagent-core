@@ -50,6 +50,12 @@ Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / 
 
 Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### MaddreyDiscriminantScorer (Safety #228)
+
+![MaddreyDiscriminantScorer](assets/maddrey-discriminant_demo.gif)
+
+Research-only MDCalc Maddrey discriminant function for alcoholic hepatitis. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### PrismIiiPediatricScorer (Safety #227)
 
 ![PrismIiiPediatricScorer](assets/prism-iii-pediatric_demo.gif)
