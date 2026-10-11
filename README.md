@@ -50,6 +50,12 @@ Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / 
 
 Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### PrismIiiPediatricScorer (Safety #227)
+
+![PrismIiiPediatricScorer](assets/prism-iii-pediatric_demo.gif)
+
+Research-only MDCalc / PICU PRISM III pediatric ICU score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### PhoenixSepsisCriteriaScorer (Safety #226)
 
 ![PhoenixSepsisCriteriaScorer](assets/phoenix-sepsis_demo.gif)

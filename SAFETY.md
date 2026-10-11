@@ -1193,6 +1193,12 @@ yields a `PhoenixSepsisCriteriaRisk` with score, band, positive factors, severit
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.227 PrismIiiPediatric Scorer
+`PrismIiiPediatricScorer` computes an advisory score (MDCalc / PICU PRISM III pediatric ICU score). Every call
+yields a `PrismIiiPediatricRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
