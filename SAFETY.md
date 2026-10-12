@@ -1217,6 +1217,12 @@ yields a `RaceStrokeScaleRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.229 StopBangOsa Scorer
+`StopBangOsaScorer` computes an advisory score (MDCalc / ASA STOP-BANG OSA screen). Every call
+yields a `StopBangOsaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

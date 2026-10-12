@@ -196,6 +196,7 @@ from medagent.safety.statin_fibrate_checker import StatinFibrateChecker
 from medagent.safety.statin_lft_trend_bridge import StatinLftTrendBridge
 from medagent.safety.statin_macrolide_checker import StatinMacrolideChecker
 from medagent.safety.steroid_glucose_trend_bridge import SteroidGlucoseTrendBridge
+from medagent.safety.stop_bang_osa_scorer import StopBangOsaScorer
 from medagent.safety.tacrolimus_cyp3a4_checker import TacrolimusCyp3a4Checker
 from medagent.safety.tacrolimus_level_trend_bridge import TacrolimusLevelTrendBridge
 from medagent.safety.tacrolimus_rifampin_checker import TacrolimusRifampinChecker
@@ -407,6 +408,7 @@ __all__ = [
     "StatinLftTrendBridge",
     "StatinMacrolideChecker",
     "SteroidGlucoseTrendBridge",
+    "StopBangOsaScorer",
     "TacrolimusCyp3a4Checker",
     "TacrolimusLevelTrendBridge",
     "TacrolimusRifampinChecker",
