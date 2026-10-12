@@ -50,6 +50,12 @@ Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / 
 
 Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### LamsStrokeScaleScorer (Safety #231)
+
+![LamsStrokeScaleScorer](assets/lams-stroke-scale_demo.gif)
+
+Research-only advisory scorer. Gap vs MDCalc / AHA LAMS large-vessel occlusion screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/LAMSSTROKESCALESCORER_GUIDE.md`.
+
 ### MaddreyDiscriminantScorer (Safety #228)
 
 ![MaddreyDiscriminantScorer](assets/maddrey-discriminant_demo.gif)
