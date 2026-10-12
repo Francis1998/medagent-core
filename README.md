@@ -56,6 +56,12 @@ Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 /
 
 Research-only advisory scorer. Gap vs MDCalc / AHA LAMS large-vessel occlusion screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/LAMSSTROKESCALESCORER_GUIDE.md`.
 
+### RaceStrokeScaleScorer (Safety #230)
+
+![RaceStrokeScaleScorer](assets/race-stroke-scale_demo.gif)
+
+Research-only advisory scorer. Gap vs MDCalc / AHA RACE stroke scale. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RACESTROKESCALESCORER_GUIDE.md`.
+
 ### MaddreyDiscriminantScorer (Safety #228)
 
 ![MaddreyDiscriminantScorer](assets/maddrey-discriminant_demo.gif)
