@@ -62,6 +62,12 @@ Research-only advisory scorer. Gap vs MDCalc / AHA LAMS large-vessel occlusion s
 
 Research-only advisory scorer. Gap vs MDCalc / AHA RACE stroke scale. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RACESTROKESCALESCORER_GUIDE.md`.
 
+### StopBangOsaScorer (Safety #229)
+
+![StopBangOsaScorer](assets/stop-bang-osa_demo.gif)
+
+Research-only advisory scorer. Gap vs MDCalc / ASA STOP-BANG OSA screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/STOPBANGOSASCORER_GUIDE.md`.
+
 ### MaddreyDiscriminantScorer (Safety #228)
 
 ![MaddreyDiscriminantScorer](assets/maddrey-discriminant_demo.gif)
