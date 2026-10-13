@@ -62,6 +62,7 @@ from medagent.safety.doac_inducer_checker import DoacInducerChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
 from medagent.safety.duke_endocarditis_criteria_scorer import DukeEndocarditisCriteriaScorer
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
+from medagent.safety.epworth_sleepiness_scorer import EpworthSleepinessScorer
 from medagent.safety.ergotamine_cyp3a4_checker import ErgotamineCyp3a4Checker
 from medagent.safety.escitalopram_qt_checker import EscitalopramQtChecker
 from medagent.safety.ethinylestradiol_lamotrigine_checker import EthinylestradiolLamotrigineChecker
@@ -283,6 +284,7 @@ __all__ = [
     "DoacNsaidChecker",
     "DukeEndocarditisCriteriaScorer",
     "ElectrolyteQtChecker",
+    "EpworthSleepinessScorer",
     "ErgotamineCyp3a4Checker",
     "EscitalopramQtChecker",
     "EthinylestradiolLamotrigineChecker",
