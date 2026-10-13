@@ -33,6 +33,7 @@ from medagent.safety.centor_strep_pharyngitis_scorer import CentorStrepPharyngit
 from medagent.safety.cha2ds2_vasc_stroke_risk_scorer import Cha2ds2VascStrokeRiskScorer
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.child_pugh_liver_severity_scorer import ChildPughLiverSeverityScorer
+from medagent.safety.cincinnati_prehospital_stroke_scorer import CincinnatiPrehospitalStrokeScorer
 from medagent.safety.ciwa_ar_withdrawal_scorer import CiwaArWithdrawalScorer
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
@@ -260,6 +261,7 @@ __all__ = [
     "Cha2ds2VascStrokeRiskScorer",
     "ChemoEmesisChecker",
     "ChildPughLiverSeverityScorer",
+    "CincinnatiPrehospitalStrokeScorer",
     "CiwaArWithdrawalScorer",
     "ClinicalGuidelineMatcher",
     "ClopidogrelPpiChecker",
