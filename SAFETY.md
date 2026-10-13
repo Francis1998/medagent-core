@@ -1235,6 +1235,12 @@ yields a `EpworthSleepinessRisk` with score, band, positive factors, severity, a
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.234 CincinnatiPrehospitalStroke Scorer
+`CincinnatiPrehospitalStrokeScorer` computes an advisory score (MDCalc / AHA Cincinnati Prehospital Stroke Scale screen). Every call
+yields a `CincinnatiPrehospitalStrokeRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
