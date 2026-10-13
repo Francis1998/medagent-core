@@ -9,7 +9,10 @@ Optional narrative via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
 ## Usage
 
 ```python
-from medagent.safety.epworth_sleepiness_scorer import EpworthSleepinessFactors, EpworthSleepinessScorer
+from medagent.safety.epworth_sleepiness_scorer import (
+    EpworthSleepinessFactors,
+    EpworthSleepinessScorer,
+)
 
 findings = EpworthSleepinessScorer().check(EpworthSleepinessFactors())
 print(findings[0].band)
