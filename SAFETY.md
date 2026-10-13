@@ -1229,6 +1229,12 @@ yields a `MallampatiAirwayRisk` with score, band, positive factors, severity, an
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.233 EpworthSleepiness Scorer
+`EpworthSleepinessScorer` computes an advisory score (MDCalc / AASM Epworth Sleepiness Scale screen). Every call
+yields a `EpworthSleepinessRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
