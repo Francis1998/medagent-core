@@ -185,6 +185,7 @@ from medagent.safety.serotonin_syndrome_panel import SerotoninSyndromePanel
 from medagent.safety.sglt2_euglycemic_dka_bridge import Sglt2EuglycemicDkaBridge
 from medagent.safety.sglt2_loop_checker import Sglt2LoopChecker
 from medagent.safety.sglt2_raasi_checker import Sglt2RaasiChecker
+from medagent.safety.shock_index_scorer import ShockIndexScorer
 from medagent.safety.sildenafil_nitrate_checker import SildenafilNitrateChecker
 from medagent.safety.simvastatin_amiodarone_checker import SimvastatinAmiodaroneChecker
 from medagent.safety.sirolimus_strong_cyp3a4_checker import SirolimusStrongCyp3a4Checker
@@ -400,6 +401,7 @@ __all__ = [
     "Sglt2EuglycemicDkaBridge",
     "Sglt2LoopChecker",
     "Sglt2RaasiChecker",
+    "ShockIndexScorer",
     "SildenafilNitrateChecker",
     "SimvastatinAmiodaroneChecker",
     "SirolimusStrongCyp3a4Checker",

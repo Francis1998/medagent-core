@@ -1241,6 +1241,12 @@ yields a `CincinnatiPrehospitalStrokeRisk` with score, band, positive factors, s
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.235 ShockIndex Scorer
+`ShockIndexScorer` computes an advisory score (MDCalc / AHA Shock Index screen). Every call
+yields a `ShockIndexRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
