@@ -65,6 +65,12 @@ Research-only advisory scorer. Gap vs MDCalc / AHA RACE stroke scale. Stack: GPT
 
 
 
+### RemsPeSeverityScorer
+
+![RemsPeSeverityScorer](assets/rems_pe_severity_demo.gif)
+
+Research-only MDCalc / ESC REMs PE severity screen advisory scorer (Safety #236). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/REMSPESEVERITYSCORER_GUIDE.md`.
+
 ### ShockIndexScorer
 
 ![ShockIndexScorer](assets/shock_index_demo.gif)
