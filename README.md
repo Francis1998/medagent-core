@@ -71,6 +71,12 @@ Research-only advisory scorer. Gap vs MDCalc / AHA RACE stroke scale. Stack: GPT
 
 Research-only MDCalc / ESC REMs PE severity screen advisory scorer (Safety #236). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/REMSPESEVERITYSCORER_GUIDE.md`.
 
+### SmartCopPneumoniaScorer
+
+![SmartCopPneumoniaScorer](assets/smart_cop_pneumonia_demo.gif)
+
+Research-only MDCalc / IDSA SMART-COP pneumonia severity screen advisory scorer (Safety #237). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SMARTCOPPNEUMONIASCORER_GUIDE.md`.
+
 ### ShockIndexScorer
 
 ![ShockIndexScorer](assets/shock_index_demo.gif)

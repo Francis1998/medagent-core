@@ -1253,6 +1253,12 @@ yields a `RemsPeSeverityRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.237 SmartCopPneumonia Scorer
+`SmartCopPneumoniaScorer` computes an advisory score (MDCalc / IDSA SMART-COP pneumonia severity screen). Every call
+yields a `SmartCopPneumoniaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
