@@ -65,6 +65,12 @@ Research-only advisory scorer. Gap vs MDCalc / AHA RACE stroke scale. Stack: GPT
 
 
 
+### ShockIndexScorer
+
+![ShockIndexScorer](assets/shock_index_demo.gif)
+
+Research-only MDCalc / AHA Shock Index screen advisory scorer (Safety #235). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SHOCKINDEXSCORER_GUIDE.md`.
+
 ### CincinnatiPrehospitalStrokeScorer
 
 ![CincinnatiPrehospitalStrokeScorer](assets/cincinnati_prehospital_stroke_demo.gif)
