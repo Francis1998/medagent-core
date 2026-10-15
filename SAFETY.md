@@ -1259,6 +1259,12 @@ yields a `SmartCopPneumoniaRisk` with score, band, positive factors, severity, a
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.238 Fib4Liver Scorer
+`Fib4LiverScorer` computes an advisory score (MDCalc / AASLD FIB-4 liver fibrosis screen). Every call
+yields a `Fib4LiverRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
