@@ -158,6 +158,7 @@ from medagent.safety.pews_early_warning_scorer import PewsEarlyWarningScorer
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
 from medagent.safety.phenytoin_level_trend_bridge import PhenytoinLevelTrendBridge
 from medagent.safety.phoenix_sepsis_criteria_scorer import PhoenixSepsisCriteriaScorer
+from medagent.safety.phq9_depression_scorer import Phq9DepressionScorer
 from medagent.safety.pii_hasher import hash_pii, hash_pii_dict, redact_fhir_pii
 from medagent.safety.pimozide_cyp3a4_checker import PimozideCyp3a4Checker
 from medagent.safety.polypharmacy_deprescribe_suggester import PolypharmacyDeprescribeSuggester
@@ -378,6 +379,7 @@ __all__ = [
     "PhenytoinFluconazoleChecker",
     "PhenytoinLevelTrendBridge",
     "PhoenixSepsisCriteriaScorer",
+    "Phq9DepressionScorer",
     "PimozideCyp3a4Checker",
     "PolypharmacyDeprescribeSuggester",
     "PpiMtxChecker",

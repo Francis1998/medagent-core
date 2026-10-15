@@ -1271,6 +1271,12 @@ yields a `BisapPancreatitisRisk` with score, band, positive factors, severity, a
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.240 Phq9Depression Scorer
+`Phq9DepressionScorer` computes an advisory score (MDCalc / USPSTF PHQ-9 depression severity screen). Every call
+yields a `Phq9DepressionRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
