@@ -77,6 +77,12 @@ Research-only MDCalc / ESC REMs PE severity screen advisory scorer (Safety #236)
 
 Research-only advisory scorer. Gap vs MDCalc / AASLD FIB-4 liver fibrosis screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### BisapPancreatitisScorer
+
+![BisapPancreatitisScorer](assets/bisap_pancreatitis_demo.gif)
+
+Research-only advisory scorer. Gap vs MDCalc / ACG BISAP pancreatitis severity screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### SmartCopPneumoniaScorer
 
 ![SmartCopPneumoniaScorer](assets/smart_cop_pneumonia_demo.gif)
