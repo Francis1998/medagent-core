@@ -1265,6 +1265,12 @@ yields a `Fib4LiverRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.239 BisapPancreatitis Scorer
+`BisapPancreatitisScorer` computes an advisory score (MDCalc / ACG BISAP pancreatitis severity screen). Every call
+yields a `BisapPancreatitisRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
