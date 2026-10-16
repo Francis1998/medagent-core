@@ -89,6 +89,12 @@ Research-only advisory scorer. Gap vs MDCalc / ACG BISAP pancreatitis severity s
 
 Research-only advisory scorer. Gap vs MDCalc / USPSTF GAD-7 anxiety severity screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### BradenPressureScorer
+
+![BradenPressureScorer](assets/braden_pressure_demo.gif)
+
+Research-only advisory scorer. Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### MorseFallScorer
 
 ![MorseFallScorer](assets/morse_fall_demo.gif)

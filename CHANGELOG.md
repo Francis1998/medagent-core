@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `BradenPressureScorer` (`src/medagent/safety/braden_pressure_scorer.py`): research-only advisory score (SAFETY #242). Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Distinct from `News2EarlyWarningScorer` / `SofaOrganFailureScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/BRADENPRESSURESCORER_GUIDE.md`.
 - `Gad7AnxietyScorer` (`src/medagent/safety/gad7_anxiety_scorer.py`): research-only advisory score (SAFETY #243). Gap vs MDCalc / USPSTF GAD-7 anxiety severity screen. Distinct from `Phq9DepressionScorer` / `EpworthSleepinessScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/GAD7ANXIETYSCORER_GUIDE.md`.
 - `MorseFallScorer` (`src/medagent/safety/morse_fall_scorer.py`): research-only advisory score (SAFETY #241). Gap vs MDCalc / AHRQ Morse Fall Scale screen. Distinct from `News2EarlyWarningScorer` / `PewsEarlyWarningScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/MORSEFALLSCORER_GUIDE.md`.
 - `Phq9DepressionScorer` (`src/medagent/safety/phq9_depression_scorer.py`): research-only advisory score (SAFETY #240). Gap vs MDCalc / USPSTF PHQ-9 depression severity screen. Distinct from `EpworthSleepinessScorer` / `StopBangOsaScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/PHQ9DEPRESSIONSCORER_GUIDE.md`.
