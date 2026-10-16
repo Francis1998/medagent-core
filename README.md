@@ -83,6 +83,12 @@ Research-only advisory scorer. Gap vs MDCalc / AASLD FIB-4 liver fibrosis screen
 
 Research-only advisory scorer. Gap vs MDCalc / ACG BISAP pancreatitis severity screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### MorseFallScorer
+
+![MorseFallScorer](assets/morse_fall_demo.gif)
+
+Research-only advisory scorer. Gap vs MDCalc / AHRQ Morse Fall Scale screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### Phq9DepressionScorer
 
 ![Phq9DepressionScorer](assets/phq9_depression_demo.gif)
