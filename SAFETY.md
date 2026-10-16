@@ -1289,6 +1289,12 @@ yields a `Gad7AnxietyRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.242 BradenPressure Scorer
+`BradenPressureScorer` computes an advisory score (MDCalc / NPUAP Braden pressure-injury risk screen). Every call
+yields a `BradenPressureRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
