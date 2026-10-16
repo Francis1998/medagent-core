@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `MorseFallScorer` (`src/medagent/safety/morse_fall_scorer.py`): research-only advisory score (SAFETY #241). Gap vs MDCalc / AHRQ Morse Fall Scale screen. Distinct from `News2EarlyWarningScorer` / `PewsEarlyWarningScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/MORSEFALLSCORER_GUIDE.md`.
 - `Phq9DepressionScorer` (`src/medagent/safety/phq9_depression_scorer.py`): research-only advisory score (SAFETY #240). Gap vs MDCalc / USPSTF PHQ-9 depression severity screen. Distinct from `EpworthSleepinessScorer` / `StopBangOsaScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/PHQ9DEPRESSIONSCORER_GUIDE.md`.
 - `BisapPancreatitisScorer` (`src/medagent/safety/bisap_pancreatitis_scorer.py`): research-only advisory score (SAFETY #239). Gap vs MDCalc / ACG BISAP pancreatitis severity screen. Distinct from `RansonPancreatitisScorer` / `MaddreyDiscriminantScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/BISAPPANCREATITISSCORER_GUIDE.md`.
 - `Fib4LiverScorer` (`src/medagent/safety/fib4_liver_scorer.py`): research-only advisory score (SAFETY #238). Gap vs MDCalc / AASLD FIB-4 liver fibrosis screen. Distinct from `ChildPughLiverSeverityScorer` / `MeldNaScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/FIB4LIVERSCORER_GUIDE.md`.
