@@ -1283,6 +1283,12 @@ yields a `MorseFallRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.243 Gad7Anxiety Scorer
+`Gad7AnxietyScorer` computes an advisory score (MDCalc / USPSTF GAD-7 anxiety severity screen). Every call
+yields a `Gad7AnxietyRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+for narrative summaries only.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
