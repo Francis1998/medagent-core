@@ -95,6 +95,12 @@ Research-only advisory scorer. Gap vs MDCalc / USPSTF GAD-7 anxiety severity scr
 
 Research-only advisory scorer. Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### WaterlooPressureScorer
+
+![WaterlooPressureScorer](assets/waterloo_pressure_scorer_demo.gif)
+
+Research-only Safety #246. Gap vs MDCalc / Waterloo pressure-injury risk screen. See `docs/guides/WATERLOOPRESSURESCORER_GUIDE.md`.
+
 ### CamIcuDeliriumScorer
 
 ![CamIcuDeliriumScorer](assets/cam_icu_delirium_scorer_demo.gif)
