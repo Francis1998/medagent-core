@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `CamIcuDeliriumScorer` (Safety #245): research-only advisory score. Gap vs MDCalc / SCCM CAM-ICU delirium screen. Distinct from `GcsNeurologicStatusScorer` / `CiwaArWithdrawalScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CAMICUDELIRIUMSCORER_GUIDE.md`.
 - `AscvdRiskScorer` (Safety #244): research-only advisory score. Gap vs MDCalc / ACC-AHA ASCVD 10-year risk screen. Distinct from `HeartScoreAcsScorer` / `GraceAcsScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ASCVDRISKSCORER_GUIDE.md`.
 - `BradenPressureScorer` (`src/medagent/safety/braden_pressure_scorer.py`): research-only advisory score (SAFETY #242). Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Distinct from `News2EarlyWarningScorer` / `SofaOrganFailureScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/BRADENPRESSURESCORER_GUIDE.md`.
 - `Gad7AnxietyScorer` (`src/medagent/safety/gad7_anxiety_scorer.py`): research-only advisory score (SAFETY #243). Gap vs MDCalc / USPSTF GAD-7 anxiety severity screen. Distinct from `Phq9DepressionScorer` / `EpworthSleepinessScorer`. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative only. See `docs/guides/GAD7ANXIETYSCORER_GUIDE.md`.
