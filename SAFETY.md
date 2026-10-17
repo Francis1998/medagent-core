@@ -1300,6 +1300,11 @@ for narrative summaries only.
 yields a `AscvdRiskFinding` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.245 CamIcuDelirium Scorer
+`CamIcuDeliriumScorer` computes an advisory score (MDCalc / SCCM CAM-ICU delirium screen). Every call
+yields a `CamIcuDeliriumRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

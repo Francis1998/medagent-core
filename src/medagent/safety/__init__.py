@@ -27,6 +27,7 @@ from medagent.safety.bisap_pancreatitis_scorer import BisapPancreatitisScorer
 from medagent.safety.bishop_score_scorer import BishopScoreScorer
 from medagent.safety.bode_copd_scorer import BodeCopdScorer
 from medagent.safety.braden_pressure_scorer import BradenPressureScorer
+from medagent.safety.cam_icu_delirium_scorer import CamIcuDeliriumScorer
 from medagent.safety.canadian_cspine_rule_scorer import CanadianCspineRuleScorer
 from medagent.safety.canadian_ct_head_scorer import CanadianCtHeadScorer
 from medagent.safety.caprini_vte_risk_scorer import CapriniVteRiskScorer
@@ -265,6 +266,7 @@ __all__ = [
     "BishopScoreScorer",
     "BodeCopdScorer",
     "BradenPressureScorer",
+    "CamIcuDeliriumScorer",
     "CanadianCspineRuleScorer",
     "CanadianCtHeadScorer",
     "CapriniVteRiskScorer",

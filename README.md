@@ -95,6 +95,12 @@ Research-only advisory scorer. Gap vs MDCalc / USPSTF GAD-7 anxiety severity scr
 
 Research-only advisory scorer. Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### CamIcuDeliriumScorer
+
+![CamIcuDeliriumScorer](assets/cam_icu_delirium_scorer_demo.gif)
+
+Research-only Safety #245. Gap vs MDCalc / SCCM CAM-ICU delirium screen. See `docs/guides/CAMICUDELIRIUMSCORER_GUIDE.md`.
+
 ### AscvdRiskScorer
 
 ![AscvdRiskScorer](assets/ascvd_risk_scorer_demo.gif)
