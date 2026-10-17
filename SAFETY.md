@@ -1295,6 +1295,11 @@ yields a `BradenPressureRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
 for narrative summaries only.
 
+### 3.244 AscvdRisk Scorer
+`AscvdRiskScorer` computes an advisory score (MDCalc / ACC-AHA ASCVD 10-year risk screen). Every call
+yields a `AscvdRiskFinding` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
