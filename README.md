@@ -107,6 +107,12 @@ Research-only Safety #247. Gap vs MDCalc / SCCM Richmond Agitation-Sedation Scal
 
 Research-only Safety #248. Gap vs MDCalc / ECOG/WHO performance status screen. See `docs/guides/ECOGPERFORMANCESCORER_GUIDE.md`.
 
+### BarthelAdlScorer
+
+![BarthelAdlScorer](assets/barthel_adl_scorer_demo.gif)
+
+Research-only Safety #249. Gap vs MDCalc / Barthel Index ADL independence screen. See `docs/guides/BARTHELADLSCORER_GUIDE.md`.
+
 ### WaterlooPressureScorer
 
 ![WaterlooPressureScorer](assets/waterloo_pressure_scorer_demo.gif)

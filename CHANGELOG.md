@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `BarthelAdlScorer` (Safety #249): research-only advisory score. Gap vs MDCalc / Barthel Index ADL independence screen. Distinct from `MorseFallScorer` / `BradenPressureScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BARTHELADLSCORER_GUIDE.md`.
 - `EcogPerformanceScorer` (Safety #248): research-only advisory score. Gap vs MDCalc / ECOG/WHO performance status screen. Distinct from `GcsNeurologicStatusScorer` / `ApacheIiLiteScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ECOGPERFORMANCESCORER_GUIDE.md`.
 - `RassSedationScorer` (Safety #247): research-only advisory score. Gap vs MDCalc / SCCM Richmond Agitation-Sedation Scale (RASS) screen. Distinct from `CamIcuDeliriumScorer` / `CiwaArWithdrawalScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RASSSEDATIONSCORER_GUIDE.md`.
 - `WaterlooPressureScorer` (Safety #246): research-only advisory score. Gap vs MDCalc / Waterloo pressure-injury risk screen. Distinct from `BradenPressureScorer` / `MorseFallScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WATERLOOPRESSURESCORER_GUIDE.md`.

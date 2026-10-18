@@ -1320,6 +1320,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `EcogPerformanceRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.249 BarthelAdl Scorer
+`BarthelAdlScorer` computes an advisory score (MDCalc / Barthel Index ADL independence screen). Every call
+yields a `BarthelAdlRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
