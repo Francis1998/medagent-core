@@ -1315,6 +1315,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `RassSedationRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.248 EcogPerformance Scorer
+`EcogPerformanceScorer` computes an advisory score (MDCalc / ECOG/WHO performance status screen). Every call
+yields a `EcogPerformanceRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
