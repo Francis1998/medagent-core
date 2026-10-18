@@ -95,6 +95,12 @@ Research-only advisory scorer. Gap vs MDCalc / USPSTF GAD-7 anxiety severity scr
 
 Research-only advisory scorer. Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### RassSedationScorer
+
+![RassSedationScorer](assets/rass_sedation_scorer_demo.gif)
+
+Research-only Safety #247. Gap vs MDCalc / SCCM Richmond Agitation-Sedation Scale (RASS) screen. See `docs/guides/RASSSEDATIONSCORER_GUIDE.md`.
+
 ### WaterlooPressureScorer
 
 ![WaterlooPressureScorer](assets/waterloo_pressure_scorer_demo.gif)

@@ -180,6 +180,7 @@ from medagent.safety.qtc_monitoring_checker import QtcMonitoringChecker
 from medagent.safety.quetiapine_cyp3a4_checker import QuetiapineCyp3a4Checker
 from medagent.safety.race_stroke_scale_scorer import RaceStrokeScaleScorer
 from medagent.safety.ranson_pancreatitis_scorer import RansonPancreatitisScorer
+from medagent.safety.rass_sedation_scorer import RassSedationScorer
 from medagent.safety.rems_pe_severity_scorer import RemsPeSeverityScorer
 from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
@@ -406,6 +407,7 @@ __all__ = [
     "QuetiapineCyp3a4Checker",
     "RaceStrokeScaleScorer",
     "RansonPancreatitisScorer",
+    "RassSedationScorer",
     "RemsPeSeverityScorer",
     "RenalDoseAdjuster",
     "RenalHepaticLactationChecker",

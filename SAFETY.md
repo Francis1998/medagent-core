@@ -1310,6 +1310,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `WaterlooPressureRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.247 RassSedation Scorer
+`RassSedationScorer` computes an advisory score (MDCalc / SCCM Richmond Agitation-Sedation Scale (RASS) screen). Every call
+yields a `RassSedationRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
