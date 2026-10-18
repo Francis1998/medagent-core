@@ -101,6 +101,12 @@ Research-only advisory scorer. Gap vs MDCalc / NPUAP Braden pressure-injury risk
 
 Research-only Safety #247. Gap vs MDCalc / SCCM Richmond Agitation-Sedation Scale (RASS) screen. See `docs/guides/RASSSEDATIONSCORER_GUIDE.md`.
 
+### EcogPerformanceScorer
+
+![EcogPerformanceScorer](assets/ecog_performance_scorer_demo.gif)
+
+Research-only Safety #248. Gap vs MDCalc / ECOG/WHO performance status screen. See `docs/guides/ECOGPERFORMANCESCORER_GUIDE.md`.
+
 ### WaterlooPressureScorer
 
 ![WaterlooPressureScorer](assets/waterloo_pressure_scorer_demo.gif)
