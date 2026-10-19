@@ -1325,6 +1325,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `BarthelAdlRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.250 FourAtDelirium Scorer
+`FourAtDeliriumScorer` computes an advisory score (MDCalc / 4AT rapid delirium screen). Every call
+yields a `FourAtDeliriumRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

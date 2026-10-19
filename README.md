@@ -113,6 +113,12 @@ Research-only Safety #248. Gap vs MDCalc / ECOG/WHO performance status screen. S
 
 Research-only Safety #249. Gap vs MDCalc / Barthel Index ADL independence screen. See `docs/guides/BARTHELADLSCORER_GUIDE.md`.
 
+### FourAtDeliriumScorer
+
+![FourAtDeliriumScorer](assets/four_at_delirium_scorer_demo.gif)
+
+Research-only advisory score (Safety #250). Gap vs MDCalc / 4AT rapid delirium screen. See `docs/guides/FOURATDELIRIUMSCORER_GUIDE.md`.
+
 ### WaterlooPressureScorer
 
 ![WaterlooPressureScorer](assets/waterloo_pressure_scorer_demo.gif)
