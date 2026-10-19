@@ -1330,6 +1330,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `FourAtDeliriumRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.251 KarnofskyPerformance Scorer
+`KarnofskyPerformanceScorer` computes an advisory score (MDCalc / Karnofsky Performance Status screen). Every call
+yields a `KarnofskyPerformanceRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

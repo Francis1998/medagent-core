@@ -807,6 +807,12 @@ medagent-core/
 
 ---
 
+![KarnofskyPerformanceScorer](assets/karnofsky_performance_scorer_demo.gif)
+### KarnofskyPerformanceScorer
+
+![KarnofskyPerformanceScorer](assets/karnofsky_performance_scorer_demo.gif)
+
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).
