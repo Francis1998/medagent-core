@@ -813,6 +813,12 @@ medagent-core/
 ![KarnofskyPerformanceScorer](assets/karnofsky_performance_scorer_demo.gif)
 
 
+![News2SerialDeltaPanel](assets/news2_serial_delta_panel_demo.gif)
+### News2SerialDeltaPanel
+
+![News2SerialDeltaPanel](assets/news2_serial_delta_panel_demo.gif)
+
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).
