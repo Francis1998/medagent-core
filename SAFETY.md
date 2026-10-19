@@ -1335,6 +1335,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `KarnofskyPerformanceRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.252 News2SerialDelta Panel
+`News2SerialDeltaPanel` computes an advisory score (MDCalc / NEWS2 serial delta-trend panel). Every call
+yields a `News2SerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
