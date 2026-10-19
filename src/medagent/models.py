@@ -5336,3 +5336,20 @@ class FourAtDeliriumRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class KarnofskyPerformanceRisk(BaseModel, frozen=True):
+    """KarnofskyPerformanceScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    `EcogPerformanceScorer` / `BarthelAdlScorer`.
+    Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str

@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `KarnofskyPerformanceScorer` (Safety #251): research-only advisory score. Gap vs MDCalc / Karnofsky Performance Status screen. Distinct from `EcogPerformanceScorer` / `BarthelAdlScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KARNOFSKYPERFORMANCESCORER_GUIDE.md`.
 - `FourAtDeliriumScorer` (Safety #250): research-only advisory score. Gap vs MDCalc / 4AT rapid delirium screen. Distinct from `CamIcuDeliriumScorer` / `CiwaArWithdrawalScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOURATDELIRIUMSCORER_GUIDE.md`.
 - `BarthelAdlScorer` (Safety #249): research-only advisory score. Gap vs MDCalc / Barthel Index ADL independence screen. Distinct from `MorseFallScorer` / `BradenPressureScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BARTHELADLSCORER_GUIDE.md`.
 - `EcogPerformanceScorer` (Safety #248): research-only advisory score. Gap vs MDCalc / ECOG/WHO performance status screen. Distinct from `GcsNeurologicStatusScorer` / `ApacheIiLiteScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ECOGPERFORMANCESCORER_GUIDE.md`.
