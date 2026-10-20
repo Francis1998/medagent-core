@@ -814,6 +814,13 @@ medagent-core/
 
 
 ![News2SerialDeltaPanel](assets/news2_serial_delta_panel_demo.gif)
+
+![Curb65SerialDeltaPanel](assets/curb65_serial_delta_panel_demo.gif)
+### Curb65SerialDeltaPanel
+
+![Curb65SerialDeltaPanel](assets/curb65_serial_delta_panel_demo.gif)
+
+Research-only advisory score. Gap vs MDCalc / CURB-65 serial delta-trend panel. See `docs/guides/CURB65SERIALDELTAPANEL_GUIDE.md`.
 ### News2SerialDeltaPanel
 
 ![News2SerialDeltaPanel](assets/news2_serial_delta_panel_demo.gif)

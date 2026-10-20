@@ -50,6 +50,7 @@ from medagent.safety.colchicine_cyp3a4_checker import ColchicineCyp3a4Checker
 from medagent.safety.corticosteroid_nsaid_gi_bleed_panel import CorticosteroidNsaidGiBleedPanel
 from medagent.safety.crb65_pneumonia_scorer import Crb65PneumoniaScorer
 from medagent.safety.curb65_pneumonia_scorer import Curb65PneumoniaScorer
+from medagent.safety.curb65_serial_delta_panel import Curb65SerialDeltaPanel
 from medagent.safety.cyclosporine_level_trend_bridge import CyclosporineLevelTrendBridge
 from medagent.safety.cyclosporine_statin_checker import CyclosporineStatinChecker
 from medagent.safety.dabigatran_pgp_checker import DabigatranPgpChecker
@@ -296,6 +297,7 @@ __all__ = [
     "CorticosteroidNsaidGiBleedPanel",
     "Crb65PneumoniaScorer",
     "Curb65PneumoniaScorer",
+    "Curb65SerialDeltaPanel",
     "CyclosporineLevelTrendBridge",
     "CyclosporineStatinChecker",
     "DabigatranPgpChecker",

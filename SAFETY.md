@@ -1340,6 +1340,12 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `News2SerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.254 Curb65SerialDelta Panel
+`Curb65SerialDeltaPanel` computes an advisory score (MDCalc / CURB-65 serial delta-trend panel). Every call
+yields a `Curb65SerialDeltaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
