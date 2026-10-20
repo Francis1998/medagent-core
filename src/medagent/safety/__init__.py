@@ -179,6 +179,7 @@ from medagent.safety.pregnancy_lactation_risk_panel import PregnancyLactationRis
 from medagent.safety.prism_iii_pediatric_scorer import PrismIiiPediatricScorer
 from medagent.safety.psi_port_pneumonia_scorer import PsiPortPneumoniaScorer
 from medagent.safety.qsofa_sepsis_screen_scorer import QSofaSepsisScreenScorer
+from medagent.safety.qsofa_serial_delta_panel import QsofaSerialDeltaPanel
 from medagent.safety.qt_prolongation_panel import QtProlongationPanel
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.qtc_electrolyte_bridge import QTcElectrolyteBridge
@@ -413,6 +414,7 @@ __all__ = [
     "PsiPortPneumoniaScorer",
     "QSofaSepsisScreenScorer",
     "QTcElectrolyteBridge",
+    "QsofaSerialDeltaPanel",
     "QtProlongationPanel",
     "QtcDdiChecker",
     "QtcMonitoringChecker",
