@@ -823,6 +823,20 @@ medagent-core/
 Research-only advisory score. Gap vs MDCalc / CURB-65 serial delta-trend panel. See `docs/guides/CURB65SERIALDELTAPANEL_GUIDE.md`.
 ![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
 ![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+### SofaSerialDeltaPanel
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+### SofaSerialDeltaPanel
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+### SofaSerialDeltaPanel
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+### SofaSerialDeltaPanel
+
+![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+
+Research-only advisory score. Gap vs MDCalc / SOFA serial delta-trend panel. See `docs/guides/SOFASERIALDELTAPANEL_GUIDE.md`.
 ### QsofaSerialDeltaPanel
 ![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
 ### QsofaSerialDeltaPanel

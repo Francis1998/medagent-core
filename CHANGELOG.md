@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `SofaSerialDeltaPanel` (Safety #255): research-only advisory score. Gap vs MDCalc / SOFA serial delta-trend panel. Distinct from `SofaOrganFailureScorer` / `News2SerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SOFASERIALDELTAPANEL_GUIDE.md`.
 - `QsofaSerialDeltaPanel` (Safety #253): research-only advisory score. Gap vs MDCalc / qSOFA serial delta-trend panel. Distinct from `QSofaSepsisScreenScorer` / `News2SerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/QSOFASERIALDELTAPANEL_GUIDE.md`.
 - `Curb65SerialDeltaPanel` (Safety #254): research-only advisory score. Gap vs MDCalc / CURB-65 serial delta-trend panel. Distinct from `Curb65PneumoniaScorer` / `Crb65PneumoniaScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CURB65SERIALDELTAPANEL_GUIDE.md`.
 - `News2SerialDeltaPanel` (Safety #252): research-only advisory score. Gap vs MDCalc / NEWS2 serial delta-trend panel. Distinct from `News2EarlyWarningScorer` / `SofaOrganFailureScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEWS2SERIALDELTAPANEL_GUIDE.md`.
