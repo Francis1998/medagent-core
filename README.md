@@ -826,6 +826,12 @@ Research-only advisory score. Gap vs MDCalc / CURB-65 serial delta-trend panel. 
 ![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
 ![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
 ![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
+### MewsSerialDeltaPanel
+
+![MewsSerialDeltaPanel](assets/mews_serial_delta_panel_demo.gif)
+
+Research-only advisory score (Safety #256). Gap vs MDCalc / MEWS serial delta-trend panel. See `docs/guides/MEWSSERIALDELTAPANEL_GUIDE.md`.
+
 ### SofaSerialDeltaPanel
 ![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
 ### SofaSerialDeltaPanel

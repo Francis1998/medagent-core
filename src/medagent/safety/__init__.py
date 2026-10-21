@@ -141,6 +141,7 @@ from medagent.safety.methotrexate_nsaid_checker import MethotrexateNsaidChecker
 from medagent.safety.methotrexate_trimethoprim_checker import MethotrexateTrimethoprimChecker
 from medagent.safety.methylene_blue_ssri_checker import MethyleneBlueSsriChecker
 from medagent.safety.mews_scorer import MewsScorer
+from medagent.safety.mews_serial_delta_panel import MewsSerialDeltaPanel
 from medagent.safety.midazolam_cyp3a4_checker import MidazolamCyp3a4Checker
 from medagent.safety.morse_fall_scorer import MorseFallScorer
 from medagent.safety.mtx_folate_checker import MtxFolateChecker
@@ -377,6 +378,7 @@ __all__ = [
     "MethotrexateTrimethoprimChecker",
     "MethyleneBlueSsriChecker",
     "MewsScorer",
+    "MewsSerialDeltaPanel",
     "MidazolamCyp3a4Checker",
     "MorseFallScorer",
     "MtxFolateChecker",
