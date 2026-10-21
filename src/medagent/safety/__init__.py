@@ -90,6 +90,7 @@ from medagent.safety.fluoroquinolone_nsaid_checker import (
 from medagent.safety.fluoroquinolone_warfarin_checker import (
     FluoroquinoloneWarfarinChecker,
 )
+from medagent.safety.forrester_class_scorer import ForresterClassScorer
 from medagent.safety.four_at_delirium_scorer import FourAtDeliriumScorer
 from medagent.safety.four_score_scorer import FourScoreScorer
 from medagent.safety.gad7_anxiety_scorer import Gad7AnxietyScorer
@@ -329,6 +330,7 @@ __all__ = [
     "FluoroquinoloneCorticosteroidChecker",
     "FluoroquinoloneNsaidChecker",
     "FluoroquinoloneWarfarinChecker",
+    "ForresterClassScorer",
     "FourAtDeliriumScorer",
     "FourScoreScorer",
     "Gad7AnxietyScorer",

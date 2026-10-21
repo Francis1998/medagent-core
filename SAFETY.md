@@ -1365,6 +1365,13 @@ yields a `MewsSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
 medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.257 ForresterClass Scorer
+`ForresterClassScorer` computes an advisory score (MDCalc / Killip-Forrester hemodynamic class screen). Every call
+yields a `ForresterClassRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
