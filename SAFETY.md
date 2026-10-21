@@ -1372,6 +1372,13 @@ yields a `ForresterClassRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
 medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.258 AspectsStroke Scorer
+`AspectsStrokeScorer` computes an advisory score (MDCalc / ASPECTS early ischemic change screen). Every call
+yields a `AspectsStrokeRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
