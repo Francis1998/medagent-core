@@ -838,6 +838,12 @@ Research-only advisory score (Safety #256). Gap vs MDCalc / MEWS serial delta-tr
 
 Research-only advisory score (Safety #257). Gap vs MDCalc / Killip-Forrester hemodynamic class screen. See `docs/guides/FORRESTERCLASSSCORER_GUIDE.md`.
 
+### ApacheSerialDeltaPanel
+
+![ApacheSerialDeltaPanel](assets/apache_serial_delta_panel_demo.gif)
+
+Research-only advisory score (Safety #259). Gap vs MDCalc / APACHE serial delta-trend panel. See `docs/guides/APACHESERIALDELTAPANEL_GUIDE.md`.
+
 ### AspectsStrokeScorer
 
 ![AspectsStrokeScorer](assets/aspects_stroke_scorer_demo.gif)
