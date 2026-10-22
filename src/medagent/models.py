@@ -5506,3 +5506,20 @@ class ImproveVteRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class AbcIchRisk(BaseModel, frozen=True):
+    """AbcIchScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    `IchScoreScorer` / `HuntHessSahScorer`.
+    Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str
