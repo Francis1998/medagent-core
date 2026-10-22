@@ -850,6 +850,12 @@ Research-only advisory score (Safety #259). Gap vs MDCalc / APACHE serial delta-
 
 Research-only advisory score (Safety #260). Gap vs MDCalc / IMPROVE VTE risk screen. See `docs/guides/IMPROVEVTESCORER_GUIDE.md`.
 
+### AbcIchScorer
+
+![AbcIchScorer](assets/abc_ich_scorer_demo.gif)
+
+Research-only advisory score (Safety #261). Gap vs MDCalc / ABC ICH volume/severity screen. See `docs/guides/ABCICHSCORER_GUIDE.md`.
+
 ### AspectsStrokeScorer
 
 ![AspectsStrokeScorer](assets/aspects_stroke_scorer_demo.gif)
