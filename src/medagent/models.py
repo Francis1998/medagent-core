@@ -5489,3 +5489,20 @@ class ApacheSerialDeltaRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class ImproveVteRisk(BaseModel, frozen=True):
+    """ImproveVteScorer finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    `PaduaVteRiskScorer` / `WellsPeProbabilityScorer`.
+    Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str

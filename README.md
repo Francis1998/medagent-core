@@ -844,6 +844,12 @@ Research-only advisory score (Safety #257). Gap vs MDCalc / Killip-Forrester hem
 
 Research-only advisory score (Safety #259). Gap vs MDCalc / APACHE serial delta-trend panel. See `docs/guides/APACHESERIALDELTAPANEL_GUIDE.md`.
 
+### ImproveVteScorer
+
+![ImproveVteScorer](assets/improve_vte_scorer_demo.gif)
+
+Research-only advisory score (Safety #260). Gap vs MDCalc / IMPROVE VTE risk screen. See `docs/guides/IMPROVEVTESCORER_GUIDE.md`.
+
 ### AspectsStrokeScorer
 
 ![AspectsStrokeScorer](assets/aspects_stroke_scorer_demo.gif)

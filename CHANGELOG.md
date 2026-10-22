@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `ImproveVteScorer` (Safety #260): research-only advisory score. Gap vs MDCalc / IMPROVE VTE risk screen. Distinct from `PaduaVteRiskScorer` / `WellsPeProbabilityScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/IMPROVEVTESCORER_GUIDE.md`.
 - `ApacheSerialDeltaPanel` (Safety #259): research-only advisory score. Gap vs MDCalc / APACHE serial delta-trend panel. Distinct from `ApacheIiLiteScorer` / `SofaSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/APACHESERIALDELTAPANEL_GUIDE.md`.
 - `AspectsStrokeScorer` (Safety #258): research-only advisory score. Gap vs MDCalc / ASPECTS early ischemic change screen. Distinct from `NihssStrokeScorer` / `CanadianCtHeadScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ASPECTSSTROKESCORER_GUIDE.md`.
 - `ForresterClassScorer` (Safety #257): research-only advisory score. Gap vs MDCalc / Killip-Forrester hemodynamic class screen. Distinct from `GraceAcsScorer` / `HeartScoreAcsScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FORRESTERCLASSSCORER_GUIDE.md`.
