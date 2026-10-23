@@ -856,6 +856,12 @@ Research-only advisory score (Safety #260). Gap vs MDCalc / IMPROVE VTE risk scr
 
 Research-only `HeartSerialDeltaPanel` (Safety #262). Gap vs MDCalc / HEART serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### WellsPeSerialDeltaPanel
+
+![WellsPeSerialDeltaPanel](assets/wells_pe_serial_delta_panel_demo.gif)
+
+Research-only `WellsPeSerialDeltaPanel` (Safety #263). Gap vs MDCalc / Wells PE serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### AbcIchScorer
 
 ![AbcIchScorer](assets/abc_ich_scorer_demo.gif)

@@ -250,6 +250,7 @@ from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 from medagent.safety.waterloo_pressure_scorer import WaterlooPressureScorer
 from medagent.safety.wells_dvt_probability_scorer import WellsDvtProbabilityScorer
 from medagent.safety.wells_pe_probability_scorer import WellsPeProbabilityScorer
+from medagent.safety.wells_pe_serial_delta_panel import WellsPeSerialDeltaPanel
 from medagent.safety.wfns_sah_scorer import WfnsSahScorer
 
 __all__ = [
@@ -493,6 +494,7 @@ __all__ = [
     "WaterlooPressureScorer",
     "WellsDvtProbabilityScorer",
     "WellsPeProbabilityScorer",
+    "WellsPeSerialDeltaPanel",
     "WfnsSahScorer",
     "hash_pii",
     "hash_pii_dict",
