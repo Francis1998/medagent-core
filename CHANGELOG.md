@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `HeartSerialDeltaPanel` (Safety #262): research-only advisory score. Gap vs MDCalc / HEART serial delta-trend panel. Distinct from `HeartScoreAcsScorer` / `MewsSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HEARTSERIALDELTAPANEL_GUIDE.md`.
 - `AbcIchScorer` (Safety #261): research-only advisory score. Gap vs MDCalc / ABC ICH volume/severity screen. Distinct from `IchScoreScorer` / `HuntHessSahScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ABCICHSCORER_GUIDE.md`.
 - `ImproveVteScorer` (Safety #260): research-only advisory score. Gap vs MDCalc / IMPROVE VTE risk screen. Distinct from `PaduaVteRiskScorer` / `WellsPeProbabilityScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/IMPROVEVTESCORER_GUIDE.md`.
 - `ApacheSerialDeltaPanel` (Safety #259): research-only advisory score. Gap vs MDCalc / APACHE serial delta-trend panel. Distinct from `ApacheIiLiteScorer` / `SofaSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/APACHESERIALDELTAPANEL_GUIDE.md`.
