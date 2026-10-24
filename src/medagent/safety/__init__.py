@@ -98,6 +98,7 @@ from medagent.safety.four_at_delirium_scorer import FourAtDeliriumScorer
 from medagent.safety.four_score_scorer import FourScoreScorer
 from medagent.safety.gad7_anxiety_scorer import Gad7AnxietyScorer
 from medagent.safety.gcs_neurologic_status_scorer import GcsNeurologicStatusScorer
+from medagent.safety.geneva_pe_serial_delta_panel import GenevaPeSerialDeltaPanel
 from medagent.safety.gentamicin_level_trend_bridge import GentamicinLevelTrendBridge
 from medagent.safety.gentamicin_vancomycin_checker import GentamicinVancomycinChecker
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
@@ -346,6 +347,7 @@ __all__ = [
     "FourScoreScorer",
     "Gad7AnxietyScorer",
     "GcsNeurologicStatusScorer",
+    "GenevaPeSerialDeltaPanel",
     "GentamicinLevelTrendBridge",
     "GentamicinVancomycinChecker",
     "GeriatricDeprescribingChecker",
