@@ -862,6 +862,13 @@ Research-only `HeartSerialDeltaPanel` (Safety #262). Gap vs MDCalc / HEART seria
 
 Research-only `WellsPeSerialDeltaPanel` (Safety #263). Gap vs MDCalc / Wells PE serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+
+### WellsDvtSerialDeltaPanel
+
+![WellsDvtSerialDeltaPanel](assets/wells_dvt_serial_delta_panel_demo.gif)
+
+Research-only `WellsDvtSerialDeltaPanel` (Safety #265). Gap vs MDCalc / Wells DVT serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### PsiSerialDeltaPanel
 
 ![PsiSerialDeltaPanel](assets/psi_serial_delta_panel_demo.gif)
