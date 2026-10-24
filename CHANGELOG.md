@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `GenevaPeSerialDeltaPanel` (Safety #266): research-only advisory score. Gap vs MDCalc / Geneva PE serial delta-trend panel. Distinct from `RevisedGenevaPeScorer` / `WellsPeSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GENEVAPESERIALDELTAPANEL_GUIDE.md`.
 - `WellsDvtSerialDeltaPanel` (Safety #265): research-only advisory score. Gap vs MDCalc / Wells DVT serial delta-trend panel. Distinct from `WellsDvtProbabilityScorer` / `WellsPeSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WELLSDVTSERIALDELTAPANEL_GUIDE.md`.
 - `PsiSerialDeltaPanel` (Safety #264): research-only advisory score. Gap vs MDCalc / PSI/PORT serial delta-trend panel. Distinct from `PsiPortPneumoniaScorer` / `Curb65SerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PSISERIALDELTAPANEL_GUIDE.md`.
 - `WellsPeSerialDeltaPanel` (Safety #263): research-only advisory score. Gap vs MDCalc / Wells PE serial delta-trend panel. Distinct from `WellsPeProbabilityScorer` / `PsiPortPneumoniaScorer`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WELLSPESERIALDELTAPANEL_GUIDE.md`.
