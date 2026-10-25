@@ -172,6 +172,7 @@ from medagent.safety.pecarn_head_trauma_scorer import PecarnHeadTraumaScorer
 from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
 from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAdjuster
 from medagent.safety.perc_pe_exclusion_scorer import PercPeExclusionScorer
+from medagent.safety.perc_serial_delta_panel import PercSerialDeltaPanel
 from medagent.safety.pesi_pe_severity_scorer import PesiPeSeverityScorer
 from medagent.safety.pews_early_warning_scorer import PewsEarlyWarningScorer
 from medagent.safety.phenytoin_fluconazole_checker import PhenytoinFluconazoleChecker
@@ -420,6 +421,7 @@ __all__ = [
     "PediatricRenalDosingChecker",
     "PediatricWeightDoseAdjuster",
     "PercPeExclusionScorer",
+    "PercSerialDeltaPanel",
     "PesiPeSeverityScorer",
     "PewsEarlyWarningScorer",
     "PhenytoinFluconazoleChecker",
