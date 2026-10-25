@@ -884,6 +884,13 @@ Research-only `GenevaPeSerialDeltaPanel` (Safety #266). Gap vs MDCalc / Geneva P
 
 Research-only `PercSerialDeltaPanel` (Safety #268). Gap vs MDCalc / PERC serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+
+### KillipSerialDeltaPanel
+
+![KillipSerialDeltaPanel](assets/killip_serial_delta_panel_demo.gif)
+
+Research-only `KillipSerialDeltaPanel` (Safety #269). Gap vs MDCalc / Killip serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ### TimiSerialDeltaPanel
 
 ![TimiSerialDeltaPanel](assets/timi_serial_delta_panel_demo.gif)

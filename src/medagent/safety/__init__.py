@@ -124,6 +124,7 @@ from medagent.safety.jones_criteria_scorer import JonesCriteriaScorer
 from medagent.safety.kampala_trauma_scorer import KampalaTraumaScorer
 from medagent.safety.karnofsky_performance_scorer import KarnofskyPerformanceScorer
 from medagent.safety.killip_class_scorer import KillipClassScorer
+from medagent.safety.killip_serial_delta_panel import KillipSerialDeltaPanel
 from medagent.safety.lab_trend_alert_bridge import LabTrendAlertBridge
 from medagent.safety.lactation_checker import LactationSafetyChecker
 from medagent.safety.lamotrigine_valproate_checker import LamotrigineValproateChecker
@@ -373,6 +374,7 @@ __all__ = [
     "KampalaTraumaScorer",
     "KarnofskyPerformanceScorer",
     "KillipClassScorer",
+    "KillipSerialDeltaPanel",
     "LabTrendAlertBridge",
     "LactationSafetyChecker",
     "LamotrigineValproateChecker",
