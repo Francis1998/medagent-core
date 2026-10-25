@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `Cha2ds2VascSerialDeltaPanel` (Safety #270): research-only advisory score. Gap vs MDCalc / CHA2DS2-VASc serial delta-trend panel. Distinct from `Cha2ds2VascStrokeRiskScorer` / `HeartSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CHA2DS2VASCSERIALDELTAPANEL_GUIDE.md`.
 - `KillipSerialDeltaPanel` (Safety #269): research-only advisory score. Gap vs MDCalc / Killip serial delta-trend panel. Distinct from `KillipClassScorer` / `HeartSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KILLIPSERIALDELTAPANEL_GUIDE.md`.
 - `PercSerialDeltaPanel` (Safety #268): research-only advisory score. Gap vs MDCalc / PERC serial delta-trend panel. Distinct from `PercPeExclusionScorer` / `WellsPeSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PERCSERIALDELTAPANEL_GUIDE.md`.
 - `TimiSerialDeltaPanel` (Safety #267): research-only advisory score. Gap vs MDCalc / TIMI serial delta-trend panel. Distinct from `TimiUaNstemiScorer` / `HeartSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/TIMISERIALDELTAPANEL_GUIDE.md`.

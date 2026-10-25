@@ -38,6 +38,7 @@ from medagent.safety.caprini_vte_risk_scorer import CapriniVteRiskScorer
 from medagent.safety.carbamazepine_level_trend_bridge import CarbamazepineLevelTrendBridge
 from medagent.safety.carbamazepine_macrolide_checker import CarbamazepineMacrolideChecker
 from medagent.safety.centor_strep_pharyngitis_scorer import CentorStrepPharyngitisScorer
+from medagent.safety.cha2ds2_vasc_serial_delta_panel import Cha2ds2VascSerialDeltaPanel
 from medagent.safety.cha2ds2_vasc_stroke_risk_scorer import Cha2ds2VascStrokeRiskScorer
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.child_pugh_liver_severity_scorer import ChildPughLiverSeverityScorer
@@ -301,6 +302,7 @@ __all__ = [
     "CarbamazepineLevelTrendBridge",
     "CarbamazepineMacrolideChecker",
     "CentorStrepPharyngitisScorer",
+    "Cha2ds2VascSerialDeltaPanel",
     "Cha2ds2VascStrokeRiskScorer",
     "ChemoEmesisChecker",
     "ChildPughLiverSeverityScorer",

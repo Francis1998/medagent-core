@@ -1391,6 +1391,12 @@ yields a `KillipSerialDeltaRisk` with score, band, positive factors, severity, a
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
 medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.270 Cha2ds2VascSerialDelta Panel
+`Cha2ds2VascSerialDeltaPanel` computes an advisory score (MDCalc / CHA2DS2-VASc serial delta-trend panel). Every call
+yields a `Cha2ds2VascSerialDeltaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
