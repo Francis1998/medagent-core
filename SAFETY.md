@@ -1409,6 +1409,12 @@ yields a `ChildPughSerialDeltaRisk` with score, band, positive factors, severity
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
 medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.273 MeldNaSerialDelta Panel
+`MeldNaSerialDeltaPanel` computes an advisory score (MDCalc / MELD-Na serial delta-trend panel). Every call
+yields a `MeldNaSerialDeltaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
