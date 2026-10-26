@@ -899,6 +899,13 @@ Research-only `KillipSerialDeltaPanel` (Safety #269). Gap vs MDCalc / Killip ser
 
 Research-only Safety #271. Gap vs MDCalc / Centor serial delta-trend panel. See `docs/guides/CENTORSERIALDELTAPANEL_GUIDE.md`.
 
+
+### ChildPughSerialDeltaPanel
+
+![ChildPughSerialDeltaPanel](assets/child_pugh_serial_delta_panel_demo.gif)
+
+Research-only Safety #272. Gap vs MDCalc / Child-Pugh serial delta-trend panel. See `docs/guides/CHILDPUGHSERIALDELTAPANEL_GUIDE.md`.
+
 ### Cha2ds2VascSerialDeltaPanel
 
 ![Cha2ds2VascSerialDeltaPanel](assets/cha2ds2_vasc_serial_delta_panel_demo.gif)
