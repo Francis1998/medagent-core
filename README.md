@@ -906,6 +906,13 @@ Research-only Safety #271. Gap vs MDCalc / Centor serial delta-trend panel. See 
 
 Research-only Safety #272. Gap vs MDCalc / Child-Pugh serial delta-trend panel. See `docs/guides/CHILDPUGHSERIALDELTAPANEL_GUIDE.md`.
 
+
+### MeldNaSerialDeltaPanel
+
+![MeldNaSerialDeltaPanel](assets/meld_na_serial_delta_panel_demo.gif)
+
+Research-only Safety #273. Gap vs MDCalc / MELD-Na serial delta-trend panel. See `docs/guides/MELDNASERIALDELTAPANEL_GUIDE.md`.
+
 ### Cha2ds2VascSerialDeltaPanel
 
 ![Cha2ds2VascSerialDeltaPanel](assets/cha2ds2_vasc_serial_delta_panel_demo.gif)

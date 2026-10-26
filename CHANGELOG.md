@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `MeldNaSerialDeltaPanel` (Safety #273, `safety/meld_na_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / MELD-Na serial delta-trend panel. Distinct from `MeldNaScorer` / `ChildPughLiverSeverityScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MELDNASERIALDELTAPANEL_GUIDE.md`.
 - `ChildPughSerialDeltaPanel` (Safety #272, `safety/child_pugh_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / Child-Pugh serial delta-trend panel. Distinct from `ChildPughLiverSeverityScorer` / `MeldNaScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CHILDPUGHSERIALDELTAPANEL_GUIDE.md`.
 - `CentorSerialDeltaPanel` (Safety #271, `safety/centor_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / Centor serial delta-trend panel. Distinct from `CentorStrepPharyngitisScorer` / `HeartSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CENTORSERIALDELTAPANEL_GUIDE.md`.
 - `Cha2ds2VascSerialDeltaPanel` (Safety #270): research-only advisory score. Gap vs MDCalc / CHA2DS2-VASc serial delta-trend panel. Distinct from `Cha2ds2VascStrokeRiskScorer` / `HeartSerialDeltaPanel`. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CHA2DS2VASCSERIALDELTAPANEL_GUIDE.md`.

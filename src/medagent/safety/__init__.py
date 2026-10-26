@@ -146,6 +146,7 @@ from medagent.safety.maddrey_discriminant_scorer import MaddreyDiscriminantScore
 from medagent.safety.mallampati_airway_scorer import MallampatiAirwayScorer
 from medagent.safety.maoi_serotonin_checker import MaoiSerotoninCrosscheckChecker
 from medagent.safety.meld_na_scorer import MeldNaScorer
+from medagent.safety.meld_na_serial_delta_panel import MeldNaSerialDeltaPanel
 from medagent.safety.metformin_contrast_checker import MetforminContrastChecker
 from medagent.safety.methadone_qt_checker import MethadoneQtChecker
 from medagent.safety.methotrexate_nsaid_checker import MethotrexateNsaidChecker
@@ -399,6 +400,7 @@ __all__ = [
     "MallampatiAirwayScorer",
     "MaoiSerotoninCrosscheckChecker",
     "MeldNaScorer",
+    "MeldNaSerialDeltaPanel",
     "MetforminContrastChecker",
     "MethadoneQtChecker",
     "MethotrexateNsaidChecker",
