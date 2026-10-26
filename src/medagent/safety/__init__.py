@@ -43,6 +43,7 @@ from medagent.safety.cha2ds2_vasc_serial_delta_panel import Cha2ds2VascSerialDel
 from medagent.safety.cha2ds2_vasc_stroke_risk_scorer import Cha2ds2VascStrokeRiskScorer
 from medagent.safety.chemo_emesis_checker import ChemoEmesisChecker
 from medagent.safety.child_pugh_liver_severity_scorer import ChildPughLiverSeverityScorer
+from medagent.safety.child_pugh_serial_delta_panel import ChildPughSerialDeltaPanel
 from medagent.safety.cincinnati_prehospital_stroke_scorer import CincinnatiPrehospitalStrokeScorer
 from medagent.safety.ciwa_ar_withdrawal_scorer import CiwaArWithdrawalScorer
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
@@ -308,6 +309,7 @@ __all__ = [
     "Cha2ds2VascStrokeRiskScorer",
     "ChemoEmesisChecker",
     "ChildPughLiverSeverityScorer",
+    "ChildPughSerialDeltaPanel",
     "CincinnatiPrehospitalStrokeScorer",
     "CiwaArWithdrawalScorer",
     "ClinicalGuidelineMatcher",
