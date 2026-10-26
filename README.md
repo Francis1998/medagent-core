@@ -892,6 +892,13 @@ Research-only `PercSerialDeltaPanel` (Safety #268). Gap vs MDCalc / PERC serial 
 Research-only `KillipSerialDeltaPanel` (Safety #269). Gap vs MDCalc / Killip serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+
+### CentorSerialDeltaPanel
+
+![CentorSerialDeltaPanel](assets/centor_serial_delta_panel_demo.gif)
+
+Research-only Safety #271. Gap vs MDCalc / Centor serial delta-trend panel. See `docs/guides/CENTORSERIALDELTAPANEL_GUIDE.md`.
+
 ### Cha2ds2VascSerialDeltaPanel
 
 ![Cha2ds2VascSerialDeltaPanel](assets/cha2ds2_vasc_serial_delta_panel_demo.gif)
