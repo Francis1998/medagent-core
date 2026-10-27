@@ -1,0 +1,24 @@
+# AlvaradoSerialDeltaPanel Guide
+
+![AlvaradoSerialDeltaPanel](../../assets/alvarado_serial_delta_panel_demo.gif)
+
+Research-only advisory panel (Safety #274).
+Gap vs MDCalc / Alvarado serial delta-trend panel. Distinct from `AlvaradoAppendicitisScorer` / `CentorSerialDeltaPanel`.
+
+Stack: **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+
+## Usage
+
+```python
+from medagent.safety.alvarado_serial_delta_panel import (
+    AlvaradoSerialDeltaFactors,
+    AlvaradoSerialDeltaPanel,
+)
+
+findings = AlvaradoSerialDeltaPanel().check(AlvaradoSerialDeltaFactors())
+print(findings[0].band, findings[0].rationale)
+```
+
+## Safety
+
+RESEARCH USE ONLY. Never modifies medications. No network I/O.

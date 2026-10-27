@@ -1415,6 +1415,12 @@ yields a `MeldNaSerialDeltaRisk` with score, band, positive factors, severity, a
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
 medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.274 AlvaradoSerialDelta Panel
+`AlvaradoSerialDeltaPanel` computes an advisory score (MDCalc / Alvarado serial delta-trend panel). Every call
+yields a `AlvaradoSerialDeltaRisk` with score, band, positive factors, severity, and
+RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
