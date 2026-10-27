@@ -8,7 +8,7 @@
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
-  <a href="#quality-gates"><img alt="Tests: 396 passed" src="https://img.shields.io/badge/tests-1917%20passed-brightgreen.svg"></a>
+  <a href="#quality-gates"><img alt="Tests: 396 passed" src="https://img.shields.io/badge/tests-1921%20passed-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Tests: 322 passed" src="https://img.shields.io/badge/tests-393%20passed-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Coverage: 70%" src="https://img.shields.io/badge/coverage-70%25-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
@@ -971,6 +971,13 @@ Research-only advisory score. Gap vs MDCalc / qSOFA serial delta-trend panel. Se
 ![AlvaradoSerialDeltaPanel](assets/alvarado_serial_delta_panel_demo.gif)
 
 Research-only Safety #274. Gap vs MDCalc / Alvarado serial delta-trend panel. Distinct from `AlvaradoAppendicitisScorer` / `CentorSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
+### NihssSerialDeltaPanel
+
+![NihssSerialDeltaPanel](assets/nihss_serial_delta_panel_demo.gif)
+
+Research-only Safety #275. Gap vs MDCalc / NIHSS serial delta-trend panel. Distinct from `NihssStrokeScorer` / `GcsNeurologicStatusScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
 ## License
