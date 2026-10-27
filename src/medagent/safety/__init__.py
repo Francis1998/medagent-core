@@ -165,6 +165,7 @@ from medagent.safety.mtx_tmpsmx_checker import MtxTmpsmxChecker
 from medagent.safety.news2_early_warning_scorer import News2EarlyWarningScorer
 from medagent.safety.news2_serial_delta_panel import News2SerialDeltaPanel
 from medagent.safety.nexus_cspine_scorer import NexusCspineScorer
+from medagent.safety.nihss_serial_delta_panel import NihssSerialDeltaPanel
 from medagent.safety.nihss_stroke_scorer import NihssStrokeScorer
 from medagent.safety.nsaid_acei_aki_panel import NsaidAceiAkiPanel
 from medagent.safety.nsaid_ssri_checker import NsaidSsriBleedChecker
@@ -420,6 +421,7 @@ __all__ = [
     "News2EarlyWarningScorer",
     "News2SerialDeltaPanel",
     "NexusCspineScorer",
+    "NihssSerialDeltaPanel",
     "NihssStrokeScorer",
     "NsaidAceiAkiPanel",
     "NsaidSsriBleedChecker",

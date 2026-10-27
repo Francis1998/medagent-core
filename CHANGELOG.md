@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `NihssSerialDeltaPanel` (Safety #275, `safety/nihss_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / NIHSS serial delta-trend panel. Distinct from `NihssStrokeScorer` / `GcsNeurologicStatusScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NIHSSSERIALDELTAPANEL_GUIDE.md`.
 - `AlvaradoSerialDeltaPanel` (Safety #274, `safety/alvarado_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / Alvarado serial delta-trend panel. Distinct from `AlvaradoAppendicitisScorer` / `CentorSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ALVARADOSERIALDELTAPANEL_GUIDE.md`.
 - `MeldNaSerialDeltaPanel` (Safety #273, `safety/meld_na_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / MELD-Na serial delta-trend panel. Distinct from `MeldNaScorer` / `ChildPughLiverSeverityScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MELDNASERIALDELTAPANEL_GUIDE.md`.
 - `ChildPughSerialDeltaPanel` (Safety #272, `safety/child_pugh_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / Child-Pugh serial delta-trend panel. Distinct from `ChildPughLiverSeverityScorer` / `MeldNaScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CHILDPUGHSERIALDELTAPANEL_GUIDE.md`.
