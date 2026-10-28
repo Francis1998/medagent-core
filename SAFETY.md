@@ -1443,6 +1443,11 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `OttawaAnkleSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.279 Abcd2SerialDelta Panel
+`Abcd2SerialDeltaPanel` computes an advisory score (MDCalc / ABCD2 serial delta-trend panel). Every call
+yields a `Abcd2SerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
