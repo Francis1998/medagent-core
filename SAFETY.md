@@ -1433,6 +1433,11 @@ yields a `GcsSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
 medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+### 3.277 RansonSerialDelta Panel
+`RansonSerialDeltaPanel` computes an advisory score (MDCalc / Ranson serial delta-trend panel). Every call
+yields a `RansonSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

@@ -987,6 +987,13 @@ Research-only Safety #275. Gap vs MDCalc / NIHSS serial delta-trend panel. Disti
 Research-only Safety #276. Gap vs MDCalc / GCS serial delta-trend panel. Distinct from `GcsNeurologicStatusScorer` / `NihssSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+### RansonSerialDeltaPanel
+
+![RansonSerialDeltaPanel](assets/ranson_serial_delta_panel_demo.gif)
+
+Research-only Safety #277. Gap vs MDCalc / Ranson serial delta-trend panel. Distinct from `RansonPancreatitisScorer` / `BisapPancreatitisScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).
