@@ -994,6 +994,13 @@ Research-only Safety #276. Gap vs MDCalc / GCS serial delta-trend panel. Distinc
 Research-only Safety #277. Gap vs MDCalc / Ranson serial delta-trend panel. Distinct from `RansonPancreatitisScorer` / `BisapPancreatitisScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+### OttawaAnkleSerialDeltaPanel
+
+![OttawaAnkleSerialDeltaPanel](assets/ottawa_ankle_serial_delta_panel_demo.gif)
+
+Research-only Safety #278. Gap vs MDCalc / Ottawa Ankle serial delta-trend panel. Distinct from `OttawaAnkleRuleScorer` / `OttawaKneeRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).

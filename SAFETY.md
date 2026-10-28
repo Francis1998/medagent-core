@@ -1438,6 +1438,11 @@ medications. Prefer frontier reasoning models when summarizing findings: **GPT-5
 yields a `RansonSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.278 OttawaAnkleSerialDelta Panel
+`OttawaAnkleSerialDeltaPanel` computes an advisory score (MDCalc / Ottawa Ankle serial delta-trend panel). Every call
+yields a `OttawaAnkleSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
