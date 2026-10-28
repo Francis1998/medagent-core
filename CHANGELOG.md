@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- `OttawaAnkleSerialDeltaPanel` (`safety/ottawa_ankle_serial_delta_panel.py`): research-only Safety #278 serial delta panel. Gap vs MDCalc / Ottawa Ankle serial delta-trend panel. Distinct from `OttawaAnkleRuleScorer` / `OttawaKneeRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWAANKLESERIALDELTAPANEL_GUIDE.md`.
 - `RansonSerialDeltaPanel` (`safety/ranson_serial_delta_panel.py`): research-only Safety #277 serial delta panel. Gap vs MDCalc / Ranson serial delta-trend panel. Distinct from `RansonPancreatitisScorer` / `BisapPancreatitisScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RANSONSERIALDELTAPANEL_GUIDE.md`.
 - `GcsSerialDeltaPanel` (Safety #276, `safety/gcs_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / GCS serial delta-trend panel. Distinct from `GcsNeurologicStatusScorer` / `NihssSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GCSSERIALDELTAPANEL_GUIDE.md`.
 - `NihssSerialDeltaPanel` (Safety #275, `safety/nihss_serial_delta_panel.py`): research-only advisory serial delta panel. Gap vs MDCalc / NIHSS serial delta-trend panel. Distinct from `NihssStrokeScorer` / `GcsNeurologicStatusScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NIHSSSERIALDELTAPANEL_GUIDE.md`.
