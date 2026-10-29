@@ -111,6 +111,7 @@ from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribi
 from medagent.safety.glasgow_blatchford_scorer import GlasgowBlatchfordScorer
 from medagent.safety.grace_acs_scorer import GraceAcsScorer
 from medagent.safety.has_bled_bleed_risk_scorer import HasBledBleedRiskScorer
+from medagent.safety.has_bled_serial_delta_panel import HasBledSerialDeltaPanel
 from medagent.safety.heart_score_acs_scorer import HeartScoreAcsScorer
 from medagent.safety.heart_serial_delta_panel import HeartSerialDeltaPanel
 from medagent.safety.heparin_antixa_trend_bridge import HeparinAntiXaTrendBridge
@@ -374,6 +375,7 @@ __all__ = [
     "GlasgowBlatchfordScorer",
     "GraceAcsScorer",
     "HasBledBleedRiskScorer",
+    "HasBledSerialDeltaPanel",
     "HeartScoreAcsScorer",
     "HeartSerialDeltaPanel",
     "HeparinAntiXaTrendBridge",

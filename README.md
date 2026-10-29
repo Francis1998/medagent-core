@@ -1018,6 +1018,12 @@ Apache 2.0 — see [LICENSE](LICENSE).
 
 **This software is provided for research and educational purposes only. It is NOT intended for clinical use, medical diagnosis, or treatment planning. It has NOT been evaluated, validated, or cleared by any regulatory authority including the FDA or EMA. Do NOT use this system to make clinical decisions. Always consult a qualified healthcare professional.**
 
+### HasBledSerialDeltaPanel
+
+![HasBledSerialDeltaPanel](assets/has_bled_serial_delta_panel_demo.gif)
+
+Research-only Safety #281. Gap vs MDCalc / HAS-BLED serial delta-trend panel. Distinct from `HasBledBleedRiskScorer` / `Cha2ds2VascSerialDeltaPanel`.
+
 ### PsiPortSerialDeltaPanel
 
 ![PsiPortSerialDeltaPanel](assets/psi_port_serial_delta_panel_demo.gif)

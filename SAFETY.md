@@ -2999,3 +2999,8 @@ Every unique phenytoin × fluconazole pair across separate medication entries yi
 
 Every unique aminoglycoside × vancomycin pair across separate medication entries yields a `GentamicinVancomycinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/GENTAMICIN_VANCOMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
 
+
+### 3.281 HasBledSerialDelta Panel
+`HasBledSerialDeltaPanel` computes an advisory score (MDCalc / HAS-BLED serial delta-trend panel). Every call
+yields a `HasBledSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
