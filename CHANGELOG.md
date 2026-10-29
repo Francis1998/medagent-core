@@ -5,6 +5,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `PsiPortSerialDeltaPanel` (`safety/psi_port_serial_delta_panel.py`): research-only Safety #280 serial delta panel. Gap vs MDCalc / PSI/PORT serial delta-trend panel. Distinct from `PsiPortPneumoniaScorer` / `Curb65SerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PSIPORTSERIALDELTAPANEL_GUIDE.md`.
 ### Added
 - `Abcd2SerialDeltaPanel` (`safety/abcd2_serial_delta_panel.py`): research-only Safety #279 serial delta panel. Gap vs MDCalc / ABCD2 serial delta-trend panel. Distinct from `Abcd2TiaRiskScorer` / `NihssSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ABCD2SERIALDELTAPANEL_GUIDE.md`.
 - `OttawaAnkleSerialDeltaPanel` (`safety/ottawa_ankle_serial_delta_panel.py`): research-only Safety #278 serial delta panel. Gap vs MDCalc / Ottawa Ankle serial delta-trend panel. Distinct from `OttawaAnkleRuleScorer` / `OttawaKneeRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWAANKLESERIALDELTAPANEL_GUIDE.md`.
