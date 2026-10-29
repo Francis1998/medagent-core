@@ -2024,6 +2024,11 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 *Last updated: 2026-07-25. This document is part of the `medagent-core` open-source repository and is subject to the Apache 2.0 License.*
 
 
+### 3.280 PsiPortSerialDelta Panel
+`PsiPortSerialDeltaPanel` computes an advisory score (MDCalc / PSI/PORT serial delta-trend panel). Every call
+yields a `PsiPortSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.
+
 ### 3.123 Rivaroxaban + Rifampin Induction Risk
 `safety/rivaroxaban_rifampin_checker.py` flags **rivaroxaban** (and aliases) co-prescribed with **rifampin** (and aliases). Rifampin strongly induces CYP3A4 and P-gp, reducing rivaroxaban exposure and increasing thrombotic risk. Distinct from related DDI checkers covering other pairs.
 
