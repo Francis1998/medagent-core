@@ -5,6 +5,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `GraceSerialDeltaPanel` (`safety/grace_serial_delta_panel.py`): research-only Safety #282 serial delta panel. Gap vs MDCalc / GRACE ACS serial delta-trend panel. Distinct from `GraceAcsScorer` / `HeartSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GRACESERIALDELTAPANEL_GUIDE.md`.
 - `HasBledSerialDeltaPanel` (`safety/has_bled_serial_delta_panel.py`): research-only Safety #281 serial delta panel. Gap vs MDCalc / HAS-BLED serial delta-trend panel. Distinct from `HasBledBleedRiskScorer` / `Cha2ds2VascSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HASBLEDSERIALDELTAPANEL_GUIDE.md`.
 - `PsiPortSerialDeltaPanel` (`safety/psi_port_serial_delta_panel.py`): research-only Safety #280 serial delta panel. Gap vs MDCalc / PSI/PORT serial delta-trend panel. Distinct from `PsiPortPneumoniaScorer` / `Curb65SerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PSIPORTSERIALDELTAPANEL_GUIDE.md`.
 ### Added

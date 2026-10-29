@@ -3004,3 +3004,8 @@ Every unique aminoglycoside × vancomycin pair across separate medication entrie
 `HasBledSerialDeltaPanel` computes an advisory score (MDCalc / HAS-BLED serial delta-trend panel). Every call
 yields a `HasBledSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
+
+### 3.282 GraceSerialDelta Panel
+`GraceSerialDeltaPanel` computes an advisory score (MDCalc / GRACE ACS serial delta-trend panel). Every call
+yields a `GraceSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies medications.

@@ -110,6 +110,7 @@ from medagent.safety.gentamicin_vancomycin_checker import GentamicinVancomycinCh
 from medagent.safety.geriatric_deprescribing_checker import GeriatricDeprescribingChecker
 from medagent.safety.glasgow_blatchford_scorer import GlasgowBlatchfordScorer
 from medagent.safety.grace_acs_scorer import GraceAcsScorer
+from medagent.safety.grace_serial_delta_panel import GraceSerialDeltaPanel
 from medagent.safety.has_bled_bleed_risk_scorer import HasBledBleedRiskScorer
 from medagent.safety.has_bled_serial_delta_panel import HasBledSerialDeltaPanel
 from medagent.safety.heart_score_acs_scorer import HeartScoreAcsScorer
@@ -374,6 +375,7 @@ __all__ = [
     "GeriatricDeprescribingChecker",
     "GlasgowBlatchfordScorer",
     "GraceAcsScorer",
+    "GraceSerialDeltaPanel",
     "HasBledBleedRiskScorer",
     "HasBledSerialDeltaPanel",
     "HeartScoreAcsScorer",
