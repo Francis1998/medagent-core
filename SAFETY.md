@@ -1448,6 +1448,12 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 yields a `Abcd2SerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
 
+### 3.283 CanadianCtHeadSerialDelta Panel
+`CanadianCtHeadSerialDeltaPanel` computes an advisory score (MDCalc / Canadian CT Head Rule serial delta-trend panel). Every call
+yields a `CanadianCtHeadSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

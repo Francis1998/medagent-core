@@ -1018,6 +1018,13 @@ Apache 2.0 — see [LICENSE](LICENSE).
 
 **This software is provided for research and educational purposes only. It is NOT intended for clinical use, medical diagnosis, or treatment planning. It has NOT been evaluated, validated, or cleared by any regulatory authority including the FDA or EMA. Do NOT use this system to make clinical decisions. Always consult a qualified healthcare professional.**
 
+
+### CanadianCtHeadSerialDeltaPanel
+
+![CanadianCtHeadSerialDeltaPanel](assets/canadian_ct_head_serial_delta_panel_demo.gif)
+
+Research-only Safety #283. Gap vs MDCalc / Canadian CT Head Rule serial delta-trend panel. Distinct from `CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIANCTHEADSERIALDELTAPANEL_GUIDE.md`.
+
 ### GraceSerialDeltaPanel
 
 ![GraceSerialDeltaPanel](assets/grace_serial_delta_panel_demo.gif)
