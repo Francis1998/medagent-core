@@ -1460,6 +1460,12 @@ yields a `PecarnSerialDeltaRisk` with score, band, positive factors, severity, a
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.285 NexusCspineSerialDelta Panel
+`NexusCspineSerialDeltaPanel` computes an advisory score (MDCalc / NEXUS C-spine serial delta-trend panel). Every call
+yields a `NexusCspineSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
