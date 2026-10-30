@@ -1032,6 +1032,13 @@ Research-only Safety #283. Gap vs MDCalc / Canadian CT Head Rule serial delta-tr
 
 Research-only Safety #284. Gap vs MDCalc / PECARN pediatric head trauma serial delta-trend panel. Distinct from `PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PECARNSERIALDELTAPANEL_GUIDE.md`.
 
+
+### NexusCspineSerialDeltaPanel
+
+![NexusCspineSerialDeltaPanel](assets/nexus_cspine_serial_delta_panel_demo.gif)
+
+Research-only Safety #285. Gap vs MDCalc / NEXUS C-spine serial delta-trend panel. Distinct from `NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEXUSCSPINESERIALDELTAPANEL_GUIDE.md`.
+
 ### GraceSerialDeltaPanel
 
 ![GraceSerialDeltaPanel](assets/grace_serial_delta_panel_demo.gif)
