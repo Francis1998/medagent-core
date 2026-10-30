@@ -182,6 +182,7 @@ from medagent.safety.ottawa_knee_rule_scorer import OttawaKneeRuleScorer
 from medagent.safety.ottawa_sah_rule_scorer import OttawaSahRuleScorer
 from medagent.safety.padua_vte_risk_scorer import PaduaVteRiskScorer
 from medagent.safety.pecarn_head_trauma_scorer import PecarnHeadTraumaScorer
+from medagent.safety.pecarn_serial_delta_panel import PecarnSerialDeltaPanel
 from medagent.safety.pediatric_renal_checker import PediatricRenalDosingChecker
 from medagent.safety.pediatric_weight_dose_adjuster import PediatricWeightDoseAdjuster
 from medagent.safety.perc_pe_exclusion_scorer import PercPeExclusionScorer
@@ -446,6 +447,7 @@ __all__ = [
     "OttawaSahRuleScorer",
     "PaduaVteRiskScorer",
     "PecarnHeadTraumaScorer",
+    "PecarnSerialDeltaPanel",
     "PediatricRenalDosingChecker",
     "PediatricWeightDoseAdjuster",
     "PercPeExclusionScorer",

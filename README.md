@@ -1025,6 +1025,13 @@ Apache 2.0 — see [LICENSE](LICENSE).
 
 Research-only Safety #283. Gap vs MDCalc / Canadian CT Head Rule serial delta-trend panel. Distinct from `CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIANCTHEADSERIALDELTAPANEL_GUIDE.md`.
 
+
+### PecarnSerialDeltaPanel
+
+![PecarnSerialDeltaPanel](assets/pecarn_serial_delta_panel_demo.gif)
+
+Research-only Safety #284. Gap vs MDCalc / PECARN pediatric head trauma serial delta-trend panel. Distinct from `PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PECARNSERIALDELTAPANEL_GUIDE.md`.
+
 ### GraceSerialDeltaPanel
 
 ![GraceSerialDeltaPanel](assets/grace_serial_delta_panel_demo.gif)
