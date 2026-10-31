@@ -5,6 +5,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `OttawaSahSerialDeltaPanel` (`safety/ottawa_sah_serial_delta_panel.py`): research-only Safety #286 serial delta panel. Gap vs MDCalc / Ottawa SAH Rule serial delta-trend panel. Distinct from `OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWASAHSERIALDELTAPANEL_GUIDE.md`.
 - `NexusCspineSerialDeltaPanel` (`safety/nexus_cspine_serial_delta_panel.py`): research-only Safety #285 serial delta panel. Gap vs MDCalc / NEXUS C-spine serial delta-trend panel. Distinct from `NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEXUSCSPINESERIALDELTAPANEL_GUIDE.md`.
 - `PecarnSerialDeltaPanel` (`safety/pecarn_serial_delta_panel.py`): research-only Safety #284 serial delta panel. Gap vs MDCalc / PECARN pediatric head trauma serial delta-trend panel. Distinct from `PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PECARNSERIALDELTAPANEL_GUIDE.md`.
 - `CanadianCtHeadSerialDeltaPanel` (`safety/canadian_ct_head_serial_delta_panel.py`): research-only Safety #283 serial delta panel. Gap vs MDCalc / Canadian CT Head Rule serial delta-trend panel. Distinct from `CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIANCTHEADSERIALDELTAPANEL_GUIDE.md`.

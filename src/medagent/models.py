@@ -5931,3 +5931,20 @@ class NexusCspineSerialDeltaRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class OttawaSahSerialDeltaRisk(BaseModel, frozen=True):
+    """OttawaSahSerialDeltaPanel finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    `OttawaSahRuleScorer` / `HuntHessSahScorer`.
+    Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str

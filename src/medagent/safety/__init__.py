@@ -181,6 +181,7 @@ from medagent.safety.ottawa_ankle_rule_scorer import OttawaAnkleRuleScorer
 from medagent.safety.ottawa_ankle_serial_delta_panel import OttawaAnkleSerialDeltaPanel
 from medagent.safety.ottawa_knee_rule_scorer import OttawaKneeRuleScorer
 from medagent.safety.ottawa_sah_rule_scorer import OttawaSahRuleScorer
+from medagent.safety.ottawa_sah_serial_delta_panel import OttawaSahSerialDeltaPanel
 from medagent.safety.padua_vte_risk_scorer import PaduaVteRiskScorer
 from medagent.safety.pecarn_head_trauma_scorer import PecarnHeadTraumaScorer
 from medagent.safety.pecarn_serial_delta_panel import PecarnSerialDeltaPanel
@@ -447,6 +448,7 @@ __all__ = [
     "OttawaAnkleSerialDeltaPanel",
     "OttawaKneeRuleScorer",
     "OttawaSahRuleScorer",
+    "OttawaSahSerialDeltaPanel",
     "PaduaVteRiskScorer",
     "PecarnHeadTraumaScorer",
     "PecarnSerialDeltaPanel",
