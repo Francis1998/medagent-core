@@ -5,6 +5,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `GlasgowBlatchfordSerialDeltaPanel` (`safety/glasgow_blatchford_serial_delta_panel.py`): research-only Safety #288 serial delta panel. Gap vs MDCalc / Glasgow-Blatchford GI bleed serial delta-trend panel. Distinct from `GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GLASGOWBLATCHFORDSERIALDELTAPANEL_GUIDE.md`.
 - `PesiSerialDeltaPanel` (`safety/pesi_serial_delta_panel.py`): research-only Safety #287 serial delta panel. Gap vs MDCalc / PESI PE severity serial delta-trend panel. Distinct from `PesiPeSeverityScorer` / `WellsPeSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PESISERIALDELTAPANEL_GUIDE.md`.
 - `OttawaSahSerialDeltaPanel` (`safety/ottawa_sah_serial_delta_panel.py`): research-only Safety #286 serial delta panel. Gap vs MDCalc / Ottawa SAH Rule serial delta-trend panel. Distinct from `OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWASAHSERIALDELTAPANEL_GUIDE.md`.
 - `NexusCspineSerialDeltaPanel` (`safety/nexus_cspine_serial_delta_panel.py`): research-only Safety #285 serial delta panel. Gap vs MDCalc / NEXUS C-spine serial delta-trend panel. Distinct from `NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEXUSCSPINESERIALDELTAPANEL_GUIDE.md`.

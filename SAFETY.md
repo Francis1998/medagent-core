@@ -1478,6 +1478,12 @@ yields a `PesiSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `PesiPeSeverityScorer` / `WellsPeSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.288 GlasgowBlatchfordSerialDelta Panel
+`GlasgowBlatchfordSerialDeltaPanel` computes an advisory score (MDCalc / Glasgow-Blatchford GI bleed serial delta-trend panel). Every call
+yields a `GlasgowBlatchfordSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

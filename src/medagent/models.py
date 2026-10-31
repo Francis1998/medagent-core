@@ -5965,3 +5965,20 @@ class PesiSerialDeltaRisk(BaseModel, frozen=True):
     )
     severity: Severity
     rationale: str
+
+
+class GlasgowBlatchfordSerialDeltaRisk(BaseModel, frozen=True):
+    """GlasgowBlatchfordSerialDeltaPanel finding.
+
+    RESEARCH USE ONLY — advisory clinical score. Distinct from
+    `GlasgowBlatchfordScorer` / `RockallGiBleedScorer`.
+    Prefer. Never modifies medications.
+    """
+
+    score: int = Field(description="Score total")
+    band: str = Field(description="Risk band")
+    positive_factors: list[str] = Field(
+        default_factory=list, description="Factor names that contributed"
+    )
+    severity: Severity
+    rationale: str
