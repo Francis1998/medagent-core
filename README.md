@@ -1008,6 +1008,12 @@ Research-only Safety #278. Gap vs MDCalc / Ottawa Ankle serial delta-trend panel
 Research-only Safety #279. Gap vs MDCalc / ABCD2 serial delta-trend panel. Distinct from `Abcd2TiaRiskScorer` / `NihssSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+### OttawaSahSerialDeltaPanel
+
+![OttawaSahSerialDeltaPanel](assets/ottawa_sah_serial_delta_panel_demo.gif)
+
+Research-only Safety #286. Gap vs MDCalc / Ottawa SAH Rule serial delta-trend panel. Distinct from `OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWASAHSERIALDELTAPANEL_GUIDE.md`.
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).

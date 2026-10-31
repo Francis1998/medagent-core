@@ -1466,6 +1466,12 @@ yields a `NexusCspineSerialDeltaRisk` with score, band, positive factors, severi
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.286 OttawaSahSerialDelta Panel
+`OttawaSahSerialDeltaPanel` computes an advisory score (MDCalc / Ottawa SAH Rule serial delta-trend panel). Every call
+yields a `OttawaSahSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
