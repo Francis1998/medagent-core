@@ -1032,6 +1032,12 @@ Research-only Safety #288. Gap vs MDCalc / Glasgow-Blatchford GI bleed serial de
 
 Research-only Safety #289. Gap vs MDCalc / FOUR Score serial delta-trend panel. Distinct from `FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOURSCORESERIALDELTAPANEL_GUIDE.md`.
 
+### HuntHessSerialDeltaPanel
+
+![HuntHessSerialDeltaPanel](assets/hunt_hess_serial_delta_panel_demo.gif)
+
+Research-only Safety #290. Gap vs MDCalc / Hunt-Hess SAH serial delta-trend panel. Distinct from `HuntHessSahScorer` / `OttawaSahSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HUNTHESSSERIALDELTAPANEL_GUIDE.md`.
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).

@@ -121,6 +121,7 @@ from medagent.safety.heart_serial_delta_panel import HeartSerialDeltaPanel
 from medagent.safety.heparin_antixa_trend_bridge import HeparinAntiXaTrendBridge
 from medagent.safety.heparin_platelet_trend_bridge import HeparinPlateletTrendBridge
 from medagent.safety.hunt_hess_sah_scorer import HuntHessSahScorer
+from medagent.safety.hunt_hess_serial_delta_panel import HuntHessSerialDeltaPanel
 from medagent.safety.hypoglycemia_risk_bridge import HypoglycemiaRiskBridge
 from medagent.safety.ich_score_scorer import IchScoreScorer
 from medagent.safety.improve_vte_scorer import ImproveVteScorer
@@ -393,6 +394,7 @@ __all__ = [
     "HeparinAntiXaTrendBridge",
     "HeparinPlateletTrendBridge",
     "HuntHessSahScorer",
+    "HuntHessSerialDeltaPanel",
     "HypoglycemiaRiskBridge",
     "IchScoreScorer",
     "ImproveVteScorer",
