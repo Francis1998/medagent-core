@@ -1490,6 +1490,12 @@ yields a `FourScoreSerialDeltaRisk` with score, band, positive factors, severity
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.290 HuntHessSerialDelta Panel
+`HuntHessSerialDeltaPanel` computes an advisory score (MDCalc / Hunt-Hess SAH serial delta-trend panel). Every call
+yields a `HuntHessSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`HuntHessSahScorer` / `OttawaSahSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
