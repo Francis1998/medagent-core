@@ -279,6 +279,7 @@ from medagent.safety.wells_dvt_serial_delta_panel import WellsDvtSerialDeltaPane
 from medagent.safety.wells_pe_probability_scorer import WellsPeProbabilityScorer
 from medagent.safety.wells_pe_serial_delta_panel import WellsPeSerialDeltaPanel
 from medagent.safety.wfns_sah_scorer import WfnsSahScorer
+from medagent.safety.wfns_serial_delta_panel import WfnsSerialDeltaPanel
 
 __all__ = [
     "ESCALATION_MESSAGE",
@@ -550,6 +551,7 @@ __all__ = [
     "WellsPeProbabilityScorer",
     "WellsPeSerialDeltaPanel",
     "WfnsSahScorer",
+    "WfnsSerialDeltaPanel",
     "hash_pii",
     "hash_pii_dict",
     "redact_fhir_pii",
