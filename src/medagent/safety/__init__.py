@@ -102,6 +102,7 @@ from medagent.safety.fluoroquinolone_warfarin_checker import (
 from medagent.safety.forrester_class_scorer import ForresterClassScorer
 from medagent.safety.four_at_delirium_scorer import FourAtDeliriumScorer
 from medagent.safety.four_score_scorer import FourScoreScorer
+from medagent.safety.four_score_serial_delta_panel import FourScoreSerialDeltaPanel
 from medagent.safety.gad7_anxiety_scorer import Gad7AnxietyScorer
 from medagent.safety.gcs_neurologic_status_scorer import GcsNeurologicStatusScorer
 from medagent.safety.gcs_serial_delta_panel import GcsSerialDeltaPanel
@@ -373,6 +374,7 @@ __all__ = [
     "ForresterClassScorer",
     "FourAtDeliriumScorer",
     "FourScoreScorer",
+    "FourScoreSerialDeltaPanel",
     "Gad7AnxietyScorer",
     "GcsNeurologicStatusScorer",
     "GcsSerialDeltaPanel",

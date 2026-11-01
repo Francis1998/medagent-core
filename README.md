@@ -1026,6 +1026,12 @@ Research-only Safety #287. Gap vs MDCalc / PESI PE severity serial delta-trend p
 
 Research-only Safety #288. Gap vs MDCalc / Glasgow-Blatchford GI bleed serial delta-trend panel. Distinct from `GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GLASGOWBLATCHFORDSERIALDELTAPANEL_GUIDE.md`.
 
+### FourScoreSerialDeltaPanel
+
+![FourScoreSerialDeltaPanel](assets/four_score_serial_delta_panel_demo.gif)
+
+Research-only Safety #289. Gap vs MDCalc / FOUR Score serial delta-trend panel. Distinct from `FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOURSCORESERIALDELTAPANEL_GUIDE.md`.
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).

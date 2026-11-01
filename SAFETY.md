@@ -1484,6 +1484,12 @@ yields a `GlasgowBlatchfordSerialDeltaRisk` with score, band, positive factors, 
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.289 FourScoreSerialDelta Panel
+`FourScoreSerialDeltaPanel` computes an advisory score (MDCalc / FOUR Score serial delta-trend panel). Every call
+yields a `FourScoreSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
