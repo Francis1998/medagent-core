@@ -78,6 +78,7 @@ from medagent.safety.doac_inducer_checker import DoacInducerChecker
 from medagent.safety.doac_nsaid_checker import DoacNsaidChecker
 from medagent.safety.duke_endocarditis_criteria_scorer import DukeEndocarditisCriteriaScorer
 from medagent.safety.ecog_performance_scorer import EcogPerformanceScorer
+from medagent.safety.ecog_serial_delta_panel import EcogSerialDeltaPanel
 from medagent.safety.electrolyte_qt_checker import ElectrolyteQtChecker
 from medagent.safety.epworth_sleepiness_scorer import EpworthSleepinessScorer
 from medagent.safety.ergotamine_cyp3a4_checker import ErgotamineCyp3a4Checker
@@ -360,6 +361,7 @@ __all__ = [
     "DoacNsaidChecker",
     "DukeEndocarditisCriteriaScorer",
     "EcogPerformanceScorer",
+    "EcogSerialDeltaPanel",
     "ElectrolyteQtChecker",
     "EpworthSleepinessScorer",
     "ErgotamineCyp3a4Checker",
