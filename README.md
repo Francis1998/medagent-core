@@ -1045,6 +1045,13 @@ Research-only Safety #290. Gap vs MDCalc / Hunt-Hess SAH serial delta-trend pane
 Research-only Safety #291. Gap vs MDCalc / WFNS SAH serial delta-trend panel. Distinct from `WfnsSahScorer` / `HuntHessSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WFNSSERIALDELTAPANEL_GUIDE.md`.
 
 
+
+### EcogSerialDeltaPanel
+
+![EcogSerialDeltaPanel](assets/ecog_serial_delta_panel_demo.gif)
+
+Research-only Safety #294. Gap vs MDCalc / ECOG performance serial delta-trend panel. Distinct from `EcogPerformanceScorer` / `KarnofskyPerformanceScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ECOGSERIALDELTAPANEL_GUIDE.md`.
+
 ### FourAtSerialDeltaPanel
 
 ![FourAtSerialDeltaPanel](assets/four_at_serial_delta_panel_demo.gif)
