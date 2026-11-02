@@ -100,6 +100,7 @@ from medagent.safety.fluoroquinolone_warfarin_checker import (
     FluoroquinoloneWarfarinChecker,
 )
 from medagent.safety.forrester_class_scorer import ForresterClassScorer
+from medagent.safety.forrester_serial_delta_panel import ForresterSerialDeltaPanel
 from medagent.safety.four_at_delirium_scorer import FourAtDeliriumScorer
 from medagent.safety.four_score_scorer import FourScoreScorer
 from medagent.safety.four_score_serial_delta_panel import FourScoreSerialDeltaPanel
@@ -374,6 +375,7 @@ __all__ = [
     "FluoroquinoloneNsaidChecker",
     "FluoroquinoloneWarfarinChecker",
     "ForresterClassScorer",
+    "ForresterSerialDeltaPanel",
     "FourAtDeliriumScorer",
     "FourScoreScorer",
     "FourScoreSerialDeltaPanel",

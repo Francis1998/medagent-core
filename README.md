@@ -1044,6 +1044,13 @@ Research-only Safety #290. Gap vs MDCalc / Hunt-Hess SAH serial delta-trend pane
 
 Research-only Safety #291. Gap vs MDCalc / WFNS SAH serial delta-trend panel. Distinct from `WfnsSahScorer` / `HuntHessSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WFNSSERIALDELTAPANEL_GUIDE.md`.
 
+### ForresterSerialDeltaPanel
+
+![ForresterSerialDeltaPanel](assets/forrester_serial_delta_panel_demo.gif)
+
+Research-only Safety #292. Gap vs MDCalc / Forrester hemodynamic serial delta-trend panel. Distinct from `ForresterClassScorer` / `KillipSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FORRESTERSERIALDELTAPANEL_GUIDE.md`.
+
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).
