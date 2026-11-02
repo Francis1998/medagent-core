@@ -1508,6 +1508,12 @@ yields a `ForresterSerialDeltaRisk` with score, band, positive factors, severity
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `ForresterClassScorer` / `KillipSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.293 FourAtSerialDelta Panel
+`FourAtSerialDeltaPanel` computes an advisory score (MDCalc / 4AT delirium serial delta-trend panel). Every call
+yields a `FourAtSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`FourAtDeliriumScorer` / `FourScoreSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
