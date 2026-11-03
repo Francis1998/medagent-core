@@ -223,6 +223,7 @@ from medagent.safety.race_stroke_scale_scorer import RaceStrokeScaleScorer
 from medagent.safety.ranson_pancreatitis_scorer import RansonPancreatitisScorer
 from medagent.safety.ranson_serial_delta_panel import RansonSerialDeltaPanel
 from medagent.safety.rass_sedation_scorer import RassSedationScorer
+from medagent.safety.rass_serial_delta_panel import RassSerialDeltaPanel
 from medagent.safety.rems_pe_severity_scorer import RemsPeSeverityScorer
 from medagent.safety.renal_dose_adjuster import RenalDoseAdjuster
 from medagent.safety.renal_hepatic_lactation_checker import RenalHepaticLactationChecker
@@ -497,6 +498,7 @@ __all__ = [
     "RansonPancreatitisScorer",
     "RansonSerialDeltaPanel",
     "RassSedationScorer",
+    "RassSerialDeltaPanel",
     "RemsPeSeverityScorer",
     "RenalDoseAdjuster",
     "RenalHepaticLactationChecker",

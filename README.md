@@ -1046,6 +1046,13 @@ Research-only Safety #291. Gap vs MDCalc / WFNS SAH serial delta-trend panel. Di
 
 
 
+
+### RassSerialDeltaPanel
+
+![RassSerialDeltaPanel](assets/rass_serial_delta_panel_demo.gif)
+
+Research-only Safety #295. Gap vs MDCalc / RASS sedation serial delta-trend panel. Distinct from `RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RASSSERIALDELTAPANEL_GUIDE.md`.
+
 ### EcogSerialDeltaPanel
 
 ![EcogSerialDeltaPanel](assets/ecog_serial_delta_panel_demo.gif)
