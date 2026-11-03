@@ -1060,6 +1060,13 @@ Research-only Safety #295. Gap vs MDCalc / RASS sedation serial delta-trend pane
 
 Research-only Safety #296. Gap vs MDCalc / Karnofsky performance serial delta-trend panel. Distinct from `KarnofskyPerformanceScorer` / `EcogSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KARNOFSKYSERIALDELTAPANEL_GUIDE.md`.
 
+
+### CamIcuSerialDeltaPanel
+
+![CamIcuSerialDeltaPanel](assets/cam_icu_serial_delta_panel_demo.gif)
+
+Research-only Safety #297. Gap vs MDCalc / CAM-ICU delirium serial delta-trend panel. Distinct from `CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CAMICUSERIALDELTAPANEL_GUIDE.md`.
+
 ### EcogSerialDeltaPanel
 
 ![EcogSerialDeltaPanel](assets/ecog_serial_delta_panel_demo.gif)

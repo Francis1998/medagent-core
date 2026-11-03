@@ -5,6 +5,8 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `CamIcuSerialDeltaPanel` (`safety/cam_icu_serial_delta_panel.py`): research-only Safety #297 serial delta panel. Gap vs MDCalc / CAM-ICU delirium serial delta-trend panel. Distinct from `CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CAMICUSERIALDELTAPANEL_GUIDE.md`.
+
 - `KarnofskySerialDeltaPanel` (`safety/karnofsky_serial_delta_panel.py`): research-only Safety #296 serial delta panel. Gap vs MDCalc / Karnofsky performance serial delta-trend panel. Distinct from `KarnofskyPerformanceScorer` / `EcogSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KARNOFSKYSERIALDELTAPANEL_GUIDE.md`.
 
 - `RassSerialDeltaPanel` (`safety/rass_serial_delta_panel.py`): research-only Safety #295 serial delta panel. Gap vs MDCalc / RASS sedation serial delta-trend panel. Distinct from `RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RASSSERIALDELTAPANEL_GUIDE.md`.
