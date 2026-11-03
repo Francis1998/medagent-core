@@ -34,6 +34,7 @@ from medagent.safety.bishop_score_scorer import BishopScoreScorer
 from medagent.safety.bode_copd_scorer import BodeCopdScorer
 from medagent.safety.braden_pressure_scorer import BradenPressureScorer
 from medagent.safety.cam_icu_delirium_scorer import CamIcuDeliriumScorer
+from medagent.safety.cam_icu_serial_delta_panel import CamIcuSerialDeltaPanel
 from medagent.safety.canadian_cspine_rule_scorer import CanadianCspineRuleScorer
 from medagent.safety.canadian_ct_head_scorer import CanadianCtHeadScorer
 from medagent.safety.canadian_ct_head_serial_delta_panel import CanadianCtHeadSerialDeltaPanel
@@ -324,6 +325,7 @@ __all__ = [
     "BodeCopdScorer",
     "BradenPressureScorer",
     "CamIcuDeliriumScorer",
+    "CamIcuSerialDeltaPanel",
     "CanadianCspineRuleScorer",
     "CanadianCtHeadScorer",
     "CanadianCtHeadSerialDeltaPanel",

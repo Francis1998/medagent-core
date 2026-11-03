@@ -1534,6 +1534,13 @@ yields a `KarnofskySerialDeltaRisk` with score, band, positive factors, severity
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `KarnofskyPerformanceScorer` / `EcogSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+
+### 3.297 CamIcuSerialDelta Panel
+`CamIcuSerialDeltaPanel` computes an advisory score (MDCalc / CAM-ICU delirium serial delta-trend panel). Every call
+yields a `CamIcuSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
