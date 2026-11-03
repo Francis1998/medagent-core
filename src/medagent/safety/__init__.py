@@ -138,6 +138,7 @@ from medagent.safety.ivabradine_cyp3a4_checker import IvabradineCyp3a4Checker
 from medagent.safety.jones_criteria_scorer import JonesCriteriaScorer
 from medagent.safety.kampala_trauma_scorer import KampalaTraumaScorer
 from medagent.safety.karnofsky_performance_scorer import KarnofskyPerformanceScorer
+from medagent.safety.karnofsky_serial_delta_panel import KarnofskySerialDeltaPanel
 from medagent.safety.killip_class_scorer import KillipClassScorer
 from medagent.safety.killip_serial_delta_panel import KillipSerialDeltaPanel
 from medagent.safety.lab_trend_alert_bridge import LabTrendAlertBridge
@@ -414,6 +415,7 @@ __all__ = [
     "JonesCriteriaScorer",
     "KampalaTraumaScorer",
     "KarnofskyPerformanceScorer",
+    "KarnofskySerialDeltaPanel",
     "KillipClassScorer",
     "KillipSerialDeltaPanel",
     "LabTrendAlertBridge",
