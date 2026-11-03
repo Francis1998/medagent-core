@@ -11,7 +11,10 @@ Stack: **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
 ## Usage
 
 ```python
-from medagent.safety.karnofsky_serial_delta_panel import KarnofskySerialDeltaFactors, KarnofskySerialDeltaPanel
+from medagent.safety.karnofsky_serial_delta_panel import (
+    KarnofskySerialDeltaFactors,
+    KarnofskySerialDeltaPanel,
+)
 
 findings = KarnofskySerialDeltaPanel().check(KarnofskySerialDeltaFactors())
 print(findings[0].band, findings[0].rationale)
