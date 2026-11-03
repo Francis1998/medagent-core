@@ -1520,6 +1520,13 @@ yields a `EcogSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `EcogPerformanceScorer` / `KarnofskyPerformanceScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+
+### 3.295 RassSerialDelta Panel
+`RassSerialDeltaPanel` computes an advisory score (MDCalc / RASS sedation serial delta-trend panel). Every call
+yields a `RassSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

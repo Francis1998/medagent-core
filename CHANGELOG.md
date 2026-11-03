@@ -5,6 +5,8 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `RassSerialDeltaPanel` (`safety/rass_serial_delta_panel.py`): research-only Safety #295 serial delta panel. Gap vs MDCalc / RASS sedation serial delta-trend panel. Distinct from `RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RASSSERIALDELTAPANEL_GUIDE.md`.
+
 - `EcogSerialDeltaPanel` (`safety/ecog_serial_delta_panel.py`): research-only Safety #294 serial delta panel. Gap vs MDCalc / ECOG performance serial delta-trend panel. Distinct from `EcogPerformanceScorer` / `KarnofskyPerformanceScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ECOGSERIALDELTAPANEL_GUIDE.md`.
 - `FourAtSerialDeltaPanel` (`safety/four_at_serial_delta_panel.py`): research-only Safety #293 serial delta panel. Gap vs MDCalc / 4AT delirium serial delta-trend panel. Distinct from `FourAtDeliriumScorer` / `FourScoreSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOURATSERIALDELTAPANEL_GUIDE.md`.
 - `ForresterSerialDeltaPanel` (`safety/forrester_serial_delta_panel.py`): research-only Safety #292 serial delta panel. Gap vs MDCalc / Forrester hemodynamic serial delta-trend panel. Distinct from `ForresterClassScorer` / `KillipSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FORRESTERSERIALDELTAPANEL_GUIDE.md`.
