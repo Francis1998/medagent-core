@@ -1553,6 +1553,12 @@ yields a `MorseFallSerialDeltaRisk` with score, band, positive factors, severity
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `MorseFallScorer` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.300 CiwaSerialDelta Panel
+`CiwaSerialDeltaPanel` computes an advisory score (MDCalc / CIWA-Ar withdrawal serial delta-trend panel). Every call
+yields a `CiwaSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`CiwaArWithdrawalScorer` / `RassSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
