@@ -1541,6 +1541,12 @@ yields a `CamIcuSerialDeltaRisk` with score, band, positive factors, severity, a
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.298 BradenSerialDelta Panel
+`BradenSerialDeltaPanel` computes an advisory score (MDCalc / Braden pressure-injury serial delta-trend panel). Every call
+yields a `BradenSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
+`BradenPressureScorer` / `MorseFallScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
