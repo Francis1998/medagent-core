@@ -51,6 +51,7 @@ from medagent.safety.child_pugh_liver_severity_scorer import ChildPughLiverSever
 from medagent.safety.child_pugh_serial_delta_panel import ChildPughSerialDeltaPanel
 from medagent.safety.cincinnati_prehospital_stroke_scorer import CincinnatiPrehospitalStrokeScorer
 from medagent.safety.ciwa_ar_withdrawal_scorer import CiwaArWithdrawalScorer
+from medagent.safety.ciwa_serial_delta_panel import CiwaSerialDeltaPanel
 from medagent.safety.clinical_guideline_matcher import ClinicalGuidelineMatcher
 from medagent.safety.clopidogrel_ppi_checker import ClopidogrelPpiChecker
 from medagent.safety.clozapine_anc_checker import ClozapineAncChecker
@@ -344,6 +345,7 @@ __all__ = [
     "ChildPughSerialDeltaPanel",
     "CincinnatiPrehospitalStrokeScorer",
     "CiwaArWithdrawalScorer",
+    "CiwaSerialDeltaPanel",
     "ClinicalGuidelineMatcher",
     "ClopidogrelPpiChecker",
     "ClozapineAncChecker",

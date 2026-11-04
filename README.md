@@ -1075,6 +1075,13 @@ Research-only Safety #298. Gap vs MDCalc / Braden pressure-injury serial delta-t
 
 Research-only Safety #299. Gap vs MDCalc / Morse Fall Scale serial delta-trend panel. Distinct from `MorseFallScorer` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MORSEFALLSERIALDELTAPANEL_GUIDE.md`.
 
+
+### CiwaSerialDeltaPanel
+
+![CiwaSerialDeltaPanel](assets/ciwa_serial_delta_panel_demo.gif)
+
+Research-only Safety #300. Gap vs MDCalc / CIWA-Ar withdrawal serial delta-trend panel. Distinct from `CiwaArWithdrawalScorer` / `RassSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CIWASERIALDELTAPANEL_GUIDE.md`.
+
 ### CamIcuSerialDeltaPanel
 
 ![CamIcuSerialDeltaPanel](assets/cam_icu_serial_delta_panel_demo.gif)
