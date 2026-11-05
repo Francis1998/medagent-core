@@ -28,6 +28,7 @@ from medagent.safety.apixaban_cyp3a4_checker import ApixabanCyp3a4Checker
 from medagent.safety.ascvd_risk_scorer import AscvdRiskScorer
 from medagent.safety.aspects_stroke_scorer import AspectsStrokeScorer
 from medagent.safety.barthel_adl_scorer import BarthelAdlScorer
+from medagent.safety.barthel_serial_delta_panel import BarthelSerialDeltaPanel
 from medagent.safety.beers_2023_delta_checker import Beers2023DeltaChecker
 from medagent.safety.bisap_pancreatitis_scorer import BisapPancreatitisScorer
 from medagent.safety.bishop_score_scorer import BishopScoreScorer
@@ -323,6 +324,7 @@ __all__ = [
     "AscvdRiskScorer",
     "AspectsStrokeScorer",
     "BarthelAdlScorer",
+    "BarthelSerialDeltaPanel",
     "Beers2023DeltaChecker",
     "BisapPancreatitisScorer",
     "BishopScoreScorer",
