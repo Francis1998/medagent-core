@@ -283,6 +283,7 @@ from medagent.safety.warfarin_metronidazole_checker import WarfarinMetronidazole
 from medagent.safety.warfarin_nsaid_checker import WarfarinNsaidChecker
 from medagent.safety.warfarin_tmpsmx_checker import WarfarinTmpsmxChecker
 from medagent.safety.waterloo_pressure_scorer import WaterlooPressureScorer
+from medagent.safety.waterlow_serial_delta_panel import WaterlowSerialDeltaPanel
 from medagent.safety.wells_dvt_probability_scorer import WellsDvtProbabilityScorer
 from medagent.safety.wells_dvt_serial_delta_panel import WellsDvtSerialDeltaPanel
 from medagent.safety.wells_pe_probability_scorer import WellsPeProbabilityScorer
@@ -564,6 +565,7 @@ __all__ = [
     "WarfarinNsaidChecker",
     "WarfarinTmpsmxChecker",
     "WaterlooPressureScorer",
+    "WaterlowSerialDeltaPanel",
     "WellsDvtProbabilityScorer",
     "WellsDvtSerialDeltaPanel",
     "WellsPeProbabilityScorer",
