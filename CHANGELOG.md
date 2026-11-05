@@ -5,6 +5,9 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `WaterlowSerialDeltaPanel` (`safety/waterlow_serial_delta_panel.py`): research-only Safety #301 serial delta panel. Gap vs MDCalc / Waterlow pressure-ulcer serial delta-trend panel. Distinct from `BradenSerialDeltaPanel` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WATERLOWSERIALDELTAPANEL_GUIDE.md`.
+
+
 - `CiwaSerialDeltaPanel` (`safety/ciwa_serial_delta_panel.py`): research-only Safety #300 serial delta panel. Gap vs MDCalc / CIWA-Ar withdrawal serial delta-trend panel. Distinct from `CiwaArWithdrawalScorer` / `RassSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CIWASERIALDELTAPANEL_GUIDE.md`.
 
 - `MorseFallSerialDeltaPanel` (`safety/morse_fall_serial_delta_panel.py`): research-only Safety #299 serial delta panel. Gap vs MDCalc / Morse Fall Scale serial delta-trend panel. Distinct from `MorseFallScorer` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MORSEFALLSERIALDELTAPANEL_GUIDE.md`.
