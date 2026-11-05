@@ -1090,6 +1090,13 @@ Research-only Safety #301. Gap vs MDCalc / Waterlow pressure-ulcer serial delta-
 Research-only Safety #302. Gap vs MDCalc / Barthel ADL serial delta-trend panel. Distinct from `BarthelAdlScorer` / `KarnofskySerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BARTHELSERIALDELTAPANEL_GUIDE.md`.
 
 
+### MocaSerialDeltaPanel
+
+![MocaSerialDeltaPanel](assets/moca_serial_delta_panel_demo.gif)
+
+Research-only Safety #303. Gap vs MDCalc / MoCA cognition serial delta-trend panel. Distinct from `FourScoreSerialDeltaPanel` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MOCASERIALDELTAPANEL_GUIDE.md`.
+
+
 ### CiwaSerialDeltaPanel
 
 ![CiwaSerialDeltaPanel](assets/ciwa_serial_delta_panel_demo.gif)

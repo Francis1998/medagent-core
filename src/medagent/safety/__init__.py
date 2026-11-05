@@ -172,6 +172,7 @@ from medagent.safety.methylene_blue_ssri_checker import MethyleneBlueSsriChecker
 from medagent.safety.mews_scorer import MewsScorer
 from medagent.safety.mews_serial_delta_panel import MewsSerialDeltaPanel
 from medagent.safety.midazolam_cyp3a4_checker import MidazolamCyp3a4Checker
+from medagent.safety.moca_serial_delta_panel import MocaSerialDeltaPanel
 from medagent.safety.morse_fall_scorer import MorseFallScorer
 from medagent.safety.morse_fall_serial_delta_panel import MorseFallSerialDeltaPanel
 from medagent.safety.mtx_folate_checker import MtxFolateChecker
@@ -455,6 +456,7 @@ __all__ = [
     "MewsScorer",
     "MewsSerialDeltaPanel",
     "MidazolamCyp3a4Checker",
+    "MocaSerialDeltaPanel",
     "MorseFallScorer",
     "MorseFallSerialDeltaPanel",
     "MtxFolateChecker",
