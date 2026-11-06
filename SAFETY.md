@@ -1577,6 +1577,12 @@ yields a `MocaSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
 `FourScoreSerialDeltaPanel` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
+### 3.306 KatzSerialDelta Panel
+`KatzSerialDeltaPanel` computes an advisory score (MDCalc / Katz ADL serial delta-trend panel). Every call
+yields a `KatzSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. Research-use only; never modifies medications.
+
+
 ### 3.305 Gad7SerialDelta Panel
 `Gad7SerialDeltaPanel` computes an advisory score (MDCalc / GAD-7 anxiety serial delta-trend panel). Every call
 yields a `Gad7SerialDeltaRisk` with score, band, positive factors, severity, and
@@ -1598,6 +1604,12 @@ rationale. Research-use only; never modifies medications.
 ### 3.305 Gad7SerialDelta Panel
 `Gad7SerialDeltaPanel` computes an advisory score (MDCalc / GAD-7 anxiety serial delta-trend panel). Every call
 yields a `Gad7SerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. Research-use only; never modifies medications.
+
+
+### 3.306 KatzSerialDelta Panel
+`KatzSerialDeltaPanel` computes an advisory score (MDCalc / Katz ADL serial delta-trend panel). Every call
+yields a `KatzSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. Research-use only; never modifies medications.
 
 
