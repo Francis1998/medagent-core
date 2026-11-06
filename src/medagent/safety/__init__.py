@@ -111,6 +111,7 @@ from medagent.safety.four_at_serial_delta_panel import FourAtSerialDeltaPanel
 from medagent.safety.four_score_scorer import FourScoreScorer
 from medagent.safety.four_score_serial_delta_panel import FourScoreSerialDeltaPanel
 from medagent.safety.gad7_anxiety_scorer import Gad7AnxietyScorer
+from medagent.safety.gad7_serial_delta_panel import Gad7SerialDeltaPanel
 from medagent.safety.gcs_neurologic_status_scorer import GcsNeurologicStatusScorer
 from medagent.safety.gcs_serial_delta_panel import GcsSerialDeltaPanel
 from medagent.safety.geneva_pe_serial_delta_panel import GenevaPeSerialDeltaPanel
@@ -398,6 +399,7 @@ __all__ = [
     "FourScoreScorer",
     "FourScoreSerialDeltaPanel",
     "Gad7AnxietyScorer",
+    "Gad7SerialDeltaPanel",
     "GcsNeurologicStatusScorer",
     "GcsSerialDeltaPanel",
     "GenevaPeSerialDeltaPanel",

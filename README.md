@@ -1091,6 +1091,9 @@ Research-only Safety #302. Gap vs MDCalc / Barthel ADL serial delta-trend panel.
 
 
 ### MocaSerialDeltaPanel
+- `Gad7SerialDeltaPanel` (Safety #305): MDCalc / GAD-7 anxiety serial delta-trend panel. Distinct from `Gad7AnxietyScorer` / `Phq9DepressionScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+![Gad7SerialDeltaPanel](assets/gad7_serial_delta_panel_demo.gif)
+
 - `Phq9SerialDeltaPanel` (Safety #304): MDCalc / PHQ-9 depression serial delta-trend panel. Distinct from `Phq9DepressionScorer` / `Gad7AnxietyScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 ![Phq9SerialDeltaPanel](assets/phq9_serial_delta_panel_demo.gif)
 
