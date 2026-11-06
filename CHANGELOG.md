@@ -5,6 +5,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `Phq9SerialDeltaPanel` (`safety/phq9_serial_delta_panel.py`): research-only Safety #304 serial delta panel. Gap vs MDCalc / PHQ-9 depression serial delta-trend panel. Distinct from `Phq9DepressionScorer` / `Gad7AnxietyScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PHQ9SERIALDELTAPANEL_GUIDE.md`.
 - `MocaSerialDeltaPanel` (`safety/moca_serial_delta_panel.py`): research-only Safety #303 serial delta panel. Gap vs MDCalc / MoCA cognition serial delta-trend panel. Distinct from `FourScoreSerialDeltaPanel` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MOCASERIALDELTAPANEL_GUIDE.md`.
 
 
