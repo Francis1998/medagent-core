@@ -12,6 +12,7 @@ from datetime import datetime
 from typing import Any
 
 import sqlalchemy as sa
+from sqlalchemy.engine import URL
 from sqlalchemy.exc import SQLAlchemyError, StatementError
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -67,11 +68,18 @@ async def get_engine() -> AsyncEngine:
         async with _engine.begin() as conn:
             await conn.run_sync(metadata.create_all)
         _session_factory = async_sessionmaker(_engine, expire_on_commit=False)
-        logger.info(
-            "audit_db_initialized",
-            url=_engine.url.render_as_string(hide_password=True),
-        )
+        logger.info("audit_db_initialized", url=_loggable_url(_engine.url))
     return _engine
+
+
+def _loggable_url(url: URL) -> str:
+    """Render a database URL for logs with every credential removed.
+
+    The password is masked and the query string is dropped entirely, because
+    query parameters can also carry credentials (e.g. asyncpg ``?password=``).
+    The engine itself keeps connecting with the full URL.
+    """
+    return url.set(query={}).render_as_string(hide_password=True)
 
 
 def safe_error_fields(exc: BaseException) -> dict[str, str]:

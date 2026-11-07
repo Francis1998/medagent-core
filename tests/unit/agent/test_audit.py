@@ -157,11 +157,27 @@ async def test_statement_errors_do_not_echo_bound_clinical_parameters(
     assert canary not in str(exc_info.value)
 
 
-async def test_engine_initialisation_log_masks_database_password(
+@pytest.mark.parametrize(
+    ("database_url", "logged_url"),
+    [
+        (
+            "postgresql+asyncpg://auditor:{password}@db:5432/medagent",
+            "postgresql+asyncpg://auditor:***@db:5432/medagent",
+        ),
+        (
+            "postgresql+asyncpg://auditor@db:5432/medagent?password={password}&ssl=require",
+            "postgresql+asyncpg://auditor@db:5432/medagent",
+        ),
+    ],
+    ids=["password-in-authority", "password-in-query-string"],
+)
+async def test_engine_initialisation_log_masks_database_credentials(
     monkeypatch: MonkeyPatch,
     audit_logs: list[dict[str, Any]],
+    database_url: str,
+    logged_url: str,
 ) -> None:
-    """``audit_db_initialized`` must not log the DATABASE_URL password."""
+    """``audit_db_initialized`` must not log DATABASE_URL credentials."""
     password = "CANARY-db-password-0b7c"
 
     class FakeConnection:
@@ -176,11 +192,7 @@ async def test_engine_initialisation_log_masks_database_password(
         async def begin(self) -> AsyncIterator[FakeConnection]:
             yield FakeConnection()
 
-    monkeypatch.setattr(
-        audit.settings,
-        "database_url",
-        f"postgresql+asyncpg://auditor:{password}@db:5432/medagent",
-    )
+    monkeypatch.setattr(audit.settings, "database_url", database_url.format(password=password))
     monkeypatch.setattr(audit, "_engine", None)
     monkeypatch.setattr(audit, "_session_factory", None)
     monkeypatch.setattr(audit, "create_async_engine", lambda url, **kwargs: FakeEngine(url))
@@ -192,6 +204,6 @@ async def test_engine_initialisation_log_masks_database_password(
         {
             "event": "audit_db_initialized",
             "log_level": "info",
-            "url": "postgresql+asyncpg://auditor:***@db:5432/medagent",
+            "url": logged_url,
         }
     ]
