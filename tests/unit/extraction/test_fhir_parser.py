@@ -274,6 +274,33 @@ class TestSanitiseClinicalText:
         assert ".co.uk" not in compound_tld
         assert "acme" not in compound_tld
 
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            ("Mrs. Jane Canary reports chest pain", "[REDACTED-NAME] reports chest pain"),
+            ("seen by Dr Smith, cardiology", "seen by [REDACTED-NAME], cardiology"),
+            ("Mr. O'Neil-Smith's daughter", "[REDACTED-NAME] daughter"),
+            ("Patient name: Jane Canary.", "Patient name: [REDACTED-NAME]."),
+            ("NAME: Jane Canary", "NAME: [REDACTED-NAME]"),
+        ],
+    )
+    def test_redacts_honorific_and_labelled_names(self, text: str, expected: str) -> None:
+        """Names introduced by an honorific or a ``Name:`` label are redacted."""
+        assert sanitise_clinical_text(text) == expected
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "MS Contin 15 mg twice daily",
+            "dr. ordered troponin",
+            "Patient: 65-year-old with chest pain",
+            "Troponin I elevated; aspirin given",
+        ],
+    )
+    def test_name_rules_leave_clinical_text_alone(self, text: str) -> None:
+        """Without an honorific or ``Name:`` label, nothing is treated as a name."""
+        assert sanitise_clinical_text(text) == text
+
     def test_preserves_clinical_content(self) -> None:
         """Clinical observations must not be redacted."""
         text = "Patient presents with elevated troponin and chest pain"

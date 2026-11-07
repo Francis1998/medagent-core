@@ -303,14 +303,17 @@ def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
 def sanitise_clinical_text(text: str) -> str:
     """Remove likely PII patterns from free-text clinical notes.
 
-    Redacts date-of-birth patterns, MRN-like sequences, and full names
-    using conservative regexes before text is passed to any LLM.
+    Redacts dates (``MM/DD/YYYY``, ``YYYY-MM-DD``, ``DD-Mon-YYYY``), ``MR``/``MRN``-
+    labelled numbers, US Social Security numbers, phone numbers, email addresses,
+    and capitalised names introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr,
+    Prof) or a ``Name:``/``Patient name:`` label. Names without such a cue are
+    not detected.
 
     Args:
         text: Raw clinical note text.
 
     Returns:
-        Text with PII patterns replaced by ``[REDACTED]``.
+        Text with PII patterns replaced by ``[REDACTED-*]`` placeholders.
     """
     # DOB patterns: MM/DD/YYYY (or with '-' separators)
     text = re.sub(
@@ -354,6 +357,12 @@ def sanitise_clinical_text(text: str) -> str:
     # or a compound TLD such as ``acme.co.uk``) is fully redacted rather than
     # leaving a trailing ``.org`` / ``.co.uk`` fragment revealing the organisation.
     text = re.sub(r"\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b", "[REDACTED-EMAIL]", text)
+    # Personal names, only when a cue marks them as names: an honorific, or a
+    # "Name:" / "Patient name:" label (the label is kept). Case-sensitive
+    # honorifics keep abbreviations such as "MS Contin" and "dr." untouched.
+    name = r"[A-Z][A-Za-z'’-]+(?:\s+[A-Z][A-Za-z'’-]+){0,2}"
+    text = re.sub(rf"\b(?:Mrs|Mr|Ms|Miss|Mx|Dr|Prof)\.?\s+{name}", "[REDACTED-NAME]", text)
+    text = re.sub(rf"(\b(?i:patient\s+name|name)\s*:\s*){name}", r"\1[REDACTED-NAME]", text)
     return text
 
 

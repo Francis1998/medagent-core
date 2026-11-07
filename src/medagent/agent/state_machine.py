@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 from medagent.logging_config import get_logger
 from medagent.models import AgentState, ClinicalQuery, ClinicalReasoning
 from medagent.reasoning.bayesian import calibrate_confidence
+from medagent.safety.deidentify import deidentify_query
 
 if TYPE_CHECKING:
     from medagent.extraction.ner import EntityExtractor
@@ -119,12 +120,15 @@ class ClinicalAgentStateMachine:
         """Execute the full agentic loop for a clinical query.
 
         Args:
-            query: Validated, PII-sanitized clinical query.
+            query: Validated clinical query. INTAKE replaces it with a
+                de-identified copy (:func:`deidentify_query`) before any other
+                stage, so retrieval, the LLM prompt, the result and the audit
+                record never see the identifiers it redacts.
 
         Returns:
             Structured ClinicalReasoning output.
         """
-        ctx = RunContext(query=query)
+        ctx = RunContext(query=deidentify_query(query))
         routing_metadata_clearer = getattr(self._router, "clear_routing_metadata", None)
         if callable(routing_metadata_clearer):
             routing_metadata_clearer()
@@ -169,7 +173,7 @@ class ClinicalAgentStateMachine:
     # ------------------------------------------------------------------
 
     async def _handle_intake(self, ctx: RunContext) -> None:
-        """INTAKE: validate scope and log run start."""
+        """INTAKE: validate the scope of the already de-identified query."""
         self._enforcer.check_query_in_scope(ctx.query.query)
         self._transition(ctx, AgentState.ENTITY_EXTRACTION)
 

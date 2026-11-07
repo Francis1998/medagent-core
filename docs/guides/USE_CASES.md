@@ -109,8 +109,9 @@ curl -s localhost:8000/health
 ```
 
 **Step 2: ask for a differential** (the STEMI case from [QUICKSTART.md](../../QUICKSTART.md)).
-`/analyze` does not de-identify its input: the caller supplies the hashed `patient_id_hash`, and
-free text must not contain identifiers.
+`/analyze` de-identifies its input at INTAKE ([SAFETY.md §3.5](../../SAFETY.md#35-pii-de-identification)).
+Dates, MRNs, SSNs, phone numbers, emails, and names after an honorific or a `Name:` label are
+redacted, and a raw patient id is HMAC-hashed. Other names are not detected, so leave them out.
 
 ```bash
 curl -s -X POST localhost:8000/analyze -H 'Content-Type: application/json' -d '{
