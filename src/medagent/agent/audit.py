@@ -12,6 +12,8 @@ from datetime import datetime
 from typing import Any
 
 import sqlalchemy as sa
+from sqlalchemy.engine import URL
+from sqlalchemy.exc import SQLAlchemyError, StatementError
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -58,12 +60,48 @@ async def get_engine() -> AsyncEngine:
     """Lazily initialise and return the async database engine."""
     global _engine, _session_factory
     if _engine is None:
-        _engine = create_async_engine(settings.database_url, echo=False, future=True)
+        # hide_parameters keeps bound clinical values (query text, JSON
+        # payloads) out of SQLAlchemy error messages and therefore out of logs.
+        _engine = create_async_engine(
+            settings.database_url, echo=False, future=True, hide_parameters=True
+        )
         async with _engine.begin() as conn:
             await conn.run_sync(metadata.create_all)
         _session_factory = async_sessionmaker(_engine, expire_on_commit=False)
-        logger.info("audit_db_initialized", url=settings.database_url)
+        logger.info("audit_db_initialized", url=_loggable_url(_engine.url))
     return _engine
+
+
+def _loggable_url(url: URL) -> str:
+    """Render a database URL for logs with every credential removed.
+
+    The password is masked and the query string is dropped entirely, because
+    query parameters can also carry credentials (e.g. asyncpg ``?password=``).
+    The engine itself keeps connecting with the full URL.
+    """
+    return url.set(query={}).render_as_string(hide_password=True)
+
+
+def safe_error_fields(exc: BaseException) -> dict[str, str]:
+    """Return log-safe metadata describing an audit persistence failure.
+
+    The exception message is deliberately excluded: SQLAlchemy statement
+    errors embed the bound INSERT parameters by default, and database driver
+    messages can echo row values, either of which may carry clinical data.
+
+    Args:
+        exc: Exception raised while persisting an audit row.
+
+    Returns:
+        ``error_type`` plus, when available, the SQLAlchemy ``error_code`` and
+        the underlying ``driver_error_type`` (class names and codes only).
+    """
+    fields = {"error_type": type(exc).__name__}
+    if isinstance(exc, SQLAlchemyError) and exc.code:
+        fields["error_code"] = exc.code
+    if isinstance(exc, StatementError) and exc.orig is not None:
+        fields["driver_error_type"] = type(exc.orig).__name__
+    return fields
 
 
 async def persist_run(reasoning: ClinicalReasoning) -> None:

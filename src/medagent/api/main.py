@@ -18,7 +18,7 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from medagent.agent.audit import persist_run
+from medagent.agent.audit import persist_run, safe_error_fields
 from medagent.agent.state_machine import ClinicalAgentStateMachine
 from medagent.api.schemas import (
     AnalyzeRequest,
@@ -60,12 +60,8 @@ def _on_audit_task_done(task: asyncio.Task[None], *, session_id: str) -> None:
         return
     exc = task.exception()
     if exc is not None:
-        logger.error(
-            "audit_persist_failed",
-            session_id=session_id,
-            error_type=type(exc).__name__,
-            error=str(exc),
-        )
+        # Never log str(exc): database errors can embed clinical parameters.
+        logger.error("audit_persist_failed", session_id=session_id, **safe_error_fields(exc))
 
 
 def schedule_audit_write(result: ClinicalReasoning) -> asyncio.Task[None]:
