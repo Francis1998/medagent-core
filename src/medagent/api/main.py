@@ -1,9 +1,12 @@
 """FastAPI application entry point.
 
-Provides three endpoints:
-  POST /analyze           — full clinical reasoning run
-  POST /drug-interactions — targeted drug interaction check
-  GET  /health            — readiness probe
+Provides these endpoints:
+  POST /analyze                       — full clinical reasoning run
+  POST /drug-interactions             — targeted drug interaction check
+  GET  /health                        — readiness probe
+  GET  /cds-services                  — HL7 CDS Hooks 2.0 discovery
+  POST /cds-services/{id}             — CDS Hooks order-sign / order-select service call
+  POST /cds-services/{id}/feedback    — CDS Hooks card feedback
 """
 
 from __future__ import annotations
@@ -16,12 +19,12 @@ from collections.abc import AsyncGenerator, Sequence
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from medagent.agent.audit import persist_run, safe_error_fields
 from medagent.agent.state_machine import ClinicalAgentStateMachine
+from medagent.api import cds_hooks
 from medagent.api.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
@@ -139,6 +142,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         yield
     finally:
         await drain_audit_tasks()
+        await cds_hooks.drain_audit_writes()
         logger.info("medagent_shutdown")
 
 
@@ -155,8 +159,10 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# The app-wide policy below is unchanged; /cds-services gets no CORS headers unless
+# MEDAGENT_CDS_HOOKS_CORS_ORIGINS lists the browser origins allowed to call it.
 app.add_middleware(
-    CORSMiddleware,
+    cds_hooks.CdsHooksCORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["GET", "POST"],
@@ -213,6 +219,7 @@ class _SanitisedServerErrors:
 
 
 app.add_middleware(_SanitisedServerErrors)
+app.include_router(cds_hooks.router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Operations"])

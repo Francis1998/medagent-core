@@ -1,0 +1,274 @@
+{
+  "hookInstance": "6d5e1a2b-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+  "hook": "order-sign",
+  "fhirServer": "https://ehr.example.org/fhir",
+  "context": {
+    "userId": "Practitioner/demo-prescriber",
+    "patientId": "cds-demo-ada",
+    "encounterId": "demo-encounter-1",
+    "draftOrders": {
+      "resourceType": "Bundle",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "id": "draft-fluconazole",
+            "meta": {
+              "tag": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+                  "code": "HTEST",
+                  "display": "test health data"
+                }
+              ]
+            },
+            "status": "draft",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                  "code": "197699",
+                  "display": "Fluconazole 150 mg tablet"
+                }
+              ],
+              "text": "Fluconazole 150 mg tablet"
+            },
+            "subject": {
+              "reference": "Patient/cds-demo-ada"
+            },
+            "dosageInstruction": [
+              {
+                "text": "150 mg by mouth once"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "ServiceRequest",
+            "id": "draft-inr",
+            "meta": {
+              "tag": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+                  "code": "HTEST",
+                  "display": "test health data"
+                }
+              ]
+            },
+            "status": "draft",
+            "intent": "order",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "6301-6",
+                  "display": "INR in Platelet poor plasma by Coagulation assay"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/cds-demo-ada"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "prefetch": {
+    "patient": {
+      "resourceType": "Patient",
+      "id": "cds-demo-ada",
+      "meta": {
+        "tag": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+            "code": "HTEST",
+            "display": "test health data"
+          }
+        ]
+      },
+      "identifier": [
+        {
+          "system": "https://ehr.example.org/mrn",
+          "value": "MRN-DEMO-0042"
+        }
+      ],
+      "name": [
+        {
+          "family": "Demo",
+          "given": [
+            "Ada"
+          ]
+        }
+      ],
+      "gender": "female",
+      "birthDate": "1945-05-14"
+    },
+    "activeMedications": {
+      "resourceType": "Bundle",
+      "type": "searchset",
+      "entry": [
+        {
+          "fullUrl": "https://ehr.example.org/fhir/MedicationRequest/active-warfarin",
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "id": "active-warfarin",
+            "meta": {
+              "tag": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+                  "code": "HTEST",
+                  "display": "test health data"
+                }
+              ]
+            },
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                  "code": "855332",
+                  "display": "Warfarin sodium 5 mg tablet"
+                }
+              ],
+              "text": "Warfarin sodium 5 mg tablet"
+            },
+            "subject": {
+              "reference": "Patient/cds-demo-ada"
+            },
+            "dosageInstruction": [
+              {
+                "text": "5 mg by mouth once daily"
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "https://ehr.example.org/fhir/MedicationRequest/active-metformin",
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "id": "active-metformin",
+            "meta": {
+              "tag": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+                  "code": "HTEST",
+                  "display": "test health data"
+                }
+              ]
+            },
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                  "code": "861007",
+                  "display": "Metformin hydrochloride 500 mg tablet"
+                }
+              ],
+              "text": "Metformin hydrochloride 500 mg tablet"
+            },
+            "subject": {
+              "reference": "Patient/cds-demo-ada"
+            },
+            "dosageInstruction": [
+              {
+                "text": "500 mg by mouth twice daily"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "allergies": {
+      "resourceType": "Bundle",
+      "type": "searchset",
+      "entry": [
+        {
+          "fullUrl": "https://ehr.example.org/fhir/AllergyIntolerance/allergy-penicillin",
+          "resource": {
+            "resourceType": "AllergyIntolerance",
+            "id": "allergy-penicillin",
+            "meta": {
+              "tag": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+                  "code": "HTEST",
+                  "display": "test health data"
+                }
+              ]
+            },
+            "clinicalStatus": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                  "code": "active"
+                }
+              ]
+            },
+            "verificationStatus": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                  "code": "confirmed"
+                }
+              ]
+            },
+            "code": {
+              "text": "Penicillin"
+            },
+            "patient": {
+              "reference": "Patient/cds-demo-ada"
+            }
+          }
+        }
+      ]
+    },
+    "egfr": {
+      "resourceType": "Bundle",
+      "type": "searchset",
+      "entry": [
+        {
+          "fullUrl": "https://ehr.example.org/fhir/Observation/egfr-latest",
+          "resource": {
+            "resourceType": "Observation",
+            "id": "egfr-latest",
+            "meta": {
+              "tag": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+                  "code": "HTEST",
+                  "display": "test health data"
+                }
+              ]
+            },
+            "status": "final",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "98979-8",
+                  "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI 2021)"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/cds-demo-ada"
+            },
+            "effectiveDateTime": "2026-11-05T08:30:00Z",
+            "valueQuantity": {
+              "value": 28,
+              "unit": "mL/min/1.73m2",
+              "system": "http://unitsofmeasure.org",
+              "code": "mL/min/{1.73_m2}"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
