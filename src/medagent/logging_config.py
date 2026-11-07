@@ -81,3 +81,40 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
         A configured bound logger instance.
     """
     return cast(structlog.stdlib.BoundLogger, structlog.get_logger(name))
+
+
+def exception_fields(exc: BaseException) -> dict[str, Any]:
+    """Return log-safe fields describing ``exc``: its class and any HTTP status code.
+
+    Exception messages and tracebacks can echo clinical text (prompts, notes,
+    model output, medication lists in request URLs), so they are never logged.
+
+    Args:
+        exc: The exception being reported.
+
+    Returns:
+        ``{"error_type": ...}`` plus ``"status_code"`` when the exception or its
+        HTTP response carries an integer status code.
+    """
+    fields: dict[str, Any] = {"error_type": type(exc).__name__}
+    status = getattr(exc, "status_code", None)
+    if not isinstance(status, int):
+        status = getattr(getattr(exc, "response", None), "status_code", None)
+    if isinstance(status, int):
+        fields["status_code"] = status
+    return fields
+
+
+def describe_exception(exc: BaseException) -> str:
+    """Return a message-free description of ``exc``, e.g. ``APIStatusError, HTTP 400``.
+
+    Args:
+        exc: The exception being reported.
+
+    Returns:
+        The exception class name, with the HTTP status code when available.
+    """
+    fields = exception_fields(exc)
+    if "status_code" in fields:
+        return f"{fields['error_type']}, HTTP {fields['status_code']}"
+    return str(fields["error_type"])

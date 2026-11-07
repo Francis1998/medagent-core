@@ -26,7 +26,7 @@ from tenacity import (
 )
 
 from medagent.config import settings
-from medagent.logging_config import get_logger
+from medagent.logging_config import exception_fields, get_logger
 from medagent.models import RetrievedDocument
 
 logger = get_logger(__name__)
@@ -150,7 +150,7 @@ class PubMedClient:
                 if doc:
                     docs.append(doc)
             except Exception as exc:
-                logger.warning("pubmed_parse_error", error=str(exc))
+                logger.warning("pubmed_parse_error", **exception_fields(exc))
 
         return docs
 

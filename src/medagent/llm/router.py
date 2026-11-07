@@ -14,7 +14,7 @@ from __future__ import annotations
 from medagent.llm.adapters import AnthropicAdapter, GoogleAdapter, KimiAdapter, OpenAIAdapter
 from medagent.llm.base import BaseLLMAdapter, LLMAdapterError, LLMResponse
 from medagent.llm.validator import MedicalOutputValidator
-from medagent.logging_config import get_logger
+from medagent.logging_config import describe_exception, exception_fields, get_logger
 
 logger = get_logger(__name__)
 
@@ -163,13 +163,14 @@ class MedicalRouter:
                 )
                 errors.append(f"{provider}: {exc}")
             except Exception as exc:
+                # Validation messages can quote model output, so only the type is kept.
                 logger.warning(
                     "llm_validation_failed",
                     provider=provider,
                     task=task_label,
-                    error=str(exc),
+                    **exception_fields(exc),
                 )
-                errors.append(f"{provider} (validation): {exc}")
+                errors.append(f"{provider} (validation): {describe_exception(exc)}")
 
         raise LLMAdapterError(
             f"All LLM adapters failed for task '{task_label}': {'; '.join(errors)}"

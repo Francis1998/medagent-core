@@ -13,7 +13,7 @@ from typing import Any, cast
 
 from medagent.config import settings
 from medagent.llm.base import BaseLLMAdapter, LLMAdapterError, LLMResponse
-from medagent.logging_config import get_logger
+from medagent.logging_config import describe_exception, exception_fields, get_logger
 from medagent.safety.disclaimer import MEDICAL_SYSTEM_PROMPT
 
 logger = get_logger(__name__)
@@ -124,8 +124,8 @@ class OpenAIAdapter(BaseLLMAdapter):
         try:
             response = await client.chat.completions.create(**request)
         except Exception as exc:
-            logger.error("openai_api_error", error=str(exc))
-            raise LLMAdapterError(f"OpenAI API error: {exc}") from exc
+            logger.error("openai_api_error", **exception_fields(exc))
+            raise LLMAdapterError(f"OpenAI API error ({describe_exception(exc)})") from exc
 
         choice = response.choices[0]
         return LLMResponse(
@@ -211,8 +211,8 @@ class AnthropicAdapter(BaseLLMAdapter):
         try:
             response = await client.messages.create(**request)
         except Exception as exc:
-            logger.error("anthropic_api_error", error=str(exc))
-            raise LLMAdapterError(f"Anthropic API error: {exc}") from exc
+            logger.error("anthropic_api_error", **exception_fields(exc))
+            raise LLMAdapterError(f"Anthropic API error ({describe_exception(exc)})") from exc
 
         # Thinking models return thinking blocks before the answer; keep text blocks only.
         text = "".join(
@@ -310,8 +310,8 @@ class GoogleAdapter(BaseLLMAdapter):
                 ),
             )
         except Exception as exc:
-            logger.error("google_api_error", error=str(exc))
-            raise LLMAdapterError(f"Google API error: {exc}") from exc
+            logger.error("google_api_error", **exception_fields(exc))
+            raise LLMAdapterError(f"Google API error ({describe_exception(exc)})") from exc
 
         text = getattr(response, "text", "") or ""
         return LLMResponse(
@@ -396,8 +396,8 @@ class KimiAdapter(BaseLLMAdapter):
         try:
             response = await client.chat.completions.create(**request)
         except Exception as exc:
-            logger.error("kimi_api_error", error=str(exc))
-            raise LLMAdapterError(f"Kimi API error: {exc}") from exc
+            logger.error("kimi_api_error", **exception_fields(exc))
+            raise LLMAdapterError(f"Kimi API error ({describe_exception(exc)})") from exc
 
         choice = response.choices[0]
         return LLMResponse(

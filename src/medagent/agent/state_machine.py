@@ -13,7 +13,7 @@ import time
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from medagent.logging_config import get_logger
+from medagent.logging_config import describe_exception, exception_fields, get_logger
 from medagent.models import AgentState, ClinicalQuery, ClinicalReasoning
 from medagent.reasoning.bayesian import calibrate_confidence
 from medagent.safety.deidentify import deidentify_query
@@ -150,8 +150,12 @@ class ClinicalAgentStateMachine:
             ctx.current_state = AgentState.ERROR
             result = self._build_error_output(ctx)
         except Exception as exc:
-            logger.exception("agent_unexpected_error", session_id=query.session_id)
-            ctx.errors.append(f"Unexpected: {exc}")
+            # Neither the message nor the traceback is logged or reported: both can
+            # echo clinical text, and the error flags reach the response and audit log.
+            logger.error(
+                "agent_unexpected_error", session_id=query.session_id, **exception_fields(exc)
+            )
+            ctx.errors.append(f"Unexpected: {describe_exception(exc)}")
             ctx.current_state = AgentState.ERROR
             result = self._build_error_output(ctx)
 

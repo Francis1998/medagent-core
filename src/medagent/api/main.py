@@ -30,7 +30,7 @@ from medagent.api.schemas import (
 from medagent.config import settings
 from medagent.extraction.ner import EntityExtractor
 from medagent.llm.router import MedicalRouter
-from medagent.logging_config import configure_logging, get_logger
+from medagent.logging_config import configure_logging, exception_fields, get_logger
 from medagent.models import ClinicalQuery, ClinicalReasoning
 from medagent.reasoning.engine import ReasoningEngine
 from medagent.retrieval.drug_interaction import DrugInteractionClient
@@ -164,7 +164,7 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Return a safe JSON error response for all unhandled exceptions."""
-    logger.error("unhandled_exception", path=request.url.path, error=str(exc))
+    logger.error("unhandled_exception", path=request.url.path, **exception_fields(exc))
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
@@ -269,7 +269,7 @@ async def drug_interactions(request: DrugInteractionRequest) -> DrugInteractionR
     try:
         warnings = await client.check_interactions(request.medications)
     except Exception as exc:
-        logger.error("drug_interaction_endpoint_error", error=str(exc))
+        logger.error("drug_interaction_endpoint_error", **exception_fields(exc))
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Drug interaction service temporarily unavailable.",
