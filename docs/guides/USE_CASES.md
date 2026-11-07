@@ -28,7 +28,7 @@ export PII_HASH_SALT=change-me        # identifiers are HMAC-hashed with this sa
 
 **Who:** a pharmacy-informatics researcher with a FHIR R4 export of an older patient's record who
 wants medagent's MCP-exposed deterministic checks run on it (13 patient-context and medication-list
-checks plus 83 interaction rules), without sending anything to a model provider.
+checks plus 83 interaction rules). Steps 1 and 2 send nothing to a model provider.
 
 **Step 1: run the reference MCP client** over real stdio. It parses the synthetic bundle
 `data/sample_fhir_bundle_polypharmacy.json` and screens the result:
@@ -69,7 +69,10 @@ printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"_meta":{
 
 **Step 3: use it from an assistant.** Register the server with Claude Code (other hosts are covered
 in the [MCP server guide](MCP_SERVER_GUIDE.md#connect-a-client)) and ask, for example, *"Parse this
-FHIR bundle and screen the medications"*:
+FHIR bundle and screen the medications"*. Use synthetic or already de-identified data here: a hosted
+assistant's model sees whatever you paste or attach before medagent's tools de-identify anything,
+and `network_used: false` describes medagent's tools only. Keep raw EHR exports in a local client,
+as in steps 1 and 2.
 
 ```bash
 claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(which medagent-mcp)"
@@ -88,11 +91,16 @@ claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(wh
 **Who:** a health-AI team evaluating whether the agent refuses to guess when it cannot reason. It
 must leave an audit trail either way.
 
-**Step 1: start the API.** To see the fail-safe path, leave every `*_API_KEY` unset. Knowledge
-retrieval still queries PubMed, RxNorm and OpenFDA when the network is available.
+**Step 1: start the API in one terminal.** To see the fail-safe path, leave every `*_API_KEY`
+unset. Knowledge retrieval still queries PubMed, RxNorm and OpenFDA when the network is available.
 
 ```bash
-uvicorn medagent.api.main:app --port 8000
+uvicorn medagent.api.main:app --port 8000    # terminal 1: keeps running in the foreground
+```
+
+Run the remaining commands in a **second terminal**:
+
+```bash
 curl -s localhost:8000/health
 ```
 
@@ -193,14 +201,17 @@ example, queries RxNorm and OpenFDA. The other 96 are the deterministic checks t
 MCP: 7 patient-context and 6 medication-list screening checks plus 83 interaction rules.
 
 **Step 3: attach the evidence.** Run the suites that enforce these controls and cite the
-corresponding [SAFETY.md](../../SAFETY.md) sections:
+corresponding [SAFETY.md](../../SAFETY.md) sections. The suites cover:
+- the MCP tools and safety library: `tests/unit/mcp`, `tests/unit/safety`;
+- the ESCALATE gate and audit log: `tests/unit/agent`;
+- dual-source drug validation: `tests/unit/retrieval`.
 
 ```bash
-pytest tests/unit/mcp tests/unit/safety -q
+pytest tests/unit/mcp tests/unit/safety tests/unit/agent tests/unit/retrieval -q
 ```
 
 ```text
-2001 passed in 2.34s
+2036 passed, 17 warnings in 1.86s
 ```
 
 **What this demonstrates:**
