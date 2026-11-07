@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from typing import Any
+
+import pytest
+
 from medagent.models import (
     ClinicalQuery,
     FHIRPatientContext,
@@ -88,3 +92,16 @@ def test_raw_fhir_patient_identifiers_are_removed() -> None:
     kept = context.raw_fhir["entry"][0]["resource"]
     assert kept == {"resourceType": "Patient", "id": "p1"}
     assert bundle["entry"][0]["resource"]["name"] == [{"family": "Canary"}]
+
+
+@pytest.mark.parametrize(
+    "raw_fhir",
+    [
+        {"entry": [{"resource": None}]},
+        {"entry": ["not-an-object"]},
+        {"entry": {"resource": {"resourceType": "Patient", "name": [{"family": "Canary"}]}}},
+    ],
+)
+def test_malformed_raw_fhir_is_rejected_with_a_value_error(raw_fhir: dict[str, Any]) -> None:
+    with pytest.raises(ValueError, match="raw_fhir"):
+        deidentify_query(_query(raw_fhir=raw_fhir))

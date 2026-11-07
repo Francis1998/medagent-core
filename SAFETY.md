@@ -71,9 +71,9 @@ Every `/analyze` request is de-identified at INTAKE, before entity extraction, P
   - `MR`/`MRN`-labelled numbers;
   - US Social Security numbers (`NNN-NN-NNNN`);
   - phone numbers and email addresses;
-  - capitalised names introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr, Prof) or by a `Name:`/`Patient name:` label.
+  - capitalised names (including initials and accented letters) introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr, Prof) or by a `Name:`/`Patient name:` label that starts the text, a line or a clause. A name run never continues onto the next line.
 - **`patient_id_hash`** is HMAC-SHA256 hashed with `PII_HASH_SALT` unless it is already a 64-character hex digest.
-- **`raw_fhir`** has the Patient `name`, `birthDate`, `identifier`, `telecom` and `address` removed (`redact_fhir_pii`), and it is never placed in a prompt.
+- **`raw_fhir`** has the Patient `name`, `birthDate`, `identifier`, `telecom` and `address` removed (`redact_fhir_pii`), and it is never placed in a prompt. A bundle whose `entry` is not a list of objects with an object `resource` is rejected with HTTP 400.
 - **Structured medication, lab and vital-sign records** are clinical content and pass unchanged.
 
 Not detected: personal names without an honorific or label, street addresses and other identifiers written in free text. Callers must leave them out. The FHIR parser and the MCP tools apply the same sanitiser to the text they export.

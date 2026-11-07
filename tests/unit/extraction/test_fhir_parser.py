@@ -282,6 +282,10 @@ class TestSanitiseClinicalText:
             ("Mr. O'Neil-Smith's daughter", "[REDACTED-NAME] daughter"),
             ("Patient name: Jane Canary.", "Patient name: [REDACTED-NAME]."),
             ("NAME: Jane Canary", "NAME: [REDACTED-NAME]"),
+            ("Mr. John Q. Canary reports pain", "[REDACTED-NAME] reports pain"),
+            ("Name: José García.", "Name: [REDACTED-NAME]."),
+            ("Dra. Ana Núñez-Peña", "Dra. Ana Núñez-Peña"),
+            ("Mr. Canary\nChest Pain at rest", "[REDACTED-NAME]\nChest Pain at rest"),
         ],
     )
     def test_redacts_honorific_and_labelled_names(self, text: str, expected: str) -> None:
@@ -295,6 +299,8 @@ class TestSanitiseClinicalText:
             "dr. ordered troponin",
             "Patient: 65-year-old with chest pain",
             "Troponin I elevated; aspirin given",
+            "Drug name: Warfarin 5 mg",
+            "Generic name: Atorvastatin",
         ],
     )
     def test_name_rules_leave_clinical_text_alone(self, text: str) -> None:

@@ -300,14 +300,47 @@ def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
     return "Not specified"
 
 
+# A name word is a Unicode word that may contain inner apostrophes or hyphens
+# (O'Neil-Smith, Núñez), or a single-letter initial with its dot (Q.). Words
+# are joined by spaces or tabs only, so a match never continues onto the next
+# line; at most four words are considered after the cue.
+_NAME_WORD = r"[^\W\d_]\.(?!\w)|[^\W\d_](?:[^\W\d_]|['’-](?=[^\W\d_]))*"
+_NAME_RUN = rf"(?:{_NAME_WORD})(?:[ \t]+(?:{_NAME_WORD})){{0,3}}"
+_HONORIFIC_NAME = re.compile(rf"\b(?:Mrs|Mr|Ms|Miss|Mx|Dr|Prof)\.?[ \t]+(?P<run>{_NAME_RUN})")
+# The label must start the text, a line or a clause, so "Drug name: Warfarin"
+# and "Generic name: ..." are never treated as personal names.
+_LABELLED_NAME = re.compile(
+    rf"(?P<label>(?<![^\n;.,(|])[ \t]*(?i:patient[ \t]+name|name)[ \t]*:[ \t]*)"
+    rf"(?P<run>{_NAME_RUN})"
+)
+
+
+def _redact_name_run(match: re.Match[str]) -> str:
+    """Replace the cue and the leading capitalised tokens of a name run.
+
+    A labelled match keeps its label; tokens after the first lower-case word
+    are clinical text and are kept unchanged.
+    """
+    parts = re.split(r"([ \t]+)", match.group("run"))
+    name_end = 0
+    for index in range(0, len(parts), 2):
+        if not parts[index][:1].isupper():
+            break
+        name_end = index + 1
+    if name_end == 0:
+        return match.group(0)
+    label = match.groupdict().get("label") or ""
+    return label + "[REDACTED-NAME]" + "".join(parts[name_end:])
+
+
 def sanitise_clinical_text(text: str) -> str:
     """Remove likely PII patterns from free-text clinical notes.
 
     Redacts dates (``MM/DD/YYYY``, ``YYYY-MM-DD``, ``DD-Mon-YYYY``), ``MR``/``MRN``-
     labelled numbers, US Social Security numbers, phone numbers, email addresses,
     and capitalised names introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr,
-    Prof) or a ``Name:``/``Patient name:`` label. Names without such a cue are
-    not detected.
+    Prof) or by a ``Name:``/``Patient name:`` label that starts the text, a line
+    or a clause. Names without such a cue are not detected.
 
     Args:
         text: Raw clinical note text.
@@ -360,10 +393,8 @@ def sanitise_clinical_text(text: str) -> str:
     # Personal names, only when a cue marks them as names: an honorific, or a
     # "Name:" / "Patient name:" label (the label is kept). Case-sensitive
     # honorifics keep abbreviations such as "MS Contin" and "dr." untouched.
-    name = r"[A-Z][A-Za-z'’-]+(?:\s+[A-Z][A-Za-z'’-]+){0,2}"
-    text = re.sub(rf"\b(?:Mrs|Mr|Ms|Miss|Mx|Dr|Prof)\.?\s+{name}", "[REDACTED-NAME]", text)
-    text = re.sub(rf"(\b(?i:patient\s+name|name)\s*:\s*){name}", r"\1[REDACTED-NAME]", text)
-    return text
+    text = _HONORIFIC_NAME.sub(_redact_name_run, text)
+    return _LABELLED_NAME.sub(_redact_name_run, text)
 
 
 _VITAL_NAME_HINTS: tuple[str, ...] = (

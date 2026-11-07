@@ -8,12 +8,32 @@ and the audit record — only ever sees the de-identified copy.
 from __future__ import annotations
 
 import re
+from typing import Any
 
 from medagent.extraction.fhir_parser import sanitise_clinical_text
 from medagent.models import ClinicalQuery, FHIRPatientContext
 from medagent.safety.pii_hasher import hash_pii, redact_fhir_pii
 
 _HEX_DIGEST = re.compile(r"[0-9a-fA-F]{64}")
+
+
+def _redacted_raw_fhir(raw_fhir: dict[str, Any]) -> dict[str, Any]:
+    """Remove Patient identifiers from a caller-supplied bundle.
+
+    Raises:
+        ValueError: When ``entry`` is not a list of objects whose ``resource``
+            is an object; the redactor cannot vouch for such a bundle, and the
+            API reports the request as a client error (HTTP 400).
+    """
+    entries = raw_fhir.get("entry", [])
+    if not isinstance(entries, list) or not all(
+        isinstance(entry, dict) and isinstance(entry.get("resource", {}), dict) for entry in entries
+    ):
+        raise ValueError(
+            "patient_context.raw_fhir must be a FHIR Bundle whose 'entry' is a list of "
+            "objects with an object 'resource'."
+        )
+    return redact_fhir_pii(raw_fhir)
 
 
 def deidentify_patient_context(context: FHIRPatientContext) -> FHIRPatientContext:
@@ -29,11 +49,14 @@ def deidentify_patient_context(context: FHIRPatientContext) -> FHIRPatientContex
         HMAC-SHA256 hashed, and ``raw_fhir`` has its Patient name, birth date,
         identifiers, telecom and address removed. Structured medication, lab
         and vital-sign records are clinical content and are kept unchanged.
+
+    Raises:
+        ValueError: When ``raw_fhir`` is not a well-formed bundle.
     """
     patient_id = context.patient_id_hash
     if not _HEX_DIGEST.fullmatch(patient_id):
         patient_id = hash_pii(patient_id)
-    raw_fhir = redact_fhir_pii(context.raw_fhir) if context.raw_fhir is not None else None
+    raw_fhir = _redacted_raw_fhir(context.raw_fhir) if context.raw_fhir is not None else None
     return context.model_copy(
         update={
             "patient_id_hash": patient_id,
