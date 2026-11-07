@@ -1633,6 +1633,12 @@ yields a `KatzSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. Research-use only; never modifies medications.
 
 
+
+### 3.307 NortonSerialDelta Panel
+`NortonSerialDeltaPanel` computes an advisory score (MDCalc / Norton pressure-ulcer serial delta-trend panel). Every call
+yields a `NortonSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. Research-use only; never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
