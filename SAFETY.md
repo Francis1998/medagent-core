@@ -89,7 +89,7 @@ Application logs carry safe metadata only (`exception_fields` in `src/medagent/l
 - the PubMed, RxNorm/OpenFDA and local-KB retrieval paths, including interactions suppressed for lack of a second source, which log only the source names.
 
 ### 3.6 Scope Enforcement
-The `ScopeEnforcer` (`src/medagent/safety/scope_enforcer.py`) rejects queries requesting internet access, code execution, or clearly non-clinical topics before the agent state machine starts.
+The `ScopeEnforcer` (`src/medagent/safety/scope_enforcer.py`) rejects queries requesting internet access, code execution, or clearly non-clinical topics. `POST /analyze` returns HTTP 400 for such a query before the agent state machine starts, so no LLM call, retrieval or audit record follows; the scope check logs only the matched rule. For direct (library) callers, the state machine's own INTAKE check turns a violation into an escalated `ERROR` result.
 
 ### 3.7 Drug Interaction Dual-Source Validation
 Drug interaction warnings are **only surfaced** when confirmed by at least 2 independent data sources (RxNorm + OpenFDA). This is enforced at the `DrugInteractionWarning` model level via a Pydantic validator — it is impossible to construct a `validated=True` warning with fewer than 2 sources.
