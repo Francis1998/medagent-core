@@ -168,7 +168,8 @@ def test_invalid_arguments_are_tool_errors_not_protocol_errors(server: MedagentM
     assert "structuredContent" not in result
     text = result["content"][0]["text"]
     assert "arguments.medications must contain at least 1 item(s)" in text
-    assert "arguments.patient.name is not an allowed property" in text
+    assert "arguments.patient has unexpected properties" in text
+    assert "name" not in text.split("allowed:")[0]
     assert MANDATORY_DISCLAIMER in text
 
 
@@ -480,14 +481,13 @@ def test_output_guard_scans_raw_strings_and_keys(
     assert response["result"]["content"][0]["text"].startswith("Result withheld")
 
 
-def test_audit_log_keeps_only_bounded_client_identity(tmp_path: Path) -> None:
+def test_audit_log_hashes_client_identity(tmp_path: Path) -> None:
     audit_path = tmp_path / "mcp.jsonl"
     server = MedagentMcpServer(audit_log_path=audit_path)
     request = call("list_safety_controls", {"category": "platform"})
     request["params"]["_meta"]["io.modelcontextprotocol/clientInfo"] = {
-        "name": "ehr-agent call 415-555-0101",
-        "version": "9" * 200,
-        "mrn": "MRN-0042",
+        "name": "Janet Doe MRN-0042",
+        "version": "1.0",
         "bundle": {"resourceType": "Bundle"},
     }
 
@@ -495,9 +495,11 @@ def test_audit_log_keeps_only_bounded_client_identity(tmp_path: Path) -> None:
 
     raw = audit_path.read_text(encoding="utf-8")
     record = json.loads(raw)
-    assert set(record["client"]) == {"name", "version"}
-    assert record["client"]["version"] == "9" * 64
-    for leaked in ("MRN-0042", "Bundle", "415-555-0101"):
+    expected = json.dumps(
+        {"name": "Janet Doe MRN-0042", "version": "1.0"}, sort_keys=True, separators=(",", ":")
+    )
+    assert record["client_hash"] == hash_pii(expected)
+    for leaked in ("Janet", "MRN-0042", "Bundle"):
         assert leaked not in raw
 
 
@@ -548,7 +550,10 @@ def test_audit_log_records_hashes_and_counts_never_arguments(tmp_path: Path) -> 
     assert ok["tool"] == "screen_medications"
     assert ok["era"] == "modern"
     assert ok["protocol_version"] == MODERN
-    assert ok["client"] == {"name": "pytest", "version": "1.0"}
+    assert ok["client_hash"] == hash_pii(
+        json.dumps({"name": "pytest", "version": "1.0"}, sort_keys=True, separators=(",", ":"))
+    )
+    assert "client" not in ok
     assert ok["inputs_hash"] == hash_pii(canonical)
     assert ok["patient_ref_hash"] == hash_pii("MRN-0042")
     assert ok["is_error"] is False

@@ -31,7 +31,6 @@ from typing import IO, Any
 
 from medagent import __version__
 from medagent.config import settings
-from medagent.extraction.fhir_parser import sanitise_clinical_text
 from medagent.llm.validator import MedicalOutputValidationError, MedicalOutputValidator
 from medagent.logging_config import configure_logging, get_logger
 from medagent.mcp.schema import validate
@@ -58,7 +57,6 @@ INTERNAL_ERROR = -32603
 UNSUPPORTED_PROTOCOL_VERSION = -32022
 
 CACHE_TTL_MS = 3_600_000
-CLIENT_FIELD_MAX_CHARS = 64
 MAX_MESSAGE_BYTES = 8 * 1024 * 1024
 AUDIT_LOG_ENV = "MEDAGENT_MCP_AUDIT_LOG"
 LOG_LEVEL_ENV = "MEDAGENT_MCP_LOG_LEVEL"
@@ -129,16 +127,14 @@ def _iter_strings(value: Any) -> Iterator[str]:
             yield from _iter_strings(item)
 
 
-def _client_identity(client: Any) -> dict[str, str] | None:
-    """Keep only a bounded, de-identified ``name``/``version`` from self-reported clientInfo."""
+def _client_hash(client: Any) -> str | None:
+    """HMAC the self-reported clientInfo ``name``/``version``; never store them readable."""
     if not isinstance(client, dict):
         return None
     identity = {
-        field: sanitise_clinical_text(client[field])[:CLIENT_FIELD_MAX_CHARS]
-        for field in ("name", "version")
-        if isinstance(client.get(field), str)
+        field: client[field] for field in ("name", "version") if isinstance(client.get(field), str)
     }
-    return identity or None
+    return hash_pii(_canonical_json(identity)) if identity else None
 
 
 def _canonical_json(value: Any) -> str:
@@ -404,7 +400,7 @@ class MedagentMcpServer:
         patient_ref_hash = hash_pii(patient_ref) if isinstance(patient_ref, str) else None
         meta = params.get("_meta")
         client = meta.get(META_CLIENT_INFO) if isinstance(meta, dict) else self._legacy_client
-        client_identity = _client_identity(client)
+        client_hash = _client_hash(client)
         logger.info(
             "mcp_tool_call",
             tool=tool.name,
@@ -422,7 +418,7 @@ class MedagentMcpServer:
                 "tool": tool.name,
                 "era": era,
                 "protocol_version": version,
-                "client": client_identity,
+                "client_hash": client_hash,
                 "is_error": error_kind is not None,
                 "error_kind": error_kind,
                 "duration_ms": duration_ms,

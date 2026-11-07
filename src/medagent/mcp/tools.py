@@ -90,6 +90,54 @@ _PROPOSED_STATUSES: dict[str, frozenset[str]] = {
     "MedicationRequest": frozenset({"draft"}),
     "MedicationStatement": frozenset({"intended"}),
 }
+_KNOWN_STATUSES: dict[str, frozenset[str]] = {
+    "MedicationRequest": frozenset(
+        {"active", "on-hold", "cancelled", "completed", "entered-in-error", "stopped", "draft"}
+        | {"unknown"}
+    ),
+    "MedicationStatement": frozenset(
+        {"active", "completed", "entered-in-error", "intended", "stopped", "on-hold"}
+        | {"unknown", "not-taken"}
+    ),
+}
+# Resource types reported in resource_counts; anything else is counted as "Other"
+# so caller-controlled strings never become output keys.
+_KNOWN_RESOURCE_TYPES = frozenset(
+    {
+        "AllergyIntolerance",
+        "CarePlan",
+        "CareTeam",
+        "Composition",
+        "Condition",
+        "Coverage",
+        "Device",
+        "DiagnosticReport",
+        "DocumentReference",
+        "Encounter",
+        "FamilyMemberHistory",
+        "Goal",
+        "Immunization",
+        "Location",
+        "Medication",
+        "MedicationAdministration",
+        "MedicationDispense",
+        "MedicationRequest",
+        "MedicationStatement",
+        "Observation",
+        "Organization",
+        "Patient",
+        "Practitioner",
+        "PractitionerRole",
+        "Procedure",
+        "Provenance",
+        "RelatedPerson",
+        "ServiceRequest",
+        "Specimen",
+    }
+)
+_ABSOLUTE_REFERENCE = re.compile(r"^[a-z][a-z0-9+.-]*:", re.IGNORECASE)
+_INVALIDATED_VERIFICATION = frozenset({"entered-in-error", "refuted"})
+_REDACTED_PATIENT = "[REDACTED-PATIENT]"
 
 
 class ToolInputError(ValueError):
@@ -407,10 +455,10 @@ def _parse_medications(items: list[Any]) -> list[Medication]:
     return medications
 
 
-def _medication_dict(medication: Medication) -> dict[str, str]:
+def _medication_dict(medication: Medication, clean: Callable[[str], str]) -> dict[str, str]:
     """Return a medication as a compact dict of cleaned text without empty fields."""
     data = medication.model_dump(exclude_none=True)
-    return {key: _clean_text(str(value)) for key, value in data.items()}
+    return {key: clean(str(value)) for key, value in data.items()}
 
 
 def _enforce_scope(texts: Sequence[str]) -> None:
@@ -530,11 +578,13 @@ def _screen_medications(arguments: dict[str, Any]) -> ToolOutput:
     context_used = {key: patient[key] for key in sorted(patient)}
     if "allergies" in context_used:
         context_used["allergies"] = allergies
+    if "age" in context_used:
+        context_used["age"] = int(context_used["age"])
     hepatic = patient.get("hepatic_function")
     egfr = patient.get("egfr")
     ctx = ScreeningContext(
         medications=medications,
-        age=patient.get("age"),
+        age=context_used.get("age"),
         pregnant=patient.get("pregnant"),
         breastfeeding=patient.get("breastfeeding"),
         egfr=float(egfr) if egfr is not None else None,
@@ -615,44 +665,130 @@ def _lowest_egfr(labs: list[LabResult]) -> tuple[float | None, int, int]:
     return (min(values) if values else None), len(values), skipped
 
 
-def _reference_key(reference: str) -> str:
-    """Normalise a FHIR reference to ``Patient/<id>`` when it names a Patient."""
-    parts = reference.rstrip("/").split("/")
-    if len(parts) >= 2 and parts[-2] == "Patient":
-        return f"Patient/{parts[-1]}"
-    return reference
+def _same_identifier(reference: dict[str, Any], own: dict[str, Any]) -> bool:
+    """True when a logical reference identifier names one of the Patient's identifiers."""
+    if not reference.get("value") or reference.get("value") != own.get("value"):
+        return False
+    systems = (reference.get("system"), own.get("system"))
+    return None in systems or systems[0] == systems[1]
 
 
-def _require_single_patient(entries: list[dict[str, Any]]) -> None:
-    """Reject bundles whose resources belong to more than one patient."""
+def _belongs_to_patient(subject: dict[str, Any], patient_entry: dict[str, Any]) -> bool:
+    """Resolve a subject/patient reference against the bundle's single Patient entry."""
+    patient = patient_entry.get("resource", {})
+    full_url = patient_entry.get("fullUrl")
+    full_url = full_url if isinstance(full_url, str) and full_url else None
+    patient_id = patient.get("id") if isinstance(patient.get("id"), str) else None
+    reference = subject.get("reference")
+    if isinstance(reference, str) and reference:
+        if reference == full_url:
+            return True
+        if _ABSOLUTE_REFERENCE.match(reference):
+            return False
+        if patient_id is not None and reference == f"Patient/{patient_id}":
+            return True
+        return full_url is not None and full_url.endswith(f"/{reference}")
+    identifier = subject.get("identifier")
+    if isinstance(identifier, dict):
+        owned = [i for i in patient.get("identifier", []) if isinstance(i, dict)]
+        return any(_same_identifier(identifier, own) for own in owned)
+    return False
+
+
+def _subject_key(subject: dict[str, Any]) -> str:
+    """Comparable key for a subject reference when no Patient resource is present."""
+    reference = subject.get("reference")
+    if isinstance(reference, str) and reference:
+        return reference
+    identifier = subject.get("identifier")
+    if isinstance(identifier, dict):
+        return f"identifier:{identifier.get('system')}|{identifier.get('value')}"
+    return "unresolved"
+
+
+def _require_single_patient(entries: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Reject bundles whose resources do not provably belong to one patient.
+
+    Returns:
+        The Patient resource, or None when the bundle has no Patient.
+    """
     patients = [e for e in entries if e.get("resource", {}).get("resourceType") == "Patient"]
     if len(patients) > 1:
         raise ToolInputError(
             f"Bundle contains {len(patients)} Patient resources; send one patient's "
             "resources per call."
         )
-    own: set[str] = set()
+    subjects = [
+        target
+        for entry in entries
+        if entry.get("resource", {}).get("resourceType") != "Patient"
+        for field in ("subject", "patient")
+        if isinstance(target := entry.get("resource", {}).get(field), dict)
+    ]
     if patients:
-        patient_id = patients[0]["resource"].get("id")
-        if isinstance(patient_id, str) and patient_id:
-            own.add(f"Patient/{patient_id}")
-        full_url = patients[0].get("fullUrl")
-        if isinstance(full_url, str) and full_url:
-            own.update({full_url, _reference_key(full_url)})
-    referenced: set[str] = set()
-    for entry in entries:
-        resource = entry.get("resource", {})
-        for field in ("subject", "patient"):
-            target = resource.get(field)
-            reference = target.get("reference") if isinstance(target, dict) else None
-            if resource.get("resourceType") != "Patient" and isinstance(reference, str):
-                referenced.add(_reference_key(reference))
-    foreign = referenced - own if own else (referenced if len(referenced) > 1 else set())
-    if foreign:
-        raise ToolInputError(
-            "Bundle mixes patients: a clinical resource references a different patient than "
-            "the bundle's Patient; send one patient's resources per call."
-        )
+        if all(_belongs_to_patient(subject, patients[0]) for subject in subjects):
+            return dict(patients[0]["resource"])
+    elif len({_subject_key(subject) for subject in subjects}) <= 1:
+        return None
+    raise ToolInputError(
+        "Bundle mixes patients: a clinical resource references a different patient, or a "
+        "patient that cannot be matched to the bundle's Patient; send one patient's "
+        "resources per call."
+    )
+
+
+def _is_invalidated(resource: dict[str, Any]) -> bool:
+    """True for resources recorded in error, cancelled observations or refuted findings."""
+    if resource.get("resourceType") == "Observation" and resource.get("status") in {
+        "entered-in-error",
+        "cancelled",
+    }:
+        return True
+    verification = resource.get("verificationStatus")
+    codings = verification.get("coding", []) if isinstance(verification, dict) else []
+    codes = {c.get("code") for c in codings if isinstance(c, dict)}
+    return bool(codes & _INVALIDATED_VERIFICATION)
+
+
+def _patient_redactor(patient: dict[str, Any] | None) -> Callable[[str], str]:
+    """Return a function that redacts this Patient's own identifiers from free text."""
+    tokens: set[str] = set()
+    if patient:
+        for name in patient.get("name", []):
+            if isinstance(name, dict):
+                parts = [name.get("text"), name.get("family")]
+                parts += [*name.get("given", []), *name.get("prefix", []), *name.get("suffix", [])]
+                tokens.update(p for p in parts if isinstance(p, str))
+                if isinstance(name.get("text"), str):
+                    tokens.update(name["text"].split())
+        for field in ("identifier", "telecom"):
+            tokens.update(
+                item["value"]
+                for item in patient.get(field, [])
+                if isinstance(item, dict) and isinstance(item.get("value"), str)
+            )
+        for address in patient.get("address", []):
+            if isinstance(address, dict):
+                parts = [address.get("text"), address.get("city"), address.get("postalCode")]
+                tokens.update(p for p in [*parts, *address.get("line", [])] if isinstance(p, str))
+        if isinstance(patient.get("birthDate"), str):
+            tokens.add(patient["birthDate"])
+    words = sorted({t.strip() for t in tokens if len(t.strip()) >= 2}, key=len, reverse=True)
+    if not words:
+        return lambda text: text
+    pattern = re.compile(
+        r"(?<!\w)(?:" + "|".join(re.escape(word) for word in words) + r")(?!\w)",
+        re.IGNORECASE,
+    )
+    return lambda text: pattern.sub(_REDACTED_PATIENT, text)
+
+
+def _status_label(resource_type: str, raw_status: Any) -> str:
+    """Return a recognised FHIR status code, ``missing`` or ``unrecognized``."""
+    status = str(raw_status or "").lower()
+    if not status:
+        return "missing"
+    return status if status in _KNOWN_STATUSES[resource_type] else "unrecognized"
 
 
 def _select_medication_resources(
@@ -666,7 +802,7 @@ def _select_medication_resources(
         resource_type = str(resource.get("resourceType"))
         if resource_type not in _CURRENT_STATUSES:
             continue
-        status = str(resource.get("status") or "").lower() or "missing"
+        status = _status_label(resource_type, resource.get("status"))
         if status in _CURRENT_STATUSES[resource_type]:
             selected.append(resource)
         elif include_proposed and status in _PROPOSED_STATUSES[resource_type]:
@@ -686,10 +822,46 @@ def _select_medication_resources(
     return selected, notes
 
 
-def _clean_record(record: BaseModel) -> dict[str, Any]:
+def _prepare_medication_resources(
+    selected: list[dict[str, Any]], entries: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Resolve medicationReference names and map MedicationStatement.dosage for the adapter."""
+    index: dict[str, dict[str, Any]] = {}
+    for entry in entries:
+        resource = entry.get("resource", {})
+        if resource.get("resourceType") != "Medication":
+            continue
+        if isinstance(resource.get("id"), str):
+            index[f"Medication/{resource['id']}"] = resource
+        if isinstance(entry.get("fullUrl"), str):
+            index[entry["fullUrl"]] = resource
+    prepared: list[dict[str, Any]] = []
+    for resource in selected:
+        copy = dict(resource)
+        target = resource.get("medicationReference")
+        reference = target.get("reference") if isinstance(target, dict) else None
+        if "medicationCodeableConcept" not in resource and isinstance(reference, str):
+            contained = {
+                f"#{item.get('id')}": item
+                for item in resource.get("contained", [])
+                if isinstance(item, dict) and item.get("resourceType") == "Medication"
+            }
+            medication = contained.get(reference) or index.get(reference)
+            if medication is not None and isinstance(medication.get("code"), dict):
+                copy["medicationCodeableConcept"] = medication["code"]
+        if resource.get("resourceType") == "MedicationStatement" and "dosageInstruction" not in (
+            resource
+        ):
+            if isinstance(resource.get("dosage"), list):
+                copy["dosageInstruction"] = resource["dosage"]
+        prepared.append(copy)
+    return prepared
+
+
+def _clean_record(record: BaseModel, clean: Callable[[str], str]) -> dict[str, Any]:
     """Dump a lab/vital record with every string field de-identified."""
     return {
-        key: _clean_text(value) if isinstance(value, str) else value
+        key: clean(value) if isinstance(value, str) else value
         for key, value in record.model_dump(mode="json").items()
     }
 
@@ -697,8 +869,12 @@ def _clean_record(record: BaseModel) -> dict[str, Any]:
 def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
     """Normalise a FHIR R4 Bundle into de-identified, screening-ready context."""
     bundle: dict[str, Any] = arguments["bundle"]
+    all_entries: list[dict[str, Any]] = bundle.get("entry", [])
+    patient = _require_single_patient(all_entries)
+    entries = [e for e in all_entries if not _is_invalidated(e.get("resource", {}))]
+    invalidated = len(all_entries) - len(entries)
     try:
-        context = parse_fhir_bundle(bundle)
+        context = parse_fhir_bundle({**bundle, "entry": entries})
     except FHIRParseError as exc:
         raise ToolInputError(f"Invalid FHIR bundle: {exc}") from exc
     except (AttributeError, TypeError, ValueError) as exc:
@@ -706,15 +882,15 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
             "FHIR bundle could not be parsed: a resource has an unexpected structure "
             f"({type(exc).__name__})."
         ) from exc
-    entries: list[dict[str, Any]] = bundle.get("entry", [])
-    _require_single_patient(entries)
 
     resources = [entry.get("resource", {}) for entry in entries]
     selected, medication_notes = _select_medication_resources(
         resources, include_proposed=bool(arguments.get("include_proposed", False))
     )
     try:
-        adapted = FhirMedicationRequestAdapter().adapt(selected)
+        adapted = FhirMedicationRequestAdapter().adapt(
+            _prepare_medication_resources(selected, entries)
+        )
     except (AttributeError, TypeError, ValueError) as exc:
         raise ToolInputError(
             "FHIR bundle could not be parsed: a medication resource has an unexpected "
@@ -741,8 +917,13 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
         ]
     )
 
-    medications = [_medication_dict(medication) for medication in adapted.medications]
-    allergies = [_clean_text(allergy) for allergy in context.allergies]
+    redact_patient = _patient_redactor(patient)
+
+    def clean(text: str) -> str:
+        return _clean_text(redact_patient(text))
+
+    medications = [_medication_dict(medication, clean) for medication in adapted.medications]
+    allergies = [clean(allergy) for allergy in context.allergies]
     egfr, egfr_used, egfr_skipped = _lowest_egfr(context.lab_results)
     screening_patient: dict[str, Any] = {}
     if context.age is not None:
@@ -753,17 +934,27 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
         screening_patient["egfr"] = egfr
     screening_input = {"medications": medications, "patient": screening_patient}
     issues = validate(screening_input, _SCREEN_INPUT, "screening_input")
+    if adapted.skipped_count:
+        issues.append(
+            f"{adapted.skipped_count} current medication(s) could not be named and are missing "
+            "from screening_input; screening the list unchanged could miss interactions"
+        )
 
     notes = [
         "Direct identifiers (name, birthDate, identifier, telecom, address) and the raw bundle "
         "are not returned; the patient id is HMAC-SHA256 hashed with PII_HASH_SALT, and free "
-        "text is de-identified.",
+        "text is de-identified, including the Patient's own names and identifiers.",
         "Only current therapy (status active or on-hold) is kept; draft/intended orders are "
         "added only with include_proposed, and every other status is excluded and counted "
         "in medication_notes.",
         "pregnant, breastfeeding and hepatic_function are not derived from the bundle; "
         "add them to screening_input.patient when known.",
     ]
+    if invalidated:
+        notes.append(
+            f"excluded {invalidated} invalidated resource(s) (entered-in-error, cancelled "
+            "observations or refuted findings)."
+        )
     if egfr is not None:
         notes.append(f"egfr is the lowest of {egfr_used} eGFR observation(s) in mL/min/1.73m².")
     if egfr_skipped:
@@ -772,20 +963,22 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
             "or non-numeric values."
         )
 
+    resource_types = Counter(
+        rtype if (rtype := r.get("resourceType")) in _KNOWN_RESOURCE_TYPES else "Other"
+        for r in resources
+    )
     result: dict[str, Any] = {
         "patient_id_hash": context.patient_id_hash,
         "age": context.age,
         "sex": context.sex,
-        "chief_complaint": _clean_text(context.chief_complaint),
-        "diagnoses": [_clean_text(text) for text in context.diagnoses_history],
+        "chief_complaint": clean(context.chief_complaint),
+        "diagnoses": [clean(text) for text in context.diagnoses_history],
         "medications": medications,
-        "medication_notes": [*medication_notes, *adapted.notes],
+        "medication_notes": [*medication_notes, *(clean(note) for note in adapted.notes)],
         "allergies": allergies,
-        "lab_results": [_clean_record(lab) for lab in context.lab_results],
-        "vital_signs": [_clean_record(vital) for vital in context.vital_signs],
-        "resource_counts": dict(
-            sorted(Counter(str(r.get("resourceType", "Unknown")) for r in resources).items())
-        ),
+        "lab_results": [_clean_record(lab, clean) for lab in context.lab_results],
+        "vital_signs": [_clean_record(vital, clean) for vital in context.vital_signs],
+        "resource_counts": dict(sorted(resource_types.items())),
         "screening_input": screening_input,
         "screening_input_issues": issues,
         "notes": notes,

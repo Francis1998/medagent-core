@@ -124,7 +124,7 @@ def run(name: str, arguments: dict[str, Any]) -> ToolOutput:
             {"medications": ["x"], "patient": {"hepatic_function": "C"}},
             "arguments.patient.hepatic_function must be one of",
         ),
-        ({"medications": ["x"], "extra": 1}, "arguments.extra is not an allowed property"),
+        ({"medications": ["x"], "extra": 1}, "arguments has unexpected properties"),
     ],
 )
 def test_input_validation_reports_actionable_paths(instance: Any, message: str) -> None:
@@ -280,7 +280,8 @@ def test_parse_fhir_bundle_returns_deidentified_screening_input() -> None:
         assert identifier not in serialized
     assert result["sex"] == "female"
     assert isinstance(result["age"], int)
-    assert "[REDACTED-PHONE]" in result["chief_complaint"]
+    assert "415-555-0101" not in result["chief_complaint"]
+    assert "[REDACTED-" in result["chief_complaint"]
     assert [m["name"] for m in result["medications"]] == [
         "Warfarin 5 mg tablet",
         "Ibuprofen 400 mg tablet",
@@ -484,7 +485,7 @@ def test_resources_for_another_patient_are_rejected() -> None:
         "subject": {"reference": "Patient/p2"},
         "medicationCodeableConcept": {"text": "Warfarin"},
     }
-    own = {**foreign, "subject": {"reference": "https://ehr.example/fhir/Patient/p1"}}
+    own = {**foreign, "subject": {"reference": "Patient/p1"}}
 
     assert run("parse_fhir_bundle", {"bundle": _bundle(PATIENT, own)}).structured["medications"]
     with pytest.raises(ToolInputError, match="different patient"):
@@ -602,3 +603,181 @@ def test_fhir_parser_diagnostics_exclude_clinical_values(
         {"event": "medication_parse_error", "log_level": "warning", "error_type": "ValidationError"}
     ]
     assert "CANARY-med-55" not in repr(safety_logs)
+
+
+# ---------------------------------------------------------------------------
+# Review round 2
+# ---------------------------------------------------------------------------
+
+
+def _entry(resource: dict[str, Any], full_url: str | None = None) -> dict[str, Any]:
+    entry: dict[str, Any] = {"resource": resource}
+    if full_url is not None:
+        entry["fullUrl"] = full_url
+    return entry
+
+
+def _med_for(subject: dict[str, Any], name: str = "Warfarin") -> dict[str, Any]:
+    return {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "subject": subject,
+        "medicationCodeableConcept": {"text": name},
+    }
+
+
+def _parse(entries: list[dict[str, Any]]) -> dict[str, Any]:
+    bundle = {"resourceType": "Bundle", "entry": entries}
+    return run("parse_fhir_bundle", {"bundle": bundle}).structured
+
+
+def _rejects(entries: list[dict[str, Any]], match: str) -> None:
+    bundle = {"resourceType": "Bundle", "entry": entries}
+    with pytest.raises(ToolInputError, match=match):
+        TOOLS_BY_NAME["parse_fhir_bundle"].handler({"bundle": bundle})
+
+
+def test_absolute_references_must_match_the_patients_full_url() -> None:
+    full_url = "https://ehr-a.example/fhir/Patient/p1"
+    patient = _entry(PATIENT, full_url)
+
+    assert _parse([patient, _entry(_med_for({"reference": full_url}))])["medications"]
+    assert _parse([patient, _entry(_med_for({"reference": "Patient/p1"}))])["medications"]
+    _rejects(
+        [patient, _entry(_med_for({"reference": "https://ehr-b.example/fhir/Patient/p1"}))],
+        "different patient",
+    )
+
+
+def test_unresolvable_references_fail_closed_when_a_patient_is_supplied() -> None:
+    anonymous = {
+        "resourceType": "Patient",
+        "identifier": [{"system": "urn:mrn", "value": "MRN-1"}],
+    }
+
+    _rejects([_entry(anonymous), _entry(_med_for({"reference": "Patient/x"}))], "patient")
+    by_identifier = _med_for({"identifier": {"system": "urn:mrn", "value": "MRN-1"}})
+    assert _parse([_entry(anonymous), _entry(by_identifier)])["medications"]
+    other = _med_for({"identifier": {"system": "urn:mrn", "value": "MRN-2"}})
+    _rejects([_entry(anonymous), _entry(other)], "different patient")
+    assert _parse([_entry(_med_for({"reference": "Patient/solo"}))])["medications"]
+
+
+def test_entered_in_error_and_cancelled_resources_are_excluded() -> None:
+    def egfr(value: float, status: str) -> dict[str, Any]:
+        return {
+            "resourceType": "Observation",
+            "status": status,
+            "code": {"text": "eGFR"},
+            "valueQuantity": {"value": value, "unit": "mL/min/1.73m2"},
+        }
+
+    result = _parse(
+        [
+            _entry(PATIENT),
+            _entry(egfr(90, "final")),
+            _entry(egfr(20, "entered-in-error")),
+            _entry(egfr(15, "cancelled")),
+        ]
+    )
+
+    assert result["screening_input"]["patient"]["egfr"] == 90.0
+    assert len(result["lab_results"]) == 1
+    assert "excluded 2 invalidated resource(s)" in " ".join(result["notes"])
+
+
+def test_medication_references_are_resolved_or_reported() -> None:
+    resolvable = {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "medicationReference": {"reference": "Medication/m1"},
+    }
+    dangling = {**resolvable, "medicationReference": {"reference": "Medication/missing"}}
+    medication = {"resourceType": "Medication", "id": "m1", "code": {"text": "Warfarin 5 mg"}}
+
+    result = _parse([_entry(PATIENT), _entry(medication), _entry(resolvable), _entry(dangling)])
+
+    assert [m["name"] for m in result["medications"]] == ["Warfarin 5 mg"]
+    assert result["screening_input_issues"] == [
+        "1 current medication(s) could not be named and are missing from screening_input; "
+        "screening the list unchanged could miss interactions"
+    ]
+
+
+def test_known_patient_identifiers_are_redacted_from_clinical_text() -> None:
+    patient = {
+        "resourceType": "Patient",
+        "id": "p1",
+        "identifier": [{"value": "MRN-0042"}],
+        "name": [{"given": ["Janet"], "family": "Doe"}],
+    }
+    condition = {"resourceType": "Condition", "code": {"text": "Janet Doe (MRN-0042) has AF"}}
+
+    result = _parse([_entry(patient), _entry(condition)])
+    exported = json.dumps(result)
+
+    for identifier in ("Janet", "Doe", "MRN-0042"):
+        assert identifier not in exported
+    assert "[REDACTED-PATIENT]" in result["chief_complaint"]
+
+
+def test_integral_floats_are_accepted_as_integers() -> None:
+    schema = TOOLS_BY_NAME["screen_medications"].input_schema
+
+    assert validate({"medications": ["x"], "patient": {"age": 81.0}}, schema) == []
+    assert validate({"medications": ["x"], "patient": {"age": 81.5}}, schema) != []
+    result = run(
+        "screen_medications", {"medications": ["warfarin"], "patient": {"age": 81.0}}
+    ).structured
+    assert result["patient_context_used"]["age"] == 81
+    assert isinstance(result["patient_context_used"]["age"], int)
+
+
+def test_validation_errors_do_not_reflect_unknown_property_names() -> None:
+    schema = TOOLS_BY_NAME["screen_medications"].input_schema
+
+    errors = validate({"medications": ["x"], "administer 5 mg to jd@example.com": 1}, schema)
+
+    assert errors == [
+        "arguments has unexpected properties "
+        "(allowed: include_interactions, medications, patient, patient_ref)"
+    ]
+
+
+def test_unrecognised_medication_statuses_are_not_echoed() -> None:
+    bad_status = {
+        "resourceType": "MedicationRequest",
+        "status": "stopped; call 415-555-0101",
+        "medicationCodeableConcept": {"text": "Warfarin"},
+    }
+
+    result = _parse([_entry(PATIENT), _entry(bad_status)])
+
+    assert result["medication_notes"] == ["excluded MedicationRequest status unrecognized: 1"]
+    assert "415-555-0101" not in json.dumps(result)
+
+
+def test_medication_statement_dosage_is_kept() -> None:
+    statement = {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {"text": "Omeprazole 20 mg"},
+        "dosage": [
+            {"text": "20 mg daily", "route": {"text": "oral"}, "timing": {"code": {"text": "QD"}}}
+        ],
+    }
+
+    result = _parse([_entry(PATIENT), _entry(statement)])
+
+    assert result["medications"] == [
+        {"name": "Omeprazole 20 mg", "dosage": "20 mg daily", "route": "oral", "frequency": "QD"}
+    ]
+
+
+def test_unknown_resource_types_are_counted_without_echoing_them() -> None:
+    odd = {"resourceType": "patient@example.com"}
+
+    result = _parse([_entry(PATIENT), _entry(odd)])
+
+    assert result["resource_counts"] == {"Other": 1, "Patient": 1}
+    assert "patient@example.com" not in json.dumps(result)

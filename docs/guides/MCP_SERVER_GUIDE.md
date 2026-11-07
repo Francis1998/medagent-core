@@ -319,9 +319,13 @@ with dual-source validation, SAFETY.md §3.7). The MCP tool never touches the ne
 
 ### `parse_fhir_bundle`
 
-Argument: `bundle`, a FHIR R4 `Bundle` (up to 5,000 entries) for **one** patient: a bundle with
-several `Patient` resources, or with a clinical resource whose `subject`/`patient` reference points
-at another patient, is rejected as a tool error rather than merged. Uses the existing
+Argument: `bundle`, a FHIR R4 `Bundle` (up to 5,000 entries) for **one** patient. Every
+`subject`/`patient` reference must provably resolve to the bundle's Patient — the entry `fullUrl`
+exactly, a relative `Patient/<id>`, or a logical reference to one of its identifiers — otherwise
+(several `Patient` resources, a foreign or absolute reference, an unresolvable reference) the
+bundle is rejected as a tool error rather than merged. Without a Patient resource, all references
+must name the same subject. Resources recorded `entered-in-error`, cancelled Observations and
+refuted Conditions/AllergyIntolerances are excluded before parsing and counted in `notes`. Uses the existing
 `extraction.fhir_parser` for patient context and `FhirMedicationRequestAdapter` for medications.
 Only current therapy is kept by default: `MedicationRequest` and `MedicationStatement` entries with
 status `active` or `on-hold`. Set `include_proposed: true` to also keep draft `MedicationRequest`s
@@ -361,12 +365,17 @@ Every other status (`completed`, `stopped`, `cancelled`, `entered-in-error`, `no
 ```
 
 Pass `screening_input` unchanged as the `arguments` of `screen_medications`; it is validated against
-that tool's input schema and any problem (for example more than 100 current medications) is listed
-in `screening_input_issues` instead of being silently truncated or split. Every exported free-text
-field — chief complaint, diagnoses, medication and dosage text, allergies, lab and vital strings —
-passes through `sanitise_clinical_text` (dates, phone numbers, emails, MRNs and SSNs are redacted),
-and prescription phrasing in source text (for example an EHR dosage instruction "Administer 40 mg")
-is replaced with `[REDACTED-DIRECTIVE]`. eGFR observations are used only with a recognised unit
+that tool's input schema and any problem (for example more than 100 current medications, or a
+`medicationReference` that cannot be resolved to a name) is listed in `screening_input_issues`
+instead of being silently truncated or split. `medicationReference`s are resolved against
+contained and bundled `Medication` resources, and `MedicationStatement.dosage` is kept. Every
+exported free-text field — chief complaint, diagnoses, medication and dosage text, allergies, lab
+and vital strings — has the Patient's own names, identifiers, telecom, address and birth date
+replaced with `[REDACTED-PATIENT]`, then passes through `sanitise_clinical_text` (dates, phone
+numbers, emails, MRNs and SSNs are redacted); prescription phrasing in source text (for example an
+EHR dosage instruction "Administer 40 mg") is replaced with `[REDACTED-DIRECTIVE]`. Status codes
+that are not FHIR codes are reported as `unrecognized`, and unknown resource types are counted as
+`Other`, so caller-controlled strings are never echoed. eGFR observations are used only with a recognised unit
 (`mL/min/1.73m²` in any UCUM spelling, or `mL/s/1.73m²` converted ×60); others are skipped and
 counted in `notes`. When several remain, the **lowest** value is used — the conservative choice for
 renal screening. Extracted free text is also checked by the scope enforcer.
@@ -441,8 +450,12 @@ Argument problems are **tool errors**, not protocol errors, so the model can cor
 
 ```json
 {"resultType": "complete", "isError": true, "content": [{"type": "text",
-  "text": "Invalid arguments: arguments.medications must contain at least 1 item(s); arguments.patient.name is not an allowed property\n⚠️  RESEARCH USE ONLY. ..."}]}
+  "text": "Invalid arguments: arguments.medications must contain at least 1 item(s); arguments.patient has unexpected properties (allowed: age, allergies, breastfeeding, egfr, hepatic_function, pregnant)\n⚠️  RESEARCH USE ONLY. ..."}]}
 ```
+
+Validation messages only contain schema-defined names: unknown property names are never echoed
+back, because they are caller-controlled text. Integral numbers such as `81.0` are accepted for
+integer fields, as JSON Schema specifies.
 
 Notifications (`notifications/initialized`, `notifications/cancelled`, unknown ones) never get a
 response. The server exits promptly when stdin is closed.
@@ -472,8 +485,8 @@ response. The server exits promptly when stdin is closed.
   the matched pattern is logged (`mcp_scope_violation`), never the text.
 - **Audit trail.** With `--audit-log`, each `tools/call` — including calls that end in an internal
   error (`error_kind: "internal_error"`) — appends one JSON line holding hashes and counts only,
-  never arguments or results. Self-reported client metadata is reduced to a de-identified `name`
-  and `version` of at most 64 characters each.
+  never arguments or results. Self-reported client `name`/`version` are stored only as an HMAC
+  (`client_hash`).
 - **Protocol hygiene.** STDOUT carries JSON-RPC only: logs go to STDERR (default level `WARNING`),
   and `sys.stdout` is redirected to STDERR inside the server so a stray `print` cannot corrupt the
   stream. Output lines are ASCII-escaped strict JSON (no `NaN`, no unencodable surrogates), and
@@ -498,15 +511,15 @@ response. The server exits promptly when stdin is closed.
 An audit record (real output, `screen_medications` with `patient_ref`):
 
 ```json
-{"client": {"name": "docs", "version": "1.0"}, "duration_ms": 9.26, "era": "modern", "error_kind": null,
- "event": "mcp_tool_call", "finding_count": 4, "highest_severity": "HIGH",
+{"client_hash": "54cf94076d5e7d04bbe833bfad8e4c230aff419abc991d600bc45cdf1e1f05c9", "duration_ms": 9.17,
+ "era": "modern", "error_kind": null, "event": "mcp_tool_call", "finding_count": 4, "highest_severity": "HIGH",
  "inputs_hash": "c3d1601a0d5f573940009c73d0749deaa7d6f57a2d8665df6115a7a0d6d85270", "is_error": false,
  "patient_id_hash": null, "patient_ref_hash": "2ef4b8ba62e116876a74091d8b3f1c1f8044fadc44d4877614fef878728ebf19",
- "protocol_version": "2026-07-28", "timestamp": "2026-11-07T07:12:17.897+00:00", "tool": "screen_medications"}
+ "protocol_version": "2026-07-28", "timestamp": "2026-11-07T07:49:44.202+00:00", "tool": "screen_medications"}
 ```
 
-`inputs_hash` is an HMAC of the canonical arguments, so identical calls can be linked without
-storing them. `error_kind` is `invalid_arguments` or `output_withheld` for tool errors and
+`inputs_hash` is an HMAC of the canonical arguments and `client_hash` an HMAC of the self-reported
+client `name`/`version`, so identical calls and clients can be linked without storing them. `error_kind` is `invalid_arguments` or `output_withheld` for tool errors and
 `internal_error` for calls that returned `-32603`. A failed
 audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 
@@ -534,6 +547,9 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
   checker); there is no RxNorm normalisation, and coverage is limited to the curated rules.
 - No dose calculations, no indication checks, no lab-trend bridges or scorers over MCP.
 - Pregnancy, lactation and hepatic status are never inferred from FHIR.
+- De-identification is pattern- and bundle-based: free text sent to `screen_medications` or
+  `check_drug_interactions` is redacted with the generic sanitiser only (those tools never receive a
+  Patient resource), so names typed into medication or allergy strings cannot be recognised there.
 - stdio transport only (no Streamable HTTP); tools only (no resources or prompts).
 
 ## How this demo was recorded

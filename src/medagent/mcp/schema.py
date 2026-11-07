@@ -10,6 +10,7 @@ no ``$ref`` resolution.
 
 from __future__ import annotations
 
+import math
 import re
 from typing import Any
 
@@ -25,6 +26,8 @@ _PYTHON_TYPES: dict[str, tuple[type, ...]] = {
 def _matches_type(value: Any, expected: str) -> bool:
     """Return True when ``value`` is an instance of the JSON type ``expected``."""
     if expected == "integer":
+        if isinstance(value, float):
+            return math.isfinite(value) and value.is_integer()
         return isinstance(value, int) and not isinstance(value, bool)
     if expected == "number":
         return isinstance(value, (int, float)) and not isinstance(value, bool)
@@ -99,11 +102,16 @@ def validate(instance: Any, schema: dict[str, Any], path: str = "arguments") -> 
         for name in schema.get("required", []):
             if name not in instance:
                 errors.append(f"{path}.{name} is required")
+        unexpected = False
         for name, value in instance.items():
             if name in properties:
                 errors.extend(validate(value, properties[name], f"{path}.{name}"))
             elif schema.get("additionalProperties") is False:
-                errors.append(f"{path}.{name} is not an allowed property")
+                unexpected = True
             elif isinstance(schema.get("additionalProperties"), dict):
                 errors.extend(validate(value, schema["additionalProperties"], f"{path}.{name}"))
+        if unexpected:
+            # Unknown names are caller-controlled text, so they are never echoed back.
+            allowed_names = ", ".join(sorted(properties)) or "none"
+            errors.append(f"{path} has unexpected properties (allowed: {allowed_names})")
     return errors

@@ -3200,18 +3200,20 @@ constraints are enforced in code:
 - **Escalation over reassurance (§3.4).** `escalation_recommended` is true for any `HIGH` or
   `CRITICAL` finding, checks skipped for missing context are listed, and every result states that
   an empty result is not evidence of safety.
-- **PII (§3.5).** The `patient` argument rejects unknown fields such as names; `patient_ref` and
-  FHIR patient identifiers are HMAC-SHA256 hashed with `PII_HASH_SALT` and never echoed; FHIR
-  names, birth dates, identifiers, telecom, addresses and the raw bundle are never returned; every
-  exported free-text field (medications, dosage, allergies, conditions, lab and vital strings)
-  passes through `sanitise_clinical_text`; FHIR parser diagnostics log exception classes only.
-  Bundles with more than one patient are rejected. The server warns on stderr while the default
-  salt is in use.
+- **PII (§3.5).** The `patient` argument rejects unknown fields such as names; `patient_ref`, FHIR
+  patient identifiers and client metadata are HMAC-SHA256 hashed with `PII_HASH_SALT` and never
+  echoed; FHIR names, birth dates, identifiers, telecom, addresses and the raw bundle are never
+  returned; every exported free-text field (medications, dosage, allergies, conditions, lab and
+  vital strings) has the bundle Patient's own identifiers redacted and passes through
+  `sanitise_clinical_text`; validation errors never echo caller-supplied property names; FHIR
+  parser diagnostics log exception classes only. Bundles whose resources cannot be proven to
+  belong to one Patient are rejected. The server warns on stderr while the default salt is in use.
 - **Clinical correctness.** Only current therapy (status `active` or `on-hold`) is screened by
   default; draft/intended orders are added only with an explicit `include_proposed`, and every
-  other status is excluded and counted. eGFR is used only with a recognised unit (mL/min/1.73m², or
-  mL/s/1.73m² converted); a generated `screening_input` that exceeds the screening limits is
-  reported, never truncated.
+  other status is excluded and counted. Entered-in-error resources, cancelled observations and
+  refuted findings are excluded. eGFR is used only with a recognised unit (mL/min/1.73m², or
+  mL/s/1.73m² converted); a generated `screening_input` that exceeds the screening limits or misses
+  an unnamed medication is reported, never truncated.
 - **Scope enforcement (§3.6).** Free-text tool arguments and extracted FHIR text are checked with
   the `ScopeEnforcer` patterns on a logging-safe path (only the matched pattern is logged); a
   violation is returned as a tool error.
