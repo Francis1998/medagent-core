@@ -255,6 +255,7 @@ from medagent.safety.simvastatin_amiodarone_checker import SimvastatinAmiodarone
 from medagent.safety.sirolimus_strong_cyp3a4_checker import SirolimusStrongCyp3a4Checker
 from medagent.safety.sirs_criteria_scorer import SirsCriteriaScorer
 from medagent.safety.smart_cop_pneumonia_scorer import SmartCopPneumoniaScorer
+from medagent.safety.sofa_delta_of_delta_panel import SofaDeltaOfDeltaPanel
 from medagent.safety.sofa_organ_failure_scorer import SofaOrganFailureScorer
 from medagent.safety.sofa_serial_delta_panel import SofaSerialDeltaPanel
 from medagent.safety.sofosbuvir_amiodarone_checker import SofosbuvirAmiodaroneChecker
@@ -543,6 +544,7 @@ __all__ = [
     "SirolimusStrongCyp3a4Checker",
     "SirsCriteriaScorer",
     "SmartCopPneumoniaScorer",
+    "SofaDeltaOfDeltaPanel",
     "SofaOrganFailureScorer",
     "SofaSerialDeltaPanel",
     "SofosbuvirAmiodaroneChecker",
