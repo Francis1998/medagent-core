@@ -286,6 +286,9 @@ class TestSanitiseClinicalText:
             ("Name: José García.", "Name: [REDACTED-NAME]."),
             ("Dra. Ana Núñez-Peña", "Dra. Ana Núñez-Peña"),
             ("Mr. Canary\nChest Pain at rest", "[REDACTED-NAME]\nChest Pain at rest"),
+            ("Mr. J.Q. Canary reports pain", "[REDACTED-NAME] reports pain"),
+            ("Name: Jose\u0301 Garci\u0301a.", "Name: [REDACTED-NAME]."),
+            ("Mr. Canary Dr. Smith reviewed", "[REDACTED-NAME] [REDACTED-NAME] reviewed"),
         ],
     )
     def test_redacts_honorific_and_labelled_names(self, text: str, expected: str) -> None:

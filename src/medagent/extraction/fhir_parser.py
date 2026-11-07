@@ -300,13 +300,20 @@ def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
     return "Not specified"
 
 
-# A name word is a Unicode word that may contain inner apostrophes or hyphens
-# (O'Neil-Smith, Núñez), or a single-letter initial with its dot (Q.). Words
-# are joined by spaces or tabs only, so a match never continues onto the next
-# line; at most four words are considered after the cue.
-_NAME_WORD = r"[^\W\d_]\.(?!\w)|[^\W\d_](?:[^\W\d_]|['’-](?=[^\W\d_]))*"
-_NAME_RUN = rf"(?:{_NAME_WORD})(?:[ \t]+(?:{_NAME_WORD})){{0,3}}"
-_HONORIFIC_NAME = re.compile(rf"\b(?:Mrs|Mr|Ms|Miss|Mx|Dr|Prof)\.?[ \t]+(?P<run>{_NAME_RUN})")
+# A name word is a Unicode word that may contain combining accents (e + U+0301)
+# and inner apostrophes or hyphens (O'Neil-Smith, Núñez), or up to three
+# initials with their dots (Q., J.Q.). Words are joined by spaces or tabs only,
+# so a match never continues onto the next line; at most four words are
+# considered after the cue, and a run stops before another honorific so that
+# name is redacted by its own match.
+_MARKS = "\u0300-\u036f\u1ab0-\u1aff\u1dc0-\u1dff\u20d0-\u20ff\ufe20-\ufe2f"
+_HONORIFICS = r"(?:Mrs|Mr|Ms|Miss|Mx|Dr|Prof)"
+_NAME_WORD = (
+    rf"(?:[^\W\d_][{_MARKS}]*\.){{1,3}}(?!\w)"
+    rf"|[^\W\d_](?:[^\W\d_]|[{_MARKS}]|['’-](?=[^\W\d_]))*"
+)
+_NAME_RUN = rf"(?:{_NAME_WORD})(?:[ \t]+(?!{_HONORIFICS}\b)(?:{_NAME_WORD})){{0,3}}"
+_HONORIFIC_NAME = re.compile(rf"\b{_HONORIFICS}\.?[ \t]+(?P<run>{_NAME_RUN})")
 # The label must start the text, a line or a clause, so "Drug name: Warfarin"
 # and "Generic name: ..." are never treated as personal names.
 _LABELLED_NAME = re.compile(

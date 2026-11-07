@@ -100,6 +100,7 @@ def test_raw_fhir_patient_identifiers_are_removed() -> None:
         {"entry": [{"resource": None}]},
         {"entry": ["not-an-object"]},
         {"entry": {"resource": {"resourceType": "Patient", "name": [{"family": "Canary"}]}}},
+        {"resourceType": "Patient", "name": [{"family": "Canary"}]},
     ],
 )
 def test_malformed_raw_fhir_is_rejected_with_a_value_error(raw_fhir: dict[str, Any]) -> None:

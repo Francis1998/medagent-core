@@ -21,17 +21,18 @@ def _redacted_raw_fhir(raw_fhir: dict[str, Any]) -> dict[str, Any]:
     """Remove Patient identifiers from a caller-supplied bundle.
 
     Raises:
-        ValueError: When ``entry`` is not a list of objects whose ``resource``
-            is an object; the redactor cannot vouch for such a bundle, and the
-            API reports the request as a client error (HTTP 400).
+        ValueError: When ``raw_fhir`` is not a Bundle or ``entry`` is not a list
+            of objects whose ``resource`` is an object; the redactor cannot vouch
+            for such input, and the API reports it as a client error (HTTP 400).
     """
     entries = raw_fhir.get("entry", [])
-    if not isinstance(entries, list) or not all(
+    well_formed = isinstance(entries, list) and all(
         isinstance(entry, dict) and isinstance(entry.get("resource", {}), dict) for entry in entries
-    ):
+    )
+    if raw_fhir.get("resourceType") != "Bundle" or not well_formed:
         raise ValueError(
-            "patient_context.raw_fhir must be a FHIR Bundle whose 'entry' is a list of "
-            "objects with an object 'resource'."
+            "patient_context.raw_fhir must be a FHIR Bundle (resourceType 'Bundle') whose "
+            "'entry' is a list of objects with an object 'resource'."
         )
     return redact_fhir_pii(raw_fhir)
 
