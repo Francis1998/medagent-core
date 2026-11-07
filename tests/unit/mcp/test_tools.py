@@ -923,3 +923,32 @@ def test_malformed_medication_codings_are_tool_errors() -> None:
     }
 
     _rejects([_entry(PATIENT), _entry(request)], "unexpected structure")
+
+
+# ---------------------------------------------------------------------------
+# Final review pass
+# ---------------------------------------------------------------------------
+
+
+def _condition_on(server: str, condition_id: str, text: str) -> dict[str, Any]:
+    condition = {
+        "resourceType": "Condition",
+        "id": condition_id,
+        "subject": {"reference": "Patient/p1"},
+        "code": {"text": text},
+    }
+    return _entry(condition, f"https://{server}.example/fhir/Condition/{condition_id}")
+
+
+def test_relative_patient_references_resolve_on_their_own_server() -> None:
+    patient_a = _entry(
+        {"resourceType": "Patient", "id": "p1"}, "https://ehr-a.example/fhir/Patient/p1"
+    )
+
+    # "Patient/p1" in an ehr-b entry names ehr-b's patient p1, a different person.
+    _rejects([patient_a, _condition_on("ehr-b", "c1", "CKD")], "mixes patients")
+    _rejects(
+        [_condition_on("ehr-a", "c1", "AF"), _condition_on("ehr-b", "c2", "CKD")],
+        "mixes patients",
+    )
+    assert _parse([patient_a, _condition_on("ehr-a", "c1", "AF")])["diagnoses"] == ["AF"]

@@ -323,8 +323,10 @@ Argument: `bundle`, a FHIR R4 `Bundle` (up to 5,000 entries) for **one** patient
 `subject`/`patient` reference must provably resolve to the bundle's Patient — the entry `fullUrl`
 exactly, a relative `Patient/<id>`, or a logical reference to one of its identifiers — otherwise
 (several `Patient` resources, a foreign or absolute reference, an unresolvable reference) the
-bundle is rejected as a tool error rather than merged. Without a Patient resource, all references
-must name the same subject. Resources recorded `entered-in-error`, cancelled Observations and
+bundle is rejected as a tool error rather than merged. A relative reference resolves on its own
+entry's server (FHIR bundle rules), so a bundle whose relative patient references or Patient span
+more than one server is rejected too: `Patient/p1` on two servers names two different patients.
+Without a Patient resource, all references must name the same subject. Resources recorded `entered-in-error`, cancelled Observations and
 refuted Conditions/AllergyIntolerances are excluded before parsing and counted in `notes`. Uses the existing
 `extraction.fhir_parser` for patient context and `FhirMedicationRequestAdapter` for medications.
 Only current therapy is kept by default: `MedicationRequest` and `MedicationStatement` entries with

@@ -755,6 +755,9 @@ def _subject_key(subject: dict[str, Any]) -> str:
 def _require_single_patient(entries: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Reject bundles whose resources do not provably belong to one patient.
 
+    A relative reference resolves on its entry's own server (FHIR bundle rules), so
+    ``Patient/p1`` in entries hosted on two servers names two different patients.
+
     Returns:
         The Patient resource, or None when the bundle has no Patient.
     """
@@ -764,18 +767,29 @@ def _require_single_patient(entries: list[dict[str, Any]]) -> dict[str, Any] | N
             f"Bundle contains {len(patients)} Patient resources; send one patient's "
             "resources per call."
         )
-    subjects = [
-        target
+    sources = [
+        (target, entry.get("fullUrl"))
         for entry in entries
         if entry.get("resource", {}).get("resourceType") != "Patient"
         for field in ("subject", "patient")
         if isinstance(target := entry.get("resource", {}).get(field), dict)
     ]
+    subjects = [subject for subject, _ in sources]
+    servers = {
+        _restful_base(source_url)
+        for subject, source_url in sources
+        if isinstance(reference := subject.get("reference"), str)
+        and reference
+        and not _ABSOLUTE_REFERENCE.match(reference)
+    }
     if patients:
-        if all(_belongs_to_patient(subject, patients[0]) for subject in subjects):
-            return dict(patients[0]["resource"])
-    elif len({_subject_key(subject) for subject in subjects}) <= 1:
-        return None
+        servers.add(_restful_base(patients[0].get("fullUrl")))
+    if len(servers - {None}) <= 1:
+        if patients:
+            if all(_belongs_to_patient(subject, patients[0]) for subject in subjects):
+                return dict(patients[0]["resource"])
+        elif len({_subject_key(subject) for subject in subjects}) <= 1:
+            return None
     raise ToolInputError(
         "Bundle mixes patients: a clinical resource references a different patient, or a "
         "patient that cannot be matched to the bundle's Patient; send one patient's "

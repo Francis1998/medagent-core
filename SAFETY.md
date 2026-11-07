@@ -3208,7 +3208,8 @@ constraints are enforced in code:
   through `sanitise_clinical_text`; validation errors never echo caller-supplied property names, and
   logs never contain caller-supplied protocol versions or method names; FHIR parser diagnostics log
   exception classes only. Bundles whose resources cannot be proven to
-  belong to one Patient are rejected. The server warns on stderr while the default salt is in use.
+  belong to one Patient are rejected, including relative `Patient/<id>` references hosted on
+  different servers (they resolve to different patients). The server warns on stderr while the default salt is in use.
 - **Clinical correctness.** Only current therapy (status `active` or `on-hold`) is screened by
   default; draft/intended orders are added only with an explicit `include_proposed`, and every
   other status is excluded and counted. Entered-in-error resources, cancelled observations and
