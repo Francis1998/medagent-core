@@ -5,6 +5,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- `FlaccSerialDeltaPanel` (Safety #309, `safety/flacc_serial_delta_panel.py`): research-only FLACC pain serial delta panel (Safety #309). Gap vs MDCalc / FLACC pediatric pain serial delta-trend panel. Distinct from `RassSerialDeltaPanel` / `FourAtSerialDeltaPanel`. Stack: GPT-6.1 / Claude Sonnet 5.5 / Gemini 3.x / Kimi K3. See `docs/guides/FLACCSERIALDELTAPANEL_GUIDE.md`.
 - `SofaDeltaOfDeltaPanel` (Safety #308, `safety/sofa_delta_of_delta_panel.py`): research-only SOFA delta-of-delta residual panel (Safety #308). Gap vs MDCalc / SOFA Δ-of-Δ residual organ-failure panel. Distinct from `SofaSerialDeltaPanel` / `SofaOrganFailureScorer`. Stack: GPT-6.1 / Claude Sonnet 5.5 / Gemini 3.x / Kimi K3. See `docs/guides/SOFADELTAOFDELTAPANEL_GUIDE.md`.
 - `NortonSerialDeltaPanel` (Safety #307, `safety/norton_serial_delta_panel.py`): research-only Norton pressure serial delta panel (Safety #307). Gap vs MDCalc / Norton pressure-ulcer serial delta-trend panel. Distinct from `BradenSerialDeltaPanel` / `WaterlowSerialDeltaPanel`. Stack: GPT-6.1 / Claude Sonnet 5.5 / Gemini 3.x / Kimi K3. See `docs/guides/NORTONSERIALDELTAPANEL_GUIDE.md`.
 - `KatzSerialDeltaPanel` (`safety/katz_serial_delta_panel.py`): research-only Safety #306 serial delta panel. Gap vs MDCalc / Katz ADL serial delta-trend panel. Distinct from `BarthelSerialDeltaPanel` / `KarnofskySerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KATZSERIALDELTAPANEL_GUIDE.md`.
