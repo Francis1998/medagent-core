@@ -85,6 +85,18 @@ python scripts/ingest_kb.py --sample
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
+## MCP Server
+
+`medagent-mcp` reads these from the process environment (set them in the MCP host's `env` block;
+they are not loaded from `.env`). It also uses `PII_HASH_SALT` above to hash patient references.
+
+| Variable | Flag | Default | Description |
+|---|---|---|---|
+| `MEDAGENT_MCP_AUDIT_LOG` | `--audit-log PATH` | unset (off) | Append one JSON line per `tools/call` (hashes and counts only) |
+| `MEDAGENT_MCP_LOG_LEVEL` | `--log-level LEVEL` | `WARNING` | STDERR log level; STDOUT is reserved for JSON-RPC |
+
+See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
+
 ## Evaluation
 
 | Variable | Default | Description |

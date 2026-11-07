@@ -3176,3 +3176,43 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 `GraceSerialDeltaPanel` computes an advisory score (MDCalc / GRACE ACS serial delta-trend panel). Every call
 yields a `GraceSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies medications.
+
+
+## 9. MCP Server (Model Context Protocol) Safety Model
+
+`src/medagent/mcp/` exposes the deterministic safety layer to MCP hosts over stdio (`medagent-mcp`,
+`python -m medagent.mcp`). It is dual-era (stateless MCP 2026-07-28 and legacy `initialize`
+clients on 2025-11-25 / 2025-06-18) and adds no new clinical logic: its four tools
+(`screen_medications`, `check_drug_interactions`, `parse_fhir_bundle`, `list_safety_controls`)
+only call existing checkers, the FHIR parser and the MedicationRequest adapter. The following
+constraints are enforced in code:
+
+- **Offline and deterministic.** No LLM or network calls and no state between requests; every
+  tool is annotated `readOnlyHint: true`, `openWorldHint: false`. The MCP interaction tool uses
+  the offline rule set only — network-sourced, dual-source-validated warnings (§3.7) remain on the
+  HTTP API.
+- **Mandatory disclaimer (§3.1).** Present in every tool result's structured and text content,
+  including tool errors.
+- **No prescribing directives (§3.3).** Each result is screened with the `MedicalOutputValidator`
+  prohibited-prescription patterns before it is returned; a match withholds the result as an
+  `isError` tool result (`mcp_output_withheld`).
+- **Escalation over reassurance (§3.4).** `escalation_recommended` is true for any `HIGH` or
+  `CRITICAL` finding, checks skipped for missing context are listed, and every result states that
+  an empty result is not evidence of safety.
+- **PII (§3.5).** The `patient` argument rejects unknown fields such as names; `patient_ref` and
+  FHIR patient identifiers are HMAC-SHA256 hashed with `PII_HASH_SALT` and never echoed; FHIR
+  names, birth dates, identifiers, telecom, addresses and the raw bundle are never returned; free
+  text passes through `sanitise_clinical_text`. The server warns on stderr while the default salt
+  is in use.
+- **Scope enforcement (§3.6).** Free-text tool arguments are checked by `ScopeEnforcer`; a
+  violation is returned as a tool error.
+- **Audit.** `--audit-log` / `MEDAGENT_MCP_AUDIT_LOG` appends one JSON line per `tools/call` with
+  hashes and counts only (tool, era, protocol version, self-reported client, error kind, duration,
+  HMAC of the arguments, hashed patient references, finding count, highest severity) — never the
+  arguments or results.
+- **Protocol hygiene.** STDOUT carries JSON-RPC only; logs go to STDERR and `sys.stdout` is
+  redirected to STDERR inside the server. Inputs are bounded (50 medications, 50 allergies, 5,000
+  FHIR entries, 8 MiB per message).
+
+Operators must keep the host's tool-approval prompts enabled and route every finding to a licensed
+clinician. See `docs/guides/MCP_SERVER_GUIDE.md`.

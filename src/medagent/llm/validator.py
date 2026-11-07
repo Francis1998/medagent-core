@@ -54,6 +54,19 @@ class MedicalOutputValidator:
         self._check_length(content)
         self._check_prohibited_patterns(content)
 
+    def check_prohibited_language(self, content: str) -> None:
+        """Reject direct prescription language without the LLM length rules.
+
+        Used for deterministic, non-LLM outputs such as MCP tool results.
+
+        Args:
+            content: Text to scan.
+
+        Raises:
+            MedicalOutputValidationError: When the content contains prescription language.
+        """
+        self._check_prohibited_patterns(content)
+
     def validate_json(self, content: str, required_keys: list[str]) -> dict[str, object]:
         """Validate that content is valid JSON with required top-level keys.
 
