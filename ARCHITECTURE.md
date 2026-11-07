@@ -114,7 +114,7 @@ src/medagent/
 ### OUTPUT / ESCALATE
 - Constructs `ClinicalReasoning` with all intermediate results + mandatory disclaimer
 - `ESCALATE` always sets `escalated=True` and includes human-review instructions
-- Audit log written asynchronously via `persist_run()` in a tracked background task: failures are logged as `audit_persist_failed`, and app shutdown drains pending writes (bounded by `AUDIT_DRAIN_TIMEOUT_SECONDS`, logging `audit_drain_timeout` if any remain)
+- Audit log written asynchronously via `persist_run()` in a tracked background task: failures are logged as `audit_persist_failed` with class names/codes only (never the exception message, which can embed clinical parameters), and app shutdown drains pending writes (bounded by `AUDIT_DRAIN_TIMEOUT_SECONDS`, logging `audit_drain_timeout` if any remain)
 
 ---
 

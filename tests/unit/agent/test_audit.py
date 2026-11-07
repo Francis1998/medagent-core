@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterator
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pytest
+import sqlalchemy as sa
+import structlog
+from sqlalchemy.engine import make_url
+from structlog.testing import capture_logs
 
 from medagent.agent import audit
 from medagent.models import AgentState, ClinicalEntity, ClinicalReasoning, EvidenceItem, Hypothesis
@@ -118,3 +123,75 @@ async def test_count_escalations_counts_only_escalated_runs(
     )
 
     assert await audit.count_escalations() == 1
+
+
+@pytest.fixture()
+def audit_logs(monkeypatch: MonkeyPatch) -> Iterator[list[dict[str, Any]]]:
+    """Capture structlog events emitted by ``medagent.agent.audit``."""
+    with capture_logs() as logs:
+        monkeypatch.setattr(audit, "logger", structlog.get_logger(audit.__name__))
+        yield logs
+
+
+async def test_statement_errors_do_not_echo_bound_clinical_parameters(
+    isolated_audit_db: None,
+) -> None:
+    """Audit engine errors must not embed INSERT parameters (clinical text/JSON)."""
+    canary = "CANARY-hypotheses-json-8a41"
+    engine = await audit.get_engine()
+
+    async with engine.connect() as conn:
+        with pytest.raises(sa.exc.IntegrityError) as exc_info:
+            await conn.execute(
+                audit.audit_log_table.insert().values(
+                    session_id="session-hidden-parameters",
+                    query_text=None,
+                    state_reached=AgentState.OUTPUT.value,
+                    escalated=False,
+                    overall_confidence=0.5,
+                    hypotheses_json=canary,
+                )
+            )
+
+    assert "NOT NULL constraint failed" in str(exc_info.value)
+    assert canary not in str(exc_info.value)
+
+
+async def test_engine_initialisation_log_masks_database_password(
+    monkeypatch: MonkeyPatch,
+    audit_logs: list[dict[str, Any]],
+) -> None:
+    """``audit_db_initialized`` must not log the DATABASE_URL password."""
+    password = "CANARY-db-password-0b7c"
+
+    class FakeConnection:
+        async def run_sync(self, fn: Any) -> None:
+            return None
+
+    class FakeEngine:
+        def __init__(self, url: str) -> None:
+            self.url = make_url(url)
+
+        @contextlib.asynccontextmanager
+        async def begin(self) -> AsyncIterator[FakeConnection]:
+            yield FakeConnection()
+
+    monkeypatch.setattr(
+        audit.settings,
+        "database_url",
+        f"postgresql+asyncpg://auditor:{password}@db:5432/medagent",
+    )
+    monkeypatch.setattr(audit, "_engine", None)
+    monkeypatch.setattr(audit, "_session_factory", None)
+    monkeypatch.setattr(audit, "create_async_engine", lambda url, **kwargs: FakeEngine(url))
+
+    await audit.get_engine()
+
+    assert password not in repr(audit_logs)
+    assert audit_logs == [
+        {
+            "event": "audit_db_initialized",
+            "log_level": "info",
+            "url": "postgresql+asyncpg://auditor:***@db:5432/medagent",
+        }
+    ]

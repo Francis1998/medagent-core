@@ -10,12 +10,14 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import gc
+import sqlite3
 from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any
 
 import httpx
 import pytest
 import structlog
+from sqlalchemy.exc import OperationalError
 from structlog.testing import capture_logs
 
 from medagent.api import main
@@ -111,7 +113,41 @@ async def test_audit_persist_failure_emits_structured_error_log(
             "log_level": "error",
             "session_id": session_id,
             "error_type": "RuntimeError",
-            "error": "audit database unavailable",
+        }
+    ]
+
+
+async def test_audit_persist_failure_log_omits_bound_clinical_parameters(
+    monkeypatch: MonkeyPatch,
+    stub_agent: StubAgent,
+    api_logs: list[dict[str, Any]],
+) -> None:
+    """A SQLAlchemy error message embeds the INSERT parameters; none may reach the logs."""
+    canary = "CANARY-clinical-query-3c9e"
+
+    async def failing_persist(result: ClinicalReasoning) -> None:
+        raise OperationalError(
+            "INSERT INTO audit_log (session_id, query_text, hypotheses_json) VALUES (?, ?, ?)",
+            (result.session_id, canary, '[{"label": "' + canary + '"}]'),
+            sqlite3.OperationalError("database is locked"),
+        )
+
+    monkeypatch.setattr(main, "persist_run", failing_persist)
+
+    response = await post_analyze()
+    for _ in range(5):
+        await asyncio.sleep(0)
+
+    assert canary not in repr(api_logs)
+    failures = [entry for entry in api_logs if entry["event"] == "audit_persist_failed"]
+    assert failures == [
+        {
+            "event": "audit_persist_failed",
+            "log_level": "error",
+            "session_id": response.json()["session_id"],
+            "error_type": "OperationalError",
+            "error_code": "e3q8",
+            "driver_error_type": "OperationalError",
         }
     ]
 

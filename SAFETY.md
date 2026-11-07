@@ -68,6 +68,8 @@ Patient-identifying fields (MRN, name, DOB) are SHA-256 hashed with a configurab
 
 Free-text clinical notes pass through `sanitise_clinical_text` (`src/medagent/extraction/fhir_parser.py`), which redacts date-of-birth patterns (`MM/DD/YYYY`, ISO-8601 `YYYY-MM-DD` — the FHIR `birthDate` format — and `DD-Mon-YYYY`), MRN-like digit sequences, US Social Security numbers (`NNN-NN-NNNN`), phone numbers, and email addresses before any text is placed in a prompt.
 
+Audit-path logs never carry clinical content or credentials: the audit engine is created with SQLAlchemy `hide_parameters=True`, audit persistence failures are logged as `audit_persist_failed` with only the session id, exception class, SQLAlchemy error code, and driver exception class (`safe_error_fields` in `src/medagent/agent/audit.py`), and the database URL is logged with its password masked.
+
 ### 3.6 Scope Enforcement
 The `ScopeEnforcer` (`src/medagent/safety/scope_enforcer.py`) rejects queries requesting internet access, code execution, or clearly non-clinical topics before the agent state machine starts.
 
