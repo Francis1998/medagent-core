@@ -68,10 +68,10 @@ Every `/analyze` request is de-identified at INTAKE, before entity extraction, P
 
 - **Narrative fields:** the query, chief complaint, clinical notes, diagnoses and allergies pass through `sanitise_clinical_text` (`src/medagent/extraction/fhir_parser.py`), which redacts:
   - dates (`MM/DD/YYYY`, ISO-8601 `YYYY-MM-DD`, which is the FHIR `birthDate` format, and `DD-Mon-YYYY`);
-  - `MR`/`MRN`-labelled numbers;
+  - `MRN`-labelled numbers of any length, and `MR`-labelled numbers of 6–12 digits (so `MR 2+`, mitral regurgitation, is kept);
   - US Social Security numbers (`NNN-NN-NNNN`);
   - phone numbers and email addresses;
-  - capitalised names (including initials and accented letters) introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr, Prof) or by a `Name:`/`Patient name:` label that starts the text, a line or a clause. A name run never continues onto the next line.
+  - capitalised names (including initials and accented letters) introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr, Prof) or by a `Name:`/`Patient name:` label that starts the text, a line or a clause. A name run covers up to six words, including lower-case surname particles (van, der, de, la, …) and, after a label, the `Surname, Given` form. It stops at a lower-case word, at a known clinical term such as COPD, at another honorific, and at the end of the line.
 - **`patient_id_hash`** is HMAC-SHA256 hashed with `PII_HASH_SALT` unless it is already a 64-character hex digest.
 - **`raw_fhir`** has the Patient `name`, `birthDate`, `identifier`, `telecom` and `address` removed (`redact_fhir_pii`), and it is never placed in a prompt. Input that is not a Bundle (`resourceType` `Bundle`), or whose `entry` is not a list of objects with an object `resource`, is rejected with HTTP 400.
 - **Structured medication, lab and vital-sign records** are clinical content and pass unchanged.

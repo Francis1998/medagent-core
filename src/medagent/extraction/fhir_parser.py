@@ -14,6 +14,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from medagent.extraction.ner import is_clinical_term
 from medagent.logging_config import get_logger
 from medagent.models import FHIRPatientContext, LabResult, Medication, VitalSign
 from medagent.safety.pii_hasher import hash_pii
@@ -302,38 +303,50 @@ def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
 
 # A name word is a Unicode word that may contain combining accents (e + U+0301)
 # and inner apostrophes or hyphens (O'Neil-Smith, Núñez), or up to three
-# initials with their dots (Q., J.Q.). Words are joined by spaces or tabs only,
-# so a match never continues onto the next line; at most four words are
-# considered after the cue, and a run stops before another honorific so that
-# name is redacted by its own match.
+# initials with their dots (Q., J.Q.). Words are joined by spaces or tabs only
+# (a "Surname, Given" comma is also allowed after a label), so a match never
+# continues onto the next line; at most six words are considered after the cue,
+# and no word of a run may be an honorific, so each title gets its own match.
 _MARKS = "\u0300-\u036f\u1ab0-\u1aff\u1dc0-\u1dff\u20d0-\u20ff\ufe20-\ufe2f"
 _HONORIFICS = r"(?:Mrs|Mr|Ms|Miss|Mx|Dr|Prof)"
 _NAME_WORD = (
     rf"(?:[^\W\d_][{_MARKS}]*\.){{1,3}}(?!\w)"
     rf"|[^\W\d_](?:[^\W\d_]|[{_MARKS}]|['’-](?=[^\W\d_]))*"
 )
-_NAME_RUN = rf"(?:{_NAME_WORD})(?:[ \t]+(?!{_HONORIFICS}\b)(?:{_NAME_WORD})){{0,3}}"
+_NOT_TITLE = rf"(?!{_HONORIFICS}\b)"
+_NAME_RUN = rf"{_NOT_TITLE}(?:{_NAME_WORD})(?:[ \t]+{_NOT_TITLE}(?:{_NAME_WORD})){{0,5}}"
+_LABELLED_RUN = (
+    rf"{_NOT_TITLE}(?:{_NAME_WORD})(?:(?:[ \t]*,[ \t]*|[ \t]+){_NOT_TITLE}(?:{_NAME_WORD})){{0,5}}"
+)
+# Lower-case surname particles kept inside a cued name (van der Canary, de la Cruz).
+_NAME_PARTICLES = frozenset(
+    {"al", "bin", "da", "das", "de", "del", "della", "der", "di", "do", "dos", "du", "ibn"}
+    | {"la", "le", "st", "ten", "ter", "van", "von"}
+)
 _HONORIFIC_NAME = re.compile(rf"\b{_HONORIFICS}\.?[ \t]+(?P<run>{_NAME_RUN})")
 # The label must start the text, a line or a clause, so "Drug name: Warfarin"
 # and "Generic name: ..." are never treated as personal names.
 _LABELLED_NAME = re.compile(
     rf"(?P<label>(?<![^\n;.,(|])[ \t]*(?i:patient[ \t]+name|name)[ \t]*:[ \t]*)"
-    rf"(?P<run>{_NAME_RUN})"
+    rf"(?P<run>{_LABELLED_RUN})"
 )
 
 
 def _redact_name_run(match: re.Match[str]) -> str:
-    """Replace the cue and the leading capitalised tokens of a name run.
+    """Replace the cue and the name words of a run, keeping what follows.
 
-    A labelled match keeps its label; tokens after the first lower-case word
-    are clinical text and are kept unchanged.
+    The name ends at the last capitalised word before the first lower-case word
+    that is not a surname particle, or before a known clinical term such as
+    "COPD". A labelled match keeps its label.
     """
-    parts = re.split(r"([ \t]+)", match.group("run"))
+    parts = re.split(r"([ \t]*,[ \t]*|[ \t]+)", match.group("run"))
     name_end = 0
     for index in range(0, len(parts), 2):
-        if not parts[index][:1].isupper():
+        word = parts[index]
+        if word[:1].isupper() and not (name_end and is_clinical_term(word.rstrip("."))):
+            name_end = index + 1
+        elif not (name_end and word.lower() in _NAME_PARTICLES):
             break
-        name_end = index + 1
     if name_end == 0:
         return match.group(0)
     label = match.groupdict().get("label") or ""
@@ -374,8 +387,10 @@ def sanitise_clinical_text(text: str) -> str:
         "[REDACTED-DOB]",
         text,
     )
-    # MRN-like patterns: sequences of 6–12 digits
-    text = re.sub(r"\bMRN?:?\s*\d{6,12}\b", "[REDACTED-MRN]", text, flags=re.IGNORECASE)
+    # MRN-labelled numbers of any length; a bare "MR" label needs 6–12 digits so
+    # that clinical text such as "MR 2+" (mitral regurgitation) is kept.
+    text = re.sub(r"\bMRN\s*[:#]?\s*\d{1,12}\b", "[REDACTED-MRN]", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bMR:?\s*\d{6,12}\b", "[REDACTED-MRN]", text, flags=re.IGNORECASE)
     # US Social Security numbers (NNN-NN-NNNN). Neither the date patterns above
     # (which need 1-2 digit leading groups) nor the phone pattern below (which
     # needs a 3-digit middle group) match the SSN 3-2-4 shape, so SSNs listed as

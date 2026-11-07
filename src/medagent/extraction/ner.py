@@ -54,6 +54,20 @@ _FALLBACK_PATTERNS: list[tuple[str, str]] = [
     ),
 ]
 
+_FALLBACK_REGEXES = [re.compile(pattern, re.IGNORECASE) for pattern, _ in _FALLBACK_PATTERNS]
+
+
+def is_clinical_term(text: str) -> bool:
+    """Return True when ``text`` is exactly a term the fallback extractor recognises.
+
+    Args:
+        text: A single word or phrase, e.g. ``"COPD"``.
+
+    Returns:
+        Whether the rule-based extractor would tag ``text`` as an entity.
+    """
+    return any(regex.fullmatch(text) for regex in _FALLBACK_REGEXES)
+
 
 class EntityExtractor:
     """Biomedical entity extractor backed by scispaCy or rule-based fallback.
