@@ -17,7 +17,6 @@ from unittest.mock import AsyncMock, MagicMock
 import httpx
 import pytest
 import structlog
-from starlette.requests import Request
 
 from medagent.agent import state_machine
 from medagent.api import main
@@ -25,7 +24,7 @@ from medagent.llm import adapters
 from medagent.llm import router as router_module
 from medagent.llm.base import LLMAdapterError
 from medagent.llm.validator import MedicalOutputValidationError
-from medagent.logging_config import configure_logging
+from medagent.logging_config import configure_logging, exception_fields
 from medagent.models import ClinicalQuery, FHIRPatientContext, Medication
 from medagent.reasoning import engine
 from medagent.retrieval import drug_interaction, orchestrator, pubmed
@@ -88,12 +87,27 @@ def _query() -> ClinicalQuery:
 
 
 @pytest.mark.asyncio()
-async def test_unhandled_exception_handler(rendered_logs: io.StringIO) -> None:
-    scope = {"type": "http", "method": "POST", "path": "/analyze", "headers": []}
+async def test_unhandled_exceptions_never_escape_to_the_server_log(
+    rendered_logs: io.StringIO, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class ExplodingAgent:
+        async def run(self, query: Any) -> Any:
+            raise RuntimeError(CANARY)
 
-    response = await main.global_exception_handler(Request(scope), RuntimeError(CANARY))
+    monkeypatch.setattr(main, "_agent", ExplodingAgent())
+    body = {
+        "patient_context": {"patient_id_hash": "a" * 64, "chief_complaint": "chest pain"},
+        "query": "What is the differential diagnosis?",
+    }
+
+    # An exception escaping the app is what uvicorn logs with its full traceback;
+    # ASGITransport re-raises such exceptions, so this test sees the same boundary.
+    transport = httpx.ASGITransport(app=main.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://medagent.test") as client:
+        response = await client.post("/analyze", json=body)
 
     assert response.status_code == 500
+    assert response.json()["error"] == "internal_server_error"
     assert_logged_without_canary(rendered_logs, "unhandled_exception")
 
 
@@ -351,3 +365,37 @@ async def test_pubmed_parse_errors_log_only_metadata(
 
     assert await pubmed.PubMedClient()._efetch(["123"]) == []
     assert_logged_without_canary(rendered_logs, "pubmed_parse_error")
+
+
+def test_exception_fields_keep_http_status_from_common_clients() -> None:
+    import aiohttp
+
+    aiohttp_error = aiohttp.ClientResponseError(
+        request_info=MagicMock(), history=(), status=429, message=CANARY
+    )
+    httpx_error = httpx.HTTPStatusError(
+        CANARY, request=httpx.Request("GET", "https://example.org"), response=httpx.Response(503)
+    )
+
+    assert exception_fields(aiohttp_error) == {
+        "error_type": "ClientResponseError",
+        "status_code": 429,
+    }
+    assert exception_fields(httpx_error) == {"error_type": "HTTPStatusError", "status_code": 503}
+
+
+@pytest.mark.asyncio()
+async def test_single_source_interactions_are_suppressed_without_logging_names(
+    rendered_logs: io.StringIO, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    client = drug_interaction.DrugInteractionClient()
+    monkeypatch.setattr(client, "_query_rxnorm", AsyncMock(return_value=None))
+    monkeypatch.setattr(
+        client,
+        "_query_openfda",
+        AsyncMock(return_value=[{"description": "bleeding risk", "severity": "MODERATE"}]),
+    )
+    medications = [Medication(name=f"warfarin ({CANARY})"), Medication(name="amiodarone")]
+
+    assert await client.check_interactions(medications) == []
+    assert_logged_without_canary(rendered_logs, "interaction_suppressed_insufficient_sources")

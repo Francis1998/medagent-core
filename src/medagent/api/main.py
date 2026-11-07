@@ -14,9 +14,10 @@ import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from medagent.agent.audit import persist_run, safe_error_fields
 from medagent.agent.state_machine import ClinicalAgentStateMachine
@@ -161,17 +162,46 @@ app.add_middleware(
 )
 
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Return a safe JSON error response for all unhandled exceptions."""
-    logger.error("unhandled_exception", path=request.url.path, **exception_fields(exc))
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "error": "internal_server_error",
-            "message": "An unexpected error occurred. Please try again.",
-        },
-    )
+class _SanitisedServerErrors:
+    """Turn unhandled exceptions into a safe 500 response inside the application.
+
+    Starlette's ``ServerErrorMiddleware`` re-raises an exception after any
+    ``Exception`` handler runs, so the server would log the original traceback,
+    whose message can contain clinical text. Catching it here means only the
+    exception class and status are ever logged.
+    """
+
+    def __init__(self, app: ASGIApp) -> None:
+        self._app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self._app(scope, receive, send)
+            return
+        started = False
+
+        async def tracking_send(message: Message) -> None:
+            nonlocal started
+            started = started or message["type"] == "http.response.start"
+            await send(message)
+
+        try:
+            await self._app(scope, receive, tracking_send)
+        except Exception as exc:
+            logger.error("unhandled_exception", path=scope.get("path"), **exception_fields(exc))
+            if started:
+                return
+            response = JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={
+                    "error": "internal_server_error",
+                    "message": "An unexpected error occurred. Please try again.",
+                },
+            )
+            await response(scope, receive, send)
+
+
+app.add_middleware(_SanitisedServerErrors)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Operations"])

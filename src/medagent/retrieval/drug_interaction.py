@@ -99,12 +99,8 @@ class DrugInteractionClient:
         if len(sources_found) < 2:
             # Cannot validate with <2 sources — suppress per safety invariant
             if sources_found and interaction_data:
-                logger.info(
-                    "interaction_suppressed_insufficient_sources",
-                    drug_a=drug_a.name,
-                    drug_b=drug_b.name,
-                    sources=sources_found,
-                )
+                # Medication names are request text, so only the sources are logged.
+                logger.info("interaction_suppressed_insufficient_sources", sources=sources_found)
             return []
 
         # Cross-validated — build the warning

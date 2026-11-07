@@ -97,10 +97,15 @@ def exception_fields(exc: BaseException) -> dict[str, Any]:
         HTTP response carries an integer status code.
     """
     fields: dict[str, Any] = {"error_type": type(exc).__name__}
-    status = getattr(exc, "status_code", None)
-    if not isinstance(status, int):
-        status = getattr(getattr(exc, "response", None), "status_code", None)
-    if isinstance(status, int):
+    # SDK errors expose ``status_code``, httpx errors ``response.status_code`` and
+    # aiohttp's ``ClientResponseError`` a plain ``status``.
+    candidates = (
+        getattr(exc, "status_code", None),
+        getattr(getattr(exc, "response", None), "status_code", None),
+        getattr(exc, "status", None),
+    )
+    status = next((c for c in candidates if isinstance(c, int) and 100 <= c <= 599), None)
+    if status is not None:
         fields["status_code"] = status
     return fields
 
