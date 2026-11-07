@@ -154,8 +154,8 @@ class SerotoninSyndromePanel:
                     "Aggregate panel distinct from per-medication "
                     "SerotoninSyndromeChecker and pairwise "
                     "MethyleneBlueSsriChecker findings. Not a prescription. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         )
@@ -181,8 +181,8 @@ class SerotoninSyndromePanel:
                         f"{', '.join(a for a in agents if a not in maois)}. "
                         "Panel-level MAOI combination distinct from pairwise "
                         "MethyleneBlueSsriChecker / LinezolidSsriChecker. Confirm "
-                        "with a qualified clinician; prefer GPT-5.5 / Claude "
-                        "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                        "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -207,8 +207,8 @@ class SerotoninSyndromePanel:
                         f"{len(classes)} classes ({', '.join(classes)}) across "
                         f"agents {', '.join(agents)}. Aggregate multi-class load "
                         "distinct from pairwise serotonin DDI checkers. Confirm "
-                        "with a qualified clinician; prefer GPT-5.5 / Claude "
-                        "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                        "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -232,8 +232,8 @@ class SerotoninSyndromePanel:
                         "RESEARCH USE ONLY: SSRI/SNRI + triptan panel stack — "
                         f"{', '.join(ssri_snri)} with {', '.join(triptans)}. "
                         "Aggregate panel distinct from pairwise SsriTriptanChecker. "
-                        "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                        "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                        "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -258,8 +258,8 @@ class SerotoninSyndromePanel:
                         f"stack — {', '.join(ssri_snri)} with "
                         f"{', '.join(serotonergic_opioids)}. Aggregate panel "
                         "distinct from pairwise TramadolSsriChecker. Confirm with "
-                        "a qualified clinician; prefer GPT-5.5 / Claude Sonnet "
-                        "4.6 / Gemini 3.x / Kimi K2."
+                        "a qualified clinician; prefer GPT-6 Astra / Claude "
+                        "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )

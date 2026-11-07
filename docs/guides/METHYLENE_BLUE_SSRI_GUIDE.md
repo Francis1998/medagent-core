@@ -5,7 +5,7 @@
 `MethyleneBlueSsriChecker` — Intravenous methylene blue inhibits monoamine oxidase A. Co-use with serotonergic antidepressants can cause serotonin syndrome (FDA warning). Distinct from linezolid+SSRI and tramadol+SSRI checkers.
 
 Findings are advisory `MethyleneBlueSsriRisk` records — **RESEARCH USE ONLY**.
-Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 when summarizing.
+Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro when summarizing.
 
 ## Usage
 

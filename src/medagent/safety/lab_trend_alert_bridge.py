@@ -123,8 +123,8 @@ class LabTrendAlertBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + "). Advisory serial-lab cue distinct from single-draw "
                     "LabCriticalValueChecker. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -148,8 +148,8 @@ class LabTrendAlertBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + "). Advisory serial-lab cue distinct from single-draw "
                     "LabCriticalValueChecker. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -169,7 +169,7 @@ class LabTrendAlertBridge:
                     f"from {first:g} to {last:g} (delta {delta:+.3g}). Advisory "
                     "serial-lab cue distinct from single-draw LabCriticalValueChecker. "
                     "Never modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -189,8 +189,8 @@ class LabTrendAlertBridge:
                     f"from {first:g} to {last:g} {unit} (delta {delta:+.3g}). "
                     "Advisory serial-lab cue distinct from single-draw "
                     "LabCriticalValueChecker. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -213,8 +213,8 @@ class LabTrendAlertBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + "). Advisory serial-lab cue distinct from single-draw "
                     "LabCriticalValueChecker. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -237,8 +237,8 @@ class LabTrendAlertBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + "). Advisory serial-lab cue distinct from single-draw "
                     "LabCriticalValueChecker. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

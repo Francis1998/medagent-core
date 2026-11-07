@@ -153,8 +153,8 @@ class HeparinPlateletTrendBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + f"). Agents: {', '.join(agents)}. HIT-risk bridge distinct "
                     "from generic LabTrendAlertBridge. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / Claude "
-                    "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -169,8 +169,8 @@ class HeparinPlateletTrendBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + f"). Agents: {', '.join(agents)}. HIT-risk bridge distinct "
                     "from generic LabTrendAlertBridge. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / Claude "
-                    "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -185,7 +185,7 @@ class HeparinPlateletTrendBridge:
                     + "). Advisory cue combining exposure + serial platelets; "
                     "distinct from drug-agnostic LabTrendAlertBridge. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -208,8 +208,8 @@ class HeparinPlateletTrendBridge:
                         f"({', '.join(agents)}) with serial platelet trend "
                         f"{values}. Bridge advisory distinct from generic "
                         "LabTrendAlertBridge. Never modifies medications. "
-                        "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                        "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                        "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
 

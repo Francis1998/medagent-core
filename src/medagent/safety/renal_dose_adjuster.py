@@ -191,8 +191,8 @@ class RenalDoseAdjuster:
                         f"{suggested_regimen}. This emits banded regimen cues "
                         "and is distinct from RenalDoseChecker avoid/reduce "
                         "flags. Not a prescription. Confirm with a qualified "
-                        "clinician; prefer frontier summarization with GPT-5.5 / "
-                        "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "clinician; prefer frontier summarization with GPT-6 Astra / "
+                        "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
                 if best is None or (

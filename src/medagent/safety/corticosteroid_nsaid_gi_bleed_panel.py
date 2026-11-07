@@ -130,8 +130,8 @@ class CorticosteroidNsaidGiBleedPanel:
                 "increases peptic ulcer and GI bleeding risk. Distinct from "
                 "FluoroquinoloneCorticosteroidChecker (tendon) and "
                 "NsaidSsriBleedChecker. Never modifies medications. Confirm "
-                "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet "
-                "4.6 / Gemini 3.x / Kimi K2."
+                "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
             ),
         )
 
@@ -145,8 +145,8 @@ class CorticosteroidNsaidGiBleedPanel:
                     f"{', '.join(nsaid_agents)}. Panel-level multi-NSAID GI "
                     "bleed aggregate distinct from FQ+steroid tendon and "
                     "NSAID+SSRI checkers. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude "
-                    "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -161,7 +161,7 @@ class CorticosteroidNsaidGiBleedPanel:
                     "bleed stack panel distinct from tendon-focused "
                     "FluoroquinoloneCorticosteroidChecker. Never modifies "
                     "medications. Confirm with a qualified clinician; prefer "
-                    "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

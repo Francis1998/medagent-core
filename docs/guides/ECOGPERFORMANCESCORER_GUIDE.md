@@ -5,7 +5,7 @@
 Research-only advisory scorer. Gap vs MDCalc / ECOG/WHO performance status screen.
 Distinct from `GcsNeurologicStatusScorer` / `ApacheIiLiteScorer`. Safety #248.
 
-Narrative polish via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+Narrative polish via **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 ## Usage
 

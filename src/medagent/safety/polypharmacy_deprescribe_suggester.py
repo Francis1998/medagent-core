@@ -327,7 +327,7 @@ class PolypharmacyDeprescribeSuggester:
                         "consider supervised stop or consolidation of redundant "
                         "therapy. Distinct from age-gated GeriatricDeprescribingChecker. "
                         "Never auto-stops medications; requires human review. Prefer "
-                        "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -374,8 +374,8 @@ class PolypharmacyDeprescribeSuggester:
                     f"{', '.join(candidate_stops)}. Distinct from age-gated "
                     "GeriatricDeprescribingChecker and from per-medication "
                     "AnticholinergicBurdenChecker. Never auto-stops medications; "
-                    "requires human review. Prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "requires human review. Prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         ]
@@ -413,8 +413,8 @@ class PolypharmacyDeprescribeSuggester:
                     "consider transitioning away from sliding-scale-only coverage. "
                     "Distinct from InsulinStackingChecker bolus-timing checks and "
                     "age-gated GeriatricDeprescribingChecker. Never auto-stops "
-                    "medications; requires human review. Prefer GPT-5.5 / Claude "
-                    "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "medications; requires human review. Prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         ]
@@ -451,8 +451,8 @@ class PolypharmacyDeprescribeSuggester:
                     "indication. HITL review may consider step-down or supervised "
                     "stop. Applies at any age (not age-gated); distinct from "
                     "GeriatricDeprescribingChecker age>=65 catalog. Never auto-stops "
-                    "medications; requires human review. Prefer GPT-5.5 / Claude "
-                    "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "medications; requires human review. Prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         ]
@@ -480,8 +480,8 @@ class PolypharmacyDeprescribeSuggester:
                     "reconciliation may identify supervised stop or step-down "
                     "opportunities. Distinct from age-gated "
                     "GeriatricDeprescribingChecker. Never auto-stops medications; "
-                    "requires human review. Prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "requires human review. Prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         ]

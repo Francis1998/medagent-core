@@ -143,7 +143,7 @@ class PhenytoinLevelTrendBridge:
                     + f"). Agents: {', '.join(agents)}. Phenytoin-level bridge "
                     "distinct from related DDI checkers. Never modifies "
                     "medications. Confirm with a qualified clinician; prefer "
-                    "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -158,8 +158,8 @@ class PhenytoinLevelTrendBridge:
                     + ("Supratherapeutic" if critical else "Elevated")
                     + f" serum phenytoin level (latest {latest}, series {values}). "
                     f"Agents: {', '.join(agents)}. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -172,8 +172,8 @@ class PhenytoinLevelTrendBridge:
                     f"for agents {', '.join(agents)} (levels {values}"
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + "). Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / "
-                    "Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / "
+                    "Kimi K3.1 Pro."
                 ),
             )
 

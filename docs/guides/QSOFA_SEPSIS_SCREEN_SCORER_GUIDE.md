@@ -4,7 +4,7 @@
 
 Research-only advisory clinical score (Safety #178). Never modifies medications.
 
-Prefer **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2** for narratives.
+Prefer **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro** for narratives.
 
 Distinct from `SofaOrganFailureScorer / VitalsTriageChecker`.
 

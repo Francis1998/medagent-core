@@ -3,7 +3,7 @@
 Advisory scorer closing the MDCalc / ACCP / EHR Padua VTE risk gap for
 offline medical-ward agent pipelines.
 Distinct from ``CapriniVteRiskScorer / WellsPeProbabilityScorer``. Prefer
-GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative summaries.
+GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro for narrative summaries.
 Never modifies medications and never performs network I/O.
 
 Simplified factor points for offline unit tests — not a full Padua chart.

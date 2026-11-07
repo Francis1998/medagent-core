@@ -201,8 +201,8 @@ class SoapStructurer:
                 "entities, labs, and medications using keyword/section heuristics. "
                 "Plan contains non-prescriptive hints only and never issues "
                 "prescriptions or doses. Distinct from MedPrompt-style LLM SOAP "
-                "generation. Prefer frontier summarization with GPT-5.5 / "
-                "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                "generation. Prefer frontier summarization with GPT-6 Astra / "
+                "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
             ),
         )
         logger.info(

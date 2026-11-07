@@ -4,7 +4,7 @@
 
 Research-only advisory scorer. Closes the MDCalc / ACEP / EHR Ottawa Knee Rule score gap.
 
-Optional later polish via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+Optional later polish via **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 Distinct from `OttawaAnkleRuleScorer` / `CanadianCspineRuleScorer`.
 

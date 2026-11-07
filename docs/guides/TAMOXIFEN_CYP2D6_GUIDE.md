@@ -5,7 +5,7 @@
 `TamoxifenCyp2d6Checker` — Tamoxifen is a prodrug activated by CYP2D6 to endoxifen. Strong CYP2D6 inhibitors (fluoxetine, paroxetine, bupropion, quinidine) can reduce activation and undermine breast-cancer endocrine therapy. Distinct from generic SSRI panels and codeine CYP2D6 checks.
 
 Findings are advisory `TamoxifenCyp2d6Risk` records — **RESEARCH USE ONLY**.
-Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 when summarizing.
+Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro when summarizing.
 
 ## Usage
 

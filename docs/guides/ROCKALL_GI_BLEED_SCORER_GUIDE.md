@@ -6,7 +6,7 @@ Research-only advisory scorer (Safety #203). Never modifies medications.
 
 Gap vs MDCalc / BSG / EHR Rockall upper-GI bleed score. Distinct from `GlasgowBlatchfordScorer / Curb65PneumoniaScorer`.
 
-Optional polish via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+Optional polish via **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 ## Usage
 

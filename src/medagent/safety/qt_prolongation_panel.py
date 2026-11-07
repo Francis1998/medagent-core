@@ -129,7 +129,7 @@ class QtProlongationPanel:
                         "QTProlongationChecker findings and named-pair "
                         "QtcDdiChecker pairs. Not a prescription. Confirm with "
                         "a qualified clinician; prefer frontier summarization "
-                        "with GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "with GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -160,7 +160,7 @@ class QtProlongationPanel:
                         "Class stacking can amplify torsades risk beyond a single "
                         "named DDI pair. Distinct from QTProlongationChecker and "
                         "QtcDdiChecker. Confirm with a qualified clinician; prefer "
-                        "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -201,8 +201,8 @@ class QtProlongationPanel:
                         f"{', '.join(agents)}. Aggregates medication + lab/ECG "
                         "context beyond per-drug QTProlongationChecker / "
                         "qtc_ddi pairs. Confirm with a qualified clinician; "
-                        "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / "
-                        "Kimi K2."
+                        "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / "
+                        "Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -226,8 +226,8 @@ class QtProlongationPanel:
                         f"'{agent}' ({reason}, class '{class_label}') on "
                         f"medication '{med}'. Panel-level registry distinct "
                         "from per-drug checker detail. Confirm with a qualified "
-                        "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                        "Gemini 3.x / Kimi K2."
+                        "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                        "Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )

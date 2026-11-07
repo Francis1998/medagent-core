@@ -2,7 +2,7 @@
 
 ![Gentamicin + Vancomycin demo](../../assets/gentamicin_vancomycin_demo.gif)
 
-Research-only advisory checker for GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 summarization.
+Research-only advisory checker for GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro summarization.
 
 ## Why
 

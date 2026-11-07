@@ -140,8 +140,8 @@ class OpioidSedationStackPanel:
                     f"{', '.join(o_agents)}, benzodiazepines {', '.join(b_agents)}, "
                     f"gabapentinoids {', '.join(g_agents)}. Aggregate panel distinct "
                     "from pairwise OpioidBenzoChecker. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / "
-                    "Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / "
+                    "Kimi K3.1 Pro."
                 ),
             )
         if o_agents and b_agents:
@@ -153,8 +153,8 @@ class OpioidSedationStackPanel:
                     "RESEARCH USE ONLY: Opioid + benzodiazepine panel stack — "
                     f"{', '.join(o_agents)} with {', '.join(b_agents)}. Panel-level "
                     "aggregate distinct from pairwise OpioidBenzoChecker. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 "
-                    "/ Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 "
+                    "/ Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         if o_agents and g_agents:
@@ -166,8 +166,8 @@ class OpioidSedationStackPanel:
                     "RESEARCH USE ONLY: Opioid + gabapentinoid panel stack — "
                     f"{', '.join(o_agents)} with {', '.join(g_agents)}. Aggregate "
                     "panel for respiratory-depression additive risk. Confirm with "
-                    "a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         if b_agents and g_agents and not o_agents:
@@ -178,8 +178,8 @@ class OpioidSedationStackPanel:
                 (
                     "RESEARCH USE ONLY: Benzodiazepine + gabapentinoid panel stack "
                     f"— {', '.join(b_agents)} with {', '.join(g_agents)}. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 "
-                    "/ Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 "
+                    "/ Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         if len(o_agents) >= 2:
@@ -191,7 +191,7 @@ class OpioidSedationStackPanel:
                     "RESEARCH USE ONLY: Multi-opioid panel stack — "
                     f"{', '.join(o_agents)}. Aggregate panel distinct from single "
                     "OpioidMedChecker findings. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

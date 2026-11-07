@@ -108,8 +108,8 @@ class IsotretinoinPregnancyGate:
                     "distinct from generic PregnancySafetyChecker multi-agent "
                     "screening and IsotretinoinTetracyclineChecker DDI checks. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x "
-                    "/ Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon "
+                    "/ Kimi K3.1 Pro."
                 ),
             )
 
@@ -123,8 +123,8 @@ class IsotretinoinPregnancyGate:
                     "context (iPLEDGE-style advisory). Distinct from generic "
                     "PregnancySafetyChecker and IsotretinoinTetracyclineChecker. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x "
-                    "/ Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon "
+                    "/ Kimi K3.1 Pro."
                 ),
             )
 
@@ -139,8 +139,8 @@ class IsotretinoinPregnancyGate:
                     "Absolute pregnancy contraindication control distinct from "
                     "PregnancySafetyChecker and IsotretinoinTetracyclineChecker. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x "
-                    "/ Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon "
+                    "/ Kimi K3.1 Pro."
                 ),
             )
 

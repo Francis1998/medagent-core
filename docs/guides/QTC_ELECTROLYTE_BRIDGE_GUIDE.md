@@ -9,7 +9,7 @@ Distinct from `ElectrolyteQtChecker` (point-in-time K/Mg), `QtProlongationPanel`
 (multi-drug QT aggregate), and `LabTrendAlertBridge` (generic serial labs without
 QT-agent context).
 
-Optional narrative polish via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+Optional narrative polish via **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 ## Usage
 
