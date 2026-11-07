@@ -50,8 +50,8 @@ medagent.
 | Tool | What it does | Needs |
 | --- | --- | --- |
 | `screen_medications` | Runs 7 patient-context checks (allergy, inter-class allergy, pregnancy, lactation, Beers 65+, renal eGFR, hepatic Child-Pugh), 6 medication-list checks (duplicate therapy, QT burden, anticholinergic burden, serotonergic load, boxed warnings, ACEI/ARB/ARNI duplication) and every offline interaction rule; reports which checks were skipped for missing context. | `medications`; optional `patient`, `patient_ref`, `include_interactions` |
-| `check_drug_interactions` | Runs only the offline interaction rules: 80 pairwise checkers auto-discovered from `medagent.safety`, plus QTc pairs, anticoagulant-bleeding and triple-whammy combinations (83 today). | `medications` (2–50) |
-| `parse_fhir_bundle` | FHIR R4 Bundle → de-identified context (HMAC-hashed patient id, age, sex, active medications, allergies, labs, vitals) and a `screening_input` object to pass straight to `screen_medications`. | `bundle` |
+| `check_drug_interactions` | Runs only the offline interaction rules: 80 pairwise checkers auto-discovered from `medagent.safety`, plus QTc pairs, anticoagulant-bleeding and triple-whammy combinations (83 today). | `medications` (2–100) |
+| `parse_fhir_bundle` | FHIR R4 Bundle for **one** patient → de-identified context (HMAC-hashed patient id, age, sex, current medications, allergies, labs, vitals) and a `screening_input` object to pass straight to `screen_medications` (validated against its limits). | `bundle`; optional `include_proposed` |
 | `list_safety_controls` | Catalogue of the hard constraints (SAFETY.md §3.1–3.8) and every check the tools run, with SAFETY.md sections and required inputs. | optional `category`, `query` |
 
 All four tools are annotated `readOnlyHint: true`, `destructiveHint: false`,
@@ -221,7 +221,7 @@ finding is `HIGH` or `CRITICAL`), `network_used: false`, a `coverage_note` and t
 
 | Argument | Type | Notes |
 | --- | --- | --- |
-| `medications` | array (1–50) of string or `{name, dosage?, route?, frequency?, rxnorm_code?}` | Names may include strength, e.g. `"warfarin 5 mg"` |
+| `medications` | array (1–100) of string or `{name, dosage?, route?, frequency?, rxnorm_code?}` | Names may include strength, e.g. `"warfarin 5 mg"` |
 | `patient.age` | integer 0–150 | Enables Beers (65+) |
 | `patient.pregnant` / `patient.breastfeeding` | boolean | Enable pregnancy / lactation checks |
 | `patient.egfr` | number 0–250 (mL/min/1.73m²) | Enables renal dosing |
@@ -231,7 +231,9 @@ finding is `HIGH` or `CRITICAL`), `network_used: false`, a `coverage_note` and t
 | `include_interactions` | boolean, default `true` | Also run the interaction rules |
 
 `patient` rejects any other property (for example `name`), so direct identifiers cannot be sent
-by accident. Example call and (trimmed) result:
+by accident. Medication and allergy text is de-identified (`sanitise_clinical_text`: dates, phone
+numbers, emails, MRNs, SSNs) before any checker sees it, so findings never echo identifiers.
+Example call and (trimmed) result:
 
 ```json
 {"jsonrpc": "2.0", "id": 4, "method": "tools/call", "params": {
@@ -277,7 +279,7 @@ by accident. Example call and (trimmed) result:
 
 ### `check_drug_interactions`
 
-Argument: `medications`, 2–50 items in the same shapes as above. Output: `medications_checked`,
+Argument: `medications`, 2–100 items in the same shapes as above. Output: `medications_checked`,
 `rules_evaluated`, findings and the shared summary fields. Real call (modern era):
 
 ```json
@@ -317,9 +319,15 @@ with dual-source validation, SAFETY.md §3.7). The MCP tool never touches the ne
 
 ### `parse_fhir_bundle`
 
-Argument: `bundle`, a FHIR R4 `Bundle` (up to 5,000 entries). Uses the existing
-`extraction.fhir_parser` for patient context and `FhirMedicationRequestAdapter` for medications,
-which drops `stopped`, `cancelled` and `entered-in-error` requests. Result for
+Argument: `bundle`, a FHIR R4 `Bundle` (up to 5,000 entries) for **one** patient: a bundle with
+several `Patient` resources, or with a clinical resource whose `subject`/`patient` reference points
+at another patient, is rejected as a tool error rather than merged. Uses the existing
+`extraction.fhir_parser` for patient context and `FhirMedicationRequestAdapter` for medications.
+Only current therapy is kept by default: `MedicationRequest` and `MedicationStatement` entries with
+status `active` or `on-hold`. Set `include_proposed: true` to also keep draft `MedicationRequest`s
+and intended `MedicationStatement`s, so a proposed order can be screened against current therapy.
+Every other status (`completed`, `stopped`, `cancelled`, `entered-in-error`, `not-taken`,
+`unknown` or missing) is excluded and counted in `medication_notes`. Result for
 [`data/sample_fhir_bundle_polypharmacy.json`](../../data/sample_fhir_bundle_polypharmacy.json)
 (synthetic data, trimmed):
 
@@ -333,7 +341,7 @@ which drops `stopped`, `cancelled` and `entered-in-error` requests. Result for
   "medications": [{"name": "Warfarin 5 mg tablet", "dosage": "5 mg once daily", "frequency": "daily"},
                   {"name": "Ibuprofen 400 mg tablet", "dosage": "400 mg three times daily"},
                   {"name": "Simvastatin 40 mg tablet"}, {"name": "Clarithromycin 500 mg tablet"}],
-  "medication_notes": ["entry[4]: skipped stopped MedicationRequest"],
+  "medication_notes": ["excluded MedicationRequest status stopped: 1"],
   "allergies": ["Penicillin"],
   "lab_results": [{"test_name": "eGFR", "value": "28", "unit": "mL/min/1.73m2", "reference_range": null, "abnormal": false},
                   {"test_name": "INR", "value": "3.4", "unit": null, "reference_range": null, "abnormal": false}],
@@ -343,18 +351,25 @@ which drops `stopped`, `cancelled` and `entered-in-error` requests. Result for
     "medications": ["...the four active medications above..."],
     "patient": {"age": 81, "allergies": ["Penicillin"], "egfr": 28.0}
   },
-  "notes": ["Direct identifiers (name, birthDate, identifier, telecom, address) and the raw bundle are not returned; the patient id is HMAC-SHA256 hashed with PII_HASH_SALT.",
-            "Medications exclude stopped, cancelled and entered-in-error requests.",
+  "screening_input_issues": [],
+  "notes": ["Direct identifiers (name, birthDate, identifier, telecom, address) and the raw bundle are not returned; the patient id is HMAC-SHA256 hashed with PII_HASH_SALT, and free text is de-identified.",
+            "Only current therapy (status active or on-hold) is kept; draft/intended orders are added only with include_proposed, and every other status is excluded and counted in medication_notes.",
             "pregnant, breastfeeding and hepatic_function are not derived from the bundle; add them to screening_input.patient when known.",
-            "egfr is the lowest of 1 numeric eGFR observation(s)."],
+            "egfr is the lowest of 1 eGFR observation(s) in mL/min/1.73m²."],
   "disclaimer": "⚠️  RESEARCH USE ONLY. ..."
 }
 ```
 
-Pass `screening_input` unchanged as the `arguments` of `screen_medications`. Chief complaint and
-diagnosis text are passed through `sanitise_clinical_text` (dates, phone numbers, emails, MRNs and
-SSNs are redacted). When several eGFR observations exist, the **lowest** numeric value is used —
-the conservative choice for renal screening.
+Pass `screening_input` unchanged as the `arguments` of `screen_medications`; it is validated against
+that tool's input schema and any problem (for example more than 100 current medications) is listed
+in `screening_input_issues` instead of being silently truncated or split. Every exported free-text
+field — chief complaint, diagnoses, medication and dosage text, allergies, lab and vital strings —
+passes through `sanitise_clinical_text` (dates, phone numbers, emails, MRNs and SSNs are redacted),
+and prescription phrasing in source text (for example an EHR dosage instruction "Administer 40 mg")
+is replaced with `[REDACTED-DIRECTIVE]`. eGFR observations are used only with a recognised unit
+(`mL/min/1.73m²` in any UCUM spelling, or `mL/s/1.73m²` converted ×60); others are skipped and
+counted in `notes`. When several remain, the **lowest** value is used — the conservative choice for
+renal screening. Extracted free text is also checked by the scope enforcer.
 
 ### `list_safety_controls`
 
@@ -438,24 +453,32 @@ response. The server exits promptly when stdin is closed.
   the MedicationRequest adapter: no LLM, no network, no state between requests.
 - **Mandatory disclaimer everywhere.** `MANDATORY_DISCLAIMER` (SAFETY.md §3.1) is in every
   `structuredContent` and every text block, including tool errors.
-- **No prescribing directives.** Rationales are the checkers' advisory text. Before a result
-  leaves the server, its summary and structured content are screened with the same
-  prohibited-prescription patterns as LLM output (SAFETY.md §3.3); a match withholds the result as
-  an `isError` tool result and logs `mcp_output_withheld`.
+- **No prescribing directives.** Rationales are the checkers' advisory text, and prescription
+  phrasing inside echoed source text is replaced with `[REDACTED-DIRECTIVE]`. Before a result
+  leaves the server, the summary and **every string value and key** of the structured content are
+  screened in raw form (so `administer\n5 mg` is caught) with the same prohibited-prescription
+  patterns as LLM output (SAFETY.md §3.3); a match withholds the result as an `isError` tool result
+  and logs `mcp_output_withheld`.
 - **Escalation, not reassurance.** `escalation_recommended` is set for any `HIGH`/`CRITICAL`
   finding, skipped checks are listed, and every result says that an empty result is not evidence
   of safety.
 - **De-identification.** `patient` accepts no identifier fields; `patient_ref` and FHIR patient ids
   are HMAC-SHA256 hashed with `PII_HASH_SALT` (`safety/pii_hasher.py`) and never echoed; FHIR names,
-  birth dates, identifiers, telecom, addresses and the raw bundle are never returned; free text is
-  passed through `sanitise_clinical_text`.
-- **Scope enforcement.** Free-text arguments (medication strings, allergies, catalogue queries) go
-  through `ScopeEnforcer` (SAFETY.md §3.6); a violation is a tool error.
-- **Audit trail.** With `--audit-log`, each `tools/call` appends one JSON line holding hashes and
-  counts only — never arguments or results.
+  birth dates, identifiers, telecom, addresses and the raw bundle are never returned; every
+  exported free-text field passes through `sanitise_clinical_text`. Multi-patient bundles are
+  rejected rather than merged.
+- **Scope enforcement.** Free-text arguments and extracted FHIR text go through the scope
+  enforcer's patterns (SAFETY.md §3.6) on a logging-safe path: a violation is a tool error and only
+  the matched pattern is logged (`mcp_scope_violation`), never the text.
+- **Audit trail.** With `--audit-log`, each `tools/call` — including calls that end in an internal
+  error (`error_kind: "internal_error"`) — appends one JSON line holding hashes and counts only,
+  never arguments or results. Self-reported client metadata is reduced to a de-identified `name`
+  and `version` of at most 64 characters each.
 - **Protocol hygiene.** STDOUT carries JSON-RPC only: logs go to STDERR (default level `WARNING`),
   and `sys.stdout` is redirected to STDERR inside the server so a stray `print` cannot corrupt the
-  stream. Inputs are bounded (50 medications, 50 allergies, 5,000 FHIR entries, 8 MiB per message).
+  stream. Output lines are ASCII-escaped strict JSON (no `NaN`, no unencodable surrogates), and
+  error logs carry exception classes and code locations, never messages. Inputs are bounded (100
+  medications, 50 allergies, 5,000 FHIR entries, 8 MiB per message).
 - **Human in the loop.** Keep your host's tool-approval prompts on, and route every finding to a
   licensed clinician.
 
@@ -483,7 +506,8 @@ An audit record (real output, `screen_medications` with `patient_ref`):
 ```
 
 `inputs_hash` is an HMAC of the canonical arguments, so identical calls can be linked without
-storing them. `error_kind` is `invalid_arguments` or `output_withheld` for tool errors. A failed
+storing them. `error_kind` is `invalid_arguments` or `output_withheld` for tool errors and
+`internal_error` for calls that returned `-32603`. A failed
 audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 
 ## Troubleshooting
@@ -498,7 +522,10 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 | `isError: true` with `Invalid arguments: …` | Fix the argument at the reported path (for example `arguments.patient.egfr must be <= 250`). |
 | `Input rejected by scope enforcement` | A free-text argument asked for browsing, code execution or a non-clinical task. |
 | Fewer checks than expected | Look at `checks_skipped`; supply `age`, `egfr`, `hepatic_function`, `pregnant`, `breastfeeding` or `allergies`. |
-| Large bundle rejected (`Message exceeds 8388608 bytes`) | Split the bundle, or send only the Patient, MedicationRequest, Observation and AllergyIntolerance entries. |
+| Large bundle rejected (`Message exceeds 8388608 bytes`) | Send only the Patient, MedicationRequest, MedicationStatement, Observation and AllergyIntolerance entries. |
+| `Bundle contains 2 Patient resources` / `Bundle mixes patients` | Send one patient's resources per call (filter by `subject`). |
+| `screening_input_issues` is not empty | The regimen cannot be screened unchanged (for example more than 100 current medications); review it rather than splitting it, which would miss cross-medication interactions. |
+| No `egfr` in `screening_input` | The eGFR observations had no recognised unit or a non-numeric value (see `notes`); pass `egfr` explicitly in mL/min/1.73m². |
 | Gemini/OpenAPI clients reject a schema | Not expected: `tools/list --strict` in the MCP Inspector reports 0 errors and 0 warnings. Please open an issue with the client name. |
 
 ## Limitations

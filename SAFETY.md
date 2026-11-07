@@ -3193,26 +3193,35 @@ constraints are enforced in code:
   HTTP API.
 - **Mandatory disclaimer (§3.1).** Present in every tool result's structured and text content,
   including tool errors.
-- **No prescribing directives (§3.3).** Each result is screened with the `MedicalOutputValidator`
-  prohibited-prescription patterns before it is returned; a match withholds the result as an
-  `isError` tool result (`mcp_output_withheld`).
+- **No prescribing directives (§3.3).** Prescription phrasing in echoed source text is replaced
+  with `[REDACTED-DIRECTIVE]`, and every string value and key of each result is screened in raw form
+  with the `MedicalOutputValidator` prohibited-prescription patterns before it is returned; a match
+  withholds the result as an `isError` tool result (`mcp_output_withheld`).
 - **Escalation over reassurance (§3.4).** `escalation_recommended` is true for any `HIGH` or
   `CRITICAL` finding, checks skipped for missing context are listed, and every result states that
   an empty result is not evidence of safety.
 - **PII (§3.5).** The `patient` argument rejects unknown fields such as names; `patient_ref` and
   FHIR patient identifiers are HMAC-SHA256 hashed with `PII_HASH_SALT` and never echoed; FHIR
-  names, birth dates, identifiers, telecom, addresses and the raw bundle are never returned; free
-  text passes through `sanitise_clinical_text`. The server warns on stderr while the default salt
-  is in use.
-- **Scope enforcement (§3.6).** Free-text tool arguments are checked by `ScopeEnforcer`; a
+  names, birth dates, identifiers, telecom, addresses and the raw bundle are never returned; every
+  exported free-text field (medications, dosage, allergies, conditions, lab and vital strings)
+  passes through `sanitise_clinical_text`; FHIR parser diagnostics log exception classes only.
+  Bundles with more than one patient are rejected. The server warns on stderr while the default
+  salt is in use.
+- **Clinical correctness.** Only current therapy (status `active` or `on-hold`) is screened by
+  default; draft/intended orders are added only with an explicit `include_proposed`, and every
+  other status is excluded and counted. eGFR is used only with a recognised unit (mL/min/1.73m², or
+  mL/s/1.73m² converted); a generated `screening_input` that exceeds the screening limits is
+  reported, never truncated.
+- **Scope enforcement (§3.6).** Free-text tool arguments and extracted FHIR text are checked with
+  the `ScopeEnforcer` patterns on a logging-safe path (only the matched pattern is logged); a
   violation is returned as a tool error.
-- **Audit.** `--audit-log` / `MEDAGENT_MCP_AUDIT_LOG` appends one JSON line per `tools/call` with
-  hashes and counts only (tool, era, protocol version, self-reported client, error kind, duration,
-  HMAC of the arguments, hashed patient references, finding count, highest severity) — never the
-  arguments or results.
-- **Protocol hygiene.** STDOUT carries JSON-RPC only; logs go to STDERR and `sys.stdout` is
-  redirected to STDERR inside the server. Inputs are bounded (50 medications, 50 allergies, 5,000
-  FHIR entries, 8 MiB per message).
+- **Audit.** `--audit-log` / `MEDAGENT_MCP_AUDIT_LOG` appends one JSON line per `tools/call`,
+  including calls that end in an internal error, with hashes and counts only (tool, era, protocol
+  version, de-identified client name/version, error kind, duration, HMAC of the arguments, hashed
+  patient references, finding count, highest severity) — never the arguments or results.
+- **Protocol hygiene.** STDOUT carries ASCII-escaped strict JSON-RPC only; logs go to STDERR and
+  `sys.stdout` is redirected to STDERR inside the server. Inputs are bounded (100 medications, 50
+  allergies, 5,000 FHIR entries, 8 MiB per message).
 
 Operators must keep the host's tool-approval prompts enabled and route every finding to a licensed
 clinician. See `docs/guides/MCP_SERVER_GUIDE.md`.

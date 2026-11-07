@@ -206,7 +206,7 @@ def _extract_medications(med_requests: list[dict[str, Any]]) -> list[Medication]
                 )
             )
         except Exception as exc:
-            logger.warning("medication_parse_error", error=str(exc), name=name)
+            logger.warning("medication_parse_error", error_type=type(exc).__name__)
 
     return medications
 
@@ -259,7 +259,7 @@ def _extract_observations(observations: list[dict[str, Any]]) -> list[LabResult]
                 )
             )
         except Exception as exc:
-            logger.warning("lab_parse_error", error=str(exc), name=name)
+            logger.warning("lab_parse_error", error_type=type(exc).__name__)
 
     return labs
 
@@ -416,5 +416,5 @@ def _extract_vital_signs(observations: list[dict[str, Any]]) -> list[VitalSign]:
                 continue
             vitals.append(VitalSign(name=str(name), value=float(value), unit=unit))
         except Exception as exc:
-            logger.warning("vital_parse_error", error=str(exc))
+            logger.warning("vital_parse_error", error_type=type(exc).__name__)
     return vitals

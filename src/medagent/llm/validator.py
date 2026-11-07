@@ -29,6 +29,24 @@ _PROHIBITED_PATTERNS: list[re.Pattern[str]] = [
 
 _MIN_CONTENT_LENGTH = 10
 _MAX_CONTENT_LENGTH = 50_000
+REDACTED_DIRECTIVE = "[REDACTED-DIRECTIVE]"
+
+
+def redact_prohibited_language(content: str) -> str:
+    """Replace direct prescription language with a neutral placeholder.
+
+    Used for source text (for example EHR dosage instructions) that is echoed
+    back by deterministic tools, so it never reads as a directive from medagent.
+
+    Args:
+        content: Text to neutralise.
+
+    Returns:
+        The text with every prohibited-pattern match replaced.
+    """
+    for pattern in _PROHIBITED_PATTERNS:
+        content = pattern.sub(REDACTED_DIRECTIVE, content)
+    return content
 
 
 class MedicalOutputValidationError(ValueError):

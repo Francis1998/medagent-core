@@ -24,13 +24,14 @@ import os
 import sys
 import time
 import traceback
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import IO, Any
 
 from medagent import __version__
 from medagent.config import settings
+from medagent.extraction.fhir_parser import sanitise_clinical_text
 from medagent.llm.validator import MedicalOutputValidationError, MedicalOutputValidator
 from medagent.logging_config import configure_logging, get_logger
 from medagent.mcp.schema import validate
@@ -57,6 +58,7 @@ INTERNAL_ERROR = -32603
 UNSUPPORTED_PROTOCOL_VERSION = -32022
 
 CACHE_TTL_MS = 3_600_000
+CLIENT_FIELD_MAX_CHARS = 64
 MAX_MESSAGE_BYTES = 8 * 1024 * 1024
 AUDIT_LOG_ENV = "MEDAGENT_MCP_AUDIT_LOG"
 LOG_LEVEL_ENV = "MEDAGENT_MCP_LOG_LEVEL"
@@ -114,6 +116,31 @@ class ToolCallAuditLog:
             logger.error("mcp_audit_write_failed", error_type=type(exc).__name__)
 
 
+def _iter_strings(value: Any) -> Iterator[str]:
+    """Yield every string value and object key nested in ``value``."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            yield str(key)
+            yield from _iter_strings(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from _iter_strings(item)
+
+
+def _client_identity(client: Any) -> dict[str, str] | None:
+    """Keep only a bounded, de-identified ``name``/``version`` from self-reported clientInfo."""
+    if not isinstance(client, dict):
+        return None
+    identity = {
+        field: sanitise_clinical_text(client[field])[:CLIENT_FIELD_MAX_CHARS]
+        for field in ("name", "version")
+        if isinstance(client.get(field), str)
+    }
+    return identity or None
+
+
 def _canonical_json(value: Any) -> str:
     """Serialise ``value`` deterministically for hashing."""
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -125,9 +152,13 @@ def _reject_json_constant(name: str) -> Any:
 
 
 def _encode(message: dict[str, Any]) -> bytes:
-    """Encode one JSON-RPC message as a single, strictly valid UTF-8 JSON line."""
-    text = json.dumps(message, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
-    return text.encode("utf-8") + b"\n"
+    """Encode one JSON-RPC message as a single, strictly valid JSON line.
+
+    Non-ASCII characters are escaped, so even lone surrogates from a client's
+    request id can never make the line unencodable.
+    """
+    text = json.dumps(message, ensure_ascii=True, separators=(",", ":"), allow_nan=False)
+    return text.encode("ascii") + b"\n"
 
 
 class MedagentMcpServer:
@@ -314,6 +345,11 @@ class MedagentMcpServer:
                 error_kind, message = self._guard_output(tool, output)
             except ToolInputError as exc:
                 error_kind, message = "invalid_arguments", str(exc)
+            except Exception:
+                self._record_call(
+                    tool, arguments, None, "internal_error", era, version, params, started
+                )
+                raise
 
         if output is None or error_kind is not None:
             result: dict[str, Any] = {
@@ -333,10 +369,14 @@ class MedagentMcpServer:
         return result
 
     def _guard_output(self, tool: ToolSpec, output: ToolOutput) -> tuple[str | None, str]:
-        """Withhold any result containing prescription language (SAFETY.md §3.3)."""
+        """Withhold any result containing prescription language (SAFETY.md §3.3).
+
+        Every string value and key is scanned in its raw form, so whitespace such
+        as newlines is matched exactly as a reader (or model) would see it.
+        """
         try:
-            self._output_guard.check_prohibited_language(output.summary)
-            self._output_guard.check_prohibited_language(_canonical_json(output.structured))
+            for text in (output.summary, *_iter_strings(output.structured)):
+                self._output_guard.check_prohibited_language(text)
         except MedicalOutputValidationError:
             logger.error("mcp_output_withheld", tool=tool.name)
             return (
@@ -364,6 +404,7 @@ class MedagentMcpServer:
         patient_ref_hash = hash_pii(patient_ref) if isinstance(patient_ref, str) else None
         meta = params.get("_meta")
         client = meta.get(META_CLIENT_INFO) if isinstance(meta, dict) else self._legacy_client
+        client_identity = _client_identity(client)
         logger.info(
             "mcp_tool_call",
             tool=tool.name,
@@ -381,7 +422,7 @@ class MedagentMcpServer:
                 "tool": tool.name,
                 "era": era,
                 "protocol_version": version,
-                "client": client if isinstance(client, dict) else None,
+                "client": client_identity,
                 "is_error": error_kind is not None,
                 "error_kind": error_kind,
                 "duration_ms": duration_ms,

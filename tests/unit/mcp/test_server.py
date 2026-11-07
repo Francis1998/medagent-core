@@ -455,6 +455,77 @@ def test_prescription_language_in_tool_output_is_withheld(
     assert "Prescribe" not in result["content"][0]["text"]
 
 
+@pytest.mark.parametrize(
+    "structured",
+    [
+        {"note": "administer\n5 mg now"},
+        {"nested": [{"text": "start the patient on\twarfarin"}]},
+        {"administer\t5 mg": 1},
+    ],
+    ids=["newline-in-value", "tab-in-nested-value", "directive-in-key"],
+)
+def test_output_guard_scans_raw_strings_and_keys(
+    server: MedagentMcpServer, monkeypatch: MonkeyPatch, structured: dict[str, Any]
+) -> None:
+    tool = mcp_server.TOOLS_BY_NAME["list_safety_controls"]
+    unsafe = dataclasses.replace(
+        tool, handler=lambda arguments: ToolOutput(structured, "summary only")
+    )
+    monkeypatch.setitem(mcp_server.TOOLS_BY_NAME, "list_safety_controls", unsafe)
+
+    response = server.handle_message(call("list_safety_controls", {}))
+
+    assert response is not None
+    assert response["result"]["isError"] is True
+    assert response["result"]["content"][0]["text"].startswith("Result withheld")
+
+
+def test_audit_log_keeps_only_bounded_client_identity(tmp_path: Path) -> None:
+    audit_path = tmp_path / "mcp.jsonl"
+    server = MedagentMcpServer(audit_log_path=audit_path)
+    request = call("list_safety_controls", {"category": "platform"})
+    request["params"]["_meta"]["io.modelcontextprotocol/clientInfo"] = {
+        "name": "ehr-agent call 415-555-0101",
+        "version": "9" * 200,
+        "mrn": "MRN-0042",
+        "bundle": {"resourceType": "Bundle"},
+    }
+
+    server.handle_message(request)
+
+    raw = audit_path.read_text(encoding="utf-8")
+    record = json.loads(raw)
+    assert set(record["client"]) == {"name", "version"}
+    assert record["client"]["version"] == "9" * 64
+    for leaked in ("MRN-0042", "Bundle", "415-555-0101"):
+        assert leaked not in raw
+
+
+def test_internal_errors_are_recorded_in_the_audit_log(
+    tmp_path: Path, monkeypatch: MonkeyPatch
+) -> None:
+    def explode(arguments: dict[str, Any]) -> ToolOutput:
+        raise RuntimeError("CANARY boom")
+
+    tool = mcp_server.TOOLS_BY_NAME["list_safety_controls"]
+    monkeypatch.setitem(
+        mcp_server.TOOLS_BY_NAME,
+        "list_safety_controls",
+        dataclasses.replace(tool, handler=explode),
+    )
+    audit_path = tmp_path / "mcp.jsonl"
+    server = MedagentMcpServer(audit_log_path=audit_path)
+
+    response = server.handle_message(call("list_safety_controls", {}))
+
+    assert response is not None
+    assert response["error"]["code"] == -32603
+    record = json.loads(audit_path.read_text(encoding="utf-8"))
+    assert record["error_kind"] == "internal_error"
+    assert record["is_error"] is True
+    assert "CANARY" not in json.dumps(record)
+
+
 def test_audit_log_records_hashes_and_counts_never_arguments(tmp_path: Path) -> None:
     audit_path = tmp_path / "audit" / "mcp.jsonl"
     server = MedagentMcpServer(audit_log_path=audit_path)
@@ -515,6 +586,19 @@ def test_serve_stdio_skips_blank_lines_and_rejects_oversized_messages(
     first, second = (json.loads(line) for line in stdout.getvalue().splitlines())
     assert first["error"] == {"code": -32600, "message": "Message exceeds 512 bytes"}
     assert second["result"]["resultType"] == "complete"
+
+
+def test_lone_surrogate_request_id_does_not_end_the_stdio_session() -> None:
+    bad_id = b'{"jsonrpc":"2.0","id":"\\ud800","method":"ping"}'
+    stdin = io.BytesIO(bad_id + b"\n" + json.dumps(modern("server/discover")).encode() + b"\n")
+    stdout = io.BytesIO()
+
+    serve_stdio(MedagentMcpServer(), stdin, stdout)
+
+    first, second = (json.loads(line) for line in stdout.getvalue().splitlines())
+    assert first["id"] == "\ud800"
+    assert second["result"]["resultType"] == "complete"
+    assert stdout.getvalue().isascii()
 
 
 def test_stdio_subprocess_round_trip_for_both_eras() -> None:

@@ -27,6 +27,9 @@ from medagent.extraction.fhir_parser import (
     parse_fhir_bundle,
     sanitise_clinical_text,
 )
+from medagent.llm.validator import redact_prohibited_language
+from medagent.logging_config import get_logger
+from medagent.mcp.schema import validate
 from medagent.models import HepaticFunction, LabResult, Medication, Severity
 from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationChecker
 from medagent.safety.allergy_checker import AllergyChecker
@@ -45,9 +48,11 @@ from medagent.safety.pregnancy_checker import PregnancySafetyChecker
 from medagent.safety.qt_prolongation_checker import QTProlongationChecker
 from medagent.safety.qtc_ddi_checker import QtcDdiChecker
 from medagent.safety.renal_dose_checker import RenalDoseChecker
-from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
+from medagent.safety.scope_enforcer import ScopeEnforcer
 from medagent.safety.serotonin_syndrome_checker import SerotoninSyndromeChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
+
+logger = get_logger(__name__)
 
 SEVERITY_ORDER: tuple[str, ...] = tuple(severity.value for severity in Severity)
 _SEVERITY_RANK = {name: rank for rank, name in enumerate(SEVERITY_ORDER)}
@@ -71,6 +76,20 @@ READ_ONLY_ANNOTATIONS: dict[str, bool] = {
 
 _SCOPE_ENFORCER = ScopeEnforcer()
 _EGFR_NAME = re.compile(r"\begfr\b|glomerular filtration", re.IGNORECASE)
+_EGFR_UNIT_FACTORS = {"ml/min/1.73m2": 1.0, "ml/s/1.73m2": 60.0}
+_MAX_MEDICATIONS = 100
+
+# Medication statuses screened as current therapy, plus proposed orders that are
+# screened only on explicit opt-in. Everything else (completed, stopped,
+# cancelled, entered-in-error, not-taken, unknown or missing) is excluded.
+_CURRENT_STATUSES: dict[str, frozenset[str]] = {
+    "MedicationRequest": frozenset({"active", "on-hold"}),
+    "MedicationStatement": frozenset({"active", "on-hold"}),
+}
+_PROPOSED_STATUSES: dict[str, frozenset[str]] = {
+    "MedicationRequest": frozenset({"draft"}),
+    "MedicationStatement": frozenset({"intended"}),
+}
 
 
 class ToolInputError(ValueError):
@@ -366,35 +385,44 @@ def screening_checks() -> tuple[SafetyCheck, ...]:
 # ---------------------------------------------------------------------------
 
 
+def _clean_text(text: str) -> str:
+    """De-identify free text and neutralise prescription phrasing before export."""
+    return redact_prohibited_language(sanitise_clinical_text(text)).strip()
+
+
+def _raw_medication_texts(items: list[Any]) -> list[str]:
+    """Return every free-text value supplied in medication arguments."""
+    texts: list[str] = []
+    for item in items:
+        texts.extend([item] if isinstance(item, str) else [str(value) for value in item.values()])
+    return texts
+
+
 def _parse_medications(items: list[Any]) -> list[Medication]:
-    """Convert validated medication arguments into ``Medication`` models."""
+    """Convert validated medication arguments into de-identified ``Medication`` models."""
     medications: list[Medication] = []
     for item in items:
-        if isinstance(item, str):
-            medications.append(Medication(name=item.strip()))
-        else:
-            fields = {key: value.strip() for key, value in item.items()}
-            medications.append(Medication(**fields))
+        fields: dict[str, str] = {"name": item} if isinstance(item, str) else dict(item)
+        medications.append(Medication(**{key: _clean_text(value) for key, value in fields.items()}))
     return medications
 
 
 def _medication_dict(medication: Medication) -> dict[str, str]:
-    """Return a medication as a compact dict without empty fields."""
+    """Return a medication as a compact dict of cleaned text without empty fields."""
     data = medication.model_dump(exclude_none=True)
-    return {key: str(value) for key, value in data.items()}
+    return {key: _clean_text(str(value)) for key, value in data.items()}
 
 
 def _enforce_scope(texts: Sequence[str]) -> None:
-    """Apply the agent's ScopeEnforcer (SAFETY.md §3.6) to free-text arguments."""
-    joined = "\n".join(text for text in texts if text)
-    if not joined:
-        return
-    try:
-        _SCOPE_ENFORCER.check_query_in_scope(joined)
-    except ScopeViolationError as exc:
-        raise ToolInputError(
-            f"Input rejected by scope enforcement (SAFETY.md §3.6): {exc}"
-        ) from exc
+    """Apply the agent's scope patterns (SAFETY.md §3.6) without logging any text."""
+    for text in texts:
+        pattern = _SCOPE_ENFORCER.find_violation(text)
+        if pattern is not None:
+            logger.warning("mcp_scope_violation", pattern=pattern)
+            raise ToolInputError(
+                "Input rejected by scope enforcement (SAFETY.md §3.6): free text must not "
+                "request browsing, code execution or non-clinical tasks."
+            )
 
 
 _MEDICATION_LIST_FIELDS = frozenset({"medications", "medication_names"})
@@ -494,12 +522,14 @@ def _findings_summary(tool: str, medications: list[Medication], result: dict[str
 
 def _screen_medications(arguments: dict[str, Any]) -> ToolOutput:
     """Screen a medication list with the patient-context, list and interaction checks."""
-    medications = _parse_medications(arguments["medications"])
     patient: dict[str, Any] = arguments.get("patient", {})
-    allergies = [allergy.strip() for allergy in patient.get("allergies", [])]
-    _enforce_scope(
-        [text for med in medications for text in (med.name, med.dosage or "")] + allergies
-    )
+    raw_allergies: list[str] = patient.get("allergies", [])
+    _enforce_scope(_raw_medication_texts(arguments["medications"]) + raw_allergies)
+    medications = _parse_medications(arguments["medications"])
+    allergies = [_clean_text(allergy) for allergy in raw_allergies]
+    context_used = {key: patient[key] for key in sorted(patient)}
+    if "allergies" in context_used:
+        context_used["allergies"] = allergies
     hepatic = patient.get("hepatic_function")
     egfr = patient.get("egfr")
     ctx = ScreeningContext(
@@ -526,7 +556,7 @@ def _screen_medications(arguments: dict[str, Any]) -> ToolOutput:
     patient_ref = arguments.get("patient_ref")
     result: dict[str, Any] = {
         "medications_screened": [medication.name for medication in medications],
-        "patient_context_used": {key: patient[key] for key in sorted(patient)},
+        "patient_context_used": context_used,
         "patient_ref_hash": hash_pii(patient_ref) if patient_ref else None,
         "checks_run": [check.id for check in runnable],
         "checks_skipped": skipped,
@@ -542,8 +572,8 @@ def _screen_medications(arguments: dict[str, Any]) -> ToolOutput:
 
 def _check_drug_interactions(arguments: dict[str, Any]) -> ToolOutput:
     """Evaluate the offline drug-drug interaction rules for a medication list."""
+    _enforce_scope(_raw_medication_texts(arguments["medications"]))
     medications = _parse_medications(arguments["medications"])
-    _enforce_scope([text for med in medications for text in (med.name, med.dosage or "")])
     checks = interaction_checks()
     findings = _run_checks(checks, ScreeningContext(medications=medications))
     result: dict[str, Any] = {
@@ -558,19 +588,110 @@ def _check_drug_interactions(arguments: dict[str, Any]) -> ToolOutput:
     return ToolOutput(result, _findings_summary("check_drug_interactions", medications, result))
 
 
-def _lowest_egfr(labs: list[LabResult]) -> tuple[float | None, int]:
-    """Return the lowest numeric eGFR lab value and how many were found."""
+def _egfr_unit_factor(unit: str | None) -> float | None:
+    """Return the factor converting ``unit`` to mL/min/1.73m², or None if unsupported."""
+    if not unit:
+        return None
+    key = re.sub(r"[\s{}_^]", "", unit.lower()).replace("²", "2")
+    return _EGFR_UNIT_FACTORS.get(key)
+
+
+def _lowest_egfr(labs: list[LabResult]) -> tuple[float | None, int, int]:
+    """Return the lowest eGFR in mL/min/1.73m², observations used, observations skipped."""
     values: list[float] = []
+    skipped = 0
     for lab in labs:
         if not _EGFR_NAME.search(lab.test_name):
             continue
+        factor = _egfr_unit_factor(lab.unit)
         try:
             value = float(lab.value)
         except ValueError:
+            value = math.nan
+        if factor is None or not math.isfinite(value):
+            skipped += 1
             continue
-        if math.isfinite(value):
-            values.append(value)
-    return (min(values) if values else None), len(values)
+        values.append(round(value * factor, 1))
+    return (min(values) if values else None), len(values), skipped
+
+
+def _reference_key(reference: str) -> str:
+    """Normalise a FHIR reference to ``Patient/<id>`` when it names a Patient."""
+    parts = reference.rstrip("/").split("/")
+    if len(parts) >= 2 and parts[-2] == "Patient":
+        return f"Patient/{parts[-1]}"
+    return reference
+
+
+def _require_single_patient(entries: list[dict[str, Any]]) -> None:
+    """Reject bundles whose resources belong to more than one patient."""
+    patients = [e for e in entries if e.get("resource", {}).get("resourceType") == "Patient"]
+    if len(patients) > 1:
+        raise ToolInputError(
+            f"Bundle contains {len(patients)} Patient resources; send one patient's "
+            "resources per call."
+        )
+    own: set[str] = set()
+    if patients:
+        patient_id = patients[0]["resource"].get("id")
+        if isinstance(patient_id, str) and patient_id:
+            own.add(f"Patient/{patient_id}")
+        full_url = patients[0].get("fullUrl")
+        if isinstance(full_url, str) and full_url:
+            own.update({full_url, _reference_key(full_url)})
+    referenced: set[str] = set()
+    for entry in entries:
+        resource = entry.get("resource", {})
+        for field in ("subject", "patient"):
+            target = resource.get(field)
+            reference = target.get("reference") if isinstance(target, dict) else None
+            if resource.get("resourceType") != "Patient" and isinstance(reference, str):
+                referenced.add(_reference_key(reference))
+    foreign = referenced - own if own else (referenced if len(referenced) > 1 else set())
+    if foreign:
+        raise ToolInputError(
+            "Bundle mixes patients: a clinical resource references a different patient than "
+            "the bundle's Patient; send one patient's resources per call."
+        )
+
+
+def _select_medication_resources(
+    resources: list[dict[str, Any]], *, include_proposed: bool
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Keep current (and optionally proposed) medications; report what was excluded."""
+    selected: list[dict[str, Any]] = []
+    excluded: Counter[tuple[str, str]] = Counter()
+    proposed = 0
+    for resource in resources:
+        resource_type = str(resource.get("resourceType"))
+        if resource_type not in _CURRENT_STATUSES:
+            continue
+        status = str(resource.get("status") or "").lower() or "missing"
+        if status in _CURRENT_STATUSES[resource_type]:
+            selected.append(resource)
+        elif include_proposed and status in _PROPOSED_STATUSES[resource_type]:
+            selected.append(resource)
+            proposed += 1
+        else:
+            excluded[(resource_type, status)] += 1
+    notes = [
+        f"excluded {resource_type} status {status}: {count}"
+        for (resource_type, status), count in sorted(excluded.items())
+    ]
+    if proposed:
+        notes.append(
+            f"included {proposed} proposed (draft/intended) medication(s) because "
+            "include_proposed is true"
+        )
+    return selected, notes
+
+
+def _clean_record(record: BaseModel) -> dict[str, Any]:
+    """Dump a lab/vital record with every string field de-identified."""
+    return {
+        key: _clean_text(value) if isinstance(value, str) else value
+        for key, value in record.model_dump(mode="json").items()
+    }
 
 
 def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
@@ -585,64 +706,102 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
             "FHIR bundle could not be parsed: a resource has an unexpected structure "
             f"({type(exc).__name__})."
         ) from exc
+    entries: list[dict[str, Any]] = bundle.get("entry", [])
+    _require_single_patient(entries)
 
-    resources = [entry.get("resource", {}) for entry in bundle.get("entry", [])]
-    medication_resources = [
-        resource
-        for resource in resources
-        if resource.get("resourceType") in {"MedicationRequest", "MedicationStatement"}
-    ]
-    adapted = FhirMedicationRequestAdapter().adapt(medication_resources)
+    resources = [entry.get("resource", {}) for entry in entries]
+    selected, medication_notes = _select_medication_resources(
+        resources, include_proposed=bool(arguments.get("include_proposed", False))
+    )
+    try:
+        adapted = FhirMedicationRequestAdapter().adapt(selected)
+    except (AttributeError, TypeError, ValueError) as exc:
+        raise ToolInputError(
+            "FHIR bundle could not be parsed: a medication resource has an unexpected "
+            f"structure ({type(exc).__name__})."
+        ) from exc
+    _enforce_scope(
+        [
+            context.chief_complaint,
+            *context.diagnoses_history,
+            *context.allergies,
+            *(
+                str(value)
+                for med in adapted.medications
+                for value in med.model_dump().values()
+                if value
+            ),
+            *(
+                str(value)
+                for lab in context.lab_results
+                for value in lab.model_dump().values()
+                if isinstance(value, str)
+            ),
+            *(vital.name for vital in context.vital_signs),
+        ]
+    )
+
     medications = [_medication_dict(medication) for medication in adapted.medications]
-    egfr, egfr_count = _lowest_egfr(context.lab_results)
-
+    allergies = [_clean_text(allergy) for allergy in context.allergies]
+    egfr, egfr_used, egfr_skipped = _lowest_egfr(context.lab_results)
     screening_patient: dict[str, Any] = {}
     if context.age is not None:
         screening_patient["age"] = context.age
-    if context.allergies:
-        screening_patient["allergies"] = list(context.allergies)
+    if allergies:
+        screening_patient["allergies"] = allergies
     if egfr is not None:
         screening_patient["egfr"] = egfr
+    screening_input = {"medications": medications, "patient": screening_patient}
+    issues = validate(screening_input, _SCREEN_INPUT, "screening_input")
 
     notes = [
         "Direct identifiers (name, birthDate, identifier, telecom, address) and the raw bundle "
-        "are not returned; the patient id is HMAC-SHA256 hashed with PII_HASH_SALT.",
-        "Medications exclude stopped, cancelled and entered-in-error requests.",
+        "are not returned; the patient id is HMAC-SHA256 hashed with PII_HASH_SALT, and free "
+        "text is de-identified.",
+        "Only current therapy (status active or on-hold) is kept; draft/intended orders are "
+        "added only with include_proposed, and every other status is excluded and counted "
+        "in medication_notes.",
         "pregnant, breastfeeding and hepatic_function are not derived from the bundle; "
         "add them to screening_input.patient when known.",
     ]
     if egfr is not None:
-        notes.append(f"egfr is the lowest of {egfr_count} numeric eGFR observation(s).")
+        notes.append(f"egfr is the lowest of {egfr_used} eGFR observation(s) in mL/min/1.73m².")
+    if egfr_skipped:
+        notes.append(
+            f"skipped {egfr_skipped} eGFR observation(s) with missing or unsupported units "
+            "or non-numeric values."
+        )
 
     result: dict[str, Any] = {
         "patient_id_hash": context.patient_id_hash,
         "age": context.age,
         "sex": context.sex,
-        "chief_complaint": sanitise_clinical_text(context.chief_complaint),
-        "diagnoses": [sanitise_clinical_text(text) for text in context.diagnoses_history],
+        "chief_complaint": _clean_text(context.chief_complaint),
+        "diagnoses": [_clean_text(text) for text in context.diagnoses_history],
         "medications": medications,
-        "medication_notes": list(adapted.notes),
-        "allergies": list(context.allergies),
-        "lab_results": [lab.model_dump(mode="json") for lab in context.lab_results],
-        "vital_signs": [vital.model_dump(mode="json") for vital in context.vital_signs],
+        "medication_notes": [*medication_notes, *adapted.notes],
+        "allergies": allergies,
+        "lab_results": [_clean_record(lab) for lab in context.lab_results],
+        "vital_signs": [_clean_record(vital) for vital in context.vital_signs],
         "resource_counts": dict(
             sorted(Counter(str(r.get("resourceType", "Unknown")) for r in resources).items())
         ),
-        "screening_input": {"medications": medications, "patient": screening_patient},
+        "screening_input": screening_input,
+        "screening_input_issues": issues,
         "notes": notes,
         "disclaimer": MANDATORY_DISCLAIMER,
     }
-    summary = "\n".join(
-        [
-            f"medagent parse_fhir_bundle: patient {context.patient_id_hash[:12]}… (hashed), "
-            f"age {context.age if context.age is not None else 'unknown'}, "
-            f"{len(medications)} medication(s), {len(context.allergies)} allergy record(s), "
-            f"{len(context.lab_results)} lab result(s).",
-            "Pass screening_input to screen_medications to screen this medication list.",
-            MANDATORY_DISCLAIMER,
-        ]
-    )
-    return ToolOutput(result, summary)
+    lines = [
+        f"medagent parse_fhir_bundle: patient {context.patient_id_hash[:12]}… (hashed), "
+        f"age {context.age if context.age is not None else 'unknown'}, "
+        f"{len(medications)} medication(s), {len(allergies)} allergy record(s), "
+        f"{len(context.lab_results)} lab result(s).",
+        "Pass screening_input to screen_medications to screen this medication list."
+        if not issues
+        else "screening_input needs changes before screen_medications: " + "; ".join(issues),
+        MANDATORY_DISCLAIMER,
+    ]
+    return ToolOutput(result, "\n".join(lines))
 
 
 _PLATFORM_CONTROLS: tuple[dict[str, Any], ...] = (
@@ -829,6 +988,37 @@ _PATIENT_CONTEXT: dict[str, Any] = {
     "additionalProperties": False,
 }
 
+_SCREEN_INPUT: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "medications": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": _MAX_MEDICATIONS,
+            "items": _MEDICATION_ITEM,
+            "description": "Active medications (names or objects).",
+        },
+        "patient": _PATIENT_CONTEXT,
+        "patient_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": (
+                "Optional caller reference used only to link audit records. It is "
+                "HMAC-SHA256 hashed with PII_HASH_SALT before logging and is never "
+                "echoed back."
+            ),
+        },
+        "include_interactions": {
+            "type": "boolean",
+            "default": True,
+            "description": "Also run the offline drug-interaction rules.",
+        },
+    },
+    "required": ["medications"],
+    "additionalProperties": False,
+}
+
 _SEVERITY_SCHEMA: dict[str, Any] = {"type": "string", "enum": list(SEVERITY_ORDER)}
 _NULLABLE_STRING: dict[str, Any] = {"anyOf": [{"type": "string"}, {"type": "null"}]}
 
@@ -954,6 +1144,7 @@ _FHIR_OUTPUT: dict[str, Any] = {
             "required": ["medications", "patient"],
             "additionalProperties": False,
         },
+        "screening_input_issues": _STRING_LIST,
         "notes": _STRING_LIST,
         "disclaimer": {"type": "string", "const": MANDATORY_DISCLAIMER},
     },
@@ -970,6 +1161,7 @@ _FHIR_OUTPUT: dict[str, Any] = {
         "vital_signs",
         "resource_counts",
         "screening_input",
+        "screening_input_issues",
         "notes",
         "disclaimer",
     ],
@@ -1040,7 +1232,7 @@ TOOLS: tuple[ToolSpec, ...] = (
                 "medications": {
                     "type": "array",
                     "minItems": 2,
-                    "maxItems": 50,
+                    "maxItems": _MAX_MEDICATIONS,
                     "items": _MEDICATION_ITEM,
                     "description": "Active medications (names or objects).",
                 }
@@ -1074,11 +1266,11 @@ TOOLS: tuple[ToolSpec, ...] = (
         name="parse_fhir_bundle",
         title="Normalise a FHIR R4 Bundle",
         description=(
-            "Parse a FHIR R4 Bundle (Patient, Condition, MedicationRequest, Observation, "
-            "AllergyIntolerance) into de-identified patient context: hashed patient id, age, "
-            "active medications, allergies, labs and a screening_input object ready for "
-            "screen_medications. Identifiers and the raw bundle are never returned. "
-            "RESEARCH USE ONLY."
+            "Parse a single patient's FHIR R4 Bundle (Patient, Condition, MedicationRequest, "
+            "MedicationStatement, Observation, AllergyIntolerance) into de-identified patient "
+            "context: hashed patient id, age, current medications, allergies, labs and a "
+            "screening_input object ready for screen_medications. Identifiers and the raw "
+            "bundle are never returned. RESEARCH USE ONLY."
         ),
         input_schema={
             "type": "object",
@@ -1098,7 +1290,15 @@ TOOLS: tuple[ToolSpec, ...] = (
                         },
                     },
                     "required": ["resourceType"],
-                }
+                },
+                "include_proposed": {
+                    "type": "boolean",
+                    "default": False,
+                    "description": (
+                        "Also keep draft MedicationRequests and intended MedicationStatements "
+                        "to screen proposed orders against current therapy."
+                    ),
+                },
             },
             "required": ["bundle"],
             "additionalProperties": False,
@@ -1117,36 +1317,7 @@ TOOLS: tuple[ToolSpec, ...] = (
             "deterministic; findings are advisory for clinician review, never prescriptions. "
             "RESEARCH USE ONLY."
         ),
-        input_schema={
-            "type": "object",
-            "properties": {
-                "medications": {
-                    "type": "array",
-                    "minItems": 1,
-                    "maxItems": 50,
-                    "items": _MEDICATION_ITEM,
-                    "description": "Active medications (names or objects).",
-                },
-                "patient": _PATIENT_CONTEXT,
-                "patient_ref": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 200,
-                    "description": (
-                        "Optional caller reference used only to link audit records. It is "
-                        "HMAC-SHA256 hashed with PII_HASH_SALT before logging and is never "
-                        "echoed back."
-                    ),
-                },
-                "include_interactions": {
-                    "type": "boolean",
-                    "default": True,
-                    "description": "Also run the offline drug-interaction rules.",
-                },
-            },
-            "required": ["medications"],
-            "additionalProperties": False,
-        },
+        input_schema=_SCREEN_INPUT,
         output_schema=_SCREEN_OUTPUT,
         handler=_screen_medications,
     ),
