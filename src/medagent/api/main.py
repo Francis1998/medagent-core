@@ -8,10 +8,11 @@ Provides three endpoints:
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import functools
 import time
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Sequence
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, status
@@ -324,3 +325,27 @@ async def drug_interactions(request: DrugInteractionRequest) -> DrugInteractionR
             "clinical decision."
         ),
     )
+
+
+def main(argv: Sequence[str] | None = None) -> None:
+    """Serve the API with uvicorn; entry point of the ``medagent`` console script.
+
+    Args:
+        argv: Command-line arguments; ``None`` reads ``sys.argv``.
+    """
+    parser = argparse.ArgumentParser(
+        prog="medagent",
+        description="Serve the medagent-core clinical reasoning API (RESEARCH USE ONLY).",
+    )
+    parser.add_argument(
+        "--host", default="127.0.0.1", help="interface to bind (default: 127.0.0.1)"
+    )
+    parser.add_argument("--port", type=int, default=8000, help="port to listen on (default: 8000)")
+    parser.add_argument(
+        "--reload", action="store_true", help="restart on code changes (development)"
+    )
+    args = parser.parse_args(argv)
+
+    import uvicorn
+
+    uvicorn.run("medagent.api.main:app", host=args.host, port=args.port, reload=args.reload)

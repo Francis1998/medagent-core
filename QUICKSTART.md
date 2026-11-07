@@ -47,6 +47,7 @@ python scripts/ingest_kb.py --sample
 
 ```bash
 uvicorn medagent.api.main:app --host 0.0.0.0 --port 8000 --reload
+# equivalent console script: medagent --host 0.0.0.0 --port 8000 --reload
 ```
 
 The API is now running at http://localhost:8000. Open http://localhost:8000/docs for the interactive Swagger UI.
