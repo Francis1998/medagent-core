@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 
 from medagent.config import settings
-from medagent.logging_config import get_logger
+from medagent.logging_config import exception_fields, get_logger
 from medagent.models import (
     ClinicalEntity,
     DrugInteractionWarning,
@@ -90,7 +90,7 @@ class RetrievalOrchestrator:
             logger.warning("pubmed_retrieval_timeout")
             return []
         except Exception as exc:
-            logger.warning("pubmed_retrieval_error", error=str(exc))
+            logger.warning("pubmed_retrieval_error", **exception_fields(exc))
             return []
 
     async def _safe_interactions(
@@ -106,7 +106,7 @@ class RetrievalOrchestrator:
             logger.warning("drug_interaction_timeout")
             return []
         except Exception as exc:
-            logger.warning("drug_interaction_error", error=str(exc))
+            logger.warning("drug_interaction_error", **exception_fields(exc))
             return []
 
     async def _safe_local_kb(self, entities: list[ClinicalEntity]) -> list[RetrievedDocument]:
@@ -120,7 +120,7 @@ class RetrievalOrchestrator:
             logger.warning("local_kb_timeout")
             return []
         except Exception as exc:
-            logger.warning("local_kb_error", error=str(exc))
+            logger.warning("local_kb_error", **exception_fields(exc))
             return []
 
 

@@ -98,12 +98,8 @@ class ScopeEnforcer:
         for pattern in _OUT_OF_SCOPE_PATTERNS:
             match = pattern.search(query)
             if match:
-                logger.warning(
-                    "scope_violation",
-                    pattern=pattern.pattern,
-                    match=match.group(0),
-                    query_prefix=query[:100],
-                )
+                # Only the matched rule is logged, never query text.
+                logger.warning("scope_violation", pattern=pattern.pattern)
                 raise ScopeViolationError(
                     f"Query contains prohibited content: '{match.group(0)}'. "
                     "The medagent agent is restricted to clinical reasoning tasks only."
@@ -118,7 +114,7 @@ class ScopeEnforcer:
                     "Please ask a biomedical or clinical decision support question."
                 )
 
-        logger.debug("scope_check_passed", query_prefix=query[:80])
+        logger.debug("scope_check_passed", query_chars=len(query))
 
     def sanitise_for_llm(self, text: str) -> str:
         """Strip known jailbreak and prompt-injection patterns from text.

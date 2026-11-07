@@ -14,9 +14,10 @@ import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from medagent.agent.audit import persist_run, safe_error_fields
 from medagent.agent.state_machine import ClinicalAgentStateMachine
@@ -30,7 +31,7 @@ from medagent.api.schemas import (
 from medagent.config import settings
 from medagent.extraction.ner import EntityExtractor
 from medagent.llm.router import MedicalRouter
-from medagent.logging_config import configure_logging, get_logger
+from medagent.logging_config import configure_logging, exception_fields, get_logger
 from medagent.models import ClinicalQuery, ClinicalReasoning
 from medagent.reasoning.engine import ReasoningEngine
 from medagent.retrieval.drug_interaction import DrugInteractionClient
@@ -161,17 +162,55 @@ app.add_middleware(
 )
 
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Return a safe JSON error response for all unhandled exceptions."""
-    logger.error("unhandled_exception", path=request.url.path, error=str(exc))
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "error": "internal_server_error",
-            "message": "An unexpected error occurred. Please try again.",
-        },
-    )
+class _SanitisedServerErrors:
+    """Turn unhandled exceptions into a safe 500 response inside the application.
+
+    Starlette's ``ServerErrorMiddleware`` re-raises an exception after any
+    ``Exception`` handler runs, so the server would log the original traceback,
+    whose message can contain clinical text. Catching it here means only the
+    exception class and status are ever logged.
+    """
+
+    def __init__(self, app: ASGIApp) -> None:
+        self._app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self._app(scope, receive, send)
+            return
+        started = completed = False
+
+        async def tracking_send(message: Message) -> None:
+            nonlocal started, completed
+            if message["type"] == "http.response.start":
+                started = True
+            elif message["type"] == "http.response.body" and not message.get("more_body"):
+                completed = True
+            await send(message)
+
+        try:
+            await self._app(scope, receive, tracking_send)
+        except Exception as exc:
+            # The request path is caller-controlled text; log the route template.
+            route = getattr(scope.get("route"), "path", None)
+            logger.error("unhandled_exception", route=route, **exception_fields(exc))
+            if completed:
+                return
+            if started:
+                # Headers are already sent, so no 500 can follow: abort the
+                # response without the original exception or its message.
+                raise RuntimeError("Response aborted after an unhandled error") from None
+            response = JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={
+                    "error": "internal_server_error",
+                    "message": "An unexpected error occurred. Please try again.",
+                },
+            )
+            await response(scope, receive, send)
+
+
+app.add_middleware(_SanitisedServerErrors)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Operations"])
@@ -269,7 +308,7 @@ async def drug_interactions(request: DrugInteractionRequest) -> DrugInteractionR
     try:
         warnings = await client.check_interactions(request.medications)
     except Exception as exc:
-        logger.error("drug_interaction_endpoint_error", error=str(exc))
+        logger.error("drug_interaction_endpoint_error", **exception_fields(exc))
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Drug interaction service temporarily unavailable.",

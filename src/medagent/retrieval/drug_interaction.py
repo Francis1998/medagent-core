@@ -21,7 +21,7 @@ from tenacity import (
 )
 
 from medagent.config import settings
-from medagent.logging_config import get_logger
+from medagent.logging_config import exception_fields, get_logger
 from medagent.models import DrugInteractionWarning, Medication, Severity
 
 logger = get_logger(__name__)
@@ -72,7 +72,7 @@ class DrugInteractionClient:
             if isinstance(result, list):
                 warnings.extend(result)
             elif isinstance(result, Exception):
-                logger.warning("interaction_check_error", error=str(result))
+                logger.warning("interaction_check_error", **exception_fields(result))
 
         logger.info("drug_interactions_found", count=len(warnings))
         return warnings
@@ -99,12 +99,8 @@ class DrugInteractionClient:
         if len(sources_found) < 2:
             # Cannot validate with <2 sources — suppress per safety invariant
             if sources_found and interaction_data:
-                logger.info(
-                    "interaction_suppressed_insufficient_sources",
-                    drug_a=drug_a.name,
-                    drug_b=drug_b.name,
-                    sources=sources_found,
-                )
+                # Medication names are request text, so only the sources are logged.
+                logger.info("interaction_suppressed_insufficient_sources", sources=sources_found)
             return []
 
         # Cross-validated — build the warning
@@ -131,7 +127,7 @@ class DrugInteractionClient:
                 validated=True,
             )
         except Exception as exc:
-            logger.warning("interaction_build_error", error=str(exc))
+            logger.warning("interaction_build_error", **exception_fields(exc))
             return []
 
         return [warning]
@@ -171,7 +167,7 @@ class DrugInteractionClient:
                         )
             return interactions or None
         except Exception as exc:
-            logger.debug("rxnorm_query_failed", error=str(exc))
+            logger.debug("rxnorm_query_failed", **exception_fields(exc))
             return None
 
     async def _query_openfda(self, drug_a: str, drug_b: str) -> list[dict[str, Any]] | None:
@@ -232,7 +228,7 @@ class DrugInteractionClient:
                 }
             ]
         except Exception as exc:
-            logger.debug("openfda_query_failed", error=str(exc))
+            logger.debug("openfda_query_failed", **exception_fields(exc))
             return None
 
 

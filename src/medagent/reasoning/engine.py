@@ -15,7 +15,7 @@ import json
 import re
 from typing import TYPE_CHECKING, Any
 
-from medagent.logging_config import get_logger
+from medagent.logging_config import exception_fields, get_logger
 from medagent.models import (
     ClinicalEntity,
     ClinicalQuery,
@@ -106,7 +106,7 @@ class ReasoningEngine:
             )
             return self._fallback_hypotheses(entities)
         except Exception as exc:
-            logger.warning("reasoning_error", error=str(exc), session_id=query.session_id)
+            logger.warning("reasoning_error", session_id=query.session_id, **exception_fields(exc))
             return self._fallback_hypotheses(entities)
 
         hypotheses = self._parse_llm_response(raw_response, docs)
@@ -162,7 +162,9 @@ class ReasoningEngine:
         try:
             data: dict[str, Any] = json.loads(response)
         except json.JSONDecodeError as exc:
-            logger.warning("reasoning_parse_error", error=str(exc), snippet=response[:200])
+            logger.warning(
+                "reasoning_parse_error", response_chars=len(response), **exception_fields(exc)
+            )
             return []
 
         raw_hyps = data.get("hypotheses", [])
@@ -192,7 +194,7 @@ class ReasoningEngine:
                 )
                 hypotheses.append(hyp)
             except Exception as exc:
-                logger.warning("hypothesis_parse_error", error=str(exc))
+                logger.warning("hypothesis_parse_error", **exception_fields(exc))
 
         return hypotheses
 

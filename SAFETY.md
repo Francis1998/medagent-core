@@ -80,6 +80,14 @@ Not detected: personal names without an honorific or label, street addresses and
 
 Audit-path logs never carry clinical content or credentials: the audit engine is created with SQLAlchemy `hide_parameters=True`, audit persistence failures are logged as `audit_persist_failed` with only the session id, exception class, SQLAlchemy error code, and driver exception class (`safe_error_fields` in `src/medagent/agent/audit.py`), and the database URL is logged with its password masked and its query string (which can also carry credentials) removed.
 
+Application logs carry safe metadata only (`exception_fields` in `src/medagent/logging_config.py`): event names, session ids, counts, the exception class and any HTTP status code. Exception messages, tracebacks, query text, model output and request URLs are never logged, because each can echo clinical text. The rule covers:
+- the API: unhandled exceptions become a sanitised HTTP 500 inside the application, so the server never logs their traceback. They are logged with the route template, never the caller-controlled request path, and a failure after the response has started aborts it with a fixed message;
+- the agent's unexpected-error path, whose response and audit `uncertainty_flags` also name only the exception class;
+- the LLM adapters, whose `LLMAdapterError` messages name only the exception class;
+- the output validator, which logs only the matched rule and whose error message does not repeat model output, plus the router and the reasoning engine;
+- scope checks, which log only the matched rule and never query text;
+- the PubMed, RxNorm/OpenFDA and local-KB retrieval paths, including interactions suppressed for lack of a second source, which log only the source names.
+
 ### 3.6 Scope Enforcement
 The `ScopeEnforcer` (`src/medagent/safety/scope_enforcer.py`) rejects queries requesting internet access, code execution, or clearly non-clinical topics before the agent state machine starts.
 
