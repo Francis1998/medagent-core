@@ -194,13 +194,16 @@ LLM (no PII exposure)
 The overall confidence score follows a Platt scaling approximation:
 
 ```
-log_odds_posterior = log_odds_prior + Σ log(strength_FOR) − Σ log(strength_AGAINST)
+w(s) = log(s / (1 − s)), with s clamped to [0.5, 0.95]
+log_odds_posterior = log_odds_prior + Σ w(strength_FOR) − Σ w(strength_AGAINST)
 posterior = sigmoid(log_odds_posterior)
 
 calibrated_confidence = mean(top_3_scores) × (1 − 0.3 × entropy_penalty)
 ```
 
 Where `entropy_penalty` = normalised Shannon entropy over the top-3 scores. High entropy (all hypotheses equally likely) reduces the confidence score, reflecting genuine uncertainty.
+
+The weight `w` is never negative, so supporting evidence can only raise a hypothesis's posterior and contradicting evidence can only lower it. A strength at or below the neutral 0.5 (the default for evidence given without one) adds no weight.
 
 ---
 

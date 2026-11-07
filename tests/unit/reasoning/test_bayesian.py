@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 import pytest
 
 from medagent.models import EvidenceItem, Hypothesis
@@ -57,6 +59,60 @@ class TestBayesianScore:
             bayesian_score([], [], prior=0.0)
         with pytest.raises(AssertionError):
             bayesian_score([], [], prior=1.0)
+
+
+_STRENGTHS = [0.0, 0.1, 0.2, 0.3, 0.4, 0.49, 0.5, 0.7, 0.9, 1.0]
+
+
+class TestEvidenceDirection:
+    """An evidence item may only move its hypothesis in its labelled direction."""
+
+    @pytest.mark.parametrize("strength", _STRENGTHS)
+    def test_against_evidence_never_raises_score(self, strength: float) -> None:
+        """Contradicting evidence, however weak, must not raise the score above the prior."""
+        score = bayesian_score([], [_make_evidence("AGAINST", strength)], prior=0.3)
+        assert score <= 0.3 + 1e-9
+
+    @pytest.mark.parametrize("strength", _STRENGTHS)
+    def test_for_evidence_never_lowers_score(self, strength: float) -> None:
+        """Supporting evidence, however weak, must not lower the score below the prior."""
+        score = bayesian_score([_make_evidence("FOR", strength)], [], prior=0.3)
+        assert score >= 0.3 - 1e-9
+
+    def test_only_weak_contradicting_evidence_stays_at_prior(self) -> None:
+        """A hypothesis with nothing but weak contradicting evidence must not gain confidence."""
+        score = bayesian_score(
+            [], [_make_evidence("AGAINST", 0.1), _make_evidence("AGAINST", 0.2)], prior=0.3
+        )
+        assert score == pytest.approx(0.3)
+
+    def test_weak_contradicted_hypothesis_does_not_outrank_strong_support(self) -> None:
+        """Piling weak contradicting evidence onto a hypothesis must not promote it."""
+        ranked = rank_hypotheses(
+            [
+                Hypothesis(
+                    label="contradicted",
+                    evidence_for=[_make_evidence("FOR", 0.6)],
+                    evidence_against=[_make_evidence("AGAINST", 0.2)] * 3,
+                ),
+                Hypothesis(
+                    label="supported",
+                    evidence_for=[_make_evidence("FOR", 0.9), _make_evidence("FOR", 0.85)],
+                ),
+            ]
+        )
+        assert [h.label for h in ranked] == ["supported", "contradicted"]
+
+    def test_strengths_above_neutral_keep_their_log_odds_weight(self) -> None:
+        """Strengths from 0.5 up keep the logit weight; weaker items add nothing."""
+        log_odds = math.log(0.3 / 0.7) + math.log(0.8 / 0.2) - math.log(0.7 / 0.3)
+        expected = 1.0 / (1.0 + math.exp(-log_odds))
+        score = bayesian_score(
+            [_make_evidence("FOR", 0.8), _make_evidence("FOR", 0.3)],
+            [_make_evidence("AGAINST", 0.7), _make_evidence("AGAINST", 0.1)],
+            prior=0.3,
+        )
+        assert score == pytest.approx(expected)
 
 
 class TestRankHypotheses:

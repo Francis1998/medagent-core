@@ -61,6 +61,8 @@ The agent automatically enters `ESCALATE` state (never completing to `OUTPUT`) w
 - Contradictory evidence is detected across top hypotheses
 - Any LLM adapter fails and the reasoning engine falls back to heuristics
 
+Overall confidence is calibrated from the hypotheses' Bayesian scores (`src/medagent/reasoning/bayesian.py`), in which an evidence item moves its hypothesis only in its labelled direction: `evidence_against` can never raise a score and `evidence_for` can never lower it, and a strength at or below the neutral 0.5 adds no weight.
+
 Escalated runs produce a response with `escalated: true` and `recommended_next_steps` that direct users to consult a clinician.
 
 ### 3.5 PII De-identification
