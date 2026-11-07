@@ -100,7 +100,7 @@ out.
 ```bash
 cp .env.example .env               # then add at least one LLM API key
 python scripts/ingest_kb.py --sample
-uvicorn medagent.api.main:app --reload
+uvicorn medagent.api.main:app --reload   # or: medagent --reload
 ```
 
 End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) · Full setup:

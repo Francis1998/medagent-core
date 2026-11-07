@@ -74,7 +74,7 @@ dev = [
 ]
 
 [project.scripts]
-medagent = "medagent.api.main:app"
+medagent = "medagent.api.main:main"
 medagent-mcp = "medagent.mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
