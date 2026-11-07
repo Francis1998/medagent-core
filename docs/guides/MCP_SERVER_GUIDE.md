@@ -593,6 +593,7 @@ ffmpeg -i mcp_raw.gif -filter_complex \
 
 - [SAFETY.md §9](../../SAFETY.md#9-mcp-server-model-context-protocol-safety-model) — MCP safety model
 - [ARCHITECTURE.md](../../ARCHITECTURE.md#mcp-server) — where the server sits
+- [Use cases](USE_CASES.md) — end-to-end scenarios, including MCP screening of a FHIR export
 - Spec: [MCP 2026-07-28 versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning),
   [`server/discover`](https://modelcontextprotocol.io/specification/2026-07-28/server/discover),
   [stdio transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio),

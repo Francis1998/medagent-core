@@ -2,234 +2,160 @@
 
 > **⚠️ RESEARCH USE ONLY — NOT FDA-cleared — NOT for clinical deployment**
 
-**Auditable biomedical AI decision support agent** — multi-hop clinical reasoning, drug interaction detection, and safety-first agentic architecture for health-AI research.
+**A safety-first clinical decision-support research agent.** An explicit, auditable state machine
+ranks diagnostic hypotheses with Bayesian scoring and escalates to a human when confidence is low
+or the evidence conflicts. Every output carries a mandatory disclaimer, and every completed
+`/analyze` run is written to a durable audit log. A library of 300 deterministic safety modules
+backs it. 13 medication-screening checks and 83 interaction rules run offline from any MCP host:
+Claude Desktop, Claude Code, Cursor or VS Code.
 
 <p align="left">
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
+  <a href="https://www.python.org/downloads/"><img alt="Python 3.10 | 3.11 | 3.12" src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
-  <a href="#quality-gates"><img alt="Tests: 396 passed" src="https://img.shields.io/badge/tests-1925%20passed-brightgreen.svg"></a>
-  <a href="#quality-gates"><img alt="Tests: 322 passed" src="https://img.shields.io/badge/tests-393%20passed-brightgreen.svg"></a>
-  <a href="#quality-gates"><img alt="Coverage: 70%" src="https://img.shields.io/badge/coverage-70%25-brightgreen.svg"></a>
+  <a href="docs/guides/MCP_SERVER_GUIDE.md"><img alt="MCP 2026-07-28 and 2025-11-25" src="https://img.shields.io/badge/MCP-2026--07--28%20%7C%202025--11--25-blue.svg"></a>
+  <a href="#quality-gates"><img alt="Coverage gate: 70% minimum" src="https://img.shields.io/badge/coverage%20gate-%E2%89%A570%25-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
   <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
   <a href="SAFETY.md"><img alt="Research Use Only" src="https://img.shields.io/badge/use-research%20only-red.svg"></a>
-  <a href="#live-demos"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--6.1%20Sol%20%7C%20Claude%20Opus%205.5%20%7C%20Gemini%204%20Argon%20%7C%20Kimi%20K3.1%20Pro-purple.svg"></a>
+  <a href="#current-model-stack"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--6.1%20Sol%20%7C%20Claude%20Opus%205.5%20%7C%20Gemini%204%20Argon%20%7C%20Kimi%20K3.1%20Pro-purple.svg"></a>
 </p>
-
----
-
-### MCP server — medagent's safety checks inside Claude, Cursor and VS Code
 
 ![medagent MCP server: real stdio session in both protocol eras](assets/mcp_server_demo.gif)
 
-`medagent-mcp` exposes the deterministic, offline safety layer to any Model Context Protocol host
-over stdio: `screen_medications` (allergy, pregnancy, lactation, Beers, renal/hepatic dosing, QT,
-serotonergic/anticholinergic burden, boxed warnings + 83 interaction rules),
-`check_drug_interactions`, `parse_fhir_bundle` (FHIR R4 → de-identified screening input) and
-`list_safety_controls`. Dual-era: MCP **2026-07-28** (stateless, `server/discover`) and legacy
-`initialize` clients (**2025-11-25** / **2025-06-18**); stdlib-only JSON-RPC, no API keys, no
-network. RESEARCH USE ONLY.
-
-```bash
-pip install -e . && medagent-mcp --version
-claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(which medagent-mcp)"
-```
-
-Guide (Claude Desktop / Claude Code / Cursor / VS Code / MCP Inspector, tool reference, safety
-model): [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md)
+<sub>A real stdio session with no API keys and no network: a FHIR bundle becomes de-identified
+screening input, which yields 8 findings; then a legacy MCP client connects. See
+[how it was recorded](docs/guides/MCP_SERVER_GUIDE.md#how-this-demo-was-recorded).</sub>
 
 ---
 
-### FeverPainScorer (Safety #220)
-
-![FeverPainScorer](assets/feverpain_demo.gif)
-
-Research-only MDCalc / NICE FeverPAIN pharyngitis score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-### BishopScoreScorer (Safety #221)
-
-![BishopScoreScorer](assets/bishop-score_demo.gif)
-
-Research-only MDCalc / ACOG Bishop score for induction readiness. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### ApgarScoreScorer (Safety #222)
-
-![ApgarScoreScorer](assets/apgar-score_demo.gif)
-
-Research-only MDCalc / AAP Apgar newborn score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### PewsEarlyWarningScorer (Safety #223)
-
-![PewsEarlyWarningScorer](assets/pews-early-warning_demo.gif)
-
-Research-only MDCalc / RCN PEWS pediatric early warning score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### DukeEndocarditisCriteriaScorer (Safety #224)
-
-![DukeEndocarditisCriteriaScorer](assets/duke-endocarditis_demo.gif)
-
-Research-only MDCalc / AHA modified Duke endocarditis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### LamsStrokeScaleScorer (Safety #231)
-
-![LamsStrokeScaleScorer](assets/lams-stroke-scale_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / AHA LAMS large-vessel occlusion screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/LAMSSTROKESCALESCORER_GUIDE.md`.
-
-### RaceStrokeScaleScorer (Safety #230)
-
-![RaceStrokeScaleScorer](assets/race-stroke-scale_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / AHA RACE stroke scale. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RACESTROKESCALESCORER_GUIDE.md`.
-
-
-
-
-### RemsPeSeverityScorer
-
-![RemsPeSeverityScorer](assets/rems_pe_severity_demo.gif)
-
-Research-only MDCalc / ESC REMs PE severity screen advisory scorer (Safety #236). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/REMSPESEVERITYSCORER_GUIDE.md`.
-
-### Fib4LiverScorer
-
-![Fib4LiverScorer](assets/fib4_liver_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / AASLD FIB-4 liver fibrosis screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### BisapPancreatitisScorer
-
-![BisapPancreatitisScorer](assets/bisap_pancreatitis_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / ACG BISAP pancreatitis severity screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### Gad7AnxietyScorer
-
-![Gad7AnxietyScorer](assets/gad7_anxiety_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / USPSTF GAD-7 anxiety severity screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### BradenPressureScorer
-
-![BradenPressureScorer](assets/braden_pressure_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / NPUAP Braden pressure-injury risk screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### RassSedationScorer
-
-![RassSedationScorer](assets/rass_sedation_scorer_demo.gif)
-
-Research-only Safety #247. Gap vs MDCalc / SCCM Richmond Agitation-Sedation Scale (RASS) screen. See `docs/guides/RASSSEDATIONSCORER_GUIDE.md`.
-
-### EcogPerformanceScorer
-
-![EcogPerformanceScorer](assets/ecog_performance_scorer_demo.gif)
-
-Research-only Safety #248. Gap vs MDCalc / ECOG/WHO performance status screen. See `docs/guides/ECOGPERFORMANCESCORER_GUIDE.md`.
-
-### BarthelAdlScorer
-
-![BarthelAdlScorer](assets/barthel_adl_scorer_demo.gif)
-
-Research-only Safety #249. Gap vs MDCalc / Barthel Index ADL independence screen. See `docs/guides/BARTHELADLSCORER_GUIDE.md`.
-
-### FourAtDeliriumScorer
-
-![FourAtDeliriumScorer](assets/four_at_delirium_scorer_demo.gif)
-
-Research-only advisory score (Safety #250). Gap vs MDCalc / 4AT rapid delirium screen. See `docs/guides/FOURATDELIRIUMSCORER_GUIDE.md`.
-
-### WaterlooPressureScorer
-
-![WaterlooPressureScorer](assets/waterloo_pressure_scorer_demo.gif)
-
-Research-only Safety #246. Gap vs MDCalc / Waterloo pressure-injury risk screen. See `docs/guides/WATERLOOPRESSURESCORER_GUIDE.md`.
-
-### CamIcuDeliriumScorer
-
-![CamIcuDeliriumScorer](assets/cam_icu_delirium_scorer_demo.gif)
-
-Research-only Safety #245. Gap vs MDCalc / SCCM CAM-ICU delirium screen. See `docs/guides/CAMICUDELIRIUMSCORER_GUIDE.md`.
-
-### AscvdRiskScorer
-
-![AscvdRiskScorer](assets/ascvd_risk_scorer_demo.gif)
-
-Research-only Safety #244. Gap vs MDCalc / ACC-AHA ASCVD 10-year risk screen. See `docs/guides/ASCVDRISKSCORER_GUIDE.md`.
-
-### MorseFallScorer
-
-![MorseFallScorer](assets/morse_fall_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / AHRQ Morse Fall Scale screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### Phq9DepressionScorer
-
-![Phq9DepressionScorer](assets/phq9_depression_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / USPSTF PHQ-9 depression severity screen. Optional narrative via GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### SmartCopPneumoniaScorer
-
-![SmartCopPneumoniaScorer](assets/smart_cop_pneumonia_demo.gif)
-
-Research-only MDCalc / IDSA SMART-COP pneumonia severity screen advisory scorer (Safety #237). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SMARTCOPPNEUMONIASCORER_GUIDE.md`.
-
-### ShockIndexScorer
-
-![ShockIndexScorer](assets/shock_index_demo.gif)
-
-Research-only MDCalc / AHA Shock Index screen advisory scorer (Safety #235). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SHOCKINDEXSCORER_GUIDE.md`.
-
-### CincinnatiPrehospitalStrokeScorer
-
-![CincinnatiPrehospitalStrokeScorer](assets/cincinnati_prehospital_stroke_demo.gif)
-
-Research-only MDCalc / AHA Cincinnati Prehospital Stroke Scale screen advisory scorer (Safety #234). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CINCINNATIPREHOSPITALSTROKESCORER_GUIDE.md`.
-
-### EpworthSleepinessScorer
-
-![EpworthSleepinessScorer](assets/epworth_sleepiness_demo.gif)
-
-Research-only MDCalc / AASM Epworth Sleepiness Scale screen advisory scorer (Safety #233). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/EPWORTHSLEEPINESSSCORER_GUIDE.md`.
-
-### MallampatiAirwayScorer
-
-![MallampatiAirwayScorer](assets/mallampati_airway_demo.gif)
-
-Research-only MDCalc / ASA Mallampati airway class screen advisory scorer (Safety #232). Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MALLAMPATIAIRWAYSCORER_GUIDE.md`.
-
-### StopBangOsaScorer (Safety #229)
-
-![StopBangOsaScorer](assets/stop-bang-osa_demo.gif)
-
-Research-only advisory scorer. Gap vs MDCalc / ASA STOP-BANG OSA screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/STOPBANGOSASCORER_GUIDE.md`.
-
-### MaddreyDiscriminantScorer (Safety #228)
-
-![MaddreyDiscriminantScorer](assets/maddrey-discriminant_demo.gif)
-
-Research-only MDCalc Maddrey discriminant function for alcoholic hepatitis. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### PrismIiiPediatricScorer (Safety #227)
-
-![PrismIiiPediatricScorer](assets/prism-iii-pediatric_demo.gif)
-
-Research-only MDCalc / PICU PRISM III pediatric ICU score. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### PhoenixSepsisCriteriaScorer (Safety #226)
-
-![PhoenixSepsisCriteriaScorer](assets/phoenix-sepsis_demo.gif)
-
-Research-only MDCalc / SCCM Phoenix sepsis criteria. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### SirsCriteriaScorer (Safety #225)
-
-![SirsCriteriaScorer](assets/sirs-criteria_demo.gif)
-
-Research-only MDCalc / SCCM SIRS criteria screen. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+## The Problem
+
+Clinical AI is broken in a predictable way. Most LLM-wrapper "pipelines" used in health-AI research today:
+
+- Feed patient data into `generate()` and return raw text — **no audit trail, no intermediate state**
+- Cannot explain *why* they reached a conclusion — **no evidence chain**
+- Surface drug interaction warnings from a single database — **one-source = unvalidated**
+- Never say "I don't know" — **no confidence calibration, no escalation**
+- Log patient names and MRNs to LLM APIs in plain text — **PII leakage**
+- Wrap everything in a `try/except` and call it production — **no safety enforcement**
+
+The result: every health-AI team re-invents the same safety plumbing for months before they can test a single hypothesis. And every team makes the same mistakes.
+
+`medagent-core` is the production-grade, open-source reference implementation that solves these problems — auditably, testably, and without black-box magic.
+
+---
+
+## Safety-first architecture
+
+Every request walks an explicit state machine, and each stage has a code-enforced safety control.
+Every completed run ends in the audit log, whether it produced an answer or escalated to a human.
+MCP tool calls are audited when `--audit-log` or `MEDAGENT_MCP_AUDIT_LOG` is set.
+
+```mermaid
+flowchart LR
+    subgraph FSM["ClinicalAgentStateMachine"]
+        INTAKE["INTAKE<br/>scope enforcement"] --> EXTRACT["ENTITY_EXTRACTION<br/>scispaCy NER + regex"]
+        EXTRACT --> RETRIEVE["KNOWLEDGE_RETRIEVAL<br/>PubMed · RxNorm + OpenFDA · local KB"]
+        RETRIEVE --> REASON["REASONING<br/>Bayesian ranking · LLM router<br/>prescription-language validator"]
+        REASON --> CHECK{"SAFETY_CHECK<br/>confidence ≥ 0.6 and<br/>no contradictions?"}
+        CHECK -- yes --> OUTPUT["OUTPUT<br/>+ mandatory disclaimer"]
+        CHECK -- no --> ESCALATE["ESCALATE<br/>human review"]
+    end
+    REQ["Clinical query + de-identified<br/>FHIR context (caller-hashed IDs)"] --> INTAKE
+    OUTPUT --> AUDIT[("Durable audit log")]
+    ESCALATE --> AUDIT
+    HOST["MCP host<br/>Claude · Cursor · VS Code"] -.->|stdio JSON-RPC| MCP["medagent-mcp<br/>deterministic safety tools<br/>offline · de-identified"]
+```
+
+Stage details and timeouts are in [Architecture](#architecture--observe--decide--act) below and in
+[ARCHITECTURE.md](ARCHITECTURE.md). Every control is listed in [SAFETY.md](SAFETY.md).
+
+---
+
+## Quick Start
+
+About 60 seconds from clone to a real, offline safety screen, with no API keys:
+
+```bash
+git clone https://github.com/Francis1998/medagent-core && cd medagent-core
+pip install -e ".[dev]"
+python scripts/mcp_stdio_demo.py               # real MCP stdio session: FHIR → de-identified screen → findings
+python scripts/demo.py --case all --no-delay   # simulated walkthrough of the OUTPUT and ESCALATE paths
+```
+
+**Use it from an MCP host** (Claude Desktop, Claude Code, Cursor or VS Code; setup for each is in
+the [MCP guide](docs/guides/MCP_SERVER_GUIDE.md#connect-a-client)):
+
+```bash
+claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(which medagent-mcp)"
+```
+
+**Run the HTTP API.** Reasoning needs at least one LLM API key; without one, `/analyze` escalates
+instead of guessing. The API does not de-identify its input: send a pre-hashed `patient_id_hash`
+and free text without identifiers.
+
+```bash
+cp .env.example .env               # then add at least one LLM API key
+python scripts/ingest_kb.py --sample
+uvicorn medagent.api.main:app --reload
+```
+
+End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) · Full setup:
+[QUICKSTART.md](QUICKSTART.md) · Docker Compose: `docker-compose up --build`
+
+---
+
+## Feature map
+
+| Capability | What you get | Code | Docs |
+|---|---|---|---|
+| Explicit agent state machine | INTAKE → … → OUTPUT \| ESCALATE with per-stage timeouts | `src/medagent/agent/state_machine.py` | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Bayesian differential reasoning | Ranked hypotheses with an evidence chain; deterministic SOAP structuring | `src/medagent/reasoning/` | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Deterministic safety library | 300 modules covering allergy cross-reactivity, pregnancy and lactation, Beers and STOPP/START, renal and hepatic dosing, QTc DDIs, anticoagulant bleeding and boxed warnings, plus scorers and lab-trend bridges. The MCP tools run 13 screening checks and 83 interaction rules from it | `src/medagent/safety/` | [SAFETY.md](SAFETY.md), [panel catalog](docs/SAFETY_PANEL_CATALOG.md) |
+| Drug-interaction checks | Dual-source RxNorm + OpenFDA on the HTTP path; 83 curated pairwise rules offline over MCP | `src/medagent/retrieval/drug_interaction.py`, `src/medagent/mcp/` | [SAFETY.md](SAFETY.md) |
+| FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
+| MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 4 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
+| Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
+| Privacy and scope | Scope enforcement on queries; HMAC-SHA256 identifier hashing and de-identified output in the FHIR parser and MCP tools. HTTP callers must send de-identified input | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
+| Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
+| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health` | `src/medagent/api/main.py` | [API](#api) |
+
+## Docs map
+
+| Document | Read it for |
+|---|---|
+| [QUICKSTART.md](QUICKSTART.md) | Installation options, first API call, Docker |
+| [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) | Three end-to-end scenarios with real commands and output |
+| [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md) | Connecting Claude Desktop, Claude Code, Cursor or VS Code; tool reference |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing and MCP design |
+| [SAFETY.md](SAFETY.md) | Every hard control, regulatory status and escalation policy |
+| [CONFIGURATION.md](CONFIGURATION.md) | Environment variables, model defaults and provider parameter rules |
+| [docs/SAFETY_PANEL_CATALOG.md](docs/SAFETY_PANEL_CATALOG.md) | Per-panel summaries and demo GIFs |
+| [docs/guides/](docs/guides/) | Per-checker guides |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) · [docs/EXAMPLES.md](docs/EXAMPLES.md) · [docs/PERFORMANCE.md](docs/PERFORMANCE.md) | Operations |
+| [docs/adr/](docs/adr/) | Architecture decision records |
+| [CONTRIBUTING.md](CONTRIBUTING.md) · [CHANGELOG.md](CHANGELOG.md) | Contributing and release history |
+
+## Current model stack
+
+| Provider | Default | Request shaping |
+|---|---|---|
+| OpenAI | `gpt-6.1-sol` | No `temperature` for GPT-5+/o-series reasoning models; budget sent as `max_completion_tokens` |
+| Anthropic | `claude-opus-5-5` | Never receives `temperature`, `top_p` or `top_k`; thinking blocks are never returned as the answer |
+| Google | `gemini-4-argon` (`gemini-3.8-flash` for lowest latency) | No sampling parameters for Gemini 3+ |
+| Kimi | `kimi-k3.1-pro` | No `temperature` (fixed at 1.0 for K3); endpoint set by `KIMI_BASE_URL` |
+
+Override any default in `.env`. Defaults, prices and provider sources are in
+[CONFIGURATION.md](CONFIGURATION.md#why-these-defaults-verified-2026-11-06). Every request is sized
+by `LLM_MAX_OUTPUT_TOKENS` (32,768 by default), which includes reasoning tokens.
+
+> **Disclaimer:** medagent-core is research software. It is not FDA-cleared, has not been clinically
+> validated and must not guide diagnosis or treatment. Every output carries a mandatory
+> research-use disclaimer and must be reviewed by a licensed clinician. See the full
+> [Disclaimer](#disclaimer).
+
+---
 
 ## Live Demos
 
@@ -339,23 +265,6 @@ git clone https://github.com/Francis1998/medagent-core
 cd medagent-core && pip install -e ".[dev]"
 python scripts/demo.py --case all
 ```
-
----
-
-## The Problem
-
-Clinical AI is broken in a predictable way. Most LLM-wrapper "pipelines" used in health-AI research today:
-
-- Feed patient data into `generate()` and return raw text — **no audit trail, no intermediate state**
-- Cannot explain *why* they reached a conclusion — **no evidence chain**
-- Surface drug interaction warnings from a single database — **one-source = unvalidated**
-- Never say "I don't know" — **no confidence calibration, no escalation**
-- Log patient names and MRNs to LLM APIs in plain text — **PII leakage**
-- Wrap everything in a `try/except` and call it production — **no safety enforcement**
-
-The result: every health-AI team re-invents the same safety plumbing for months before they can test a single hypothesis. And every team makes the same mistakes.
-
-`medagent-core` is the production-grade, open-source reference implementation that solves these problems — auditably, testably, and without black-box magic.
 
 ---
 
@@ -547,18 +456,19 @@ python scripts/demo.py --case escalate
 
 | Stage | Component | Timeout |
 |---|---|---|
-| **INTAKE** | `ScopeEnforcer` + PII hashing | — |
+| **INTAKE** | `ScopeEnforcer` (callers send pre-hashed IDs and de-identified text) | — |
 | **ENTITY_EXTRACTION** | `EntityExtractor` (scispaCy NER + regex fallback) | 10s |
 | **KNOWLEDGE_RETRIEVAL** | `RetrievalOrchestrator` (parallel fan-out) | 20s/source |
 | **REASONING** | `ReasoningEngine` + `MedicalRouter` | 90s |
 | **SAFETY_CHECK** | Confidence gate + contradiction detection | — |
 | **OUTPUT / ESCALATE** | `ClinicalReasoning` + mandatory disclaimer | — |
 
+### Reasoning: SOAP Structurer
+`SoapStructurer` (`reasoning/soap_structurer.py`) deterministically maps notes, entities, labs, and medications into S/O/A/P sections with **non-prescriptive plan hints only**. RESEARCH USE ONLY documentation aid; gap vs MedPrompt free-form SOAP prompting. See `docs/guides/SOAP_STRUCTURER_GUIDE.md` and `assets/soap_structurer_demo.gif`.
+
 ---
 
-- **OpioidSedationStackPanel** (#140): opioid + benzo + gabapentinoid aggregate sedation stacks — see `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`
-## Safety — 28 Hard Controls
-## Safety — 29 Hard Controls
+## Safety — Hard Controls
 
 All controls are **technically enforced in code**, not just documented policy:
 
@@ -714,44 +624,6 @@ See [SAFETY.md](SAFETY.md) for the full policy, regulatory status, and escalatio
 
 ---
 
-
-### Reasoning: SOAP Structurer
-`SoapStructurer` (`reasoning/soap_structurer.py`) deterministically maps notes, entities, labs, and medications into S/O/A/P sections with **non-prescriptive plan hints only**. RESEARCH USE ONLY documentation aid; gap vs MedPrompt free-form SOAP prompting. See `docs/guides/SOAP_STRUCTURER_GUIDE.md` and `assets/soap_structurer_demo.gif`.
-
-## Quick Start
-
-```bash
-git clone https://github.com/Francis1998/medagent-core
-cd medagent-core
-pip install -e ".[dev]"
-cp .env.example .env             # add at least one LLM API key
-python scripts/ingest_kb.py --sample
-uvicorn medagent.api.main:app --reload
-```
-
-**No API keys?** The demo and eval scripts still work in fallback mode:
-```bash
-python scripts/demo.py --case all          # rich interactive demo
-python scripts/eval_medqa.py --max-samples 3    # demo mode
-python scripts/eval_drugbank.py                  # demo mode
-```
-
-**Use the safety tools from an MCP host** (Claude Desktop, Claude Code, Cursor, VS Code):
-```bash
-medagent-mcp --version                     # dual-era stdio MCP server, no API keys needed
-python scripts/mcp_stdio_demo.py           # drive it over real stdio in both protocol eras
-```
-See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
-
-**LLM defaults** (override in `.env`): GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon and Kimi K3.1 Pro.
-Adapters shape parameters per model — Claude never receives `temperature`/`top_p`/`top_k`, and
-GPT-5+/o-series, Gemini 3+ and Kimi K2.6+/K3 never receive `temperature` — so switching models
-cannot trigger sampling-parameter errors ([details](CONFIGURATION.md#sampling-parameter-compatibility)).
-
-Full setup: [QUICKSTART.md](QUICKSTART.md) · Docker Compose: `docker-compose up --build`
-
----
-
 ## API
 
 ### `POST /analyze` — Full clinical reasoning
@@ -792,11 +664,13 @@ Results saved to `results/` as JSON + printed summary.
 ## Quality Gates
 
 ```bash
-ruff check src/     # zero errors
-pytest tests/ -v    # 396/396 passed
+ruff check . && ruff format --check .          # lint + formatting
+mypy src/medagent --ignore-missing-imports     # types
+pytest tests/ --cov=src                        # unit + integration tests, coverage gate ≥70%
 ```
 
-CI: lint → test → eval smoke test → Docker build (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+CI runs these on Python 3.10, 3.11 and 3.12 ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+A separate [Security Scan](.github/workflows/security.yml) runs `pip-audit` and `bandit`.
 
 ---
 
@@ -810,10 +684,10 @@ medagent-core/
 │   ├── retrieval/      # PubMed + RxNorm/OpenFDA + local KB hybrid retrieval
 │   ├── reasoning/      # Bayesian scorer + evidence chain builder + LLM engine
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
-│   ├── safety/         # PII hashing + scope enforcer + mandatory disclaimers
+│   ├── safety/         # 300 deterministic safety modules + PII hashing + scope enforcer
 │   ├── mcp/            # Dual-era MCP stdio server (medagent-mcp) over the safety layer
 │   └── api/            # FastAPI: /analyze /drug-interactions /health
-├── tests/              # 396 pytest tests — all typed + documented
+├── tests/              # pytest suite (unit + integration), typed and documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
@@ -821,15 +695,17 @@ medagent-core/
 │   ├── mcp_stdio_demo.py # Reference stdio MCP client (modern + legacy sessions)
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
 ├── assets/             # Animated SVG/GIF demos
+├── docs/               # Guides, use cases, safety panel catalog, ADRs
 ├── data/               # Sample FHIR R4 bundle + KB index
 ├── results/            # Benchmark outputs (gitignored except .gitkeep)
-├── .github/workflows/  # CI: ruff + mypy + pytest + Docker
+├── .github/workflows/  # CI (ruff, mypy, pytest), security scan, release
 ├── docker-compose.yml
 ├── Dockerfile
 ├── QUICKSTART.md
 ├── CONFIGURATION.md
 ├── SAFETY.md
-└── ARCHITECTURE.md
+├── ARCHITECTURE.md
+└── CONTRIBUTING.md
 ```
 
 ---
@@ -839,339 +715,10 @@ medagent-core/
 1. Open an issue before large PRs
 2. Tag safety-relevant issues `safety-critical`
 3. All code requires type annotations, docstrings, and tests
-4. Run `ruff check src/ && pytest tests/` before submitting
+4. Run the CI checks listed in [CONTRIBUTING.md](CONTRIBUTING.md#before-you-open-a-pull-request) before submitting
+5. New safety panel or scorer entries (summary + demo GIF) go to [docs/SAFETY_PANEL_CATALOG.md](docs/SAFETY_PANEL_CATALOG.md), not this README — see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
-
-![KarnofskyPerformanceScorer](assets/karnofsky_performance_scorer_demo.gif)
-### KarnofskyPerformanceScorer
-
-![KarnofskyPerformanceScorer](assets/karnofsky_performance_scorer_demo.gif)
-
-
-![News2SerialDeltaPanel](assets/news2_serial_delta_panel_demo.gif)
-
-![Curb65SerialDeltaPanel](assets/curb65_serial_delta_panel_demo.gif)
-### Curb65SerialDeltaPanel
-
-![Curb65SerialDeltaPanel](assets/curb65_serial_delta_panel_demo.gif)
-
-Research-only advisory score. Gap vs MDCalc / CURB-65 serial delta-trend panel. See `docs/guides/CURB65SERIALDELTAPANEL_GUIDE.md`.
-![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
-![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-### MewsSerialDeltaPanel
-
-![MewsSerialDeltaPanel](assets/mews_serial_delta_panel_demo.gif)
-
-Research-only advisory score (Safety #256). Gap vs MDCalc / MEWS serial delta-trend panel. See `docs/guides/MEWSSERIALDELTAPANEL_GUIDE.md`.
-
-### ForresterClassScorer
-
-![ForresterClassScorer](assets/forrester_class_scorer_demo.gif)
-
-Research-only advisory score (Safety #257). Gap vs MDCalc / Killip-Forrester hemodynamic class screen. See `docs/guides/FORRESTERCLASSSCORER_GUIDE.md`.
-
-### ApacheSerialDeltaPanel
-
-![ApacheSerialDeltaPanel](assets/apache_serial_delta_panel_demo.gif)
-
-Research-only advisory score (Safety #259). Gap vs MDCalc / APACHE serial delta-trend panel. See `docs/guides/APACHESERIALDELTAPANEL_GUIDE.md`.
-
-### ImproveVteScorer
-
-![ImproveVteScorer](assets/improve_vte_scorer_demo.gif)
-
-Research-only advisory score (Safety #260). Gap vs MDCalc / IMPROVE VTE risk screen. See `docs/guides/IMPROVEVTESCORER_GUIDE.md`.
-
-### HeartSerialDeltaPanel
-
-![HeartSerialDeltaPanel](assets/heart_serial_delta_panel_demo.gif)
-
-Research-only `HeartSerialDeltaPanel` (Safety #262). Gap vs MDCalc / HEART serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### WellsPeSerialDeltaPanel
-
-![WellsPeSerialDeltaPanel](assets/wells_pe_serial_delta_panel_demo.gif)
-
-Research-only `WellsPeSerialDeltaPanel` (Safety #263). Gap vs MDCalc / Wells PE serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### WellsDvtSerialDeltaPanel
-
-![WellsDvtSerialDeltaPanel](assets/wells_dvt_serial_delta_panel_demo.gif)
-
-Research-only `WellsDvtSerialDeltaPanel` (Safety #265). Gap vs MDCalc / Wells DVT serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### GenevaPeSerialDeltaPanel
-
-![GenevaPeSerialDeltaPanel](assets/geneva_pe_serial_delta_panel_demo.gif)
-
-Research-only `GenevaPeSerialDeltaPanel` (Safety #266). Gap vs MDCalc / Geneva PE serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-
-### PercSerialDeltaPanel
-
-![PercSerialDeltaPanel](assets/perc_serial_delta_panel_demo.gif)
-
-Research-only `PercSerialDeltaPanel` (Safety #268). Gap vs MDCalc / PERC serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### KillipSerialDeltaPanel
-
-![KillipSerialDeltaPanel](assets/killip_serial_delta_panel_demo.gif)
-
-Research-only `KillipSerialDeltaPanel` (Safety #269). Gap vs MDCalc / Killip serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-
-### CentorSerialDeltaPanel
-
-![CentorSerialDeltaPanel](assets/centor_serial_delta_panel_demo.gif)
-
-Research-only Safety #271. Gap vs MDCalc / Centor serial delta-trend panel. See `docs/guides/CENTORSERIALDELTAPANEL_GUIDE.md`.
-
-
-### ChildPughSerialDeltaPanel
-
-![ChildPughSerialDeltaPanel](assets/child_pugh_serial_delta_panel_demo.gif)
-
-Research-only Safety #272. Gap vs MDCalc / Child-Pugh serial delta-trend panel. See `docs/guides/CHILDPUGHSERIALDELTAPANEL_GUIDE.md`.
-
-
-### MeldNaSerialDeltaPanel
-
-![MeldNaSerialDeltaPanel](assets/meld_na_serial_delta_panel_demo.gif)
-
-Research-only Safety #273. Gap vs MDCalc / MELD-Na serial delta-trend panel. See `docs/guides/MELDNASERIALDELTAPANEL_GUIDE.md`.
-
-### Cha2ds2VascSerialDeltaPanel
-
-![Cha2ds2VascSerialDeltaPanel](assets/cha2ds2_vasc_serial_delta_panel_demo.gif)
-
-Research-only `Cha2ds2VascSerialDeltaPanel` (Safety #270). Gap vs MDCalc / CHA2DS2-VASc serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### TimiSerialDeltaPanel
-
-![TimiSerialDeltaPanel](assets/timi_serial_delta_panel_demo.gif)
-
-Research-only `TimiSerialDeltaPanel` (Safety #267). Gap vs MDCalc / TIMI serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### PsiSerialDeltaPanel
-
-![PsiSerialDeltaPanel](assets/psi_serial_delta_panel_demo.gif)
-
-Research-only `PsiSerialDeltaPanel` (Safety #264). Gap vs MDCalc / PSI/PORT serial delta-trend panel. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-### AbcIchScorer
-
-![AbcIchScorer](assets/abc_ich_scorer_demo.gif)
-
-Research-only advisory score (Safety #261). Gap vs MDCalc / ABC ICH volume/severity screen. See `docs/guides/ABCICHSCORER_GUIDE.md`.
-
-### AspectsStrokeScorer
-
-![AspectsStrokeScorer](assets/aspects_stroke_scorer_demo.gif)
-
-Research-only advisory score (Safety #258). Gap vs MDCalc / ASPECTS early ischemic change screen. See `docs/guides/ASPECTSSTROKESCORER_GUIDE.md`.
-
-### SofaSerialDeltaPanel
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-### SofaSerialDeltaPanel
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-### SofaSerialDeltaPanel
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-### SofaSerialDeltaPanel
-
-![SofaSerialDeltaPanel](assets/sofa_serial_delta_panel_demo.gif)
-
-Research-only advisory score. Gap vs MDCalc / SOFA serial delta-trend panel. See `docs/guides/SOFASERIALDELTAPANEL_GUIDE.md`.
-### QsofaSerialDeltaPanel
-![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
-### QsofaSerialDeltaPanel
-
-![QsofaSerialDeltaPanel](assets/qsofa_serial_delta_panel_demo.gif)
-
-Research-only advisory score. Gap vs MDCalc / qSOFA serial delta-trend panel. See `docs/guides/QSOFASERIALDELTAPANEL_GUIDE.md`.
-### News2SerialDeltaPanel
-
-![News2SerialDeltaPanel](assets/news2_serial_delta_panel_demo.gif)
-
-
-### AlvaradoSerialDeltaPanel
-
-![AlvaradoSerialDeltaPanel](assets/alvarado_serial_delta_panel_demo.gif)
-
-Research-only Safety #274. Gap vs MDCalc / Alvarado serial delta-trend panel. Distinct from `AlvaradoAppendicitisScorer` / `CentorSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### NihssSerialDeltaPanel
-
-![NihssSerialDeltaPanel](assets/nihss_serial_delta_panel_demo.gif)
-
-Research-only Safety #275. Gap vs MDCalc / NIHSS serial delta-trend panel. Distinct from `NihssStrokeScorer` / `GcsNeurologicStatusScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### GcsSerialDeltaPanel
-
-![GcsSerialDeltaPanel](assets/gcs_serial_delta_panel_demo.gif)
-
-Research-only Safety #276. Gap vs MDCalc / GCS serial delta-trend panel. Distinct from `GcsNeurologicStatusScorer` / `NihssSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### RansonSerialDeltaPanel
-
-![RansonSerialDeltaPanel](assets/ranson_serial_delta_panel_demo.gif)
-
-Research-only Safety #277. Gap vs MDCalc / Ranson serial delta-trend panel. Distinct from `RansonPancreatitisScorer` / `BisapPancreatitisScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### OttawaAnkleSerialDeltaPanel
-
-![OttawaAnkleSerialDeltaPanel](assets/ottawa_ankle_serial_delta_panel_demo.gif)
-
-Research-only Safety #278. Gap vs MDCalc / Ottawa Ankle serial delta-trend panel. Distinct from `OttawaAnkleRuleScorer` / `OttawaKneeRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### Abcd2SerialDeltaPanel
-
-![Abcd2SerialDeltaPanel](assets/abcd2_serial_delta_panel_demo.gif)
-
-Research-only Safety #279. Gap vs MDCalc / ABCD2 serial delta-trend panel. Distinct from `Abcd2TiaRiskScorer` / `NihssSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-
-
-### OttawaSahSerialDeltaPanel
-
-![OttawaSahSerialDeltaPanel](assets/ottawa_sah_serial_delta_panel_demo.gif)
-
-Research-only Safety #286. Gap vs MDCalc / Ottawa SAH Rule serial delta-trend panel. Distinct from `OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/OTTAWASAHSERIALDELTAPANEL_GUIDE.md`.
-
-### PesiSerialDeltaPanel
-
-![PesiSerialDeltaPanel](assets/pesi_serial_delta_panel_demo.gif)
-
-Research-only Safety #287. Gap vs MDCalc / PESI PE severity serial delta-trend panel. Distinct from `PesiPeSeverityScorer` / `WellsPeSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PESISERIALDELTAPANEL_GUIDE.md`.
-
-### GlasgowBlatchfordSerialDeltaPanel
-
-![GlasgowBlatchfordSerialDeltaPanel](assets/glasgow_blatchford_serial_delta_panel_demo.gif)
-
-Research-only Safety #288. Gap vs MDCalc / Glasgow-Blatchford GI bleed serial delta-trend panel. Distinct from `GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/GLASGOWBLATCHFORDSERIALDELTAPANEL_GUIDE.md`.
-
-### FourScoreSerialDeltaPanel
-
-![FourScoreSerialDeltaPanel](assets/four_score_serial_delta_panel_demo.gif)
-
-Research-only Safety #289. Gap vs MDCalc / FOUR Score serial delta-trend panel. Distinct from `FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOURSCORESERIALDELTAPANEL_GUIDE.md`.
-
-### HuntHessSerialDeltaPanel
-
-![HuntHessSerialDeltaPanel](assets/hunt_hess_serial_delta_panel_demo.gif)
-
-Research-only Safety #290. Gap vs MDCalc / Hunt-Hess SAH serial delta-trend panel. Distinct from `HuntHessSahScorer` / `OttawaSahSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HUNTHESSSERIALDELTAPANEL_GUIDE.md`.
-
-### WfnsSerialDeltaPanel
-
-![WfnsSerialDeltaPanel](assets/wfns_serial_delta_panel_demo.gif)
-
-Research-only Safety #291. Gap vs MDCalc / WFNS SAH serial delta-trend panel. Distinct from `WfnsSahScorer` / `HuntHessSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WFNSSERIALDELTAPANEL_GUIDE.md`.
-
-
-
-
-### RassSerialDeltaPanel
-
-![RassSerialDeltaPanel](assets/rass_serial_delta_panel_demo.gif)
-
-Research-only Safety #295. Gap vs MDCalc / RASS sedation serial delta-trend panel. Distinct from `RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/RASSSERIALDELTAPANEL_GUIDE.md`.
-
-
-### KarnofskySerialDeltaPanel
-
-![KarnofskySerialDeltaPanel](assets/karnofsky_serial_delta_panel_demo.gif)
-
-Research-only Safety #296. Gap vs MDCalc / Karnofsky performance serial delta-trend panel. Distinct from `KarnofskyPerformanceScorer` / `EcogSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/KARNOFSKYSERIALDELTAPANEL_GUIDE.md`.
-
-
-
-### BradenSerialDeltaPanel
-
-![BradenSerialDeltaPanel](assets/braden_serial_delta_panel_demo.gif)
-
-Research-only Safety #298. Gap vs MDCalc / Braden pressure-injury serial delta-trend panel. Distinct from `BradenPressureScorer` / `MorseFallScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BRADENSERIALDELTAPANEL_GUIDE.md`.
-
-
-### MorseFallSerialDeltaPanel
-
-![MorseFallSerialDeltaPanel](assets/morse_fall_serial_delta_panel_demo.gif)
-
-Research-only Safety #299. Gap vs MDCalc / Morse Fall Scale serial delta-trend panel. Distinct from `MorseFallScorer` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MORSEFALLSERIALDELTAPANEL_GUIDE.md`.
-
-
-### WaterlowSerialDeltaPanel
-
-![WaterlowSerialDeltaPanel](assets/waterlow_serial_delta_panel_demo.gif)
-
-Research-only Safety #301. Gap vs MDCalc / Waterlow pressure-ulcer serial delta-trend panel. Distinct from `BradenSerialDeltaPanel` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WATERLOWSERIALDELTAPANEL_GUIDE.md`.
-
-
-### BarthelSerialDeltaPanel
-
-![BarthelSerialDeltaPanel](assets/barthel_serial_delta_panel_demo.gif)
-
-Research-only Safety #302. Gap vs MDCalc / Barthel ADL serial delta-trend panel. Distinct from `BarthelAdlScorer` / `KarnofskySerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/BARTHELSERIALDELTAPANEL_GUIDE.md`.
-
-
-### MocaSerialDeltaPanel
-- `KatzSerialDeltaPanel` (Safety #306): MDCalc / Katz ADL serial delta-trend panel. Distinct from `BarthelSerialDeltaPanel` / `KarnofskySerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-![KatzSerialDeltaPanel](assets/katz_serial_delta_panel_demo.gif)
-
-- `Gad7SerialDeltaPanel` (Safety #305): MDCalc / GAD-7 anxiety serial delta-trend panel. Distinct from `Gad7AnxietyScorer` / `Phq9DepressionScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-![Gad7SerialDeltaPanel](assets/gad7_serial_delta_panel_demo.gif)
-
-- `Phq9SerialDeltaPanel` (Safety #304): MDCalc / PHQ-9 depression serial delta-trend panel. Distinct from `Phq9DepressionScorer` / `Gad7AnxietyScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
-![Phq9SerialDeltaPanel](assets/phq9_serial_delta_panel_demo.gif)
-
-
-![MocaSerialDeltaPanel](assets/moca_serial_delta_panel_demo.gif)
-
-Research-only Safety #303. Gap vs MDCalc / MoCA cognition serial delta-trend panel. Distinct from `FourScoreSerialDeltaPanel` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/MOCASERIALDELTAPANEL_GUIDE.md`.
-
-
-### CiwaSerialDeltaPanel
-
-![CiwaSerialDeltaPanel](assets/ciwa_serial_delta_panel_demo.gif)
-
-Research-only Safety #300. Gap vs MDCalc / CIWA-Ar withdrawal serial delta-trend panel. Distinct from `CiwaArWithdrawalScorer` / `RassSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CIWASERIALDELTAPANEL_GUIDE.md`.
-
-### CamIcuSerialDeltaPanel
-
-![CamIcuSerialDeltaPanel](assets/cam_icu_serial_delta_panel_demo.gif)
-
-Research-only Safety #297. Gap vs MDCalc / CAM-ICU delirium serial delta-trend panel. Distinct from `CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CAMICUSERIALDELTAPANEL_GUIDE.md`.
-
-### EcogSerialDeltaPanel
-
-![EcogSerialDeltaPanel](assets/ecog_serial_delta_panel_demo.gif)
-
-Research-only Safety #294. Gap vs MDCalc / ECOG performance serial delta-trend panel. Distinct from `EcogPerformanceScorer` / `KarnofskyPerformanceScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/ECOGSERIALDELTAPANEL_GUIDE.md`.
-
-### FourAtSerialDeltaPanel
-
-![FourAtSerialDeltaPanel](assets/four_at_serial_delta_panel_demo.gif)
-
-Research-only Safety #293. Gap vs MDCalc / 4AT delirium serial delta-trend panel. Distinct from `FourAtDeliriumScorer` / `FourScoreSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FOURATSERIALDELTAPANEL_GUIDE.md`.
-
-### ForresterSerialDeltaPanel
-
-![ForresterSerialDeltaPanel](assets/forrester_serial_delta_panel_demo.gif)
-
-Research-only Safety #292. Gap vs MDCalc / Forrester hemodynamic serial delta-trend panel. Distinct from `ForresterClassScorer` / `KillipSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/FORRESTERSERIALDELTAPANEL_GUIDE.md`.
-
 
 ## License
 
@@ -1182,42 +729,3 @@ Apache 2.0 — see [LICENSE](LICENSE).
 ## Disclaimer
 
 **This software is provided for research and educational purposes only. It is NOT intended for clinical use, medical diagnosis, or treatment planning. It has NOT been evaluated, validated, or cleared by any regulatory authority including the FDA or EMA. Do NOT use this system to make clinical decisions. Always consult a qualified healthcare professional.**
-
-
-### CanadianCtHeadSerialDeltaPanel
-
-![CanadianCtHeadSerialDeltaPanel](assets/canadian_ct_head_serial_delta_panel_demo.gif)
-
-Research-only Safety #283. Gap vs MDCalc / Canadian CT Head Rule serial delta-trend panel. Distinct from `CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CANADIANCTHEADSERIALDELTAPANEL_GUIDE.md`.
-
-
-### PecarnSerialDeltaPanel
-
-![PecarnSerialDeltaPanel](assets/pecarn_serial_delta_panel_demo.gif)
-
-Research-only Safety #284. Gap vs MDCalc / PECARN pediatric head trauma serial delta-trend panel. Distinct from `PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PECARNSERIALDELTAPANEL_GUIDE.md`.
-
-
-### NexusCspineSerialDeltaPanel
-
-![NexusCspineSerialDeltaPanel](assets/nexus_cspine_serial_delta_panel_demo.gif)
-
-Research-only Safety #285. Gap vs MDCalc / NEXUS C-spine serial delta-trend panel. Distinct from `NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/NEXUSCSPINESERIALDELTAPANEL_GUIDE.md`.
-
-### GraceSerialDeltaPanel
-
-![GraceSerialDeltaPanel](assets/grace_serial_delta_panel_demo.gif)
-
-Research-only Safety #282. Gap vs MDCalc / GRACE ACS serial delta-trend panel. Distinct from `GraceAcsScorer` / `HeartSerialDeltaPanel`.
-
-### HasBledSerialDeltaPanel
-
-![HasBledSerialDeltaPanel](assets/has_bled_serial_delta_panel_demo.gif)
-
-Research-only Safety #281. Gap vs MDCalc / HAS-BLED serial delta-trend panel. Distinct from `HasBledBleedRiskScorer` / `Cha2ds2VascSerialDeltaPanel`.
-
-### PsiPortSerialDeltaPanel
-
-![PsiPortSerialDeltaPanel](assets/psi_port_serial_delta_panel_demo.gif)
-
-Research-only Safety #280. Gap vs MDCalc / PSI/PORT serial delta-trend panel. Distinct from `PsiPortPneumoniaScorer` / `Curb65SerialDeltaPanel`.
