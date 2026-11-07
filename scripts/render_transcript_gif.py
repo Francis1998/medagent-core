@@ -52,30 +52,65 @@ def wrap_lines(raw: list[str], cols: int) -> list[tuple[str, str]]:
     return rows
 
 
-def render(args: argparse.Namespace) -> None:
-    raw = Path(args.input).read_text(encoding="utf-8").rstrip("\n").splitlines()
-    font = load_font(args.font_size)
+def terminal_palette() -> Image.Image:
+    """Return a fixed palette: the terminal colors plus anti-aliasing blends of the text."""
+    colors = [BG, BAR, *DOTS]
+    blends = ((BG, FG, 6), (BG, CMD, 4), (BG, PROMPT, 4), (BAR, TITLE, 4))
+    for background, foreground, steps in blends:
+        for step in range(1, steps + 1):
+            colors.append(
+                tuple(
+                    round(b + (f - b) * step / steps)
+                    for b, f in zip(background, foreground, strict=True)
+                )
+            )
+    flat = [channel for color in colors for channel in color]
+    palette = Image.new("P", (1, 1))
+    palette.putpalette(flat + flat[-3:] * (32 - len(colors)))
+    return palette
+
+
+def render_transcript(
+    raw: list[str],
+    output: Path,
+    *,
+    title: str = "",
+    cols: int = 96,
+    rows: int = 26,
+    font_size: int = 14,
+    type_steps: int = 12,
+    line_ms: int = 90,
+    final_hold_ms: int = 3500,
+    block_output: bool = False,
+    fixed_palette: bool = False,
+) -> int:
+    """Render transcript lines into an animated GIF at ``output``; return the frame count.
+
+    ``block_output`` reveals each command's output in one frame (held ``line_ms``
+    per line) instead of line by line. ``fixed_palette`` maps every frame onto
+    ``terminal_palette()``, so unchanged pixels stay identical between frames and
+    the GIF stores only what changed (about 10x smaller than per-frame adaptive
+    palettes, which can also drop the window-button colors).
+    """
+    font = load_font(font_size)
     char_w = max(1, int(font.getlength("M"))) if hasattr(font, "getlength") else 7
-    line_h = args.font_size + 6
+    line_h = font_size + 6
     pad = 16
     bar_h = 30
-    width = pad * 2 + char_w * args.cols
-    height = bar_h + pad * 2 + line_h * args.rows
-    rows = wrap_lines(raw, args.cols)
+    width = pad * 2 + char_w * cols
+    height = bar_h + pad * 2 + line_h * rows
+    wrapped = wrap_lines(raw, cols)
 
-    frames: list[Image.Image] = []
-    durations: list[int] = []
-
-    def draw_frame(visible: list[tuple[str, str]], hold_ms: int) -> None:
+    def draw_screen(visible: list[tuple[str, str]]) -> Image.Image:
         image = Image.new("RGB", (width, height), BG)
         draw = ImageDraw.Draw(image)
         draw.rectangle([0, 0, width, bar_h], fill=BAR)
         for index, color in enumerate(DOTS):
             x = 14 + index * 20
             draw.ellipse([x, 10, x + 11, 21], fill=color)
-        if args.title:
-            draw.text((80, 8), args.title, font=font, fill=TITLE)
-        window = visible[-args.rows :]
+        if title:
+            draw.text((80, 8), title, font=font, fill=TITLE)
+        window = visible[-rows:]
         y = bar_h + pad
         for kind, text in window:
             if kind == "cmd":
@@ -86,25 +121,48 @@ def render(args: argparse.Namespace) -> None:
             else:
                 draw.text((pad, y), text, font=font, fill=FG)
             y += line_h
-        frames.append(image.convert("P", palette=Image.ADAPTIVE, colors=32))
+        return image
+
+    palette = terminal_palette() if fixed_palette else None
+
+    frames: list[Image.Image] = []
+    durations: list[int] = []
+
+    def draw_frame(visible: list[tuple[str, str]], hold_ms: int) -> None:
+        image = draw_screen(visible)
+        if palette is None:
+            frames.append(image.convert("P", palette=Image.ADAPTIVE, colors=32))
+        else:
+            frames.append(image.quantize(palette=palette, dither=Image.Dither.NONE))
         durations.append(hold_ms)
 
     visible: list[tuple[str, str]] = []
+    pending: list[tuple[str, str]] = []
+
+    def flush_output() -> None:
+        if pending:
+            visible.extend(pending)
+            draw_frame(visible, line_ms * len(pending))
+            pending.clear()
+
     draw_frame(visible, 600)
-    for kind, text in rows:
+    for kind, text in wrapped:
         if kind == "cmd":
+            flush_output()
             body = text[2:]
-            step = max(1, len(body) // args.type_steps)
+            step = max(1, len(body) // type_steps)
             for end in range(step, len(body) + step, step):
                 draw_frame([*visible, (kind, "$ " + body[:end])], 60)
             visible.append((kind, text))
             draw_frame(visible, 450)
+        elif block_output:
+            pending.append((kind, text))
         else:
             visible.append((kind, text))
-            draw_frame(visible, args.line_ms)
-    draw_frame(visible, args.final_hold_ms)
+            draw_frame(visible, line_ms)
+    flush_output()
+    draw_frame(visible, final_hold_ms)
 
-    output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     frames[0].save(
         output,
@@ -115,7 +173,24 @@ def render(args: argparse.Namespace) -> None:
         optimize=True,
         disposal=1,
     )
-    print(f"wrote {output} ({output.stat().st_size} bytes, {len(frames)} frames)")
+    return len(frames)
+
+
+def render(args: argparse.Namespace) -> None:
+    raw = Path(args.input).read_text(encoding="utf-8").rstrip("\n").splitlines()
+    output = Path(args.output)
+    frame_count = render_transcript(
+        raw,
+        output,
+        title=args.title,
+        cols=args.cols,
+        rows=args.rows,
+        font_size=args.font_size,
+        type_steps=args.type_steps,
+        line_ms=args.line_ms,
+        final_hold_ms=args.final_hold_ms,
+    )
+    print(f"wrote {output} ({output.stat().st_size} bytes, {frame_count} frames)")
 
 
 def main() -> None:

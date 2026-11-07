@@ -33,7 +33,25 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:
    prescribing directives.
 2. Add unit tests under `tests/unit/safety/`.
 3. Document the control in [SAFETY.md](SAFETY.md). If it changes user-facing behaviour, also add a
-   guide under `docs/guides/`.
+   guide under `docs/guides/` with a demo GIF rendered from its example (see below).
+
+## Guide demo GIFs
+
+Every guide in `docs/guides/` embeds a demo GIF from `assets/`. Render it from the guide's own
+`python` example rather than committing a placeholder:
+
+```bash
+uv run --with pillow python scripts/render_guide_demos.py docs/guides/<GUIDE>.md
+```
+
+The script runs the example from the repository root with `PYTHONPATH=src`, blank provider API
+keys, and outbound sockets blocked, then renders the real output as a terminal transcript at the
+path the guide already embeds, so the markdown does not change. It refuses examples that fail,
+print nothing but log lines, or need the network: fix the example so it prints the documented
+result. `python scripts/render_guide_demos.py --check docs/guides/<GUIDE>.md` only runs the example
+(no Pillow needed), and running the script without arguments renders every missing or placeholder
+guide GIF. `tests/unit/test_demo_gifs_real.py` fails CI when an embedded GIF is missing, is not a
+GIF, is smaller than 200×100 px, or is under 2 KB.
 
 ## Safety panel entries
 
