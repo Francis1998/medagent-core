@@ -144,8 +144,8 @@ class VancomycinTroughTrendBridge:
                     f"{', '.join(agents)}. Toxicity-risk bridge distinct from "
                     "GentamicinVancomycinChecker and drug-agnostic "
                     "LabTrendAlertBridge. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet "
-                    "4.6 / Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -159,7 +159,7 @@ class VancomycinTroughTrendBridge:
                     f"{', '.join(agents)}. Underdosing-risk bridge distinct from "
                     "GentamicinVancomycinChecker and LabTrendAlertBridge. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -174,7 +174,7 @@ class VancomycinTroughTrendBridge:
                     + f"). Agents: {', '.join(agents)}. Toxicity-trend bridge "
                     "distinct from GentamicinVancomycinChecker. Never modifies "
                     "medications. Confirm with a qualified clinician; prefer "
-                    "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -189,7 +189,7 @@ class VancomycinTroughTrendBridge:
                     + "). Distinct from GentamicinVancomycinChecker pairwise "
                     "nephrotoxicity and drug-agnostic LabTrendAlertBridge. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

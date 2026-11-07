@@ -138,8 +138,8 @@ class AnticoagBleedStackPanel:
                         f"({', '.join(nsaid_agents)}). Aggregate multi-class bleed "
                         "load is distinct from pairwise AnticoagBleedingChecker / "
                         "DoacNsaidChecker findings. Not a prescription. Confirm "
-                        "with a qualified clinician; prefer GPT-5.5 / Claude "
-                        "Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                        "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -161,7 +161,7 @@ class AnticoagBleedStackPanel:
                         f"antiplatelets {', '.join(ap_agents)}. Panel-level DAPT "
                         "+ anticoag stack distinct from pairwise anticoag "
                         "bleeding checker. Confirm with a qualified clinician; "
-                        "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -183,8 +183,8 @@ class AnticoagBleedStackPanel:
                         f"{', '.join(ac_agents)} with {', '.join(ap_agents)}. "
                         "Aggregate panel distinct from pairwise "
                         "AnticoagBleedingChecker pairs. Confirm with a qualified "
-                        "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini "
-                        "3.x / Kimi K2."
+                        "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini "
+                        "4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -205,8 +205,8 @@ class AnticoagBleedStackPanel:
                         f"{', '.join(ac_agents)} with {', '.join(nsaid_agents)}. "
                         "Aggregate panel distinct from pairwise DoacNsaidChecker / "
                         "AnticoagBleedingChecker. Confirm with a qualified "
-                        "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini "
-                        "3.x / Kimi K2."
+                        "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini "
+                        "4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -227,7 +227,7 @@ class AnticoagBleedStackPanel:
                         f"{', '.join(ac_agents)}. Aggregate multi-anticoagulant "
                         "panel distinct from pairwise bleeding-augmenter "
                         "checkers. Confirm with a qualified clinician; prefer "
-                        "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                        "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )

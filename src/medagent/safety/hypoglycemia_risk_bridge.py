@@ -135,8 +135,8 @@ class HypoglycemiaRiskBridge:
                     "RESEARCH USE ONLY: Multi hypoglycemic-agent stack — "
                     f"{', '.join(agents)} (classes {', '.join(classes)}). "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini "
-                    "3.x / Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini "
+                    "4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -152,7 +152,7 @@ class HypoglycemiaRiskBridge:
                     f"(values {values}). Agents: {', '.join(agents)}. Distinct "
                     "from LabTrendAlertBridge non-glucose analytes. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         if falling and "sulfonylurea" in classes:
@@ -163,7 +163,7 @@ class HypoglycemiaRiskBridge:
                     "RESEARCH USE ONLY: Falling glucose trend on sulfonylurea "
                     f"(values {values}). Agents: {', '.join(agents)}. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         if low and agents:
@@ -176,7 +176,7 @@ class HypoglycemiaRiskBridge:
                     f"hypoglycemic agents {', '.join(agents)}. Distinct from "
                     "single-draw LabCriticalValueChecker. Never modifies "
                     "medications. Confirm with a qualified clinician; prefer "
-                    "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

@@ -107,8 +107,8 @@ class FhirMedicationRequestAdapter:
             f"Medication objects for safety-panel use "
             f"(skipped={skipped}). Thin adapter distinct from "
             "extraction.fhir_parser full-bundle parsing. Not a clinical "
-            "order. Prefer frontier summarization with GPT-5.5 / "
-            "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+            "order. Prefer frontier summarization with GPT-6 Astra / "
+            "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
         )
         if notes:
             rationale += " Notes: " + "; ".join(notes[:12])

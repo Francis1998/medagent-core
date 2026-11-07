@@ -149,7 +149,7 @@ class ClozapineAncTrendBridge:
                     "bridge distinct from ClozapineAncChecker single-threshold "
                     "reminders and ClozapineCyp1a2Checker DDI pairs. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -166,8 +166,8 @@ class ClozapineAncTrendBridge:
                     f"Agents: {', '.join(agents)}. REMS-style ANC-trend bridge "
                     "distinct from ClozapineAncChecker and ClozapineCyp1a2Checker. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x "
-                    "/ Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon "
+                    "/ Kimi K3.1 Pro."
                 ),
             )
 
@@ -182,8 +182,8 @@ class ClozapineAncTrendBridge:
                     + "). Distinct from ClozapineAncChecker single-threshold "
                     "monitoring cues and ClozapineCyp1a2Checker CYP1A2 pairs. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini "
-                    "3.x / Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini "
+                    "4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

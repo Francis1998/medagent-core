@@ -11,8 +11,8 @@ Plan sections from clinical notes, entities, labs, and medications. Plan output
 is limited to **non-prescriptive hints**. This is **RESEARCH USE ONLY**
 documentation support.
 
-Prefer frontier reasoning models when summarizing structured notes: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing structured notes: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ## Gap vs MedPrompt SOAP structuring
 

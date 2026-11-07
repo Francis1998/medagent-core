@@ -286,8 +286,8 @@ class ClinicalGuidelineMatcher:
                             "distinct from DiseaseContraindicationChecker "
                             "condition×drug contraindication panels, and not a "
                             "treatment order. Confirm with a qualified clinician; "
-                            "prefer frontier summarization with GPT-5.5 / "
-                            "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                            "prefer frontier summarization with GPT-6 Astra / "
+                            "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                         ),
                     )
                 )

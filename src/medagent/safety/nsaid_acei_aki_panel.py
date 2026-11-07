@@ -147,8 +147,8 @@ class NsaidAceiAkiPanel:
                 f"({', '.join(acei_agents)}). Dual-pair aggregate fires even "
                 "without a diuretic; distinct from triad-requiring "
                 "TripleWhammyChecker. Never modifies medications. Confirm with "
-                "a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                "Gemini 3.x / Kimi K2."
+                "a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                "Gemini 4 Argon / Kimi K3.1 Pro."
             ),
         )
 
@@ -163,8 +163,8 @@ class NsaidAceiAkiPanel:
                     f"({', '.join(acei_agents)}). Triple-whammy awareness "
                     "escalation in panel framing; distinct from per-triad "
                     "TripleWhammyChecker findings. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -177,8 +177,8 @@ class NsaidAceiAkiPanel:
                     f"{', '.join(nsaid_agents)} with {', '.join(acei_agents)}. "
                     "Panel-level multi-NSAID AKI/bleeding aggregate distinct "
                     "from TripleWhammyChecker. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

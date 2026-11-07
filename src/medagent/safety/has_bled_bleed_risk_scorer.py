@@ -4,8 +4,8 @@ Scores Hypertension / Abnormal renal-liver / Stroke / Bleeding history /
 Labile INR / Elderly / Drugs-alcohol factors into an advisory HAS-BLED total.
 Closes the MDCalc / UpToDate / EHR embedded HAS-BLED calculator gap for
 offline agent pipelines. Distinct from ``AnticoagBleedingChecker`` (DDI/
-stack panels) and ``AnticoagBleedStackPanel``. Prefer GPT-5.5 /
-Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative summaries. Never
+stack panels) and ``AnticoagBleedStackPanel``. Prefer GPT-6 Astra /
+Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro for narrative summaries. Never
 modifies medications and never performs network I/O.
 """
 

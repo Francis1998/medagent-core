@@ -141,7 +141,7 @@ class AnticholinergicBurdenPanel:
                     f"{', '.join(agents)}. Aggregate panel distinct from "
                     "per-medication AnticholinergicBurdenChecker. Never modifies "
                     "medications. Confirm with a qualified clinician; prefer "
-                    "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -160,8 +160,8 @@ class AnticholinergicBurdenPanel:
                     f"({', '.join(agents)}). Panel-level high-burden aggregate "
                     "distinct from per-medication AnticholinergicBurdenChecker. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x "
-                    "/ Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon "
+                    "/ Kimi K3.1 Pro."
                 ),
             )
 
@@ -175,8 +175,8 @@ class AnticholinergicBurdenPanel:
                     f"({', '.join(strong_agents)}); total ACB {total_acb}. "
                     "Aggregate panel distinct from per-medication "
                     "AnticholinergicBurdenChecker. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

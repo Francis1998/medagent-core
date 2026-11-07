@@ -166,8 +166,8 @@ class HeparinAntiXaTrendBridge:
                     + f"). Agents: {', '.join(agents)}. Anti-Xa monitoring "
                     "bridge distinct from HeparinPlateletTrendBridge HIT-risk "
                     "platelet trends. Never modifies medications. Confirm with "
-                    "a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -186,7 +186,7 @@ class HeparinAntiXaTrendBridge:
                     f"series {values}). Agents: {', '.join(agents)}. Anti-Xa "
                     "bridge distinct from HeparinPlateletTrendBridge. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -199,8 +199,8 @@ class HeparinAntiXaTrendBridge:
                     f"heparin-class therapy (latest {latest}, series {values}). "
                     f"Agents: {', '.join(agents)}. Anti-Xa bridge distinct from "
                     "HeparinPlateletTrendBridge. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -214,8 +214,8 @@ class HeparinAntiXaTrendBridge:
                     + (f", {percent:.1f}%" if percent is not None else "")
                     + "). Distinct from HeparinPlateletTrendBridge HIT-risk "
                     "platelet cues. Never modifies medications. Confirm with a "
-                    "qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

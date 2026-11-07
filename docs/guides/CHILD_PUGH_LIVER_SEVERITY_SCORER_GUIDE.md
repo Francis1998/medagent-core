@@ -6,7 +6,7 @@ Advisory Child-Pugh totals and class A/B/C (Safety **#171**). RESEARCH USE ONLY.
 Never modifies medications. Closes the MDCalc / UpToDate / EHR Child-Pugh
 calculator gap for offline agent pipelines.
 
-Optional later polish via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+Optional later polish via **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 Distinct from `HasBledBleedRiskScorer` and `Cha2ds2VascStrokeRiskScorer`.
 

@@ -153,7 +153,7 @@ class DigoxinLevelTrendBridge:
                     "distinct from DigoxinToxicityChecker electrolyte/toxicity "
                     "cues and DigoxinAmioChecker DDI pairs. Never modifies "
                     "medications. Confirm with a qualified clinician; prefer "
-                    "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -170,7 +170,7 @@ class DigoxinLevelTrendBridge:
                     f"Agents: {', '.join(agents)}. Digoxin-level bridge distinct "
                     "from DigoxinToxicityChecker and DigoxinAmioChecker. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -185,7 +185,7 @@ class DigoxinLevelTrendBridge:
                     + "). Distinct from DigoxinToxicityChecker symptom/electrolyte "
                     "cues and DigoxinAmioChecker amiodarone DDI screening. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

@@ -144,7 +144,7 @@ class LinezolidPlateletTrendBridge:
                     "bridge distinct from LinezolidSsriChecker single-threshold "
                     "reminders and LabTrendAlertBridge DDI pairs. Never "
                     "modifies medications. Confirm with a qualified clinician; "
-                    "prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -163,8 +163,8 @@ class LinezolidPlateletTrendBridge:
                     f"Agents: {', '.join(agents)}. myelosuppression platelet-trend bridge "
                     "distinct from LinezolidSsriChecker and LabTrendAlertBridge. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x "
-                    "/ Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon "
+                    "/ Kimi K3.1 Pro."
                 ),
             )
 
@@ -179,8 +179,8 @@ class LinezolidPlateletTrendBridge:
                     + "). Distinct from LinezolidSsriChecker single-threshold "
                     "monitoring cues and LabTrendAlertBridge CYP1A2 pairs. "
                     "Never modifies medications. Confirm with a qualified "
-                    "clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini "
-                    "3.x / Kimi K2."
+                    "clinician; prefer GPT-6 Astra / Claude Opus 5.5 / Gemini "
+                    "4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

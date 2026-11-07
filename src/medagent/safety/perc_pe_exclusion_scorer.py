@@ -3,7 +3,7 @@
 Advisory scorer closing the MDCalc / ACEP / EHR PERC PE rule-out gap for
 offline medical-ward agent pipelines.
 Distinct from ``WellsPeProbabilityScorer / PaduaVteRiskScorer``. Prefer
-GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2 for narrative summaries.
+GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro for narrative summaries.
 Never modifies medications and never performs network I/O.
 
 Simplified factor points for offline unit tests — not a full PERC chart.

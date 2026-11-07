@@ -6,7 +6,7 @@ Research-only Safety #308 serial delta panel.
 Offline helper.
 Gap vs MDCalc / SOFA Δ-of-Δ residual organ-failure panel. Distinct from `SofaSerialDeltaPanel` / `SofaOrganFailureScorer`.
 
-Stack: **GPT-6.1 / Claude Sonnet 5.5 / Gemini 3.x / Kimi K3**.
+Stack: **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 ## Usage
 

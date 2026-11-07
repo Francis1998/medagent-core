@@ -146,8 +146,8 @@ class LithiumTshTrendBridge:
                     "bridge distinct from LithiumCreatinineTrendBridge renal "
                     "creatinine trends and AmiodaroneThyroidBridge amiodarone "
                     "context. Never modifies medications. Confirm with a "
-                    "qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -163,8 +163,8 @@ class LithiumTshTrendBridge:
                     + f"). Agents: {', '.join(agents)}. Thyroid-monitoring "
                     "bridge distinct from LithiumCreatinineTrendBridge and "
                     "AmiodaroneThyroidBridge. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -179,8 +179,8 @@ class LithiumTshTrendBridge:
                     f"{', '.join(agents)}. Thyroid-monitoring bridge distinct "
                     "from LithiumCreatinineTrendBridge and "
                     "AmiodaroneThyroidBridge. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -195,8 +195,8 @@ class LithiumTshTrendBridge:
                     + "). Distinct from LithiumCreatinineTrendBridge creatinine "
                     "renal-risk cues and AmiodaroneThyroidBridge amiodarone "
                     "TSH/FT4 monitoring. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet "
-                    "4.6 / Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 

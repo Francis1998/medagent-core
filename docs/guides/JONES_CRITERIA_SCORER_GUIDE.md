@@ -6,7 +6,7 @@ Research-only advisory scorer (Safety #219). Never modifies medications.
 
 Gap vs MDCalc / AHA Jones criteria for acute rheumatic fever. Distinct from `CentorStrepPharyngitisScorer / HeartScoreAcsScorer`.
 
-Optional polish via **GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2**.
+Optional polish via **GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro**.
 
 ## Usage
 

@@ -11,8 +11,8 @@
 first-line classes, and similar). Findings are advisory `GuidelineMatch`
 records — **RESEARCH USE ONLY**.
 
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ## Gap vs DiseaseContraindicationChecker
 

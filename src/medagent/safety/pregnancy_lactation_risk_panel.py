@@ -208,8 +208,8 @@ class PregnancyLactationRiskPanel:
                     f"{', '.join(all_meds) or 'n/a'}. Aggregate panel distinct from "
                     "per-medication PregnancyLactationChecker findings. Not a "
                     "prescription. Confirm with a qualified clinician; prefer "
-                    "frontier summarization with GPT-5.5 / Claude Sonnet 4.6 / "
-                    "Gemini 3.x / Kimi K2."
+                    "frontier summarization with GPT-6 Astra / Claude Opus 5.5 / "
+                    "Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
         )
@@ -234,8 +234,8 @@ class PregnancyLactationRiskPanel:
                         f"{len(pregnancy_agents)} distinct pregnancy-risk agents "
                         f"({', '.join(pregnancy_agents)}). Distinct from "
                         "PregnancyLactationChecker per-med findings. Confirm with "
-                        "a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                        "Gemini 3.x / Kimi K2."
+                        "a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                        "Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -260,8 +260,8 @@ class PregnancyLactationRiskPanel:
                         f"{len(lactation_agents)} distinct lactation-risk agents "
                         f"({', '.join(lactation_agents)}). Distinct from "
                         "PregnancyLactationChecker per-med findings. Confirm with "
-                        "a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                        "Gemini 3.x / Kimi K2."
+                        "a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                        "Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -294,8 +294,8 @@ class PregnancyLactationRiskPanel:
                         "lactation curated panels. Aggregate dual-hit count "
                         f"{len(dual_hit_agents)} is distinct from per-medication "
                         "PregnancyLactationChecker combined findings. Confirm with "
-                        "a qualified clinician; prefer GPT-5.5 / Claude Sonnet 4.6 / "
-                        "Gemini 3.x / Kimi K2."
+                        "a qualified clinician; prefer GPT-6 Astra / Claude Opus 5.5 / "
+                        "Gemini 4 Argon / Kimi K3.1 Pro."
                     ),
                 )
             )
@@ -320,8 +320,8 @@ class PregnancyLactationRiskPanel:
                             f"trimester {normalized_trimester} with trimester-sensitive "
                             f"agents {', '.join(sensitive)} (ACE/ARB/tetracycline class). "
                             "Panel-level context distinct from PregnancyLactationChecker. "
-                            "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                            "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                            "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                            "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                         ),
                     )
                 )

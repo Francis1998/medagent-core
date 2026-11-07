@@ -170,102 +170,102 @@ Daily dose is parsed from the medication `name` / `dosage` / `frequency` fields 
 ### 3.21 Pediatric Dose / Age-Contraindication Checking
 `safety/pediatric_dose_checker.py` flags paediatric **age contraindications** and optional **mg/kg/day** ceiling excesses for a patient's age and weight. Unlike Beers (older-adult PIMs) and renal/hepatic dose checkers, this hazard is an *age- and weight-conditioned* paediatric appropriateness judgement: codeine and tramadol under 12 years (CRITICAL), tetracyclines under 8 years and aspirin under 16 years (HIGH), plus weight-based ceilings for acetaminophen/paracetamol (~75 mg/kg/day), ibuprofen (~40), and amoxicillin (~90).
 
-Daily mg dose is parsed from `name` / `dosage` / `frequency` when a weight-based rule applies. Medications that do not match the panel, or lack the age/weight needed to evaluate a rule, are skipped. Each violation yields one `PediatricDoseRisk` recording the agent, age/weight, thresholds, finding kind, and severity. Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/PEDIATRIC_DOSE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Daily mg dose is parsed from `name` / `dosage` / `frequency` when a weight-based rule applies. Medications that do not match the panel, or lack the age/weight needed to evaluate a rule, are skipped. Each violation yields one `PediatricDoseRisk` recording the agent, age/weight, thresholds, finding kind, and severity. Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/PEDIATRIC_DOSE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.22 STOPP/START Prescribing-Criteria Checking
 `safety/stopp_start_checker.py` applies a curated mini-set of **STOPP** (Screening Tool of Older Persons' Prescriptions) and **START** (Screening Tool to Alert to Right Treatment) criteria for adults aged **65 and older**. Unlike Beers (single-agent PIM list without omission detection), this checker covers both potentially inappropriate prescriptions (e.g. long-acting benzodiazepines as STOPP-D1; NSAID with heart failure as STOPP-H1) and potentially omitted indicated therapy (e.g. missing statin in secondary prevention as START-A5; missing anticoagulant in atrial fibrillation as START-A1).
 
-The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; condition matching is phrase/token-aware. Each fired criterion yields one `StoppStartRisk` recording the criterion id/type, matched or expected agent, and severity. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/STOPP_START_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; condition matching is phrase/token-aware. Each fired criterion yields one `StoppStartRisk` recording the criterion id/type, matched or expected agent, and severity. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/STOPP_START_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.23 FDA Black-Box (Boxed) Warning Checking
 `safety/black_box_warning_checker.py` flags active medications that match a curated panel of agents with well-known **FDA boxed (black-box) warnings** — the agency's strongest labelling caution. Unlike pregnancy (pregnancy-gated teratogens), Beers/STOPP (older-adult appropriateness), or interaction/dose checkers, this hazard is a *labelling-severity* judgement: fluoroquinolones (tendinopathy/neuropathy), clozapine (agranulocytosis), isotretinoin, methotrexate, warfarin, metformin (lactic acidosis), amiodarone, valproate/carbamazepine, selected opioids, NSAIDs, and thiazolidinediones.
 
-Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.24 Combined Renal + Hepatic Checking
 `safety/combined_renal_hepatic_checker.py` composes the renal-dose (eGFR) and hepatic-dose (Child-Pugh) checkers to flag active medications that have **both** organ-function concerns in the same patient context. This mirrors the dual organ impairment alert pattern used by clinical decision support systems such as First Databank and Lexicomp, while remaining deterministic and research-only.
 
-The check applies **only** when both eGFR and hepatic function are known. Unknown eGFR or unknown Child-Pugh class returns no combined finding even if one component checker alone would flag a medication. For known inputs, one `CombinedRenalHepaticRisk` is emitted only when the same medication display name and the same canonical agent appear in both component findings. The combined severity is the maximum of the renal and hepatic component severities, and the record preserves both component actions, thresholds, and severities for auditability. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/COMBINED_RENAL_HEPATIC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The check applies **only** when both eGFR and hepatic function are known. Unknown eGFR or unknown Child-Pugh class returns no combined finding even if one component checker alone would flag a medication. For known inputs, one `CombinedRenalHepaticRisk` is emitted only when the same medication display name and the same canonical agent appear in both component findings. The combined severity is the maximum of the renal and hepatic component severities, and the record preserves both component actions, thresholds, and severities for auditability. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/COMBINED_RENAL_HEPATIC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.25 Geriatric Deprescribing Opportunity Checking
 `safety/geriatric_deprescribing_checker.py` flags a small curated educational/demo catalog of medications commonly targeted during deprescribing review in adults aged **65 and older**: long-term PPIs without a documented ongoing indication, sedative-hypnotic Z-drugs, first-generation antihistamines, and chronic/scheduled NSAIDs. Unlike Beers Criteria and STOPP/START, this checker is framed as a *deprescribing opportunity* or taper/step-down review rather than a formal potentially-inappropriate-medication or prescribing-omission criterion.
 
-The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; long-term PPI and chronic NSAID rules require scheduled/chronic-use text, and PPI findings are suppressed by protective indication text such as Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome. Each finding yields one `GeriatricDeprescribingRisk` recording the matched agent, deprescribing category, suggested research-only review action, taper-candidate flag, and severity. Findings are **advisory**, **educational**, and **not clinical advice** — they never auto-modify a medication list and require qualified clinician review before any medication change. See also `docs/guides/GERIATRIC_DEPRESCRIBING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker returns no findings for patients under 65 or of unknown age. Medication matching is whole-token; long-term PPI and chronic NSAID rules require scheduled/chronic-use text, and PPI findings are suppressed by protective indication text such as Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome. Each finding yields one `GeriatricDeprescribingRisk` recording the matched agent, deprescribing category, suggested research-only review action, taper-candidate flag, and severity. Findings are **advisory**, **educational**, and **not clinical advice** — they never auto-modify a medication list and require qualified clinician review before any medication change. See also `docs/guides/GERIATRIC_DEPRESCRIBING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.26 Antibiotic Stewardship Checking
 `safety/antibiotic_stewardship_checker.py` flags high-risk antimicrobial-use patterns that are not surfaced by allergy, duplicate-therapy, QT, renal/hepatic dose, STOPP/START, or FDA boxed-warning checkers: fluoroquinolones without a documented indication, duplicate antimicrobial coverage (e.g. duplicate anaerobic, MRSA, macrolide, fluoroquinolone, or antipseudomonal beta-lactam coverage), and prolonged-course cues such as `for 21 days`, `3 week course`, `day 15 of therapy`, or chronic/suppressive language.
 
-Medication matching is deterministic and whole-token based, so substring look-alikes (e.g. `ciprofloxacinoid`) never trigger. Fluoroquinolone indication context is supplied as free-text indications / clinical notes and matched against a conservative set of recognized infectious indications; absent or unrelated context produces an advisory `AntibioticStewardshipRisk`. Duplicate coverage is judged over distinct canonical antibiotic agents, so duplicate entries for the same drug are not flagged. Findings are **advisory** — they never auto-modify antibiotics, stop dates, or culture-directed plans. See also `docs/guides/ANTIBIOTIC_STEWARDSHIP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Medication matching is deterministic and whole-token based, so substring look-alikes (e.g. `ciprofloxacinoid`) never trigger. Fluoroquinolone indication context is supplied as free-text indications / clinical notes and matched against a conservative set of recognized infectious indications; absent or unrelated context produces an advisory `AntibioticStewardshipRisk`. Duplicate coverage is judged over distinct canonical antibiotic agents, so duplicate entries for the same drug are not flagged. Findings are **advisory** — they never auto-modify antibiotics, stop dates, or culture-directed plans. See also `docs/guides/ANTIBIOTIC_STEWARDSHIP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 ### 3.27 QTc Drug-Drug Interaction Panel Checking
 `safety/qtc_ddi_checker.py` flags named **QTc-prolonging drug-drug interaction pairs** whose synergistic risk is more specific than the additive medication count in `safety/qt_prolongation_checker.py`. The conservative panel includes high-risk combinations such as methadone + ondansetron, azithromycin + amiodarone, clarithromycin/erythromycin + amiodarone, sotalol/dofetilide + azithromycin, citalopram + ondansetron, and amiodarone + moxifloxacin.
 
-The checker returns one `QtcDdiRisk` per unique canonical pair, records both medication names, both canonical agents, a stable panel id, severity (`HIGH` or `CRITICAL`), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/QTC_DDI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker returns one `QtcDdiRisk` per unique canonical pair, records both medication names, both canonical agents, a stable panel id, severity (`HIGH` or `CRITICAL`), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/QTC_DDI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.28 Lactation / Breastfeeding Medication-Safety Checking
 `safety/lactation_checker.py` flags a conservative curated panel of active medications with breastfeeding-specific concerns: radioactive iodine / I-131 aliases, antineoplastic or antimetabolite chemotherapy agents (cyclophosphamide, doxorubicin, methotrexate, fluorouracil, capecitabine), amiodarone, lithium, codeine, and tramadol. This hazard is distinct from pregnancy teratogenicity because the exposed patient is the breastfed infant rather than the fetus, and it is not surfaced by interaction, allergy, duplicate-therapy, QT, renal/hepatic dose, or boxed-warning checks.
 
-The check is gated on a `breastfeeding` flag and returns **no** findings when breastfeeding/lactation is not documented. Medication names are matched with deterministic whole-token / whole-phrase logic (for example `Lithiumfree` and `Radioiodinefree` do not match, while `I-131` and `radioactive iodine` map to radioactive iodine). Each finding yields a `LactationRisk` record with the matched agent, concern category, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, breastfeeding plans, monitoring, or infant care. See also `docs/guides/LACTATION_CHECKER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The check is gated on a `breastfeeding` flag and returns **no** findings when breastfeeding/lactation is not documented. Medication names are matched with deterministic whole-token / whole-phrase logic (for example `Lithiumfree` and `Radioiodinefree` do not match, while `I-131` and `radioactive iodine` map to radioactive iodine). Each finding yields a `LactationRisk` record with the matched agent, concern category, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, breastfeeding plans, monitoring, or infant care. See also `docs/guides/LACTATION_CHECKER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 ### 3.29 Taper-Schedule Advisory Checking
 `safety/taper_schedule_checker.py` flags conservative **taper-schedule review opportunities** for chronic/scheduled opioids, benzodiazepines/Z-drugs, proton-pump inhibitors (PPIs), and SSRIs/SNRIs. Unlike geriatric deprescribing, Beers, STOPP/START, opioid MED, or duplicate-therapy checks, this hazard is a *withdrawal/rebound/relapse review* judgement: it asks whether abrupt discontinuation could be unsafe or poorly tolerated and whether a qualified clinician should review individualized taper planning.
-The checker requires whole-token medication matching plus scheduled/chronic-use cues before emitting a `TaperScheduleRisk`. PPI findings are suppressed when protective high-risk GI indications are documented (for example Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome). Each finding records the medication, canonical agent, medication class (`opioid`, `benzodiazepine_z_drug`, `ppi`, `ssri`, or `snri`), taper-opportunity category, non-prescriptive suggested review, abrupt-stop concern, taper-candidate flag, and severity (`HIGH` for opioids and benzodiazepines/Z-drugs, `MODERATE` for SSRIs/SNRIs, `LOW` for PPIs). Findings are **RESEARCH USE ONLY**, **advisory**, and **not taper instructions** — they never prescribe, stop, auto-generate a taper schedule, or modify a medication list. See also `docs/guides/TAPER_SCHEDULE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker requires whole-token medication matching plus scheduled/chronic-use cues before emitting a `TaperScheduleRisk`. PPI findings are suppressed when protective high-risk GI indications are documented (for example Barrett esophagus, erosive esophagitis, GI bleed, peptic ulcer, gastroprotection, or Zollinger-Ellison syndrome). Each finding records the medication, canonical agent, medication class (`opioid`, `benzodiazepine_z_drug`, `ppi`, `ssri`, or `snri`), taper-opportunity category, non-prescriptive suggested review, abrupt-stop concern, taper-candidate flag, and severity (`HIGH` for opioids and benzodiazepines/Z-drugs, `MODERATE` for SSRIs/SNRIs, `LOW` for PPIs). Findings are **RESEARCH USE ONLY**, **advisory**, and **not taper instructions** — they never prescribe, stop, auto-generate a taper schedule, or modify a medication list. See also `docs/guides/TAPER_SCHEDULE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.30 Fall-Risk Medication Checking
 `safety/fall_risk_checker.py` flags a conservative curated panel of active medications that increase fall and fracture risk in older adults: benzodiazepines, Z-drug hypnotics, a curated anticholinergic subset (e.g. diphenhydramine, oxybutynin, amitriptyline), antipsychotics, skeletal muscle relaxants, and peripheral alpha-1 blockers. This hazard focuses on fall-risk mechanisms (sedation, orthostasis, anticholinergic impairment) and is distinct from general Beers PIM flagging, cumulative anticholinergic-burden scoring, STOPP/START indication rules, and geriatric deprescribing opportunity detection.
 
-The check is gated on `patient_age >= 65` and returns **no** findings when age is under 65 or unknown. Medication names are matched with deterministic whole-token logic (for example `Lorazepamfree` and `Zolpidemoid` do not match). Each finding yields a `FallRiskFinding` record with the matched agent, risk category, severity, patient age, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, doses, or fall-prevention plans. See also `docs/guides/FALL_RISK_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The check is gated on `patient_age >= 65` and returns **no** findings when age is under 65 or unknown. Medication names are matched with deterministic whole-token logic (for example `Lorazepamfree` and `Zolpidemoid` do not match). Each finding yields a `FallRiskFinding` record with the matched agent, risk category, severity, patient age, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, doses, or fall-prevention plans. See also `docs/guides/FALL_RISK_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.31 QTc Monitoring Interval Checking
 `safety/qtc_monitoring_checker.py` flags when **ECG/QTc monitoring is missing or overdue** for high-risk QT-prolonging medications — a clinical decision-support gap versus UpToDate/Lexicomp-style QTc surveillance cadence. The conservative panel includes class III antiarrhythmics (dofetilide, sotalol, amiodarone), methadone, haloperidol, ziprasidone, high-dose citalopram (>40 mg) / escitalopram (>20 mg), and IV ondansetron. This hazard is distinct from additive QT-prolongation counting (`qt_prolongation_checker.py`) and named QTc DDI pairs (`qtc_ddi_checker.py`).
 
-The checker applies a **7-day initiation** interval when `on_initiation=True` and a **30-day maintenance** interval by default. A finding is emitted when `last_ecg_days_ago` is unknown/missing or exceeds the interval. Optional `baseline_qtc_ms` notes borderline (≥480 ms) or prolonged (≥500 ms) QTc in the rationale and elevates non-CRITICAL findings when ≥500 ms. Medication names are matched with deterministic whole-token logic (for example `Pseudosotalol` does not match). Each finding yields a `QtcMonitoringRisk` record with the matched agent, risk category, severity, monitoring phase, recommended interval, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, order ECGs, or change monitoring plans. See also `docs/guides/QTC_MONITORING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker applies a **7-day initiation** interval when `on_initiation=True` and a **30-day maintenance** interval by default. A finding is emitted when `last_ecg_days_ago` is unknown/missing or exceeds the interval. Optional `baseline_qtc_ms` notes borderline (≥480 ms) or prolonged (≥500 ms) QTc in the rationale and elevates non-CRITICAL findings when ≥500 ms. Medication names are matched with deterministic whole-token logic (for example `Pseudosotalol` does not match). Each finding yields a `QtcMonitoringRisk` record with the matched agent, risk category, severity, monitoring phase, recommended interval, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, order ECGs, or change monitoring plans. See also `docs/guides/QTC_MONITORING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.32 Combined Pregnancy + Lactation Medication-Safety Checking
 `safety/pregnancy_lactation_checker.py` composes the pregnancy teratogen checker and the lactation / breastfeeding checker into a unified reproductive-exposure view. It flags medications with **combined** pregnancy and lactation concerns (same medication on both panels when `pregnant=True` and `breastfeeding=True`), **pregnancy-only** teratogenic concerns when `pregnant=True`, and **lactation-only** breastfeeding concerns when `breastfeeding=True`. Overlapping agents such as lithium and methotrexate illustrate why dual exposure deserves a distinct, higher-salience alert.
 
-The check returns **no** findings when neither pregnancy nor breastfeeding is documented. Component matching is inherited from the standalone checkers (whole-token / whole-phrase logic). Combined findings escalate severity one rank above the maximum of the pregnancy and lactation component severities, capped at `CRITICAL`. Each finding yields a `PregnancyLactationRisk` record with concern kind (`combined`, `pregnancy_only`, or `lactation_only`), component severities, lactation concern category when applicable, overall severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, breastfeeding plans, or obstetric care. See also `docs/guides/PREGNANCY_LACTATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The check returns **no** findings when neither pregnancy nor breastfeeding is documented. Component matching is inherited from the standalone checkers (whole-token / whole-phrase logic). Combined findings escalate severity one rank above the maximum of the pregnancy and lactation component severities, capped at `CRITICAL`. Each finding yields a `PregnancyLactationRisk` record with concern kind (`combined`, `pregnancy_only`, or `lactation_only`), component severities, lactation concern category when applicable, overall severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, breastfeeding plans, or obstetric care. See also `docs/guides/PREGNANCY_LACTATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.33 Anticoagulation Bleeding-Risk Checking
 `safety/anticoag_bleeding_checker.py` flags conservative **anticoagulant × bleeding-risk augmenter** combinations: warfarin, apixaban, rivaroxaban, dabigatran, enoxaparin, or heparin co-prescribed with antiplatelet agents (aspirin, clopidogrel, prasugrel, ticagrelor), NSAIDs (ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin), or SSRIs (sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine). This hazard focuses on additive hemorrhagic mechanisms (anticoagulation plus platelet dysfunction or GI mucosal injury) and is distinct from duplicate anticoagulant therapy, generic DDI screening, renal/hepatic dose checks, and boxed-warning single-agent flagging.
 
-The checker returns one `AnticoagBleedingRisk` per unique canonical anticoagulant × augmenter pair across distinct medication entries, records both medication names, both canonical agents, augmenter category, a stable combination id, severity (`MODERATE` for SSRIs, `HIGH` for NSAIDs, `CRITICAL` for antiplatelets), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/ANTICOAG_BLEEDING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker returns one `AnticoagBleedingRisk` per unique canonical anticoagulant × augmenter pair across distinct medication entries, records both medication names, both canonical agents, augmenter category, a stable combination id, severity (`MODERATE` for SSRIs, `HIGH` for NSAIDs, `CRITICAL` for antiplatelets), mechanism, and clinical consequence. Duplicate same-agent entries are de-duplicated, whole-token matching avoids substring false positives, and a single medication entry naming both agents is not treated as a co-prescribed pair by itself. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/ANTICOAG_BLEEDING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.34 Anticoagulation INR / TTR Monitoring Cadence Checking
 `safety/inr_ttr_checker.py` flags when **INR monitoring is missing or overdue**, or when **time in therapeutic range (TTR) is below a quality threshold**, for patients on warfarin / vitamin K antagonist (VKA) therapy — a clinical decision-support gap versus clinic INR/TTR surveillance cadence. The conservative panel includes warfarin (aliases coumadin, jantoven), acenocoumarol, and phenprocoumon. Direct oral anticoagulants are intentionally out of scope. This hazard is distinct from anticoagulant × bleeding-risk augmenter pairs (`anticoag_bleeding_checker.py`) and lab critical-value INR panic thresholds (`lab_critical_value_checker.py`).
 
-The checker applies a **7-day initiation** INR interval when `on_initiation=True` and a **28-day maintenance** interval by default. An `overdue_inr` finding is emitted when `last_inr_days_ago` is unknown/missing or exceeds the interval (severity `HIGH` on maintenance, `CRITICAL` on initiation). A `low_ttr` finding is emitted when documented `ttr_percent` is strictly below the threshold (default **65%**; values &lt;50% elevate severity to `CRITICAL`). Medication names are matched with deterministic whole-token logic (for example `Pseudowarfarin` does not match). Each finding yields an `InrTtrRisk` record with finding kind, matched agent, monitoring phase or TTR fields, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, order labs, or change anticoagulation plans. See also `docs/guides/INR_TTR_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The checker applies a **7-day initiation** INR interval when `on_initiation=True` and a **28-day maintenance** interval by default. An `overdue_inr` finding is emitted when `last_inr_days_ago` is unknown/missing or exceeds the interval (severity `HIGH` on maintenance, `CRITICAL` on initiation). A `low_ttr` finding is emitted when documented `ttr_percent` is strictly below the threshold (default **65%**; values &lt;50% elevate severity to `CRITICAL`). Medication names are matched with deterministic whole-token logic (for example `Pseudowarfarin` does not match). Each finding yields an `InrTtrRisk` record with finding kind, matched agent, monitoring phase or TTR fields, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, order labs, or change anticoagulation plans. See also `docs/guides/INR_TTR_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 ### 3.35 Beers 2023 Criteria Update-Delta Checking
 `safety/beers_2023_delta_checker.py` flags a conservative curated panel of **2023 AGS Beers Criteria update deltas** — medications newly added or strengthened as avoid/caution recommendations versus the prior Beers edition — rather than reproducing the classic PIM catalog in `safety/beers_criteria_checker.py` (Safety Control #15). The educational/demo panel covers avoiding initiation of aspirin for primary cardiovascular prevention, preferring DOACs over warfarin as initial therapy for most NVAF/VTE, using rivaroxaban and dabigatran with caution for higher GI bleeding risk, expanding sulfonylurea avoidance to agents such as glipizide and glimepiride, adding SNRIs (duloxetine, venlafaxine, desvenlafaxine) to the falls/fractures caution table, and avoiding concurrent opioids with gabapentinoids.
 
-The check is gated on `age >= 65` and returns **no** findings when age is under 65 or unknown. Aspirin primary-prevention findings are suppressed when documented `conditions` imply secondary prevention (for example CAD, MI, stent, stroke, or TIA). Medication names are matched with deterministic whole-token logic (for example `Glipizidefree` does not match). Each finding yields a `Beers2023DeltaRisk` record with delta kind (`new_avoid`, `new_caution`, `expanded_avoid`, or `concurrent_avoid`), Beers category, update summary, severity, patient age, and RESEARCH USE ONLY rationale; concurrent opioid × gabapentinoid pairs also record the second medication/agent. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BEERS_2023_DELTA_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The check is gated on `age >= 65` and returns **no** findings when age is under 65 or unknown. Aspirin primary-prevention findings are suppressed when documented `conditions` imply secondary prevention (for example CAD, MI, stent, stroke, or TIA). Medication names are matched with deterministic whole-token logic (for example `Glipizidefree` does not match). Each finding yields a `Beers2023DeltaRisk` record with delta kind (`new_avoid`, `new_caution`, `expanded_avoid`, or `concurrent_avoid`), Beers category, update summary, severity, patient age, and RESEARCH USE ONLY rationale; concurrent opioid × gabapentinoid pairs also record the second medication/agent. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BEERS_2023_DELTA_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.36 Combined Renal + Hepatic + Lactation Medication-Safety Checking
 `safety/renal_hepatic_lactation_checker.py` composes the renal-dose (eGFR), hepatic-dose (Child-Pugh), and lactation / breastfeeding checkers into a unified organ-impairment + lactation panel. It flags medications with **combined** organ and lactation concerns (same medication on organ and lactation panels when `breastfeeding=True`), **organ-only** renal and/or hepatic dose concerns, and **lactation-only** breastfeeding concerns when `breastfeeding=True`. Overlapping agents such as methotrexate, amiodarone, codeine, and tramadol illustrate why dual organ-function and breastfeeding exposure deserves a distinct, higher-salience alert.
 
-The check returns **no** findings when neither organ-function data nor breastfeeding is documented. Component matching is inherited from the standalone checkers (whole-token / whole-phrase logic). Organ severity is the maximum of any renal and hepatic component severities for that medication. Combined findings escalate severity one rank above the maximum of the organ and lactation component severities, capped at `CRITICAL`. Each finding yields a `RenalHepaticLactationRisk` record with concern kind (`combined`, `organ_only`, or `lactation_only`), optional renal/hepatic thresholds and actions, lactation concern category when applicable, overall severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, doses, breastfeeding plans, or infant care. See also `docs/guides/RENAL_HEPATIC_LACTATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The check returns **no** findings when neither organ-function data nor breastfeeding is documented. Component matching is inherited from the standalone checkers (whole-token / whole-phrase logic). Organ severity is the maximum of any renal and hepatic component severities for that medication. Combined findings escalate severity one rank above the maximum of the organ and lactation component severities, capped at `CRITICAL`. Each finding yields a `RenalHepaticLactationRisk` record with concern kind (`combined`, `organ_only`, or `lactation_only`), optional renal/hepatic thresholds and actions, lactation concern category when applicable, overall severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications, doses, breastfeeding plans, or infant care. See also `docs/guides/RENAL_HEPATIC_LACTATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.37 Pediatric Renal Dosing Checking
 `safety/pediatric_renal_checker.py` flags **renally-cleared medications in pediatric patients** (age &lt; 18 years) when **eGFR and CrCl are both missing** or when the available renal function value is **below an age-adjusted threshold**. This hazard is distinct from the adult renal-dose checker (`renal_dose_checker.py`, which requires a known eGFR) and the pediatric age/weight checker (`pediatric_dose_checker.py`): it focuses on the pediatric dosing gap when renal function data is absent or subnormal for the patient's age band.
 
-The conservative panel includes aminoglycosides (gentamicin, tobramycin, amikacin), vancomycin, acyclovir, ganciclovir, metformin, nitrofurantoin, gabapentin, pregabalin, enoxaparin, cephalosporins (cefepime, ceftazidime, cephalexin), and amoxicillin. Age-adjusted thresholds are **≥90** for patients &lt;2 years, **≥75** for 2–11 years, and **≥60** for 12–17 years (the higher of the age-band floor and the agent-specific threshold applies). A `missing_renal_function` finding is emitted when both eGFR and CrCl are unknown; a `below_renal_threshold` finding is emitted when the available value falls below the effective threshold (markedly low values elevate severity to `CRITICAL`). Medication names are matched with deterministic whole-token logic. Each finding yields a `PediatricRenalRisk` record with finding kind, matched agent, age, renal values, threshold, concern, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or order labs. See also `docs/guides/PEDIATRIC_RENAL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative panel includes aminoglycosides (gentamicin, tobramycin, amikacin), vancomycin, acyclovir, ganciclovir, metformin, nitrofurantoin, gabapentin, pregabalin, enoxaparin, cephalosporins (cefepime, ceftazidime, cephalexin), and amoxicillin. Age-adjusted thresholds are **≥90** for patients &lt;2 years, **≥75** for 2–11 years, and **≥60** for 12–17 years (the higher of the age-band floor and the agent-specific threshold applies). A `missing_renal_function` finding is emitted when both eGFR and CrCl are unknown; a `below_renal_threshold` finding is emitted when the available value falls below the effective threshold (markedly low values elevate severity to `CRITICAL`). Medication names are matched with deterministic whole-token logic. Each finding yields a `PediatricRenalRisk` record with finding kind, matched agent, age, renal values, threshold, concern, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or order labs. See also `docs/guides/PEDIATRIC_RENAL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.38 MAOI + Serotonergic Cross-Check
 `safety/maoi_serotonin_checker.py` provides a focused **MAOI × serotonergic cross-check** that complements the broader serotonin-syndrome checker (`serotonin_syndrome_checker.py`, Safety Control #14). While the serotonin-syndrome checker flags any two or more co-prescribed serotonergic agents, this checker explicitly pairs each MAOI with each concurrent non-MAOI serotonergic medication — SSRIs, SNRIs, triptans, serotonergic opioids, and others.
 
-The conservative MAOI panel includes phenelzine, tranylcypromine, isocarboxazid, selegiline, rasagiline, and linezolid. Serotonergic partners include fluoxetine, sertraline, venlafaxine, duloxetine, sumatriptan, tramadol, methadone, trazodone, mirtazapine, buspirone, dextromethorphan, lithium, and others. Every MAOI × serotonergic pair yields a `MaoiSerotoninRisk` record with both medication names, matched agents, partner drug class, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MAOI_SEROTONIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative MAOI panel includes phenelzine, tranylcypromine, isocarboxazid, selegiline, rasagiline, and linezolid. Serotonergic partners include fluoxetine, sertraline, venlafaxine, duloxetine, sumatriptan, tramadol, methadone, trazodone, mirtazapine, buspirone, dextromethorphan, lithium, and others. Every MAOI × serotonergic pair yields a `MaoiSerotoninRisk` record with both medication names, matched agents, partner drug class, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MAOI_SEROTONIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.39 Antibiotic Duration Stewardship Checking
 `safety/antibiotic_duration_checker.py` flags **antibiotic courses exceeding recommended duration** or **missing a documented stop date** when `days_on_therapy` is provided — complementing `antibiotic_stewardship_checker.py` (fluoroquinolone indication, duplicate coverage, prolonged-course text cues). This hazard is an explicit duration-cadence judgement keyed on therapy days rather than parsed medication-text duration cues.
 
-The conservative panel includes amoxicillin, azithromycin, cephalexin, ceftriaxone, ciprofloxacin, clindamycin, doxycycline, levofloxacin, metronidazole, nitrofurantoin, penicillin, piperacillin, trimethoprim/sulfamethoxazole, and vancomycin, each with a default maximum duration. Optional `indication_type` (e.g. `uti`, `pneumonia`, `skin`) selects indication-specific ceilings (typically 7–14 days). An `exceeds_recommended_duration` finding is emitted when `days_on_therapy` exceeds the effective maximum (duration &gt;2× maximum elevates severity to `HIGH`). A `missing_stop_date` finding is emitted when `stop_date_provided=False` and `days_on_therapy` ≥3 days. Returns **no** findings when `days_on_therapy` is unknown. Medication names are matched with deterministic whole-token logic. Each finding yields an `AntibioticDurationRisk` record with finding kind, matched agent, days on therapy, recommended maximum, stop-date status, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ANTIBIOTIC_DURATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative panel includes amoxicillin, azithromycin, cephalexin, ceftriaxone, ciprofloxacin, clindamycin, doxycycline, levofloxacin, metronidazole, nitrofurantoin, penicillin, piperacillin, trimethoprim/sulfamethoxazole, and vancomycin, each with a default maximum duration. Optional `indication_type` (e.g. `uti`, `pneumonia`, `skin`) selects indication-specific ceilings (typically 7–14 days). An `exceeds_recommended_duration` finding is emitted when `days_on_therapy` exceeds the effective maximum (duration &gt;2× maximum elevates severity to `HIGH`). A `missing_stop_date` finding is emitted when `stop_date_provided=False` and `days_on_therapy` ≥3 days. Returns **no** findings when `days_on_therapy` is unknown. Medication names are matched with deterministic whole-token logic. Each finding yields an `AntibioticDurationRisk` record with finding kind, matched agent, days on therapy, recommended maximum, stop-date status, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ANTIBIOTIC_DURATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.40 Electrolyte Panel (K/Mg) with QT-Prolonging Drugs
 `safety/electrolyte_qt_checker.py` flags **QT-prolonging medications** when **potassium or magnesium laboratory values are missing or below conservative thresholds** — complementing `qt_prolongation_checker.py` (additive QT drug count) and `qtc_monitoring_checker.py` (ECG surveillance cadence). Hypokalemia and hypomagnesemia increase the risk of QT prolongation and torsades de pointes, especially with QT-prolonging agents.
 
-The conservative QT panel includes methadone, ondansetron, azithromycin, amiodarone, haloperidol, citalopram, escitalopram, sotalol, and dofetilide. Thresholds are K &lt; 3.5 mmol/L and Mg &lt; 1.7 mg/dL. A `missing_electrolytes` finding is emitted when potassium and/or magnesium is not documented; `low_potassium` and `low_magnesium` findings are emitted when values fall below thresholds. Medication names are matched with deterministic whole-token logic. Each finding yields an `ElectrolyteQtRisk` record with finding kind, matched agent, electrolyte values, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or order labs. See also `docs/guides/ELECTROLYTE_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative QT panel includes methadone, ondansetron, azithromycin, amiodarone, haloperidol, citalopram, escitalopram, sotalol, and dofetilide. Thresholds are K &lt; 3.5 mmol/L and Mg &lt; 1.7 mg/dL. A `missing_electrolytes` finding is emitted when potassium and/or magnesium is not documented; `low_potassium` and `low_magnesium` findings are emitted when values fall below thresholds. Medication names are matched with deterministic whole-token logic. Each finding yields an `ElectrolyteQtRisk` record with finding kind, matched agent, electrolyte values, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or order labs. See also `docs/guides/ELECTROLYTE_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 ### 3.41 Opioid + Benzodiazepine/Z-Drug CNS Depression
 `safety/opioid_benzo_checker.py` provides a focused **opioid × benzodiazepine/Z-drug cross-check** that flags co-prescription of opioids with sedative-hypnotics — combinations that markedly increase the risk of profound CNS and respiratory depression, overdose, and death. This hazard is distinct from opioid MED summation (`opioid_med_checker.py`) and taper-schedule advisory flagging (`taper_schedule_checker.py`).
 
-The conservative opioid panel includes oxycodone, hydrocodone, morphine, fentanyl, hydromorphone, codeine, tramadol, and methadone. Benzodiazepine/Z-drug partners include alprazolam, lorazepam, diazepam, clonazepam, midazolam, temazepam, zolpidem, zopiclone, and eszopiclone. Every opioid × benzodiazepine/Z-drug pair yields an `OpioidBenzoRisk` record with both medication names, matched agents, partner drug class, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/OPIOID_BENZO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative opioid panel includes oxycodone, hydrocodone, morphine, fentanyl, hydromorphone, codeine, tramadol, and methadone. Benzodiazepine/Z-drug partners include alprazolam, lorazepam, diazepam, clonazepam, midazolam, temazepam, zolpidem, zopiclone, and eszopiclone. Every opioid × benzodiazepine/Z-drug pair yields an `OpioidBenzoRisk` record with both medication names, matched agents, partner drug class, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/OPIOID_BENZO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -273,37 +273,37 @@ The conservative opioid panel includes oxycodone, hydrocodone, morphine, fentany
 ### 3.122 Sofosbuvir + Amiodarone Bradycardia Risk
 `safety/sofosbuvir_amiodarone_checker.py` flags **sofosbuvir** (and aliases) co-prescribed with **amiodarone** (and aliases). Coadministration of sofosbuvir-containing HCV regimens with amiodarone can cause serious symptomatic bradycardia. Distinct from related DDI checkers covering other pairs.
 
-Every unique primary × partner pair across separate medication entries yields a `SofosbuvirAmiodaroneRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SOFOSBUVIR_AMIODARONE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `SofosbuvirAmiodaroneRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SOFOSBUVIR_AMIODARONE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.134 QT Prolongation Panel (Aggregate Multi-Drug Risk)
 `safety/qt_prolongation_panel.py` aggregates **multi-drug QT / torsades risk** into panel-level findings (multi-agent load, same-class clustering, optional prolonged QTc / low-electrolyte context). This control is distinct from per-drug `QTProlongationChecker` findings and named-pair `QtcDdiChecker` interactions.
 
-Every applicable aggregate yields a `QtPanelRisk` record with finding kind, agents, pharmacologic classes, optional QTc/electrolytes, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/QT_PROLONGATION_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields a `QtPanelRisk` record with finding kind, agents, pharmacologic classes, optional QTc/electrolytes, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/QT_PROLONGATION_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.135 FHIR MedicationRequest Adapter
 `safety/fhir_medication_request_adapter.py` maps **FHIR MedicationRequest-like** dicts (single resource, list, Bundle entries, or keyed MedicationRequest lists) into `Medication` objects for safety-panel use, returning a `FhirMedicationParseResult` with parse/skip notes and RESEARCH USE ONLY rationale. This control is a thin safety-panel adapter and is distinct from `extraction/fhir_parser.py` full-bundle `FHIRPatientContext` parsing.
 
-Results are **advisory** — they never create clinical orders or auto-modify therapy. See also `docs/guides/FHIR_MEDICATION_REQUEST_ADAPTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Results are **advisory** — they never create clinical orders or auto-modify therapy. See also `docs/guides/FHIR_MEDICATION_REQUEST_ADAPTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.136 Pregnancy/Lactation Risk Panel (Aggregate Reproductive Summary)
 `safety/pregnancy_lactation_risk_panel.py` aggregates **pregnancy vs lactation hit counts**, dual hits, and optional trimester context across a medication list into panel-level findings. This control is distinct from per-medication `PregnancyLactationChecker` findings.
 
-Every applicable aggregate yields a `PregnancyLactationPanelRisk` record with finding kind, hit counts, agent lists, optional trimester, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/PREGNANCY_LACTATION_RISK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields a `PregnancyLactationPanelRisk` record with finding kind, hit counts, agent lists, optional trimester, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/PREGNANCY_LACTATION_RISK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
 `safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
 
-Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.138 Lab Trend Alert Bridge (Serial Labs)
 `safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
 
-Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.139 Serotonin Syndrome Panel (Multi-Serotonergic Aggregate)
 `safety/serotonin_syndrome_panel.py` aggregates **multi-serotonergic agents** (SSRI/SNRI/MAOI/triptan/tramadol/etc.) into panel-level findings (multi-agent stack, MAOI combination, multi-class stack, SSRI/SNRI+triptan, SSRI/SNRI+serotonergic opioid). This control is distinct from per-medication `SerotoninSyndromeChecker` and pairwise `MethyleneBlueSsriChecker` findings.
 
-Every applicable aggregate yields a `SerotoninSyndromePanelRisk` record with finding kind, agent/class lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/SEROTONIN_SYNDROME_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields a `SerotoninSyndromePanelRisk` record with finding kind, agent/class lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/SEROTONIN_SYNDROME_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
 
@@ -314,8 +314,8 @@ Every applicable aggregate yields an `OpioidSedationStackRisk` record with
 finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
 Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
 auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
 
@@ -327,8 +327,8 @@ glucose draws into advisory findings (`falling_glucose_on_insulin`,
 RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
 non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
 See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
-models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.142 Anticholinergic Burden Panel (Aggregate ACB Stack)
 
@@ -339,8 +339,8 @@ findings (`acb_threshold_exceeded`, `high_acb_burden`,
 severity, and RESEARCH USE ONLY rationale. Distinct from per-medication
 `AnticholinergicBurdenChecker`. Findings never auto-modify medications.
 See `docs/guides/ANTICHOLINERGIC_BURDEN_PANEL_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.143 QTc Electrolyte Bridge (QT Agents + K/Mg Trends)
 
@@ -353,8 +353,8 @@ series, severity, and RESEARCH USE ONLY rationale. Distinct from point-in-time
 `ElectrolyteQtChecker`, multi-drug `QtProlongationPanel`, and generic
 `LabTrendAlertBridge`. Never auto-modifies medications.
 See `docs/guides/QTC_ELECTROLYTE_BRIDGE_GUIDE.md`. Prefer frontier reasoning
-models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.144 Polypharmacy Deprescribe Suggester (HITL Candidates, Any Age)
@@ -371,8 +371,8 @@ candidate stops, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 age-gated `GeriatricDeprescribingChecker` (catalog for adults ≥65). Findings are
 HITL review aids only — **never auto-stop** and never modify medications.
 See `docs/guides/POLYPHARMACY_DEPRESCRIBE_SUGGESTER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.147 Heparin Platelet Trend Bridge (HIT-Risk Cue)
 
@@ -385,8 +385,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from** drug-agnostic
 `LabTrendAlertBridge` falling-platelet cues and single-draw critical-value
 checks. Never auto-modifies medications.
 See `docs/guides/HEPARIN_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.145 NSAID + ACEI/ARB AKI Panel (Dual Pair Aggregate)
 
@@ -399,8 +399,8 @@ a diuretic**; severity escalates when a loop/thiazide diuretic is also present
 (triple-whammy awareness). **Distinct from** triad-requiring
 `TripleWhammyChecker`. Findings never auto-modify medications.
 See `docs/guides/NSAID_ACEI_AKI_PANEL_GUIDE.md`. Prefer frontier reasoning
-models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.146 Corticosteroid + NSAID GI Bleed Panel
 
@@ -413,8 +413,8 @@ fluoroquinolone + corticosteroid tendon risk (`FluoroquinoloneCorticosteroidChec
 and NSAID + SSRI/SNRI bleeding (`NsaidSsriBleedChecker`). Findings never
 auto-modify medications.
 See `docs/guides/CORTICOSTEROID_NSAID_GI_BLEED_PANEL_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.149 Amiodarone Thyroid Bridge
 
@@ -437,8 +437,8 @@ RESEARCH USE ONLY rationale. **Distinct from** pairwise `WarfarinNsaidChecker`
 and drug-agnostic `LabTrendAlertBridge` (no warfarin context). Never
 auto-modifies medications.
 See `docs/guides/WARFARIN_INR_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.148 SGLT2 Euglycemic DKA Bridge
@@ -453,8 +453,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `HypoglycemiaRiskBridge` (insulin/SU + glucose) and
 `MetforminContrastChecker`. Never auto-modifies medications.
 See `docs/guides/SGLT2_EUGLYCEMIC_DKA_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.151 Lithium Creatinine Trend Bridge
 
@@ -468,8 +468,8 @@ change, severity, and RESEARCH USE ONLY rationale. **Distinct from** pairwise
 drug-agnostic `LabTrendAlertBridge` (no lithium context). Never auto-modifies
 medications.
 See `docs/guides/LITHIUM_CREATININE_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.152 Isotretinoin Pregnancy Gate
 
@@ -482,8 +482,8 @@ pregnancy flags, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 generic multi-agent `PregnancySafetyChecker` and pairwise
 `IsotretinoinTetracyclineChecker`. Never auto-modifies medications.
 See `docs/guides/ISOTRETINOIN_PREGNANCY_GATE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.153 Vancomycin Trough Trend Bridge
 
@@ -497,8 +497,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from** pairwise
 `GentamicinVancomycinChecker` and drug-agnostic `LabTrendAlertBridge`. Never
 auto-modifies medications.
 See `docs/guides/VANCOMYCIN_TROUGH_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.154 Statin LFT Trend Bridge
 
@@ -512,8 +512,8 @@ and RESEARCH USE ONLY rationale. **Distinct from** pairwise
 `CyclosporineStatinChecker` myopathy checks and drug-agnostic
 `LabTrendAlertBridge`. Never auto-modifies medications.
 See `docs/guides/STATIN_LFT_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.155 ACEI Creatinine Rise Bridge
 
@@ -526,8 +526,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `NsaidAceiAkiPanel` NSAID stacks and `LithiumCreatinineTrendBridge` lithium
 context. Never auto-modifies medications.
 See `docs/guides/ACEI_CREATININE_RISE_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.156 Steroid Glucose Trend Bridge
 
@@ -540,8 +540,8 @@ series, percent change, severity, and RESEARCH USE ONLY rationale. **Distinct
 from** `HypoglycemiaRiskBridge` low-glucose cues and
 `CorticosteroidNsaidGiBleedPanel` GI stacks. Never auto-modifies medications.
 See `docs/guides/STEROID_GLUCOSE_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.157 Digoxin Level Trend Bridge
 
@@ -555,8 +555,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `DigoxinToxicityChecker` electrolyte/toxicity cues and `DigoxinAmioChecker` DDI
 pairs. Never auto-modifies medications.
 See `docs/guides/DIGOXIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.158 Methotrexate LFT Trend Bridge
 
@@ -569,8 +569,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from** `MtxFolateChecker`
 folate gaps, `MtxTmpsmxChecker` TMP-SMX pairs, and `StatinLftTrendBridge`
 statin context. Never auto-modifies medications.
 See `docs/guides/MTX_LFT_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.159 Clozapine ANC Trend Bridge
 
@@ -584,8 +584,8 @@ and RESEARCH USE ONLY rationale. **Distinct from** `ClozapineAncChecker`
 single-threshold reminders and `ClozapineCyp1a2Checker` CYP1A2 pairs. Never
 auto-modifies medications.
 See `docs/guides/CLOZAPINE_ANC_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.160 Lithium TSH Trend Bridge
 
@@ -599,8 +599,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `AmiodaroneThyroidBridge` amiodarone TSH/FT4 monitoring. Never auto-modifies
 medications.
 See `docs/guides/LITHIUM_TSH_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.161 Valproate Ammonia Trend Bridge
@@ -616,8 +616,8 @@ from** `ValproateCarbapenemChecker` DDI pairs and
 `LamotrigineValproateChecker` rash/DDI screening. Never auto-modifies
 medications.
 See `docs/guides/VALPROATE_AMMONIA_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.162 Heparin Anti-Xa Trend Bridge
 
@@ -631,8 +631,8 @@ severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `HeparinPlateletTrendBridge` HIT-risk platelet cues. Never auto-modifies
 medications.
 See `docs/guides/HEPARIN_ANTIXA_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.163 Tacrolimus Level Trend Bridge
@@ -645,8 +645,8 @@ Every applicable alert yields a `TacrolimusLevelTrendAlert` with agents, level s
 percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 related DDI checkers. Never auto-modifies medications.
 See `docs/guides/TACROLIMUS_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.164 Phenytoin Level Trend Bridge
@@ -659,8 +659,8 @@ Every applicable alert yields a `PhenytoinLevelTrendAlert` with agents, level se
 percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `PhenytoinFluconazoleChecker` DDI pairs. Never auto-modifies medications.
 See `docs/guides/PHENYTOIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.165 Cyclosporine Level Trend Bridge
 
@@ -672,8 +672,8 @@ Every applicable alert yields a `CyclosporineLevelTrendAlert` with agents, level
 percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `CyclosporineStatinChecker` DDI pairs. Never auto-modifies medications.
 See `docs/guides/CYCLOSPORINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.166 Gentamicin Level Trend Bridge
 
@@ -685,8 +685,8 @@ Every applicable alert yields a `GentamicinLevelTrendAlert` with agents, level s
 percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `GentamicinVancomycinChecker` DDI pairs. Never auto-modifies medications.
 See `docs/guides/GENTAMICIN_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.167 Carbamazepine Level Trend Bridge
@@ -699,8 +699,8 @@ Every applicable alert yields a `CarbamazepineLevelTrendAlert` with agents, leve
 percent change, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `CarbamazepineMacrolideChecker` DDI pairs. Never auto-modifies medications.
 See `docs/guides/CARBAMAZEPINE_LEVEL_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.168 Linezolid Platelet Trend Bridge
@@ -713,8 +713,8 @@ declining or low trends into advisory findings (`declining_platelet_on_linezolid
 severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `LinezolidSsriChecker` DDI pairs. Never auto-modifies medications.
 See `docs/guides/LINEZOLID_PLATELET_TREND_BRIDGE_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.169 HAS-BLED Bleed Risk Scorer
@@ -725,8 +725,8 @@ alcohol factors. Every call yields a `HasBledBleedRisk` with score, band
 (`low`/`moderate`/`high`), positive factors, severity, and RESEARCH USE ONLY
 rationale. **Distinct from** `AnticoagBleedingChecker` / `AnticoagBleedStackPanel`.
 Never auto-modifies medications. See `docs/guides/HAS_BLED_BLEED_RISK_SCORER_GUIDE.md`.
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.170 CHA2DS2-VASc Stroke Risk Scorer
@@ -737,8 +737,8 @@ factors. Every call yields a `Cha2ds2VascStrokeRisk` with score, band
 (`low`/`moderate`/`high`), positive factors, severity, and RESEARCH USE ONLY
 rationale. **Distinct from** `HasBledBleedRiskScorer` and anticoagulant DDI checkers.
 Never auto-modifies medications. See `docs/guides/CHA2DS2_VASC_STROKE_RISK_SCORER_GUIDE.md`.
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.171 Child-Pugh Liver Severity Scorer
@@ -749,8 +749,8 @@ Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
 domain points, severity, and RESEARCH USE ONLY rationale. **Distinct from**
 `HasBledBleedRiskScorer` / `Cha2ds2VascStrokeRiskScorer`. Never auto-modifies
 medications. See `docs/guides/CHILD_PUGH_LIVER_SEVERITY_SCORER_GUIDE.md`. Prefer
-frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -760,8 +760,8 @@ frontier reasoning models when summarizing findings: **GPT-5.5**,
 yields a `WellsPeProbability` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `HasBledBleedRiskScorer / Cha2ds2VascStrokeRiskScorer`. Never
 auto-modifies medications. See `docs/guides/WELLS_PE_PROBABILITY_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.173 Curb65Pneumonia Scorer
@@ -770,8 +770,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `Curb65PneumoniaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `ChildPughLiverSeverityScorer / VitalsTriageChecker`. Never
 auto-modifies medications. See `docs/guides/CURB65_PNEUMONIA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.174 HeartScoreAcs Scorer
 
@@ -779,8 +779,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `HeartScoreAcsRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `Cha2ds2VascStrokeRiskScorer / HasBledBleedRiskScorer`. Never
 auto-modifies medications. See `docs/guides/HEART_SCORE_ACS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.175 SofaOrganFailure Scorer
 
@@ -788,8 +788,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `SofaOrganFailureRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / Curb65PneumoniaScorer`. Never
 auto-modifies medications. See `docs/guides/SOFA_ORGAN_FAILURE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.176 GcsNeurologicStatus Scorer
 
@@ -797,8 +797,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `GcsNeurologicStatusRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `HeartScoreAcsScorer / VitalsTriageChecker`. Never
 auto-modifies medications. See `docs/guides/GCS_NEUROLOGIC_STATUS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.177 CentorStrepPharyngitis Scorer
 
@@ -806,8 +806,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `CentorStrepPharyngitisRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `Curb65PneumoniaScorer / AntibioticStewardshipChecker`. Never
 auto-modifies medications. See `docs/guides/CENTOR_STREP_PHARYNGITIS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.178 QSofaSepsisScreen Scorer
@@ -816,8 +816,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `QSofaSepsisScreenRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `SofaOrganFailureScorer / VitalsTriageChecker`. Never
 auto-modifies medications. See `docs/guides/QSOFA_SEPSIS_SCREEN_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.179 News2EarlyWarning Scorer
@@ -826,8 +826,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `News2EarlyWarningRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `VitalsTriageChecker / QSofaSepsisScreenScorer`. Never
 auto-modifies medications. See `docs/guides/NEWS2_EARLY_WARNING_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.180 CapriniVteRisk Scorer
@@ -836,8 +836,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `CapriniVteRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / HasBledBleedRiskScorer`. Never
 auto-modifies medications. See `docs/guides/CAPRINI_VTE_RISK_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -847,8 +847,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `OttawaAnkleRuleRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / CapriniVteRiskScorer`. Never
 auto-modifies medications. See `docs/guides/OTTAWA_ANKLE_RULE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -858,8 +858,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `PsiPortPneumoniaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `Curb65PneumoniaScorer / SofaOrganFailureScorer`. Never
 auto-modifies medications. See `docs/guides/PSI_PORT_PNEUMONIA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -869,8 +869,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `PaduaVteRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `CapriniVteRiskScorer / WellsPeProbabilityScorer`. Never
 auto-modifies medications. See `docs/guides/PADUA_VTE_RISK_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.184 AlvaradoAppendicitis Scorer
 
@@ -878,8 +878,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `AlvaradoAppendicitisRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `OttawaAnkleRuleScorer / CentorStrepPharyngitisScorer`. Never
 auto-modifies medications. See `docs/guides/ALVARADO_APPENDICITIS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.185 WellsDvtProbability Scorer
 
@@ -887,8 +887,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `WellsDvtProbability` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / CapriniVteRiskScorer`. Never
 auto-modifies medications. See `docs/guides/WELLS_DVT_PROBABILITY_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.186 PercPeExclusion Scorer
 
@@ -896,8 +896,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `PercPeExclusionRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / PaduaVteRiskScorer`. Never
 auto-modifies medications. See `docs/guides/PERC_PE_EXCLUSION_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.187 NihssStroke Scorer
 
@@ -905,8 +905,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `NihssStrokeRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `Cha2ds2VascStrokeRiskScorer / FallRiskChecker`. Never
 auto-modifies medications. See `docs/guides/NIHSS_STROKE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.188 TimiUaNstemi Scorer
 
@@ -914,8 +914,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `TimiUaNstemiRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `PercPeExclusionScorer / WellsDvtProbabilityScorer`. Never
 auto-modifies medications. See `docs/guides/TIMI_UA_NSTEMI_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.189 CanadianCspineRule Scorer
 
@@ -923,8 +923,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `CanadianCspineRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `OttawaAnkleRuleScorer / FallRiskChecker`. Never
 auto-modifies medications. See `docs/guides/CANADIAN_CSPINE_RULE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.190 SanFranciscoSyncopeRule Scorer
 
@@ -932,8 +932,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `SanFranciscoSyncopeRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `NihssStrokeScorer / FallRiskChecker`. Never
 auto-modifies medications. See `docs/guides/SAN_FRANCISCO_SYNCOPE_RULE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.191 Abcd2TiaRisk Scorer
 
@@ -941,8 +941,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `Abcd2TiaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `NihssStrokeScorer / Cha2ds2VascStrokeRiskScorer`. Never
 auto-modifies medications. See `docs/guides/ABCD2_TIA_RISK_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.192 RevisedGenevaPe Scorer
 
@@ -950,8 +950,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `RevisedGenevaPeRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / PercPeExclusionScorer`. Never
 auto-modifies medications. See `docs/guides/REVISED_GENEVA_PE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.193 RansonPancreatitis Scorer
 
@@ -959,8 +959,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `RansonPancreatitisRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `AlvaradoAppendicitisScorer / SofaOrganFailureScorer`. Never
 auto-modifies medications. See `docs/guides/RANSON_PANCREATITIS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.194 MeldNa Scorer
 
@@ -968,8 +968,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `MeldNaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `ChildPughLiverSeverityScorer / SofaOrganFailureScorer`. Never
 auto-modifies medications. See `docs/guides/MELD_NA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.195 LrinecNecfasc Scorer
 
@@ -977,8 +977,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `LrinecNecfascRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `CentorStrepPharyngitisScorer / SofaOrganFailureScorer`. Never
 auto-modifies medications. See `docs/guides/LRINEC_NECFASC_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.196 PecarnHeadTrauma Scorer
 
@@ -986,8 +986,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `PecarnHeadTraumaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `CanadianCspineRuleScorer / FallRiskChecker`. Never
 auto-modifies medications. See `docs/guides/PECARN_HEAD_TRAUMA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.197 BodeCopd Scorer
 
@@ -995,8 +995,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `BodeCopdRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Never
 auto-modifies medications. See `docs/guides/BODE_COPD_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.198 KampalaTrauma Scorer
 
@@ -1004,8 +1004,8 @@ reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
 yields a `KampalaTraumaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Never
 auto-modifies medications. See `docs/guides/KAMPALA_TRAUMA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.199 PesiPeSeverity Scorer
 
@@ -1023,296 +1023,296 @@ auto-modifies medications. See `docs/guides/APACHE_II_LITE_SCORER_GUIDE.md`. Pre
 yields a `OttawaKneeRuleRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `OttawaAnkleRuleScorer / CanadianCspineRuleScorer`. Never
 auto-modifies medications. See `docs/guides/OTTAWA_KNEE_RULE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.202 GlasgowBlatchford Scorer
 `GlasgowBlatchfordScorer` computes an advisory score (MDCalc / ACG / EHR Glasgow-Blatchford GI bleed score gap). Every call
 yields a `GlasgowBlatchfordRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `RockallGiBleedScorer / Curb65PneumoniaScorer`. Never
 auto-modifies medications. See `docs/guides/GLASGOW_BLATCHFORD_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.203 RockallGiBleed Scorer
 `RockallGiBleedScorer` computes an advisory score (MDCalc / BSG / EHR Rockall upper-GI bleed score gap). Every call
 yields a `RockallGiBleedRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `GlasgowBlatchfordScorer / Curb65PneumoniaScorer`. Never
 auto-modifies medications. See `docs/guides/ROCKALL_GI_BLEED_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.204 CiwaArWithdrawal Scorer
 `CiwaArWithdrawalScorer` computes an advisory score (MDCalc / ASAM / EHR CIWA-Ar alcohol withdrawal score gap). Every call
 yields a `CiwaArWithdrawalRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `GcsNeurologicStatusScorer / FallRiskChecker`. Never
 auto-modifies medications. See `docs/guides/CIWA_AR_WITHDRAWAL_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.206 KillipClass Scorer
 `KillipClassScorer` computes an advisory score (MDCalc / ACC / EHR Killip classification gap). Every call
 yields a `KillipClassRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `TimiUaNstemiScorer / HeartScoreAcsScorer`. Never
 auto-modifies medications. See `docs/guides/KILLIP_CLASS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.205 HuntHessSah Scorer
 `HuntHessSahScorer` computes an advisory score (MDCalc / AHA / EHR Hunt-Hess SAH grade gap). Every call
 yields a `HuntHessSahRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `NihssStrokeScorer / GcsNeurologicStatusScorer`. Never
 auto-modifies medications. See `docs/guides/HUNT_HESS_SAH_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.207 Crb65Pneumonia Scorer
 `Crb65PneumoniaScorer` computes an advisory score (MDCalc / BTS / EHR CRB-65 pneumonia score gap). Every call
 yields a `Crb65PneumoniaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `Curb65PneumoniaScorer / PsiPortPneumoniaScorer`. Never
 auto-modifies medications. See `docs/guides/CRB65_PNEUMONIA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.210 NexusCspine Scorer
 `NexusCspineScorer` computes an advisory score (MDCalc / ACEP / EHR NEXUS C-spine rule gap). Every call
 yields a `NexusCspineRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `CanadianCspineRuleScorer / OttawaAnkleRuleScorer`. Never
 auto-modifies medications. See `docs/guides/NEXUS_CSPINE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.208 WfnsSah Scorer
 `WfnsSahScorer` computes an advisory score (MDCalc / AHA / EHR WFNS SAH grade gap). Every call
 yields a `WfnsSahRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `HuntHessSahScorer / NihssStrokeScorer`. Never
 auto-modifies medications. See `docs/guides/WFNS_SAH_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.209 GraceAcs Scorer
 `GraceAcsScorer` computes an advisory score (MDCalc / ACC / EHR GRACE ACS risk gap). Every call
 yields a `GraceAcsRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `KillipClassScorer / HeartScoreAcsScorer / TimiUaNstemiScorer`. Never
 auto-modifies medications. See `docs/guides/GRACE_ACS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.211 Mews Scorer
 `MewsScorer` computes an advisory score (MDCalc / NICE / EHR MEWS gap). Every call
 yields a `MewsRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `News2EarlyWarningScorer / VitalsTriageChecker`. Never
 auto-modifies medications. See `docs/guides/MEWS_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.212 FisherGrade Scorer
 `FisherGradeScorer` computes an advisory score (MDCalc / AHA Fisher grade gap). Every call
 yields a `FisherGradeRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `HuntHessSahScorer / WfnsSahScorer`. Never
 auto-modifies medications. See `docs/guides/FISHER_GRADE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.213 IchScore Scorer
 `IchScoreScorer` computes an advisory score (MDCalc / AHA ICH score gap). Every call
 yields a `IchScoreRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WfnsSahScorer / HuntHessSahScorer / NihssStrokeScorer`. Never
 auto-modifies medications. See `docs/guides/ICH_SCORE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.214 FourScore Scorer
 `FourScoreScorer` computes an advisory score (MDCalc / Neurocritical Care FOUR score gap). Every call
 yields a `FourScoreRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `GcsNeurologicStatusScorer / WfnsSahScorer`. Never
 auto-modifies medications. See `docs/guides/FOUR_SCORE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.215 OttawaSahRule Scorer
 `OttawaSahRuleScorer` computes an advisory score (MDCalc / ACEP Ottawa SAH Rule gap). Every call
 yields a `OttawaSahRuleRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `HuntHessSahScorer / WfnsSahScorer / FisherGradeScorer`. Never
 auto-modifies medications. See `docs/guides/OTTAWA_SAH_RULE_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.216 CanadianCtHead Scorer
 `CanadianCtHeadScorer` computes an advisory score (MDCalc / ACEP Canadian CT Head Rule gap). Every call
 yields a `CanadianCtHeadRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `PecarnHeadTraumaScorer / NexusCspineScorer`. Never
 auto-modifies medications. See `docs/guides/CANADIAN_CT_HEAD_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.217 RochesterCriteria Scorer
 `RochesterCriteriaScorer` computes an advisory score (MDCalc / AAP Rochester criteria for febrile infants). Every call
 yields a `RochesterCriteriaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `PecarnHeadTraumaScorer / CentorStrepPharyngitisScorer`. Never
 auto-modifies medications. See `docs/guides/ROCHESTER_CRITERIA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.218 LightCriteria Scorer
 `LightCriteriaScorer` computes an advisory score (MDCalc / ATS Light criteria for pleural effusion). Every call
 yields a `LightCriteriaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `WellsPeProbabilityScorer / PsiPortPneumoniaScorer`. Never
 auto-modifies medications. See `docs/guides/LIGHT_CRITERIA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.219 JonesCriteria Scorer
 `JonesCriteriaScorer` computes an advisory score (MDCalc / AHA Jones criteria for acute rheumatic fever). Every call
 yields a `JonesCriteriaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. **Distinct from** `CentorStrepPharyngitisScorer / HeartScoreAcsScorer`. Never
 auto-modifies medications. See `docs/guides/JONES_CRITERIA_SCORER_GUIDE.md`. Prefer frontier
-reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.220 FeverPain Scorer
 `FeverPainScorer` computes an advisory score (MDCalc / NICE FeverPAIN pharyngitis score). Every call
 yields a `FeverPainRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.221 BishopScore Scorer
 `BishopScoreScorer` computes an advisory score (MDCalc / ACOG Bishop score for induction readiness). Every call
 yields a `BishopScoreRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.222 ApgarScore Scorer
 `ApgarScoreScorer` computes an advisory score (MDCalc / AAP Apgar newborn score). Every call
 yields a `ApgarScoreRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.223 PewsEarlyWarning Scorer
 `PewsEarlyWarningScorer` computes an advisory score (MDCalc / RCN PEWS pediatric early warning score). Every call
 yields a `PewsEarlyWarningRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.224 DukeEndocarditisCriteria Scorer
 `DukeEndocarditisCriteriaScorer` computes an advisory score (MDCalc / AHA modified Duke endocarditis criteria). Every call
 yields a `DukeEndocarditisCriteriaRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.225 SirsCriteria Scorer
 `SirsCriteriaScorer` computes an advisory score (MDCalc / SCCM SIRS criteria screen). Every call
 yields a `SirsCriteriaRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.226 PhoenixSepsisCriteria Scorer
 `PhoenixSepsisCriteriaScorer` computes an advisory score (MDCalc / SCCM Phoenix sepsis criteria). Every call
 yields a `PhoenixSepsisCriteriaRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.227 PrismIiiPediatric Scorer
 `PrismIiiPediatricScorer` computes an advisory score (MDCalc / PICU PRISM III pediatric ICU score). Every call
 yields a `PrismIiiPediatricRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.228 MaddreyDiscriminant Scorer
 `MaddreyDiscriminantScorer` computes an advisory score (MDCalc Maddrey discriminant function for alcoholic hepatitis). Every call
 yields a `MaddreyDiscriminantRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.231 LamsStrokeScale Scorer
 `LamsStrokeScaleScorer` computes an advisory score (MDCalc / AHA LAMS large-vessel occlusion screen). Every call
 yields a `LamsStrokeScaleRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.230 RaceStrokeScale Scorer
 `RaceStrokeScaleScorer` computes an advisory score (MDCalc / AHA RACE stroke scale). Every call
 yields a `RaceStrokeScaleRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.229 StopBangOsa Scorer
 `StopBangOsaScorer` computes an advisory score (MDCalc / ASA STOP-BANG OSA screen). Every call
 yields a `StopBangOsaRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.232 MallampatiAirway Scorer
 `MallampatiAirwayScorer` computes an advisory score (MDCalc / ASA Mallampati airway class screen). Every call
 yields a `MallampatiAirwayRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.233 EpworthSleepiness Scorer
 `EpworthSleepinessScorer` computes an advisory score (MDCalc / AASM Epworth Sleepiness Scale screen). Every call
 yields a `EpworthSleepinessRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.234 CincinnatiPrehospitalStroke Scorer
 `CincinnatiPrehospitalStrokeScorer` computes an advisory score (MDCalc / AHA Cincinnati Prehospital Stroke Scale screen). Every call
 yields a `CincinnatiPrehospitalStrokeRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.235 ShockIndex Scorer
 `ShockIndexScorer` computes an advisory score (MDCalc / AHA Shock Index screen). Every call
 yields a `ShockIndexRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.236 RemsPeSeverity Scorer
 `RemsPeSeverityScorer` computes an advisory score (MDCalc / ESC REMs PE severity screen). Every call
 yields a `RemsPeSeverityRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.237 SmartCopPneumonia Scorer
 `SmartCopPneumoniaScorer` computes an advisory score (MDCalc / IDSA SMART-COP pneumonia severity screen). Every call
 yields a `SmartCopPneumoniaRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.238 Fib4Liver Scorer
 `Fib4LiverScorer` computes an advisory score (MDCalc / AASLD FIB-4 liver fibrosis screen). Every call
 yields a `Fib4LiverRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.239 BisapPancreatitis Scorer
 `BisapPancreatitisScorer` computes an advisory score (MDCalc / ACG BISAP pancreatitis severity screen). Every call
 yields a `BisapPancreatitisRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.240 Phq9Depression Scorer
 `Phq9DepressionScorer` computes an advisory score (MDCalc / USPSTF PHQ-9 depression severity screen). Every call
 yields a `Phq9DepressionRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.241 MorseFall Scorer
 `MorseFallScorer` computes an advisory score (MDCalc / AHRQ Morse Fall Scale screen). Every call
 yields a `MorseFallRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.243 Gad7Anxiety Scorer
 `Gad7AnxietyScorer` computes an advisory score (MDCalc / USPSTF GAD-7 anxiety severity screen). Every call
 yields a `Gad7AnxietyRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.242 BradenPressure Scorer
 `BradenPressureScorer` computes an advisory score (MDCalc / NPUAP Braden pressure-injury risk screen). Every call
 yields a `BradenPressureRisk` with score, band, positive factors, severity, and
-rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2
+rationale. RESEARCH USE ONLY — never modifies medications. Prefer GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro
 for narrative summaries only.
 
 ### 3.244 AscvdRisk Scorer
@@ -1364,94 +1364,94 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 `Curb65SerialDeltaPanel` computes an advisory score (MDCalc / CURB-65 serial delta-trend panel). Every call
 yields a `Curb65SerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.253 QsofaSerialDelta Panel
 `QsofaSerialDeltaPanel` computes an advisory score (MDCalc / qSOFA serial delta-trend panel). Every call
 yields a `QsofaSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.255 SofaSerialDelta Panel
 `SofaSerialDeltaPanel` computes an advisory score (MDCalc / SOFA serial delta-trend panel). Every call
 yields a `SofaSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.256 MewsSerialDelta Panel
 `MewsSerialDeltaPanel` computes an advisory score (MDCalc / MEWS serial delta-trend panel). Every call
 yields a `MewsSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.257 ForresterClass Scorer
 `ForresterClassScorer` computes an advisory score (MDCalc / Killip-Forrester hemodynamic class screen). Every call
 yields a `ForresterClassRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.258 AspectsStroke Scorer
 `AspectsStrokeScorer` computes an advisory score (MDCalc / ASPECTS early ischemic change screen). Every call
 yields a `AspectsStrokeRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.268 PercSerialDelta Panel
 `PercSerialDeltaPanel` computes an advisory score (MDCalc / PERC serial delta-trend panel). Every call
 yields a `PercSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.269 KillipSerialDelta Panel
 `KillipSerialDeltaPanel` computes an advisory score (MDCalc / Killip serial delta-trend panel). Every call
 yields a `KillipSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.270 Cha2ds2VascSerialDelta Panel
 `Cha2ds2VascSerialDeltaPanel` computes an advisory score (MDCalc / CHA2DS2-VASc serial delta-trend panel). Every call
 yields a `Cha2ds2VascSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.271 CentorSerialDelta Panel
 `CentorSerialDeltaPanel` computes an advisory score (MDCalc / Centor serial delta-trend panel). Every call
 yields a `CentorSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.272 ChildPughSerialDelta Panel
 `ChildPughSerialDeltaPanel` computes an advisory score (MDCalc / Child-Pugh serial delta-trend panel). Every call
 yields a `ChildPughSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.273 MeldNaSerialDelta Panel
 `MeldNaSerialDeltaPanel` computes an advisory score (MDCalc / MELD-Na serial delta-trend panel). Every call
 yields a `MeldNaSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.274 AlvaradoSerialDelta Panel
 `AlvaradoSerialDeltaPanel` computes an advisory score (MDCalc / Alvarado serial delta-trend panel). Every call
 yields a `AlvaradoSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.275 NihssSerialDelta Panel
 `NihssSerialDeltaPanel` computes an advisory score (MDCalc / NIHSS serial delta-trend panel). Every call
 yields a `NihssSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.276 GcsSerialDelta Panel
 `GcsSerialDeltaPanel` computes an advisory score (MDCalc / GCS serial delta-trend panel). Every call
 yields a `GcsSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.277 RansonSerialDelta Panel
 `RansonSerialDeltaPanel` computes an advisory score (MDCalc / Ranson serial delta-trend panel). Every call
@@ -1472,130 +1472,130 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 `CanadianCtHeadSerialDeltaPanel` computes an advisory score (MDCalc / Canadian CT Head Rule serial delta-trend panel). Every call
 yields a `CanadianCtHeadSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`CanadianCtHeadScorer` / `PecarnSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.284 PecarnSerialDelta Panel
 `PecarnSerialDeltaPanel` computes an advisory score (MDCalc / PECARN pediatric head trauma serial delta-trend panel). Every call
 yields a `PecarnSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`PecarnHeadTraumaScorer` / `CanadianCtHeadSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.285 NexusCspineSerialDelta Panel
 `NexusCspineSerialDeltaPanel` computes an advisory score (MDCalc / NEXUS C-spine serial delta-trend panel). Every call
 yields a `NexusCspineSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`NexusCspineScorer` / `CanadianCspineRuleScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.286 OttawaSahSerialDelta Panel
 `OttawaSahSerialDeltaPanel` computes an advisory score (MDCalc / Ottawa SAH Rule serial delta-trend panel). Every call
 yields a `OttawaSahSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`OttawaSahRuleScorer` / `HuntHessSahScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.287 PesiSerialDelta Panel
 `PesiSerialDeltaPanel` computes an advisory score (MDCalc / PESI PE severity serial delta-trend panel). Every call
 yields a `PesiSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`PesiPeSeverityScorer` / `WellsPeSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`PesiPeSeverityScorer` / `WellsPeSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.288 GlasgowBlatchfordSerialDelta Panel
 `GlasgowBlatchfordSerialDeltaPanel` computes an advisory score (MDCalc / Glasgow-Blatchford GI bleed serial delta-trend panel). Every call
 yields a `GlasgowBlatchfordSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`GlasgowBlatchfordScorer` / `RockallGiBleedScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.289 FourScoreSerialDelta Panel
 `FourScoreSerialDeltaPanel` computes an advisory score (MDCalc / FOUR Score serial delta-trend panel). Every call
 yields a `FourScoreSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`FourScoreScorer` / `GcsSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.290 HuntHessSerialDelta Panel
 `HuntHessSerialDeltaPanel` computes an advisory score (MDCalc / Hunt-Hess SAH serial delta-trend panel). Every call
 yields a `HuntHessSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`HuntHessSahScorer` / `OttawaSahSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`HuntHessSahScorer` / `OttawaSahSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.291 WfnsSerialDelta Panel
 `WfnsSerialDeltaPanel` computes an advisory score (MDCalc / WFNS SAH serial delta-trend panel). Every call
 yields a `WfnsSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`WfnsSahScorer` / `HuntHessSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`WfnsSahScorer` / `HuntHessSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.292 ForresterSerialDelta Panel
 `ForresterSerialDeltaPanel` computes an advisory score (MDCalc / Forrester hemodynamic serial delta-trend panel). Every call
 yields a `ForresterSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`ForresterClassScorer` / `KillipSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`ForresterClassScorer` / `KillipSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.293 FourAtSerialDelta Panel
 `FourAtSerialDeltaPanel` computes an advisory score (MDCalc / 4AT delirium serial delta-trend panel). Every call
 yields a `FourAtSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`FourAtDeliriumScorer` / `FourScoreSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`FourAtDeliriumScorer` / `FourScoreSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.294 EcogSerialDelta Panel
 `EcogSerialDeltaPanel` computes an advisory score (MDCalc / ECOG performance serial delta-trend panel). Every call
 yields a `EcogSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`EcogPerformanceScorer` / `KarnofskyPerformanceScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`EcogPerformanceScorer` / `KarnofskyPerformanceScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 
 ### 3.295 RassSerialDelta Panel
 `RassSerialDeltaPanel` computes an advisory score (MDCalc / RASS sedation serial delta-trend panel). Every call
 yields a `RassSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`RassSedationScorer` / `CamIcuDeliriumScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 
 ### 3.296 KarnofskySerialDelta Panel
 `KarnofskySerialDeltaPanel` computes an advisory score (MDCalc / Karnofsky performance serial delta-trend panel). Every call
 yields a `KarnofskySerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`KarnofskyPerformanceScorer` / `EcogSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`KarnofskyPerformanceScorer` / `EcogSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 
 ### 3.297 CamIcuSerialDelta Panel
 `CamIcuSerialDeltaPanel` computes an advisory score (MDCalc / CAM-ICU delirium serial delta-trend panel). Every call
 yields a `CamIcuSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`CamIcuDeliriumScorer` / `FourAtSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.298 BradenSerialDelta Panel
 `BradenSerialDeltaPanel` computes an advisory score (MDCalc / Braden pressure-injury serial delta-trend panel). Every call
 yields a `BradenSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`BradenPressureScorer` / `MorseFallScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`BradenPressureScorer` / `MorseFallScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.299 MorseFallSerialDelta Panel
 `MorseFallSerialDeltaPanel` computes an advisory score (MDCalc / Morse Fall Scale serial delta-trend panel). Every call
 yields a `MorseFallSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`MorseFallScorer` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`MorseFallScorer` / `BradenPressureScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.300 CiwaSerialDelta Panel
 `CiwaSerialDeltaPanel` computes an advisory score (MDCalc / CIWA-Ar withdrawal serial delta-trend panel). Every call
 yields a `CiwaSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`CiwaArWithdrawalScorer` / `RassSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`CiwaArWithdrawalScorer` / `RassSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.301 WaterlowSerialDelta Panel
 `WaterlowSerialDeltaPanel` computes an advisory score (MDCalc / Waterlow pressure-ulcer serial delta-trend panel). Every call
 yields a `WaterlowSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`BradenSerialDeltaPanel` / `BradenPressureScorer`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`BradenSerialDeltaPanel` / `BradenPressureScorer`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.302 BarthelSerialDelta Panel
 `BarthelSerialDeltaPanel` computes an advisory score (MDCalc / Barthel ADL serial delta-trend panel). Every call
 yields a `BarthelSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`BarthelAdlScorer` / `KarnofskySerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`BarthelAdlScorer` / `KarnofskySerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.303 MocaSerialDelta Panel
 `MocaSerialDeltaPanel` computes an advisory score (MDCalc / MoCA cognition serial delta-trend panel). Every call
 yields a `MocaSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. RESEARCH USE ONLY — never modifies therapy. Distinct from
-`FourScoreSerialDeltaPanel` / `GcsSerialDeltaPanel`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
+`FourScoreSerialDeltaPanel` / `GcsSerialDeltaPanel`. Stack: GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro.
 
 ### 3.306 KatzSerialDelta Panel
 `KatzSerialDeltaPanel` computes an advisory score (MDCalc / Katz ADL serial delta-trend panel). Every call
@@ -2235,84 +2235,84 @@ rationale. RESEARCH USE ONLY — never modifies medications.
 ### 3.123 Rivaroxaban + Rifampin Induction Risk
 `safety/rivaroxaban_rifampin_checker.py` flags **rivaroxaban** (and aliases) co-prescribed with **rifampin** (and aliases). Rifampin strongly induces CYP3A4 and P-gp, reducing rivaroxaban exposure and increasing thrombotic risk. Distinct from related DDI checkers covering other pairs.
 
-Every unique primary × partner pair across separate medication entries yields a `RivaroxabanRifampinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIVAROXABAN_RIFAMPIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `RivaroxabanRifampinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIVAROXABAN_RIFAMPIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.124 Flecainide + Strong CYP2D6 Inhibitor Risk
 `safety/flecainide_cyp2d6_checker.py` flags **flecainide** (and aliases) co-prescribed with **strong CYP2D6 inhibitors** (fluoxetine, paroxetine, bupropion, quinidine, and brands). Flecainide is a CYP2D6 substrate; strong CYP2D6 inhibitors raise flecainide levels and proarrhythmia risk. Distinct from related CYP/bleeding checkers covering other pairs.
 
-Every unique primary × partner pair across separate medication entries yields a `FlecainideCyp2d6Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLECAINIDE_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `FlecainideCyp2d6Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLECAINIDE_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.125 Tacrolimus + Rifampin Induction Risk
 `safety/tacrolimus_rifampin_checker.py` flags **tacrolimus** (and aliases) co-prescribed with **rifampin** (and aliases). Rifampin strongly induces CYP3A4, markedly reducing tacrolimus exposure and raising transplant rejection risk. Distinct from tacrolimus CYP3A4 inhibitor exposure checking and other rifampin induction screens.
 
-Every unique primary × partner pair across separate medication entries yields a `TacrolimusRifampinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TACROLIMUS_RIFAMPIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `TacrolimusRifampinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TACROLIMUS_RIFAMPIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.126 Ethinylestradiol + Lamotrigine Level Reduction Risk
 `safety/ethinylestradiol_lamotrigine_checker.py` flags **lamotrigine** (and aliases) co-prescribed with **ethinylestradiol-containing combined oral contraceptives** (and aliases). Ethinylestradiol induces UGT glucuronidation of lamotrigine, reducing levels and increasing seizure risk. Distinct from lamotrigine + valproate SJS/TEN checking and rifampin + OC screens.
 
-Every unique primary × partner pair across separate medication entries yields a `EthinylestradiolLamotrigineRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ETHINYLESTRADIOL_LAMOTRIGINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `EthinylestradiolLamotrigineRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ETHINYLESTRADIOL_LAMOTRIGINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.127 Sirolimus + Strong CYP3A4 Inhibitor Risk
 `safety/sirolimus_strong_cyp3a4_checker.py` flags **sirolimus** (and aliases) co-prescribed with **strong CYP3A4 inhibitors** (ketoconazole, clarithromycin, itraconazole, ritonavir, and optional grapefruit). Sirolimus is a CYP3A4/P-gp substrate; strong CYP3A4 inhibitors raise sirolimus levels and toxicity risk. Distinct from tacrolimus CYP3A4 inhibitor exposure and other mTOR/CYP3A4 screens.
 
-Every unique primary × partner pair across separate medication entries yields a `SirolimusStrongCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SIROLIMUS_STRONG_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `SirolimusStrongCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SIROLIMUS_STRONG_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.128 Adult NEWS2-Style Vitals Triage
 `safety/vitals_triage_checker.py` maps adult **SpO2, respiratory rate, systolic BP, heart rate, and temperature** onto educational **NEWS2 single-parameter bands**, emitting advisory `VitalsTriageRisk` findings with NEWS2 scores and severities. This is deterministic triage education — distinct from MedPrompt-style free-text clinical triage prompting and from medication/DDI safety checkers.
 
-Unrecognized vital names are ignored. Temperature is interpreted in °C. Findings include RESEARCH USE ONLY rationales and are sorted by descending severity. Findings are **advisory** — they never modify vitals, order oxygen, or escalate care. Optional FHIR Observation parsing can populate `FHIRPatientContext.vital_signs`. See also `docs/guides/VITALS_TRIAGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Unrecognized vital names are ignored. Temperature is interpreted in °C. Findings include RESEARCH USE ONLY rationales and are sorted by descending severity. Findings are **advisory** — they never modify vitals, order oxygen, or escalate care. Optional FHIR Observation parsing can populate `FHIRPatientContext.vital_signs`. See also `docs/guides/VITALS_TRIAGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 ### 3.129 Disease × Medication Contraindication Panel
 `safety/disease_contraindication_checker.py` flags curated **condition × drug** educational contraindications (heart failure + NSAIDs, asthma + nonselective beta-blockers, Parkinson disease + dopamine-blocking antiemetics, gout + thiazides, myasthenia gravis + aminoglycosides, CKD + NSAIDs). Whole-token matching is used for conditions and medications. This hazard is distinct from pairwise drug–drug interaction checkers and from MedPrompt-style free-text disease–drug prompting.
 
-Every matching panel × condition × medication × agent combination yields a `DiseaseContraindicationRisk` record with panel id, condition, agent, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/DISEASE_CONTRAINDICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every matching panel × condition × medication × agent combination yields a `DiseaseContraindicationRisk` record with panel id, condition, agent, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/DISEASE_CONTRAINDICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.130 Allergy Inter-Class Cross-Reactivity
 `safety/allergy_interclass_checker.py` flags curated **inter-class** allergy × medication educational risks (for example penicillin allergy ↔ cephalosporin medication, penicillin allergy ↔ carbapenem, cephalosporin allergy ↔ penicillin, sulfonamide allergy ↔ selected non-antibiotic sulfonamides). Whole-token matching is used for allergy and medication names. This hazard is distinct from the intra-class / direct `AllergyChecker` screen, which deliberately does not model inter-class cross-reactivity.
 
-Every matching panel × allergy × medication combination yields an `AllergyInterClassRisk` record with allergy/medication classes and agents, panel id, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ALLERGY_INTERCLASS_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every matching panel × allergy × medication combination yields an `AllergyInterClassRisk` record with allergy/medication classes and agents, panel id, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ALLERGY_INTERCLASS_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.131 Renal Dose Adjuster (Banded Regimen Suggestions)
 `safety/renal_dose_adjuster.py` emits **banded educational regimen suggestions** for a curated renally cleared panel (gabapentin, pregabalin, metformin, allopurinol, enoxaparin, digoxin, atenolol, colchicine) when eGFR is known. Each finding includes `band_label` and `suggested_regimen`. This control is distinct from `RenalDoseChecker`, which only emits avoid / reduce-dose flags without regimen bands.
 
-Every matching medication × eGFR band yields a `RenalDoseAdjustment` record with agent, eGFR, band label, suggested regimen, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/RENAL_DOSE_ADJUSTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every matching medication × eGFR band yields a `RenalDoseAdjustment` record with agent, eGFR, band label, suggested regimen, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/RENAL_DOSE_ADJUSTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.132 Clinical Guideline Matcher
 `safety/clinical_guideline_matcher.py` matches patient conditions to a curated **educational clinical-guideline panel** (HFrEF GDMT cues, hypertension first-line classes, T2DM cardiorenal therapy cues, CKD ACEi/ARB + SGLT2 cues, atrial-fibrillation stroke-prevention awareness, ASCVD secondary-prevention cues). Whole-token matching is used for conditions. Optional medication lists annotate which cue agents are already present but do not block matches. This control is distinct from `DiseaseContraindicationChecker`, which flags condition × drug **contraindications** rather than positive guideline reminders.
 
-Every matching guideline × condition combination yields a `GuidelineMatch` record with guideline id/label, educational cue, present cue agents, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/CLINICAL_GUIDELINE_MATCHER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every matching guideline × condition combination yields a `GuidelineMatch` record with guideline id/label, educational cue, present cue agents, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/CLINICAL_GUIDELINE_MATCHER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.133 Pediatric Weight Dose Adjuster (Banded Regimen Suggestions)
 `safety/pediatric_weight_dose_adjuster.py` emits **weight-banded educational regimen suggestions** for a curated paediatric panel (acetaminophen/paracetamol, ibuprofen, amoxicillin, cetirizine, ondansetron, diphenhydramine) when weight in kilograms is known. Each finding includes `band_label` and `suggested_regimen`. This control is distinct from `PediatricDoseChecker`, which only emits age-contraindication / mg/kg-excess flags without regimen bands.
 
-Every matching medication × weight band yields a `PediatricWeightDoseAdjustment` record with agent, weight, band label, suggested regimen, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/PEDIATRIC_WEIGHT_DOSE_ADJUSTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every matching medication × weight band yields a `PediatricWeightDoseAdjustment` record with agent, weight, band label, suggested regimen, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications or prescribe therapy. See also `docs/guides/PEDIATRIC_WEIGHT_DOSE_ADJUSTER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
 ### 3.42 Chemotherapy Emetogenicity and Antiemetic Prophylaxis
 `safety/chemo_emesis_checker.py` flags **high/moderate emetogenic chemotherapy** when **antiemetic prophylaxis cues are missing** from the medication list, or when `days_since_chemo` suggests the **delayed CINV window (days 2–5)** without delayed-phase antiemetic coverage (aprepitant, fosaprepitant, dexamethasone, or olanzapine). This hazard is distinct from lactation chemotherapy flagging and QT-prolonging antiemetic surveillance.
 
-The conservative emetogenic panel includes cisplatin, carboplatin, doxorubicin, cyclophosphamide, dacarbazine, ifosfamide, and oxaliplatin (high or moderate emetogenicity). Antiemetic prophylaxis agents include ondansetron, granisetron, palonosetron, aprepitant, fosaprepitant, dexamethasone, and olanzapine. A `missing_antiemetic_prophylaxis` finding is emitted when no antiemetic is documented; a `delayed_phase_uncovered` finding is emitted when `days_since_chemo` falls in the delayed window without delayed-phase coverage. Medication names are matched with deterministic whole-token logic. Each finding yields a `ChemoEmesisRisk` record with finding kind, emetogenic level, days since chemo, antiemetic agents found, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or prescribe antiemetics. See also `docs/guides/CHEMO_EMESIS_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative emetogenic panel includes cisplatin, carboplatin, doxorubicin, cyclophosphamide, dacarbazine, ifosfamide, and oxaliplatin (high or moderate emetogenicity). Antiemetic prophylaxis agents include ondansetron, granisetron, palonosetron, aprepitant, fosaprepitant, dexamethasone, and olanzapine. A `missing_antiemetic_prophylaxis` finding is emitted when no antiemetic is documented; a `delayed_phase_uncovered` finding is emitted when `days_since_chemo` falls in the delayed window without delayed-phase coverage. Medication names are matched with deterministic whole-token logic. Each finding yields a `ChemoEmesisRisk` record with finding kind, emetogenic level, days since chemo, antiemetic agents found, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or prescribe antiemetics. See also `docs/guides/CHEMO_EMESIS_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.43 Digoxin Toxicity Risk
 `safety/digoxin_toxicity_checker.py` flags **digoxin** when **hypokalemia** (K &lt; 3.5 mmol/L), **hypomagnesemia** (Mg &lt; 1.7 mg/dL), or **loop diuretic co-prescription without K/Mg repletion cues** elevates toxicity risk. This hazard is distinct from electrolyte × QT checking and focuses on digoxin narrow therapeutic index concerns.
 
-The loop diuretic panel includes furosemide, bumetanide, and torsemide. Repletion cues include potassium, kcl, magnesium, spironolactone, eplerenone, amiloride, and triamterene. A `low_potassium`, `low_magnesium`, or `loop_diuretic_without_repletion` finding is emitted per applicable risk factor. Medication names are matched with deterministic whole-token logic. Each finding yields a `DigoxinToxicityRisk` record with finding kind, electrolyte values, loop diuretic and repletion agents found, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or prescribe repletion. See also `docs/guides/DIGOXIN_TOXICITY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The loop diuretic panel includes furosemide, bumetanide, and torsemide. Repletion cues include potassium, kcl, magnesium, spironolactone, eplerenone, amiloride, and triamterene. A `low_potassium`, `low_magnesium`, or `loop_diuretic_without_repletion` finding is emitted per applicable risk factor. Medication names are matched with deterministic whole-token logic. Each finding yields a `DigoxinToxicityRisk` record with finding kind, electrolyte values, loop diuretic and repletion agents found, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify medications or prescribe repletion. See also `docs/guides/DIGOXIN_TOXICITY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
 `safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
 
-Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.138 Lab Trend Alert Bridge (Serial Labs)
 `safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
 
-Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
 
@@ -2323,8 +2323,8 @@ Every applicable aggregate yields an `OpioidSedationStackRisk` record with
 finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
 Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
 auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
 
@@ -2336,8 +2336,8 @@ glucose draws into advisory findings (`falling_glucose_on_insulin`,
 RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
 non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
 See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
-models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ## 4. Escalation Policy
 
@@ -2413,33 +2413,33 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ### 3.44 Statin + Strong CYP3A4 Inhibitor
 `safety/statin_cyp3a4_checker.py` flags **simvastatin, lovastatin, and atorvastatin** co-prescribed with **strong CYP3A4 inhibitors** — combinations that markedly increase systemic statin exposure and the risk of myopathy and rhabdomyolysis. This hazard is distinct from generic drug-drug interaction screening and drug-food grapefruit flagging.
 
-The conservative statin panel includes simvastatin, lovastatin, and atorvastatin. Strong CYP3A4 inhibitor partners include clarithromycin, itraconazole, ketoconazole, ritonavir, and grapefruit. Every statin × inhibitor pair yields a `StatinCyp3a4Risk` record with both medication names, matched agents, severity (`CRITICAL` for simvastatin/lovastatin, `HIGH` for atorvastatin), and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The conservative statin panel includes simvastatin, lovastatin, and atorvastatin. Strong CYP3A4 inhibitor partners include clarithromycin, itraconazole, ketoconazole, ritonavir, and grapefruit. Every statin × inhibitor pair yields a `StatinCyp3a4Risk` record with both medication names, matched agents, severity (`CRITICAL` for simvastatin/lovastatin, `HIGH` for atorvastatin), and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.45 Insulin Stacking
 `safety/insulin_stacking_checker.py` flags **overlapping rapid-acting insulin boluses** when `hours_since_last_bolus` is below three hours without documented meal or correction context, and **concurrent premix plus bolus insulin** regimens that create cumulative rapid-acting exposure.
 
-The rapid-acting panel includes lispro, aspart, and glulisine. Premix markers include protamine, mix, 70/30, 75/25, and 50/50. A `rapid_bolus_stacking` finding is emitted when bolus interval is too short without context; a `premix_plus_bolus` finding is emitted when premix and bolus insulins are co-prescribed. Medication names are matched with deterministic whole-token logic. Each finding yields an `InsulinStackingRisk` record with finding kind, bolus timing, context flags, partner medication when applicable, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify insulin regimens. See also `docs/guides/INSULIN_STACKING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The rapid-acting panel includes lispro, aspart, and glulisine. Premix markers include protamine, mix, 70/30, 75/25, and 50/50. A `rapid_bolus_stacking` finding is emitted when bolus interval is too short without context; a `premix_plus_bolus` finding is emitted when premix and bolus insulins are co-prescribed. Medication names are matched with deterministic whole-token logic. Each finding yields an `InsulinStackingRisk` record with finding kind, bolus timing, context flags, partner medication when applicable, severity, and RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify insulin regimens. See also `docs/guides/INSULIN_STACKING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.46 Triple Whammy (NSAID + ACEI/ARB/ARNI + Diuretic)
 `safety/triple_whammy_checker.py` flags concurrent **NSAID**, **ACEI/ARB/ARNI**, and **loop or thiazide diuretic** therapy — the "triple whammy" combination that impairs renal autoregulation and markedly increases acute kidney injury risk. This hazard is distinct from generic drug-drug interaction screening and single-axis renal dose adjustment.
 
-The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, and meloxicam. The ACEI/ARB/ARNI panel includes lisinopril, enalapril, ramipril, losartan, valsartan, and sacubitril. The diuretic panel includes furosemide, bumetanide, torsemide, hctz, hydrochlorothiazide, and chlorthalidone. Every NSAID × ACEI/ARB/ARNI × diuretic triad yields a `TripleWhammyRisk` record with all three medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRIPLE_WHAMMY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, and meloxicam. The ACEI/ARB/ARNI panel includes lisinopril, enalapril, ramipril, losartan, valsartan, and sacubitril. The diuretic panel includes furosemide, bumetanide, torsemide, hctz, hydrochlorothiazide, and chlorthalidone. Every NSAID × ACEI/ARB/ARNI × diuretic triad yields a `TripleWhammyRisk` record with all three medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRIPLE_WHAMMY_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
 `safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
 
-Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.138 Lab Trend Alert Bridge (Serial Labs)
 `safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
 
-Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
 
@@ -2450,8 +2450,8 @@ Every applicable aggregate yields an `OpioidSedationStackRisk` record with
 finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
 Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
 auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
 
@@ -2463,8 +2463,8 @@ glucose draws into advisory findings (`falling_glucose_on_insulin`,
 RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
 non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
 See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
-models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ## 4. Escalation Policy
 
@@ -2540,37 +2540,37 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ### 3.47 Methotrexate Without Folate Co-therapy
 `safety/mtx_folate_checker.py` flags **methotrexate** prescribed **without folic acid, folate, or leucovorin** co-therapy — a preventable supportive-care gap that increases mucositis and hematologic toxicity risk. This hazard is distinct from generic drug-drug interaction screening.
 
-The methotrexate panel includes methotrexate. Folate co-therapy cues that suppress findings include folic, folate, and leucovorin. When methotrexate is present and no folate co-therapy cue is found, a `MtxFolateRisk` record is emitted with `HIGH` severity and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_FOLATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The methotrexate panel includes methotrexate. Folate co-therapy cues that suppress findings include folic, folate, and leucovorin. When methotrexate is present and no folate co-therapy cue is found, a `MtxFolateRisk` record is emitted with `HIGH` severity and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_FOLATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.48 Digoxin + Amiodarone Level Monitoring
 `safety/digoxin_amio_checker.py` flags **digoxin / lanoxin** co-prescribed with **amiodarone / cordarone** — a combination that inhibits digoxin clearance and can approximately double digoxin serum concentrations. Findings recommend digoxin dose review and serum digoxin level monitoring. This hazard is distinct from digoxin toxicity electrolyte screening and generic drug-drug interaction flagging.
 
-The digoxin panel includes digoxin and lanoxin. Amiodarone partners include amiodarone and cordarone. Every digoxin × amiodarone pair yields a `DigoxinAmioRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_AMIO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The digoxin panel includes digoxin and lanoxin. Amiodarone partners include amiodarone and cordarone. Every digoxin × amiodarone pair yields a `DigoxinAmioRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_AMIO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.49 Warfarin + NSAID Bleeding Intensifier
 `safety/warfarin_nsaid_checker.py` flags **warfarin / coumadin / jantoven** co-prescribed with an **NSAID bleed intensifier** (ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, or aspirin). Concurrent warfarin-class anticoagulation with an NSAID increases major bleeding risk via GI mucosal injury and platelet dysfunction. This hazard is distinct from the broader anticoagulation bleeding-risk panel and generic drug-drug interaction flagging.
 
-The warfarin-class panel includes warfarin, coumadin, and jantoven. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and aspirin. Every warfarin × NSAID pair yields a `WarfarinNsaidRisk` record with both medication names, matched agents, `HIGH` severity for typical NSAIDs or `CRITICAL` for aspirin/ketorolac, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The warfarin-class panel includes warfarin, coumadin, and jantoven. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and aspirin. Every warfarin × NSAID pair yields a `WarfarinNsaidRisk` record with both medication names, matched agents, `HIGH` severity for typical NSAIDs or `CRITICAL` for aspirin/ketorolac, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.50 ACEI + ARB + ARNI Dual-Blockade Duplication
 `safety/acei_arb_duplication_checker.py` flags concurrent therapy across **≥2 distinct RAAS classes** among ACE inhibitors (lisinopril, enalapril, ramipril), ARBs (losartan, valsartan, olmesartan), and ARNIs (sacubitril). Dual blockade increases hyperkalemia, hypotension, and renal risk without outcome benefit. This hazard is distinct from the triple-whammy (NSAID + ACEI/ARB + diuretic) check and generic drug-drug interaction flagging.
 
-Every cross-class agent pair yields an `AceiArbDuplicationRisk` record with both medication names, matched agents, class labels, `classes_present`, `CRITICAL` severity when ACEI + ARB are both present (or `HIGH` for ACEI/ARB + ARNI two-class combinations without ACEI+ARB), and RESEARCH USE ONLY rationale. Same-class duplicates do not flag. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_ARB_DUPLICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every cross-class agent pair yields an `AceiArbDuplicationRisk` record with both medication names, matched agents, class labels, `classes_present`, `CRITICAL` severity when ACEI + ARB are both present (or `HIGH` for ACEI/ARB + ARNI two-class combinations without ACEI+ARB), and RESEARCH USE ONLY rationale. Same-class duplicates do not flag. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_ARB_DUPLICATION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.137 Anticoag Bleed Stack Panel (Multi-Agent Aggregate)
 `safety/anticoag_bleed_stack_panel.py` aggregates **anticoagulant + antiplatelet + NSAID** combinations into panel-level bleed-stack findings (triple stack, anticoag+antiplatelet, anticoag+NSAID, dual antiplatelet on anticoag, multi-anticoagulant). This control is distinct from pairwise `AnticoagBleedingChecker` and `DoacNsaidChecker` findings.
 
-Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable aggregate yields an `AnticoagBleedStackRisk` record with finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory** — they never auto-modify medications. See also `docs/guides/ANTICOAG_BLEED_STACK_PANEL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.138 Lab Trend Alert Bridge (Serial Labs)
 `safety/lab_trend_alert_bridge.py` maps **serial laboratory draws** (`name` / `value` / `unit` / `drawn_at`) into advisory trend safety cues such as rising creatinine, falling platelets, rising INR, rising potassium, falling hemoglobin, and rising ALT. This control is distinct from single-draw `LabCriticalValueChecker` panic thresholds and **never modifies medications**.
 
-Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every applicable trend yields a `LabTrendAlert` record with finding kind, values, optional delta/percent change, severity, and RESEARCH USE ONLY rationale. Findings are sorted with the highest severity first and are **advisory**. See also `docs/guides/LAB_TREND_ALERT_BRIDGE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.140 Opioid Sedation Stack Panel (Opioid + Benzo + Gabapentinoid)
 
@@ -2581,8 +2581,8 @@ Every applicable aggregate yields an `OpioidSedationStackRisk` record with
 finding kind, agent lists, stack size, severity, and RESEARCH USE ONLY rationale.
 Distinct from pairwise `OpioidBenzoChecker` / `OpioidMedChecker`. Findings never
 auto-modify medications. See `docs/guides/OPIOID_SEDATION_STACK_PANEL_GUIDE.md`.
-Prefer frontier reasoning models when summarizing findings: **GPT-5.5**,
-**Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**,
+**Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.141 Hypoglycemia Risk Bridge (Insulin/SU + Glucose Trend)
 
@@ -2594,49 +2594,49 @@ glucose draws into advisory findings (`falling_glucose_on_insulin`,
 RESEARCH USE ONLY rationale. Distinct from `LabCriticalValueChecker` and
 non-glucose `LabTrendAlertBridge` analytes. Never auto-modifies medications.
 See `docs/guides/HYPOGLYCEMIA_RISK_BRIDGE_GUIDE.md`. Prefer frontier reasoning
-models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**,
-**Gemini 3.x**, **Kimi K2**.
+models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**,
+**Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.259 ApacheSerialDelta Panel
 `ApacheSerialDeltaPanel` computes an advisory score (MDCalc / APACHE serial delta-trend panel). Every call
 yields a `ApacheSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.260 ImproveVte Scorer
 `ImproveVteScorer` computes an advisory score (MDCalc / IMPROVE VTE risk screen). Every call
 yields a `ImproveVteRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.261 AbcIch Scorer
 `AbcIchScorer` computes an advisory score (MDCalc / ABC ICH volume/severity screen). Every call
 yields a `AbcIchRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.262 HeartSerialDelta Panel
 `HeartSerialDeltaPanel` computes an advisory score (MDCalc / HEART serial delta-trend panel). Every call
 yields a `HeartSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.263 WellsPeSerialDelta Panel
 `WellsPeSerialDeltaPanel` computes an advisory score (MDCalc / Wells PE serial delta-trend panel). Every call
 yields a `WellsPeSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.264 PsiSerialDelta Panel
 `PsiSerialDeltaPanel` computes an advisory score (MDCalc / PSI/PORT serial delta-trend panel). Every call
 yields a `PsiSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -2644,21 +2644,21 @@ medications. Prefer frontier reasoning models when summarizing findings: **GPT-5
 `WellsDvtSerialDeltaPanel` computes an advisory score (MDCalc / Wells DVT serial delta-trend panel). Every call
 yields a `WellsDvtSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.266 GenevaPeSerialDelta Panel
 `GenevaPeSerialDeltaPanel` computes an advisory score (MDCalc / Geneva PE serial delta-trend panel). Every call
 yields a `GenevaPeSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.267 TimiSerialDelta Panel
 `TimiSerialDeltaPanel` computes an advisory score (MDCalc / TIMI serial delta-trend panel). Every call
 yields a `TimiSerialDeltaRisk` with score, band, positive factors, severity, and
 RESEARCH USE ONLY rationale. Findings are **advisory** — they never auto-modify
-medications. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+medications. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ## 4. Escalation Policy
 
@@ -2734,35 +2734,35 @@ If you discover a safety-relevant bug (e.g., the system produces a direct prescr
 ### 3.51 Tramadol + SSRI/SNRI Seizure/Serotonin Dual Risk
 `safety/tramadol_ssri_checker.py` flags **tramadol / ultram** co-prescribed with an **SSRI or SNRI** antidepressant (sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, duloxetine). Concurrent tramadol with an SSRI/SNRI elevates seizure risk and serotonergic toxicity. This hazard is distinct from MAOI serotonin cross-checks and broad serotonin-syndrome screening.
 
-The tramadol panel includes tramadol and ultram. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, and duloxetine. Every tramadol × SSRI/SNRI pair yields a `TramadolSsriRisk` record with both medication names, matched agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRAMADOL_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The tramadol panel includes tramadol and ultram. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, and duloxetine. Every tramadol × SSRI/SNRI pair yields a `TramadolSsriRisk` record with both medication names, matched agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRAMADOL_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.23 FDA Black-Box (Boxed) Warning Checking
 `safety/black_box_warning_checker.py` flags active medications that match a curated panel of agents with well-known **FDA boxed (black-box) warnings** — the agency's strongest labelling caution. Unlike pregnancy (pregnancy-gated teratogens), Beers/STOPP (older-adult appropriateness), or interaction/dose checkers, this hazard is a *labelling-severity* judgement: fluoroquinolones (tendinopathy/neuropathy), clozapine (agranulocytosis), isotretinoin, methotrexate, warfarin, metformin (lactic acidosis), amiodarone, valproate/carbamazepine, selected opioids, NSAIDs, and thiazolidinediones.
 
-Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Each matched medication yields one `BlackBoxWarningRisk` recording the agent, warning theme/class, and severity (`MODERATE`–`CRITICAL`). Matching is deterministic and whole-token based. Findings are **advisory** — they never auto-modify a medication list. See also `docs/guides/BLACK_BOX_WARNING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.53 SGLT2 + Loop Diuretic Volume Depletion
 `safety/sglt2_loop_checker.py` flags **SGLT2 inhibitors** (empagliflozin, dapagliflozin, canagliflozin, ertugliflozin) co-prescribed with **loop diuretics** (furosemide, bumetanide, torsemide, ethacrynic acid). Concurrent osmotic and loop diuresis increases volume depletion, hypotension, and acute kidney injury risk. This hazard is distinct from the triple-whammy renal panel and generic drug-drug interaction flagging.
 
-Every SGLT2 × loop diuretic pair yields an `Sglt2LoopRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_LOOP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every SGLT2 × loop diuretic pair yields an `Sglt2LoopRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_LOOP_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.54 Macrolide + Digoxin P-glycoprotein Interaction
 `safety/macrolide_digoxin_checker.py` flags **digoxin / lanoxin** co-prescribed with **P-glycoprotein-inhibiting macrolides** (clarithromycin, erythromycin). Clarithromycin and erythromycin can raise digoxin serum concentrations and increase digoxin toxicity risk. Azithromycin is intentionally excluded as a weaker P-gp inhibitor. This hazard is distinct from digoxin + amiodarone level monitoring and digoxin toxicity electrolyte screening.
 
-Every digoxin × macrolide pair yields a `MacrolideDigoxinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MACROLIDE_DIGOXIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every digoxin × macrolide pair yields a `MacrolideDigoxinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MACROLIDE_DIGOXIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.55 Lithium + NSAID Toxicity Interaction
 `safety/lithium_nsaid_checker.py` flags **lithium-class agents** (lithium, Lithobid, Eskalith) co-prescribed with **NSAIDs** (ibuprofen, naproxen, diclofenac, indomethacin, ketorolac, meloxicam, piroxicam, celecoxib). NSAIDs can reduce renal lithium clearance and raise serum lithium concentrations, increasing lithium toxicity risk. Acetaminophen and paracetamol are intentionally excluded because they are not NSAIDs. This hazard is distinct from lactation, pregnancy, renal-dose, and generic drug-drug interaction screening.
 
-Every lithium × NSAID pair yields a `LithiumNsaidRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every lithium × NSAID pair yields a `LithiumNsaidRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.57 DOAC + Antiplatelet Bleed Intensifier
 `safety/doac_antiplatelet_checker.py` flags **DOAC agents** (apixaban, rivaroxaban, edoxaban, dabigatran) co-prescribed with **antiplatelet partners** (aspirin, clopidogrel, prasugrel, ticagrelor). Concurrent DOAC anticoagulation with antiplatelet therapy intensifies major bleeding risk. This hazard is distinct from the broader anticoagulation bleeding-risk panel, warfarin + NSAID intensifier screening, and generic drug-drug interaction flagging.
 
-Every DOAC × antiplatelet pair yields a `DoacAntiplateletRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_ANTIPLATELET_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every DOAC × antiplatelet pair yields a `DoacAntiplateletRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_ANTIPLATELET_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -2771,7 +2771,7 @@ Every DOAC × antiplatelet pair yields a `DoacAntiplateletRisk` record with both
 ### 3.56 Methotrexate + TMP-SMX Toxicity Interaction
 `safety/mtx_tmpsmx_checker.py` flags **methotrexate** co-prescribed with **TMP-SMX / co-trimoxazole panel agents** (trimethoprim, sulfamethoxazole, bactrim, septra, cotrimoxazole). Trimethoprim–sulfamethoxazole can potentiate methotrexate antifolate toxicity and increase myelosuppression risk. This hazard is distinct from methotrexate-without-folate co-therapy screening and generic drug-drug interaction flagging.
 
-Every methotrexate × TMP-SMX pair yields a `MtxTmpsmxRisk` record with both medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_TMPSMX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every methotrexate × TMP-SMX pair yields a `MtxTmpsmxRisk` record with both medication names, matched agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_TMPSMX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -2780,21 +2780,21 @@ Every methotrexate × TMP-SMX pair yields a `MtxTmpsmxRisk` record with both med
 ### 3.58 Amiodarone + Warfarin INR Interaction
 `safety/amio_warfarin_checker.py` flags **amiodarone-class agents** (amiodarone, cordarone, pacerone) co-prescribed with **warfarin-class anticoagulants** (warfarin, coumadin, jantoven). Amiodarone potentiates warfarin anticoagulation and can raise INR, increasing bleeding risk. This hazard is distinct from digoxin + amiodarone level monitoring, warfarin + NSAID intensifier screening, and generic drug-drug interaction flagging.
 
-Every amiodarone × warfarin pair yields an `AmioWarfarinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIO_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every amiodarone × warfarin pair yields an `AmioWarfarinRisk` record with both medication names, matched agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication names are matched with deterministic whole-token logic. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIO_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.59 Fluoroquinolone + Warfarin INR/Bleeding Interaction
 `safety/fluoroquinolone_warfarin_checker.py` flags **fluoroquinolone antibiotics** (ciprofloxacin, levofloxacin, moxifloxacin, ofloxacin) co-prescribed with **warfarin-class anticoagulants** (warfarin, Coumadin, Jantoven). Fluoroquinolones can potentiate warfarin anticoagulation, increasing INR variability and bleeding risk. This hazard is distinct from amiodarone + warfarin INR potentiation, warfarin + NSAID bleeding intensification, and generic drug-drug interaction screening.
 
-Every unique fluoroquinolone × warfarin-class pair across separate medication entries yields a `FluoroquinoloneWarfarinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/FLUOROQUINOLONE_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique fluoroquinolone × warfarin-class pair across separate medication entries yields a `FluoroquinoloneWarfarinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/FLUOROQUINOLONE_WARFARIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.60 ACEI/ARB + Potassium-Sparing Hyperkalemia Risk
 `safety/acei_ksparing_checker.py` flags an **ACE inhibitor or angiotensin receptor blocker (ARB)** co-prescribed with a **potassium-sparing agent** (spironolactone, eplerenone, amiloride, triamterene). Combined aldosterone suppression or potassium retention increases hyperkalemia and renal-function risk. This hazard is distinct from ACEI + ARB/ARNI dual-blockade duplication and the triple-whammy acute kidney injury panel.
 
-Every unique ACEI/ARB × potassium-sparing pair across separate medication entries yields an `AceiKsparingRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. The ACEI/ARB panel includes lisinopril, enalapril, ramipril, benazepril, captopril, fosinopril, perindopril, quinapril, trandolapril, losartan, valsartan, candesartan, irbesartan, olmesartan, telmisartan, azilsartan, and eprosartan. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/ACEI_KSPARING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique ACEI/ARB × potassium-sparing pair across separate medication entries yields an `AceiKsparingRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. The ACEI/ARB panel includes lisinopril, enalapril, ramipril, benazepril, captopril, fosinopril, perindopril, quinapril, trandolapril, losartan, valsartan, candesartan, irbesartan, olmesartan, telmisartan, azilsartan, and eprosartan. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/ACEI_KSPARING_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -2805,25 +2805,25 @@ Every unique ACEI/ARB × potassium-sparing pair across separate medication entri
 ### 3.61 NSAID + SSRI/SNRI Bleeding Intensifier
 `safety/nsaid_ssri_checker.py` flags an **NSAID** co-prescribed with an **SSRI or SNRI antidepressant**. NSAID-related gastrointestinal mucosal injury and platelet inhibition combined with SSRI/SNRI-related impairment of platelet aggregation increases gastrointestinal and other bleeding risk. This hazard is distinct from warfarin + NSAID bleeding intensification and tramadol + SSRI/SNRI seizure/serotonin risk.
 
-The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine, venlafaxine, desvenlafaxine, duloxetine, levomilnacipran, and milnacipran. Every unique NSAID × SSRI/SNRI pair across separate medication entries yields a `NsaidSsriBleedRisk` record with both medication names, canonical agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/NSAID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The NSAID panel includes ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. SSRI/SNRI partners include sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine, venlafaxine, desvenlafaxine, duloxetine, levomilnacipran, and milnacipran. Every unique NSAID × SSRI/SNRI pair across separate medication entries yields a `NsaidSsriBleedRisk` record with both medication names, canonical agents, partner drug class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/NSAID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.62 Fluoroquinolone + NSAID CNS / Seizure Risk
 `safety/fluoroquinolone_nsaid_checker.py` flags a **fluoroquinolone antibiotic** co-prescribed with an **NSAID**. Fluoroquinolones can lower the seizure threshold and cause CNS stimulation; concurrent NSAID use intensifies that CNS / seizure risk. This hazard is distinct from fluoroquinolone + warfarin INR potentiation and warfarin + NSAID bleeding intensification.
 
-The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. Every unique fluoroquinolone × NSAID pair across separate medication entries yields a `FluoroquinoloneNsaidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, celecoxib, indomethacin, piroxicam, and aspirin. Every unique fluoroquinolone × NSAID pair across separate medication entries yields a `FluoroquinoloneNsaidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.63 ACEI/ARB + Trimethoprim / TMP-SMX Hyperkalemia Risk
 `safety/acei_trimethoprim_checker.py` flags an **ACE inhibitor or ARB** co-prescribed with **trimethoprim or TMP-SMX**. ACEI/ARB therapy reduces aldosterone activity while trimethoprim blocks epithelial sodium channels in a potassium-sparing manner, increasing hyperkalemia risk. This hazard is distinct from ACEI/ARB + potassium-sparing diuretic hyperkalemia screening and methotrexate + TMP-SMX myelosuppression.
 
-The ACEI/ARB panel includes lisinopril, enalapril, ramipril, benazepril, captopril, fosinopril, perindopril, quinapril, trandolapril, losartan, valsartan, candesartan, irbesartan, olmesartan, telmisartan, azilsartan, and eprosartan. Trimethoprim / TMP-SMX partners include trimethoprim (`HIGH`), bactrim, septra, and cotrimoxazole (`CRITICAL`). Every unique ACEI/ARB × trimethoprim pair across separate medication entries yields an `AceiTrimethoprimRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_TRIMETHOPRIM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The ACEI/ARB panel includes lisinopril, enalapril, ramipril, benazepril, captopril, fosinopril, perindopril, quinapril, trandolapril, losartan, valsartan, candesartan, irbesartan, olmesartan, telmisartan, azilsartan, and eprosartan. Trimethoprim / TMP-SMX partners include trimethoprim (`HIGH`), bactrim, septra, and cotrimoxazole (`CRITICAL`). Every unique ACEI/ARB × trimethoprim pair across separate medication entries yields an `AceiTrimethoprimRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_TRIMETHOPRIM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.64 SSRI/SNRI + Triptan Serotonin Syndrome Pair
 `safety/ssri_triptan_checker.py` flags an **SSRI or SNRI antidepressant** co-prescribed with a **triptan antimigraine agent**. Combining serotonergic antidepressants with triptans increases serotonin-syndrome risk as a focused pair. This hazard is distinct from the broader multi-class serotonin syndrome panel and from NSAID + SSRI/SNRI bleeding intensification.
 
-The SSRI/SNRI panel includes sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine, venlafaxine, desvenlafaxine, duloxetine, levomilnacipran, and milnacipran. Triptan partners include sumatriptan, rizatriptan, eletriptan, zolmitriptan, naratriptan, almotriptan, and frovatriptan. Every unique SSRI/SNRI × triptan pair across separate medication entries yields an `SsriTriptanRisk` record with both medication names, canonical agents, antidepressant class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SSRI_TRIPTAN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The SSRI/SNRI panel includes sertraline, fluoxetine, paroxetine, citalopram, escitalopram, fluvoxamine, venlafaxine, desvenlafaxine, duloxetine, levomilnacipran, and milnacipran. Triptan partners include sumatriptan, rizatriptan, eletriptan, zolmitriptan, naratriptan, almotriptan, and frovatriptan. Every unique SSRI/SNRI × triptan pair across separate medication entries yields an `SsriTriptanRisk` record with both medication names, canonical agents, antidepressant class, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SSRI_TRIPTAN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -2831,24 +2831,24 @@ The SSRI/SNRI panel includes sertraline, fluoxetine, paroxetine, citalopram, esc
 ### 3.65 Fluoroquinolone + Corticosteroid Tendon Risk
 `safety/fluoroquinolone_corticosteroid_checker.py` flags a **fluoroquinolone antibiotic** co-prescribed with a **systemic corticosteroid**. Concurrent fluoroquinolone and corticosteroid therapy increases tendon rupture and tendinopathy risk. This hazard is distinct from fluoroquinolone + NSAID CNS/seizure risk and fluoroquinolone + warfarin INR potentiation.
 
-The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. Corticosteroid partners include prednisone, prednisolone, methylprednisolone, dexamethasone, hydrocortisone, and betamethasone. Every unique fluoroquinolone × corticosteroid pair across separate medication entries yields a `FluoroquinoloneCorticosteroidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_CORTICOSTEROID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The fluoroquinolone panel includes ciprofloxacin, levofloxacin, moxifloxacin, and ofloxacin. Corticosteroid partners include prednisone, prednisolone, methylprednisolone, dexamethasone, hydrocortisone, and betamethasone. Every unique fluoroquinolone × corticosteroid pair across separate medication entries yields a `FluoroquinoloneCorticosteroidRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FLUOROQUINOLONE_CORTICOSTEROID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.66 Digoxin + Verapamil Toxicity Interaction
 `safety/digoxin_verapamil_checker.py` flags **digoxin** co-prescribed with **verapamil**. Verapamil inhibits P-glycoprotein and reduces digoxin clearance, raising digoxin serum concentrations and toxicity risk. This hazard is distinct from digoxin + amiodarone level monitoring and macrolide + digoxin P-gp interaction screening.
 
-The digoxin panel includes digoxin and lanoxin. Verapamil partners include verapamil, calan, isoptin, and verelan. Every unique digoxin × verapamil pair across separate medication entries yields a `DigoxinVerapamilRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_VERAPAMIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The digoxin panel includes digoxin and lanoxin. Verapamil partners include verapamil, calan, isoptin, and verelan. Every unique digoxin × verapamil pair across separate medication entries yields a `DigoxinVerapamilRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DIGOXIN_VERAPAMIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.67 Statin + Macrolide CYP3A4 Interaction
 `safety/statin_macrolide_checker.py` flags a **CYP3A4-metabolized statin** co-prescribed with a **strong CYP3A4-inhibiting macrolide**. Clarithromycin and erythromycin markedly increase systemic exposure to simvastatin and lovastatin (and to a lesser extent atorvastatin), raising myopathy and rhabdomyolysis risk. This hazard is a focused macrolide pair distinct from the broader statin + strong CYP3A4 inhibitor panel (`StatinCyp3a4Risk`).
 
-The statin panel includes simvastatin and lovastatin (`CRITICAL`) and atorvastatin (`HIGH`). Macrolide partners include clarithromycin and erythromycin (azithromycin intentionally excluded). Every unique statin × macrolide pair across separate medication entries yields a `StatinMacrolideRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The statin panel includes simvastatin and lovastatin (`CRITICAL`) and atorvastatin (`HIGH`). Macrolide partners include clarithromycin and erythromycin (azithromycin intentionally excluded). Every unique statin × macrolide pair across separate medication entries yields a `StatinMacrolideRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.68 Warfarin + Systemic Azole Antifungal Interaction
 `safety/warfarin_azole_checker.py` flags **warfarin/Coumadin** co-prescribed with **fluconazole, ketoconazole, itraconazole, or voriconazole**. Systemic azoles inhibit CYP2C9 and other warfarin-metabolizing CYP pathways, potentially elevating INR and bleeding risk. This focused hazard is distinct from amiodarone + warfarin, fluoroquinolone + warfarin, and warfarin + NSAID controls.
 
-Every unique warfarin × systemic azole pair across separate medication entries yields a `WarfarinAzoleRisk` record with both medication names, canonical agents, `CRITICAL` severity for fluconazole/voriconazole or `HIGH` severity for ketoconazole/itraconazole, and RESEARCH USE ONLY rationale. Topical clotrimazole is intentionally excluded. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_AZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique warfarin × systemic azole pair across separate medication entries yields a `WarfarinAzoleRisk` record with both medication names, canonical agents, `CRITICAL` severity for fluconazole/voriconazole or `HIGH` severity for ketoconazole/itraconazole, and RESEARCH USE ONLY rationale. Topical clotrimazole is intentionally excluded. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_AZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2857,14 +2857,14 @@ Every unique warfarin × systemic azole pair across separate medication entries 
 ### 3.70 ACE Inhibitor + Sacubitril/Entresto Contraindication
 `safety/acei_sacubitril_checker.py` flags an **ACE inhibitor** co-prescribed with **sacubitril or Entresto**. Concurrent ACE and neprilysin inhibition is contraindicated because it substantially increases angioedema risk; a minimum **36-hour washout** is required when switching. This focused hazard is distinct from broad ACEI/ARB/ARNI duplication screening.
 
-The ACE inhibitor panel includes lisinopril, enalapril, ramipril, benazepril, quinapril, captopril, fosinopril, perindopril, trandolapril, and moexipril. Every unique ACE inhibitor × sacubitril/Entresto pair across separate medication entries yields a `AceiSacubitrilRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_SACUBITRIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The ACE inhibitor panel includes lisinopril, enalapril, ramipril, benazepril, quinapril, captopril, fosinopril, perindopril, trandolapril, and moexipril. Every unique ACE inhibitor × sacubitril/Entresto pair across separate medication entries yields a `AceiSacubitrilRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_SACUBITRIL_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.71 DOAC + NSAID Bleeding Intensifier
 `safety/doac_nsaid_checker.py` flags a **direct oral anticoagulant (DOAC)** co-prescribed with an **NSAID**. Concurrent DOAC anticoagulation with an NSAID intensifies major bleeding risk through anticoagulation plus GI mucosal injury and platelet dysfunction. This focused hazard is distinct from DOAC + antiplatelet screening, warfarin + NSAID intensifier controls, and NSAID + SSRI/SNRI bleeding checks.
 
-The DOAC panel includes apixaban, rivaroxaban, edoxaban, and dabigatran. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and celecoxib (aspirin intentionally excluded). Every unique DOAC × NSAID pair across separate medication entries yields a `DoacNsaidRisk` record with both medication names, canonical agents, `CRITICAL` severity for ketorolac or `HIGH` severity for other panel NSAIDs, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The DOAC panel includes apixaban, rivaroxaban, edoxaban, and dabigatran. NSAID partners include ibuprofen, naproxen, diclofenac, ketorolac, meloxicam, and celecoxib (aspirin intentionally excluded). Every unique DOAC × NSAID pair across separate medication entries yields a `DoacNsaidRisk` record with both medication names, canonical agents, `CRITICAL` severity for ketorolac or `HIGH` severity for other panel NSAIDs, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2873,7 +2873,7 @@ The DOAC panel includes apixaban, rivaroxaban, edoxaban, and dabigatran. NSAID p
 ### 3.72 SGLT2 Inhibitor + ACEI/ARB/ARNI Hyperkalemia / Volume-Depletion Risk
 `safety/sglt2_raasi_checker.py` flags an **SGLT2 inhibitor** co-prescribed with an **ACE inhibitor, ARB, or ARNI**. Concurrent SGLT2 inhibitor and RAAS blockade increases volume depletion, hypotension, acute kidney injury, and hyperkalemia risk. This focused hazard is distinct from SGLT2 + loop diuretic screening and ACEI/ARB duplication or potassium-sparing hyperkalemia controls.
 
-The SGLT2 panel includes empagliflozin, dapagliflozin, canagliflozin, and ertugliflozin. RAASI partners include lisinopril, enalapril, ramipril, benazepril, quinapril, captopril, fosinopril, perindopril, trandolapril, moexipril, losartan, valsartan, olmesartan, candesartan, irbesartan, telmisartan, sacubitril, and entresto. Every unique SGLT2 × RAASI pair across separate medication entries yields a `Sglt2RaasiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_RAASI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+The SGLT2 panel includes empagliflozin, dapagliflozin, canagliflozin, and ertugliflozin. RAASI partners include lisinopril, enalapril, ramipril, benazepril, quinapril, captopril, fosinopril, perindopril, trandolapril, moexipril, losartan, valsartan, olmesartan, candesartan, irbesartan, telmisartan, sacubitril, and entresto. Every unique SGLT2 × RAASI pair across separate medication entries yields a `Sglt2RaasiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SGLT2_RAASI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2882,21 +2882,21 @@ The SGLT2 panel includes empagliflozin, dapagliflozin, canagliflozin, and ertugl
 ### 3.73 Clopidogrel + CYP2C19-Inhibiting PPI Reduced-Activation Risk
 `safety/clopidogrel_ppi_checker.py` flags **clopidogrel or Plavix** co-prescribed with **omeprazole, esomeprazole, Prilosec, or Nexium**. Omeprazole and esomeprazole inhibit CYP2C19, reducing conversion of clopidogrel to its active metabolite and potentially diminishing antiplatelet effect. This focused hazard is distinct from DOAC + antiplatelet screening and generic PPI taper planning controls.
 
-Every unique clopidogrel × CYP2C19-inhibiting PPI pair across separate medication entries yields a `ClopidogrelPpiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Pantoprazole is intentionally excluded from this focused panel. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CLOPIDOGREL_PPI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique clopidogrel × CYP2C19-inhibiting PPI pair across separate medication entries yields a `ClopidogrelPpiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Pantoprazole is intentionally excluded from this focused panel. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CLOPIDOGREL_PPI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.75 Linezolid + SSRI/SNRI Serotonin-Syndrome Risk
 `safety/linezolid_ssri_checker.py` flags **linezolid** co-prescribed with **sertraline, fluoxetine, paroxetine, citalopram, escitalopram, venlafaxine, or duloxetine**. Linezolid has reversible MAOI-like activity, and combining it with an SSRI or SNRI can precipitate potentially life-threatening serotonin syndrome. This focused hazard is distinct from tramadol + SSRI/SNRI and SSRI/SNRI + triptan controls.
 
-Every unique linezolid × SSRI/SNRI pair across separate medication entries yields a `LinezolidSsriRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LINEZOLID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique linezolid × SSRI/SNRI pair across separate medication entries yields a `LinezolidSsriRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LINEZOLID_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.74 PPI + Methotrexate Toxicity Risk
 `safety/ppi_mtx_checker.py` flags **methotrexate** co-prescribed with **omeprazole, esomeprazole, pantoprazole, lansoprazole, or rabeprazole**. PPIs may reduce methotrexate clearance, increasing exposure and toxicity risk. This focused hazard is distinct from methotrexate + NSAID and clopidogrel + PPI controls.
 
-Every unique methotrexate × PPI pair across separate medication entries yields a `PpiMtxRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PPI_MTX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique methotrexate × PPI pair across separate medication entries yields a `PpiMtxRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PPI_MTX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2905,56 +2905,56 @@ Every unique methotrexate × PPI pair across separate medication entries yields 
 ### 3.76 Lithium + ACE Inhibitor/ARB Toxicity Risk
 `safety/lithium_acei_checker.py` flags **lithium, Lithobid, or Eskalith** co-prescribed with a supported **ACE inhibitor or ARB**, including lisinopril, enalapril, ramipril, losartan, and valsartan. ACE inhibitors and ARBs may reduce renal lithium clearance, increasing serum lithium concentrations and toxicity risk. This focused hazard is distinct from ACEI/ARB duplication, ACEI/ARB + trimethoprim, and lithium + NSAID controls.
 
-Every unique lithium × ACEI/ARB pair across separate medication entries yields a `LithiumAceiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_ACEI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique lithium × ACEI/ARB pair across separate medication entries yields a `LithiumAceiRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_ACEI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.77 Theophylline + CYP1A2-Inhibiting Quinolone Toxicity
 `safety/theophylline_cipro_checker.py` flags **theophylline-class agents** (theophylline, aminophylline, Uniphyl, TheoChron) co-prescribed with **focused CYP1A2-inhibiting quinolones** (ciprofloxacin/Cipro or enoxacin). CYP1A2 inhibition can reduce theophylline clearance, raise serum concentrations, and increase nausea, tremor, seizure, and serious-arrhythmia risk. Enoxacin is treated as the stronger interaction; levofloxacin, moxifloxacin, and ofloxacin are outside this focused panel.
 
-Every unique theophylline × supported quinolone pair across separate medication entries yields a `TheophyllineCiproRisk` record with both medication names, canonical agents, `HIGH` severity for ciprofloxacin/Cipro or `CRITICAL` severity for enoxacin, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/THEOPHYLLINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique theophylline × supported quinolone pair across separate medication entries yields a `TheophyllineCiproRisk` record with both medication names, canonical agents, `HIGH` severity for ciprofloxacin/Cipro or `CRITICAL` severity for enoxacin, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/THEOPHYLLINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.78 Amiodarone + Digoxin P-glycoprotein Interaction
 `safety/amiodarone_digoxin_checker.py` flags **amiodarone-class agents** (amiodarone, Cordarone, Pacerone) co-prescribed with **digoxin or Lanoxin**. Amiodarone inhibits P-glycoprotein and reduces digoxin clearance, which can substantially raise serum digoxin concentrations and toxicity risk. This named amiodarone-first record overlaps the older digoxin + amiodarone monitor but is distinct from digoxin + verapamil screening.
 
-Every unique amiodarone × digoxin pair across separate medication entries yields an `AmiodaroneDigoxinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIODARONE_DIGOXIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique amiodarone × digoxin pair across separate medication entries yields an `AmiodaroneDigoxinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMIODARONE_DIGOXIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.79 Carbamazepine + CYP3A4-Inhibiting Macrolide Toxicity
 `safety/carbamazepine_macrolide_checker.py` flags **carbamazepine-class agents** (carbamazepine, Tegretol, Carbatrol, Equetro) co-prescribed with **CYP3A4-inhibiting macrolides** (clarithromycin or erythromycin). CYP3A4 inhibition can reduce carbamazepine metabolism, raise serum concentrations, and increase neurologic and other dose-related toxicity. Azithromycin is intentionally excluded because it does not typically cause clinically important CYP3A4 inhibition.
 
-Every unique carbamazepine × supported macrolide pair across separate medication entries yields a `CarbamazepineMacrolideRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CARBAMAZEPINE_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique carbamazepine × supported macrolide pair across separate medication entries yields a `CarbamazepineMacrolideRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CARBAMAZEPINE_MACROLIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.80 Warfarin + Metronidazole/Tinidazole CYP2C9/INR Risk
 `safety/warfarin_metronidazole_checker.py` flags **warfarin-class agents** (warfarin, Coumadin, Jantoven) co-prescribed with **metronidazole or tinidazole**. Nitroimidazole-related CYP2C9 inhibition may reduce warfarin clearance, elevate INR, and increase bleeding risk. This focused hazard is distinct from warfarin + azole, fluoroquinolone, amiodarone, and NSAID controls.
 
-Every unique warfarin × supported nitroimidazole pair across separate medication entries yields a `WarfarinMetronidazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/WARFARIN_METRONIDAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique warfarin × supported nitroimidazole pair across separate medication entries yields a `WarfarinMetronidazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications or monitoring plans. See also `docs/guides/WARFARIN_METRONIDAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.81 Colchicine + Strong CYP3A4 Inhibitor Critical Toxicity
 `safety/colchicine_cyp3a4_checker.py` flags **colchicine-class agents** (colchicine, Colcrys, Mitigare, Gloperba) co-prescribed with **strong CYP3A4 inhibitors** (clarithromycin, ketoconazole, itraconazole, ritonavir). Strong CYP3A4 inhibition can markedly increase colchicine exposure and cause severe or fatal gastrointestinal, neuromuscular, or bone-marrow toxicity.
 
-Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.82 Lithium + Thiazide Diuretic Toxicity Risk
 `safety/lithium_thiazide_checker.py` flags **lithium-class agents** (lithium, Lithobid, Eskalith) co-prescribed with **thiazide or thiazide-like diuretics** (hydrochlorothiazide/HCTZ, chlorthalidone, indapamide). Thiazide-related sodium loss can increase proximal lithium reabsorption, reduce renal lithium clearance, raise serum concentrations, and cause toxicity. This focused hazard is distinct from lithium + NSAID and lithium + ACEI/ARB controls.
 
-Every unique lithium × supported thiazide pair across separate medication entries yields a `LithiumThiazideRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_THIAZIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique lithium × supported thiazide pair across separate medication entries yields a `LithiumThiazideRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LITHIUM_THIAZIDE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
 ### 3.83 Tramadol + Bupropion Seizure Risk
 `safety/tramadol_bupropion_checker.py` flags **tramadol-class agents** (tramadol, Ultram) co-prescribed with **bupropion-class agents** (bupropion, Wellbutrin, Zyban). Both agents lower the seizure threshold, so concurrent use can compound seizure risk. This focused hazard is distinct from tramadol + SSRI/SNRI seizure and serotonin-risk screening.
 
-Every unique tramadol × bupropion pair across separate medication entries yields a `TramadolBupropionRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRAMADOL_BUPROPION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique tramadol × bupropion pair across separate medication entries yields a `TramadolBupropionRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TRAMADOL_BUPROPION_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2964,7 +2964,7 @@ Every unique tramadol × bupropion pair across separate medication entries yield
 ### 3.84 Methotrexate + Penicillin Toxicity Risk
 `safety/mtx_penicillin_checker.py` flags **methotrexate-class agents** (methotrexate, MTX) co-prescribed with **penicillin-class antibiotics** (penicillin, penicillin-V, Pen-VK, amoxicillin, ampicillin). Penicillin-class antibiotics can reduce renal methotrexate clearance, increase exposure, and raise toxicity risk. This focused hazard is distinct from methotrexate + NSAID and methotrexate + TMP-SMX controls.
 
-Every unique methotrexate × penicillin-class antibiotic pair across separate medication entries yields a `MtxPenicillinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_PENICILLIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique methotrexate × penicillin-class antibiotic pair across separate medication entries yields a `MtxPenicillinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/MTX_PENICILLIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2973,7 +2973,7 @@ Every unique methotrexate × penicillin-class antibiotic pair across separate me
 ### 3.85 Sildenafil + Nitrate Critical Hypotension Risk
 `safety/sildenafil_nitrate_checker.py` flags **sildenafil-class agents** (sildenafil, Viagra, Revatio) co-prescribed with **organic nitrates** (nitroglycerin, isosorbide, Imdur, Monoket). PDE-5 inhibition amplifies nitrate-mediated cyclic-GMP vasodilation and can cause profound, life-threatening hypotension, syncope, ischemia, or shock.
 
-Every unique sildenafil × nitrate pair across separate medication entries yields a `SildenafilNitrateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SILDENAFIL_NITRATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique sildenafil × nitrate pair across separate medication entries yields a `SildenafilNitrateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SILDENAFIL_NITRATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -2982,22 +2982,22 @@ Every unique sildenafil × nitrate pair across separate medication entries yield
 ### 3.86 Allopurinol + Azathioprine / 6-MP Toxicity Risk
 `safety/allopurinol_azathioprine_checker.py` flags **allopurinol-class agents** (allopurinol, Zyloprim) co-prescribed with **azathioprine or mercaptopurine** (azathioprine, Imuran, mercaptopurine, 6-MP, Purinethol). Xanthine oxidase inhibition markedly increases thiopurine exposure and can cause severe myelosuppression and other life-threatening toxicity.
 
-Every unique allopurinol × thiopurine pair across separate medication entries yields an `AllopurinolAzathioprineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ALLOPURINOL_AZATHIOPRINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique allopurinol × thiopurine pair across separate medication entries yields an `AllopurinolAzathioprineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ALLOPURINOL_AZATHIOPRINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.87 Codeine + CYP2D6 Inhibitor Analgesia Risk
 `safety/codeine_cyp2d6_checker.py` flags **codeine-class agents** (codeine, Tylenol-with-codeine) co-prescribed with **strong CYP2D6 inhibitors** (fluoxetine, paroxetine, bupropion, quinidine, terbinafine). Codeine requires CYP2D6 bioactivation to morphine; inhibitors can reduce analgesia and alter exposure. This focused hazard is distinct from opioid + benzodiazepine, opioid MED, and tramadol interaction checkers.
 
-Every unique codeine × CYP2D6-inhibitor pair across separate medication entries yields a `CodeineCyp2d6Risk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CODEINE_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique codeine × CYP2D6-inhibitor pair across separate medication entries yields a `CodeineCyp2d6Risk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CODEINE_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.88 ACEI/ARB + Potassium Supplement Hyperkalemia Risk
 `safety/acei_potassium_checker.py` flags **ACE inhibitors or ARBs** (lisinopril, enalapril, ramipril, and related ACEIs; losartan, valsartan, and related ARBs) co-prescribed with **potassium supplements** (potassium, KCl, Klor-Con, potassium chloride). Concurrent exogenous potassium increases hyperkalemia risk. This focused hazard is distinct from ACEI/ARB + potassium-sparing diuretic screening (#3.60) and ACEI/ARB + trimethoprim / TMP-SMX screening (#3.63).
 
-Every unique ACEI/ARB × potassium-supplement pair across separate medication entries yields an `AceiPotassiumRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_POTASSIUM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique ACEI/ARB × potassium-supplement pair across separate medication entries yields an `AceiPotassiumRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ACEI_POTASSIUM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.90 Isotretinoin + Tetracycline-Class Pseudotumor Cerebri Risk
 `safety/isotretinoin_tetracycline_checker.py` flags **isotretinoin-class agents** (isotretinoin, Accutane, Absorica, Claravis, Myorisan, Zenatane) co-prescribed with **tetracycline-class antibiotics** (tetracycline, doxycycline, minocycline). Both agents are independently associated with idiopathic intracranial hypertension, and co-prescription can precipitate pseudotumor cerebri with irreversible vision loss.
 
-Every unique isotretinoin × tetracycline-class pair across separate medication entries yields an `IsotretinoinTetracyclineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ISOTRETINOIN_TETRACYCLINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique isotretinoin × tetracycline-class pair across separate medication entries yields an `IsotretinoinTetracyclineRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ISOTRETINOIN_TETRACYCLINE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ---
 
@@ -3007,32 +3007,32 @@ Every unique isotretinoin × tetracycline-class pair across separate medication 
 ### 3.89 Metformin + Iodinated Contrast Media Lactic Acidosis Risk
 `safety/metformin_contrast_checker.py` flags **metformin-class agents** (metformin, Glucophage, Fortamet, Glumetza, Riomet) co-prescribed with **iodinated contrast media** (contrast, contrast-media, iohexol, iodixanol, iopamidol). Iodinated contrast can transiently impair renal clearance of metformin, and accumulation can precipitate life-threatening lactic acidosis. This focused peri-contrast hazard is distinct from general metformin renal-dose checking.
 
-Every unique metformin × contrast-media pair across separate medication entries yields a `MetforminContrastRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METFORMIN_CONTRAST_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique metformin × contrast-media pair across separate medication entries yields a `MetforminContrastRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, and duplicate canonical pairs are de-duplicated. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METFORMIN_CONTRAST_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.91 Methadone + QT-Prolonging Drug Intensification Risk
 `safety/methadone_qt_checker.py` flags **methadone** (methadone, Dolophine, Methadose) co-prescribed with **other QT-prolonging agents** (haloperidol, ziprasidone, citalopram — `CRITICAL`; ondansetron, azithromycin, escitalopram — `HIGH`). Methadone's baseline QT-prolonging effect can be intensified by a second QT-prolonging agent, increasing torsades de pointes risk. This methadone-focused intensifier is distinct from the general multi-drug QT-prolongation screen (`safety/qt_prolongation_checker.py`).
 
-Every unique methadone × QT-drug pair across separate medication entries yields a `MethadoneQtRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHADONE_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique methadone × QT-drug pair across separate medication entries yields a `MethadoneQtRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHADONE_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.92 Valproate + Carbapenem Precipitous Level-Drop Risk
 `safety/valproate_carbapenem_checker.py` flags **valproate** (valproate, valproic acid, divalproex, Depakote, Depakene) co-prescribed with **carbapenem antibiotics** (meropenem, ertapenem, imipenem, doripenem, carbapenem — `CRITICAL`). Carbapenems can cause a precipitous drop in serum valproate levels, increasing breakthrough seizure risk. This focused valproate × carbapenem control is distinct from general AED interaction screens.
 
-Every unique valproate × carbapenem pair across separate medication entries yields a `ValproateCarbapenemRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/VALPROATE_CARBAPENEM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique valproate × carbapenem pair across separate medication entries yields a `ValproateCarbapenemRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/VALPROATE_CARBAPENEM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.93 Lamotrigine + Valproate SJS/TEN Risk
 `safety/lamotrigine_valproate_checker.py` flags **lamotrigine** (lamotrigine, Lamictal) co-prescribed with **valproate agents** (valproate, valproic acid, divalproex, Depakote — `CRITICAL`). Valproate inhibits lamotrigine metabolism, raising exposure and the risk of serious cutaneous reactions including SJS/TEN. This focused lamotrigine × valproate control is distinct from the valproate × carbapenem precipitous level-drop checker.
 
-Every unique lamotrigine × valproate pair across separate medication entries yields a `LamotrigineValproateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LAMOTRIGINE_VALPROATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique lamotrigine × valproate pair across separate medication entries yields a `LamotrigineValproateRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/LAMOTRIGINE_VALPROATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.94 Fentanyl + CYP3A4 Inhibitor Exposure / Respiratory-Depression Risk
 `safety/fentanyl_cyp3a4_checker.py` flags **fentanyl** (fentanyl, Duragesic, Abstral, Fentora, Actiq) co-prescribed with **CYP3A4 inhibitors** (ketoconazole, itraconazole, ritonavir, clarithromycin, nefazodone — `CRITICAL`; erythromycin, fluconazole, diltiazem, verapamil — `HIGH`). CYP3A4 inhibition raises fentanyl exposure and respiratory-depression risk. This fentanyl-focused CYP3A4 control is distinct from opioid + benzodiazepine CNS-depression (`opioid_benzo_checker.py`) and general opioid MED checking (`opioid_med_checker.py`).
 
-Every unique fentanyl × CYP3A4-inhibitor pair across separate medication entries yields a `FentanylCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FENTANYL_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique fentanyl × CYP3A4-inhibitor pair across separate medication entries yields a `FentanylCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/FENTANYL_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.96 Clozapine + Strong CYP1A2 Inhibitor Exposure / Seizure-Myocarditis Risk
 `safety/clozapine_cyp1a2_checker.py` flags **clozapine** (clozapine, Clozaril, FazaClo, Versacloz) co-prescribed with **strong CYP1A2 inhibitors** (fluvoxamine/Luvox — `CRITICAL`; ciprofloxacin/Cipro — `HIGH`). Strong CYP1A2 inhibition can markedly elevate clozapine serum levels and increase seizure and myocarditis risk. This focused CYP1A2 control is distinct from the clozapine ANC monitoring checker (`clozapine_anc_checker.py`).
 
-Every unique clozapine × CYP1A2-inhibitor pair across separate medication entries yields a `ClozapineCyp1a2Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CLOZAPINE_CYP1A2_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique clozapine × CYP1A2-inhibitor pair across separate medication entries yields a `ClozapineCyp1a2Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CLOZAPINE_CYP1A2_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ---
@@ -3047,7 +3047,7 @@ Every unique clozapine × CYP1A2-inhibitor pair across separate medication entri
 ### 3.97 DOAC + Strong Inducer Thrombosis Risk
 `safety/doac_inducer_checker.py` flags **DOACs** (apixaban/Eliquis, rivaroxaban/Xarelto, edoxaban/Savaysa, dabigatran/Pradaxa) co-prescribed with **strong CYP3A4/P-gp inducers** (rifampin/rifampicin — `CRITICAL`; carbamazepine/Tegretol, phenytoin/Dilantin, St John's wort / hypericum — `HIGH`). Strong induction can reduce DOAC anticoagulant exposure and increase thrombosis risk. This DOAC-focused inducer control is distinct from warfarin interaction checkers and from DOAC + NSAID / antiplatelet bleeding controls.
 
-Every unique DOAC × inducer pair across separate medication entries yields a `DoacInducerRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_INDUCER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique DOAC × inducer pair across separate medication entries yields a `DoacInducerRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/DOAC_INDUCER_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ---
@@ -3061,13 +3061,13 @@ Every unique DOAC × inducer pair across separate medication entries yields a `D
 ### 3.95 Colchicine + Strong CYP3A4/P-gp Inhibitor Critical Toxicity
 `safety/colchicine_cyp3a4_checker.py` flags **colchicine-class agents** (colchicine, Colcrys, Mitigare, Gloperba) co-prescribed with **strong CYP3A4 and/or P-gp inhibitors** (clarithromycin, ketoconazole, itraconazole, ritonavir, cyclosporine/ciclosporin, cobicistat, posaconazole — `CRITICAL`). Strong dual-pathway inhibition can markedly increase colchicine exposure and cause severe or fatal gastrointestinal, neuromuscular, or bone-marrow toxicity (FDA boxed-warning territory). This colchicine-focused CYP3A4/P-gp control is distinct from the fentanyl CYP3A4 exposure checker (`fentanyl_cyp3a4_checker.py`).
 
-Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique colchicine × supported inhibitor pair across separate medication entries yields a `ColchicineCyp3a4Risk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/COLCHICINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.98 Statin + Fibrate Myopathy / Rhabdomyolysis Risk
 `safety/statin_fibrate_checker.py` flags **statins** (simvastatin/Zocor, lovastatin/Mevacor/Altoprev, atorvastatin/Lipitor, rosuvastatin/Crestor, pravastatin/Pravachol, fluvastatin/Lescol, pitavastatin/Livalo) co-prescribed with **fibrates** (gemfibrozil/Lopid — `CRITICAL`; fenofibrate/Tricor/Lofibra or fenofibric acid/Trilipix — `HIGH`). Concurrent statin–fibrate therapy intensifies myopathy and rhabdomyolysis risk. This focused fibrate control is distinct from statin + CYP3A4 inhibitor (`statin_cyp3a4_checker.py`) and statin + macrolide (`statin_macrolide_checker.py`) checks.
 
-Every unique statin × fibrate pair across separate medication entries yields a `StatinFibrateRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_FIBRATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique statin × fibrate pair across separate medication entries yields a `StatinFibrateRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/STATIN_FIBRATE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.69 Methotrexate + NSAID Toxicity
@@ -3082,25 +3082,25 @@ Because torsadogenic risk is **additive**, a finding's severity is elevated to a
 ### 3.99 Warfarin + TMP-SMX INR Elevation / Bleed Risk
 `safety/warfarin_tmpsmx_checker.py` flags **warfarin** (warfarin, Coumadin, Jantoven) co-prescribed with **TMP-SMX / trimethoprim–sulfamethoxazole** (trimethoprim, sulfamethoxazole, Bactrim, Septra, cotrimoxazole, TMP-SMX — `CRITICAL`). TMP-SMX can potentiate warfarin anticoagulation, elevate INR, and increase major bleeding risk. This warfarin × TMP-SMX control is distinct from methotrexate + TMP-SMX (`mtx_tmpsmx_checker.py`) and fluoroquinolone + warfarin (`fluoroquinolone_warfarin_checker.py`) checks.
 
-Every unique warfarin × TMP-SMX pair across separate medication entries yields a `WarfarinTmpsmxRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_TMPSMX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique warfarin × TMP-SMX pair across separate medication entries yields a `WarfarinTmpsmxRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/WARFARIN_TMPSMX_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.100 Quetiapine + Strong CYP3A4 Inhibitor QT / Sedation Exposure Risk
 `safety/quetiapine_cyp3a4_checker.py` flags **quetiapine** (quetiapine, Seroquel) co-prescribed with **strong CYP3A4 inhibitors** (ketoconazole, itraconazole, ritonavir, cobicistat — `CRITICAL`; clarithromycin — `HIGH`). Strong CYP3A4 inhibition can markedly increase quetiapine exposure and intensify QT-prolongation and sedation risk. This quetiapine-focused CYP3A4 control is distinct from colchicine CYP3A4/P-gp (`colchicine_cyp3a4_checker.py`) and fentanyl CYP3A4 (`fentanyl_cyp3a4_checker.py`) checks.
 
-Every unique quetiapine × CYP3A4-inhibitor pair across separate medication entries yields a `QuetiapineCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/QUETIAPINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique quetiapine × CYP3A4-inhibitor pair across separate medication entries yields a `QuetiapineCyp3a4Risk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/QUETIAPINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.101 Methotrexate + NSAID Reduced-Clearance Toxicity Risk
 `safety/methotrexate_nsaid_checker.py` flags **methotrexate** (methotrexate, Trexall, Otrexup, Rasuvo, Xatmep) co-prescribed with **NSAIDs** (ibuprofen, naproxen, diclofenac, indomethacin, meloxicam, celecoxib, or generic NSAID — `HIGH`; ketorolac — `CRITICAL`). NSAIDs can reduce methotrexate clearance and increase toxicity risk. This brand-aware methotrexate × NSAID control is distinct from the legacy MTX + NSAID checker (`mtx_nsaid_checker.py`) and methotrexate + TMP-SMX antifolate checks.
 
-Every unique methotrexate × NSAID pair across separate medication entries yields a `MethotrexateNsaidRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHOTREXATE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique methotrexate × NSAID pair across separate medication entries yields a `MethotrexateNsaidRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHOTREXATE_NSAID_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.102 Methotrexate + Trimethoprim / TMP-SMX Antifolate Synergy Risk
 `safety/methotrexate_trimethoprim_checker.py` flags **methotrexate** (methotrexate, Trexall, Otrexup, Rasuvo, Xatmep) co-prescribed with **trimethoprim / TMP-SMX** (trimethoprim, TMP-SMX, Bactrim, Septra, co-trimoxazole, trimethoprim-sulfamethoxazole — `CRITICAL`). Trimethoprim intensifies antifolate synergy and can precipitate pancytopenia. This brand-aware methotrexate × trimethoprim control is distinct from the legacy MTX + TMP-SMX checker (`mtx_tmpsmx_checker.py`) and warfarin + TMP-SMX (`warfarin_tmpsmx_checker.py`) checks.
 
-Every unique methotrexate × trimethoprim/TMP-SMX pair across separate medication entries yields a `MethotrexateTrimethoprimRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHOTREXATE_TRIMETHOPRIM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique methotrexate × trimethoprim/TMP-SMX pair across separate medication entries yields a `MethotrexateTrimethoprimRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHOTREXATE_TRIMETHOPRIM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 
@@ -3108,99 +3108,99 @@ Every unique methotrexate × trimethoprim/TMP-SMX pair across separate medicatio
 ### 3.103 Tizanidine + Strong CYP1A2 Inhibitor Hypotension / Sedation Risk
 `safety/tizanidine_cipro_checker.py` flags **tizanidine** (tizanidine, Zanaflex) co-prescribed with **strong CYP1A2 inhibitors** (ciprofloxacin/Cipro or fluvoxamine/Luvox — `CRITICAL`). Strong CYP1A2 inhibition can markedly elevate tizanidine exposure and precipitate profound hypotension and sedation. This tizanidine-focused CYP1A2 control is distinct from theophylline + cipro (`theophylline_cipro_checker.py`) and clozapine CYP1A2 (`clozapine_cyp1a2_checker.py`) checks.
 
-Every unique tizanidine × CYP1A2-inhibitor pair across separate medication entries yields a `TizanidineCiproRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TIZANIDINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique tizanidine × CYP1A2-inhibitor pair across separate medication entries yields a `TizanidineCiproRisk` record with both medication names, canonical agents, `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TIZANIDINE_CIPRO_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.104 Tacrolimus + Strong CYP3A4 Inhibitor Exposure Risk
 
-Every unique supported primary × partner pair across separate medication entries yields a `TacrolimusCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TACROLIMUS_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique supported primary × partner pair across separate medication entries yields a `TacrolimusCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TACROLIMUS_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.105 Dabigatran + Strong P-gp Inhibitor Bleed Risk
 
-Every unique supported primary × partner pair yields a  record. See . Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique supported primary × partner pair yields a  record. See . Prefer **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.106 Ivabradine + Strong CYP3A4 Inhibitor Bradycardia Risk
 
-Every unique supported primary × partner pair yields a `IvabradineCyp3a4Risk` record. See `docs/guides/IVABRADINE_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique supported primary × partner pair yields a `IvabradineCyp3a4Risk` record. See `docs/guides/IVABRADINE_CYP3A4_GUIDE.md`. Prefer **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.107 Simvastatin + Amiodarone Myopathy/Rhabdomyolysis Risk
 
-Every unique supported primary × partner pair yields a `SimvastatinAmiodaroneRisk` record. See `docs/guides/SIMVASTATIN_AMIODARONE_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique supported primary × partner pair yields a `SimvastatinAmiodaroneRisk` record. See `docs/guides/SIMVASTATIN_AMIODARONE_GUIDE.md`. Prefer **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.108 Midazolam + Strong CYP3A4 Inhibitor Sedation Risk
 
-Every unique supported primary × partner pair yields a `MidazolamCyp3a4Risk` record. See `docs/guides/MIDAZOLAM_CYP3A4_GUIDE.md`. Prefer **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique supported primary × partner pair yields a `MidazolamCyp3a4Risk` record. See `docs/guides/MIDAZOLAM_CYP3A4_GUIDE.md`. Prefer **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.109 Cyclosporine + Statin Myopathy / Rhabdomyolysis Risk
 `safety/cyclosporine_statin_checker.py` flags **cyclosporine** (cyclosporine, ciclosporin, Neoral, Sandimmune, Gengraf) co-prescribed with **statins** (simvastatin/Zocor or lovastatin/Mevacor — `CRITICAL`; atorvastatin/Lipitor — `HIGH`). Cyclosporine can increase statin exposure and intensify myopathy and rhabdomyolysis risk. This cyclosporine × statin control is distinct from statin + fibrate (`statin_fibrate_checker.py`), simvastatin + amiodarone, and digoxin + amiodarone checks.
 
-Every unique cyclosporine × statin pair across separate medication entries yields a `CyclosporineStatinRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CYCLOSPORINE_STATIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique cyclosporine × statin pair across separate medication entries yields a `CyclosporineStatinRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/CYCLOSPORINE_STATIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.110 Sotalol QT-Prolongation Risk
 `safety/sotalol_qt_checker.py` flags **sotalol** (sotalol, Betapace, Betapace AF, Sorine, Sotylize) as a brand-aware QT-risk finding. Sotalol alone yields `HIGH` severity; co-prescription with other known QT-prolonging agents (ondansetron/Zofran, levofloxacin/Levaquin, haloperidol/Haldol, amiodarone/Cordarone — `CRITICAL`; azithromycin/Zithromax — `HIGH`) escalates torsades de pointes concern. This sotalol-specific control is distinct from the general multi-drug QT screen (`qt_prolongation_checker.py`) and electrolyte QT checks (`electrolyte_qt_checker.py`).
 
-Every unique sotalol solo finding or sotalol × QT-partner pair across separate medication entries yields a `SotalolQtRisk` record with medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SOTALOL_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique sotalol solo finding or sotalol × QT-partner pair across separate medication entries yields a `SotalolQtRisk` record with medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SOTALOL_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.111 Escitalopram / Citalopram QT-Prolongation Risk
 `safety/escitalopram_qt_checker.py` flags **escitalopram** (escitalopram, Lexapro) and **citalopram** (citalopram, Celexa) as brand-aware QT-risk findings. Alone yields `HIGH` severity; co-prescription with other known QT-prolonging agents (ondansetron/Zofran, haloperidol/Haldol, amiodarone/Cordarone, levofloxacin/Levaquin — `CRITICAL`; azithromycin/Zithromax — `HIGH`) escalates torsades de pointes concern. This SSRI-specific QT control is distinct from quetiapine CYP3A4 exposure checks (`quetiapine_cyp3a4_checker.py`) and the general multi-drug QT screen (`qt_prolongation_checker.py`).
 
-Every unique solo finding or primary × QT-partner pair across separate medication entries yields an `EscitalopramQtRisk` record with medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ESCITALOPRAM_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique solo finding or primary × QT-partner pair across separate medication entries yields an `EscitalopramQtRisk` record with medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ESCITALOPRAM_QT_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.112 Spironolactone / Eplerenone + Potassium Hyperkalemia Risk
 `safety/spironolactone_potassium_checker.py` flags **mineralocorticoid receptor antagonists** (spironolactone/Aldactone, eplerenone/Inspra) co-prescribed with **potassium sources** (potassium chloride/KCl/Klor-Con/potassium — `CRITICAL`; salt substitutes/NoSalt — `HIGH`). MRA therapy plus exogenous potassium intensifies hyperkalemia risk. This MRA-focused control is distinct from ACEI/ARB + potassium (`acei_potassium_checker.py`) and ACEI/ARB + potassium-sparing diuretic (`acei_ksparing_checker.py`) checks.
 
-Every unique MRA × potassium-source pair across separate medication entries yields a `SpironolactonePotassiumRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SPIRONOLACTONE_POTASSIUM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique MRA × potassium-source pair across separate medication entries yields a `SpironolactonePotassiumRisk` record with both medication names, canonical agents, `HIGH` or `CRITICAL` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/SPIRONOLACTONE_POTASSIUM_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.113 Tamoxifen + Strong CYP2D6 Inhibitor Risk
 `safety/tamoxifen_cyp2d6_checker.py` flags **Tamoxifen + Strong CYP2D6 Inhibitor** pairs. Tamoxifen is a prodrug activated by CYP2D6 to endoxifen. Strong CYP2D6 inhibitors (fluoxetine, paroxetine, bupropion, quinidine) can reduce activation and undermine breast-cancer endocrine therapy. Distinct from generic SSRI panels and codeine CYP2D6 checks.
 
-Every unique primary × partner pair across separate medication entries yields a `TamoxifenCyp2d6Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TAMOXIFEN_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary × partner pair across separate medication entries yields a `TamoxifenCyp2d6Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/TAMOXIFEN_CYP2D6_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.114 Amlodipine + Clarithromycin Risk
 `safety/amlodipine_clarithromycin_checker.py` flags **Amlodipine + Clarithromycin** pairs. Amlodipine is a CYP3A4 substrate; clarithromycin is a strong CYP3A4 inhibitor. Co-prescription is linked to hospitalization for hypotension/shock in older adults. Distinct from simvastatin–macrolide and generic CCB panels.
 
-Every unique primary x partner pair across separate medication entries yields a `AmlodipineClarithromycinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMLODIPINE_CLARITHROMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary x partner pair across separate medication entries yields a `AmlodipineClarithromycinRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/AMLODIPINE_CLARITHROMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 ### 3.115 Methylene Blue + SSRI/SNRI Risk
 `safety/methylene_blue_ssri_checker.py` flags **Methylene Blue + SSRI/SNRI** pairs. Intravenous methylene blue inhibits monoamine oxidase A. Co-use with serotonergic antidepressants can cause serotonin syndrome (FDA warning). Distinct from linezolid+SSRI and tramadol+SSRI checkers.
 
-Every unique primary x partner pair across separate medication entries yields a `MethyleneBlueSsriRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHYLENE_BLUE_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary x partner pair across separate medication entries yields a `MethyleneBlueSsriRisk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/METHYLENE_BLUE_SSRI_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.116 Apixaban + Strong CYP3A4/P-gp Inhibitor Risk
 `safety/apixaban_cyp3a4_checker.py` flags **Apixaban + Strong CYP3A4/P-gp** pairs. Apixaban is a CYP3A4/P-gp substrate; strong inhibitors (ketoconazole, itraconazole, ritonavir) raise exposure and bleeding risk. Distinct from dabigatran P-gp and DOAC inducer checkers.
 
-Every unique primary x partner pair across separate medication entries yields a `ApixabanCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/APIXABAN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary x partner pair across separate medication entries yields a `ApixabanCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/APIXABAN_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.117 Pimozide + Strong CYP3A4 Inhibitor Risk
 `safety/pimozide_cyp3a4_checker.py` flags **Pimozide + Strong CYP3A4** pairs. Pimozide is a CYP3A4 substrate with QT risk; strong CYP3A4 inhibitors are contraindicated (boxed-warning territory). Distinct from generic QT and quetiapine CYP3A4 checkers.
 
-Every unique primary x partner pair across separate medication entries yields a `PimozideCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PIMOZIDE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary x partner pair across separate medication entries yields a `PimozideCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PIMOZIDE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.118 Ergotamine / DHE + Strong CYP3A4 Inhibitor Risk
 `safety/ergotamine_cyp3a4_checker.py` flags **Ergotamine + Strong CYP3A4** pairs. Ergot alkaloids are CYP3A4 substrates; strong inhibitors can cause ergot toxicity/vasospasm (contraindicated). Distinct from other CYP3A4 exposure checkers.
 
-Every unique primary x partner pair across separate medication entries yields a `ErgotamineCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ERGOTAMINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique primary x partner pair across separate medication entries yields a `ErgotamineCyp3a4Risk` record with both medication names, canonical agents, severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/ERGOTAMINE_CYP3A4_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.119 Rifampin + Oral Contraceptive Efficacy Risk
 `safety/rifampin_oc_checker.py` flags **rifampin-class agents** (rifampin, rifampicin, Rifadin, Rimactane) co-prescribed with **oral contraceptives** (ethinylestradiol, levonorgestrel, norethindrone, desogestrel). Rifampin is a potent CYP3A4 inducer that dramatically reduces oral contraceptive efficacy, creating contraceptive failure risk. Alternative or additional contraception should be recommended when co-prescribed.
 
-Every unique rifampin × oral contraceptive pair across separate medication entries yields a `RifampinOcRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIFAMPIN_OC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique rifampin × oral contraceptive pair across separate medication entries yields a `RifampinOcRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/RIFAMPIN_OC_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.120 Phenytoin + Fluconazole CYP2C9 Inhibition Risk
 `safety/phenytoin_fluconazole_checker.py` flags **phenytoin-class agents** (phenytoin, Dilantin, Phenytek, fosphenytoin, Cerebyx) co-prescribed with **fluconazole** (fluconazole, Diflucan). Fluconazole inhibits CYP2C9 and can increase phenytoin serum concentrations, raising toxicity risk (nystagmus, ataxia, seizures). Distinct from warfarin-azole and other CYP2C9 interaction checkers.
 
-Every unique phenytoin × fluconazole pair across separate medication entries yields a `PhenytoinFluconazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PHENYTOIN_FLUCONAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique phenytoin × fluconazole pair across separate medication entries yields a `PhenytoinFluconazoleRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/PHENYTOIN_FLUCONAZOLE_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.121 Aminoglycoside + Vancomycin Additive Nephrotoxicity / Ototoxicity Risk
 `safety/gentamicin_vancomycin_checker.py` flags **aminoglycoside agents** (gentamicin, tobramycin, amikacin, Garamycin, TOBI) co-prescribed with **vancomycin** (vancomycin, Vancocin). Combining an aminoglycoside with vancomycin produces additive nephrotoxicity and ototoxicity; enhanced renal monitoring is required. Distinct from generic renal-dose and antibiotic-duration checkers.
 
-Every unique aminoglycoside × vancomycin pair across separate medication entries yields a `GentamicinVancomycinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/GENTAMICIN_VANCOMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**, **Kimi K2**.
+Every unique aminoglycoside × vancomycin pair across separate medication entries yields a `GentamicinVancomycinRisk` record with both medication names, canonical agents, `HIGH` severity, and RESEARCH USE ONLY rationale. Medication matching uses deterministic whole-token/whole-alias logic, duplicate canonical pairs are de-duplicated, and findings are sorted with the highest severity first. Findings are **advisory** — they never auto-modify medications. See also `docs/guides/GENTAMICIN_VANCOMYCIN_GUIDE.md`. Prefer frontier reasoning models when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**, **Kimi K3.1 Pro**.
 
 
 ### 3.281 HasBledSerialDelta Panel

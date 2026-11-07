@@ -13,8 +13,8 @@ severities. This is **RESEARCH USE ONLY** triage education — not a bedside
 early-warning implementation and not a substitute for local NEWS2/MEWS protocols.
 
 The checker is exported from `medagent.safety`. Prefer frontier reasoning models
-when summarizing findings: **GPT-5.5**, **Claude Sonnet 4.6**, **Gemini 3.x**,
-**Kimi K2**.
+when summarizing findings: **GPT-6 Astra**, **Claude Opus 5.5**, **Gemini 4 Argon**,
+**Kimi K3.1 Pro**.
 
 ## Gap vs MedPrompt clinical triage
 

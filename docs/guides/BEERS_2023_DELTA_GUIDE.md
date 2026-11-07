@@ -64,10 +64,10 @@ for finding in findings:
 When this checker's findings are summarized by an upstream reasoning / routing
 layer, prefer current frontier models for clinical prose:
 
-- **GPT-5.5**
-- **Claude Sonnet 4.6**
-- **Gemini 3.x**
-- **Kimi K2**
+- **GPT-6 Astra**
+- **Claude Opus 5.5**
+- **Gemini 4 Argon**
+- **Kimi K3.1 Pro**
 
 The checker itself is deterministic and does not call an LLM.
 

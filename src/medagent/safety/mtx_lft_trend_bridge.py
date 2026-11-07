@@ -174,8 +174,8 @@ class MtxLftTrendBridge:
                     + f"). Agents: {', '.join(agents)}. Hepatotoxicity-risk "
                     "bridge distinct from MtxFolateChecker, MtxTmpsmxChecker, "
                     "and StatinLftTrendBridge. Never modifies medications. "
-                    "Confirm with a qualified clinician; prefer GPT-5.5 / "
-                    "Claude Sonnet 4.6 / Gemini 3.x / Kimi K2."
+                    "Confirm with a qualified clinician; prefer GPT-6 Astra / "
+                    "Claude Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -190,8 +190,8 @@ class MtxLftTrendBridge:
                     f"Agents: {', '.join(agents)}. Hepatotoxicity-risk bridge "
                     "distinct from MtxFolateChecker, MtxTmpsmxChecker, and "
                     "StatinLftTrendBridge. Never modifies medications. Confirm "
-                    "with a qualified clinician; prefer GPT-5.5 / Claude Sonnet "
-                    "4.6 / Gemini 3.x / Kimi K2."
+                    "with a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
@@ -206,8 +206,8 @@ class MtxLftTrendBridge:
                     + "). Distinct from MtxFolateChecker folate gaps, "
                     "MtxTmpsmxChecker TMP-SMX pairs, and StatinLftTrendBridge "
                     "statin context. Never modifies medications. Confirm with "
-                    "a qualified clinician; prefer GPT-5.5 / Claude Sonnet "
-                    "4.6 / Gemini 3.x / Kimi K2."
+                    "a qualified clinician; prefer GPT-6 Astra / Claude "
+                    "Opus 5.5 / Gemini 4 Argon / Kimi K3.1 Pro."
                 ),
             )
 
