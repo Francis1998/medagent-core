@@ -96,6 +96,8 @@ The `ScopeEnforcer` (`src/medagent/safety/scope_enforcer.py`) rejects queries re
 ### 3.7 Drug Interaction Dual-Source Validation
 Drug interaction warnings are **only surfaced** when confirmed by at least 2 independent data sources (RxNorm + OpenFDA). This is enforced at the `DrugInteractionWarning` model level via a Pydantic validator — it is impossible to construct a `validated=True` warning with fewer than 2 sources.
 
+A validated warning's severity is the most severe rating among the pair's source records (`src/medagent/retrieval/drug_interaction.py`), so an unrated record never masks a rated one; it is `UNKNOWN` only when no record is rated. RxNav ratings map as follows: `high` (ONCHigh, an expert-panel list of high-priority interactions) → `HIGH`; `N/A` (DrugBank, which carries no severity) → `UNKNOWN`; `minor`/`moderate`/`major` → `LOW`/`MODERATE`/`HIGH`; `contraindicated` → `CRITICAL`; any other value → `MODERATE`. An OpenFDA label mention confirms a pair but does not rate it.
+
 ### 3.8 Hard Timeouts
 | Stage | Timeout |
 |---|---|

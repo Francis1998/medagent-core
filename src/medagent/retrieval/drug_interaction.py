@@ -110,11 +110,7 @@ class DrugInteractionClient:
         combined_consequence = " | ".join(
             d.get("consequence", "Review required") for d in interaction_data[:2]
         )
-        severity_str = interaction_data[0].get("severity", "MODERATE")
-        try:
-            severity = Severity(severity_str.upper())
-        except ValueError:
-            severity = Severity.MODERATE
+        severity = _most_severe(interaction_data)
 
         try:
             warning = DrugInteractionWarning(
@@ -224,7 +220,8 @@ class DrugInteractionClient:
                 {
                     "mechanism": "See FDA label warnings section",
                     "consequence": f"Potential interaction noted in {label_drug} label",
-                    "severity": "MODERATE",
+                    # A label mention confirms the pair but does not rate its severity.
+                    "severity": "UNKNOWN",
                 }
             ]
         except Exception as exc:
@@ -232,17 +229,40 @@ class DrugInteractionClient:
             return None
 
 
-def _map_rxnorm_severity(rxnorm_severity: str) -> str:
-    """Map RxNorm severity strings to our Severity enum values.
+def _record_severity(record: dict[str, Any]) -> Severity:
+    """Return a source record's severity; a missing or unrecognised one counts as MODERATE."""
+    try:
+        return Severity(str(record.get("severity", "MODERATE")).upper())
+    except ValueError:
+        return Severity.MODERATE
 
-    The lookup is case-insensitive, so mapping keys are stored lowercase to stay
-    reachable; ``N/A`` (unrated) therefore resolves to ``UNKNOWN`` rather than
-    silently defaulting to ``MODERATE``.
+
+def _most_severe(records: list[dict[str, Any]]) -> Severity:
+    """Return the most severe rating across a validated pair's source records.
+
+    Severities rank in ``Severity`` declaration order (``CRITICAL`` first), which
+    puts ``UNKNOWN`` last: an unrated record never masks a rated one, and the
+    result is ``UNKNOWN`` only when no record carries a rating.
+    """
+    order = list(Severity)
+    return min((_record_severity(r) for r in records), key=order.index, default=Severity.UNKNOWN)
+
+
+def _map_rxnorm_severity(rxnorm_severity: str) -> str:
+    """Map an RxNav interaction severity to a ``Severity`` value.
+
+    RxNav rated ONCHigh interactions (an expert-panel list of high-priority
+    pairs) ``high``, which maps to ``HIGH``, and reported ``N/A`` for DrugBank,
+    whose non-commercial data carries no severity, which maps to ``UNKNOWN``.
+    DrugBank-style ``minor``/``moderate``/``major`` grades map to ``LOW``/
+    ``MODERATE``/``HIGH`` and ``contraindicated`` to ``CRITICAL``; any other value
+    defaults to ``MODERATE``. The lookup is case-insensitive, so keys are lowercase.
     """
     mapping = {
         "n/a": "UNKNOWN",
         "minor": "LOW",
         "moderate": "MODERATE",
+        "high": "HIGH",
         "major": "HIGH",
         "contraindicated": "CRITICAL",
     }

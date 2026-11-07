@@ -32,6 +32,13 @@ def test_rxnorm_na_severity_maps_to_unknown() -> None:
     assert _map_rxnorm_severity("n/a") == "UNKNOWN"
 
 
+def test_rxnav_high_severity_maps_to_high() -> None:
+    """RxNav's ONCHigh rating ``high`` must map to ``HIGH``, not the ``MODERATE`` default."""
+
+    assert _map_rxnorm_severity("high") == "HIGH"
+    assert _map_rxnorm_severity("High") == "HIGH"
+
+
 @pytest.mark.asyncio
 async def test_cross_validated_interaction_is_returned(mocker: MockerFixture) -> None:
     """Warnings are surfaced only when both independent sources report an interaction."""
