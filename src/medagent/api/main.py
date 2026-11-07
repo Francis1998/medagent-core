@@ -39,12 +39,14 @@ from medagent.retrieval.drug_interaction import DrugInteractionClient
 from medagent.retrieval.local_kb import LocalKnowledgeBase, build_sample_index
 from medagent.retrieval.orchestrator import RetrievalOrchestrator
 from medagent.retrieval.pubmed import PubMedClient
-from medagent.safety.scope_enforcer import ScopeEnforcer
+from medagent.safety.scope_enforcer import ScopeEnforcer, ScopeViolationError
 
 logger = get_logger(__name__)
 
 # Module-level agent singleton (initialised in lifespan)
 _agent: ClinicalAgentStateMachine | None = None
+# Shared by the /analyze pre-check and the agent's INTAKE check.
+_SCOPE_ENFORCER = ScopeEnforcer()
 
 # Upper bound on how long shutdown waits for in-flight audit writes.
 AUDIT_DRAIN_TIMEOUT_SECONDS = 10.0
@@ -122,14 +124,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     )
     reasoner = ReasoningEngine(timeout_seconds=settings.agent_reasoning_timeout)
     router = MedicalRouter.from_settings()
-    enforcer = ScopeEnforcer()
 
     _agent = ClinicalAgentStateMachine(
         extractor=extractor,
         retriever=retriever,
         reasoner=reasoner,
         router=router,
-        enforcer=enforcer,
+        enforcer=_SCOPE_ENFORCER,
         confidence_threshold=settings.agent_confidence_threshold,
     )
 
@@ -247,6 +248,13 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Agent not ready. Please retry in a moment.",
         )
+
+    # Out-of-scope queries are rejected before the agent runs (SAFETY.md §3.6).
+    # The agent's own INTAKE check keeps its ERROR-state contract for library use.
+    try:
+        _SCOPE_ENFORCER.check_query_in_scope(request.query)
+    except ScopeViolationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
     start = time.monotonic()
 

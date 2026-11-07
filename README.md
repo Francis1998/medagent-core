@@ -481,7 +481,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 3 | Output validation | `llm/validator.py` | Rejects prescription language before returning |
 | 4 | ESCALATE gate | `agent/state_machine.py` | Auto-escalates when confidence < threshold |
 | 5 | PII de-identification | `safety/deidentify.py` | At INTAKE, before retrieval or any LLM call: dates, MRNs, SSNs, phones, emails and honorific/`Name:` names redacted; non-digest patient IDs HMAC-SHA256 hashed |
-| 6 | Scope enforcement | `safety/scope_enforcer.py` | Rejects 12 prohibited query patterns |
+| 6 | Scope enforcement | `safety/scope_enforcer.py` | Rejects 10 prohibited query patterns; `POST /analyze` returns HTTP 400 before the agent runs |
 | 7 | Dual-source drug validation | `models.py` | Pydantic enforces ≥2 sources at model construction |
 | 8 | Hard timeouts | `api/main.py` | 120s total, per-stage limits |
 | 9 | Drug-allergy conflict check | `safety/allergy_checker.py` | Flags medications conflicting with documented allergies (direct + intra-class cross-reactivity) |
