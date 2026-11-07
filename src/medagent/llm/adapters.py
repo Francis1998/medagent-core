@@ -194,7 +194,11 @@ class AnthropicAdapter(BaseLLMAdapter):
         if not self._api_key:
             raise LLMAdapterError("ANTHROPIC_API_KEY is not set")
 
-        client = anthropic.AsyncAnthropic(api_key=self._api_key)
+        # An explicit timeout bounds each call by the reasoning stage and is required by
+        # the SDK for large non-streaming budgets (it rejects them without one).
+        client = anthropic.AsyncAnthropic(
+            api_key=self._api_key, timeout=float(settings.agent_reasoning_timeout)
+        )
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
 
         request: dict[str, Any] = {
@@ -210,8 +214,16 @@ class AnthropicAdapter(BaseLLMAdapter):
             logger.error("anthropic_api_error", error=str(exc))
             raise LLMAdapterError(f"Anthropic API error: {exc}") from exc
 
-        content_block = response.content[0]
-        text = content_block.text if hasattr(content_block, "text") else str(content_block)
+        # Thinking models return thinking blocks before the answer; keep text blocks only.
+        text = "".join(
+            block.text
+            for block in response.content
+            if isinstance(getattr(block, "text", None), str)
+        )
+        if not text:
+            raise LLMAdapterError(
+                f"Anthropic returned no text content (stop_reason={response.stop_reason})"
+            )
         return LLMResponse(
             content=text,
             model=response.model,

@@ -309,3 +309,91 @@ class TestSamplingParameterCompatibility:
 def test_accepts_temperature_policy(provider: str, model: str, expected: bool) -> None:
     """The sampling policy matches each provider's documented model families."""
     assert accepts_temperature(provider, model) is expected
+
+
+def _anthropic_via_real_sdk(
+    monkeypatch: pytest.MonkeyPatch, content: list[dict[str, Any]], stop_reason: str
+) -> dict[str, Any]:
+    """Serve one Messages API response through the real SDK; return the sent JSON body."""
+    import json
+
+    import anthropic
+    import anthropic._base_client as sdk_client
+
+    # Recent SDKs build on httpx2, older ones on httpx; use whichever the SDK imports.
+    http = getattr(sdk_client, "httpx2", None) or sdk_client.httpx
+    sent: dict[str, Any] = {}
+
+    def handler(request: Any) -> Any:
+        sent.update(json.loads(request.content))
+        return http.Response(
+            200,
+            json={
+                "id": "msg_test",
+                "type": "message",
+                "role": "assistant",
+                "model": "claude-opus-5-5",
+                "content": content,
+                "stop_reason": stop_reason,
+                "stop_sequence": None,
+                "usage": {"input_tokens": 12, "output_tokens": 34},
+            },
+        )
+
+    real_client = anthropic.AsyncAnthropic
+
+    def client_with_mock_transport(**kwargs: Any) -> Any:
+        transport = http.MockTransport(handler)
+        return real_client(**kwargs, http_client=http.AsyncClient(transport=transport))
+
+    monkeypatch.setattr(anthropic, "AsyncAnthropic", client_with_mock_transport)
+    return sent
+
+
+@pytest.mark.asyncio()
+async def test_anthropic_default_budget_and_thinking_blocks_with_real_sdk(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The 32k default must pass the SDK's non-streaming guard; thinking is not the answer."""
+    sent = _anthropic_via_real_sdk(
+        monkeypatch,
+        [
+            {"type": "thinking", "thinking": "Weighing ACS vs pericarditis.", "signature": "s"},
+            {"type": "text", "text": "Differential: "},
+            {"type": "text", "text": "acute coronary syndrome."},
+        ],
+        "end_turn",
+    )
+
+    response = await AnthropicAdapter(api_key="k", model="claude-opus-5-5").complete("chest pain")
+
+    assert response.content == "Differential: acute coronary syndrome."
+    assert sent["max_tokens"] == 32_768
+    assert not SAMPLING_PARAMETERS & sent.keys()
+
+
+@pytest.mark.asyncio()
+async def test_anthropic_response_without_text_is_an_adapter_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A budget spent on thinking alone must trigger fallback, not return an empty answer."""
+    _anthropic_via_real_sdk(
+        monkeypatch,
+        [{"type": "thinking", "thinking": "Still weighing...", "signature": "s"}],
+        "max_tokens",
+    )
+
+    with pytest.raises(LLMAdapterError, match="no text"):
+        await AnthropicAdapter(api_key="k", model="claude-opus-5-5").complete("chest pain")
+
+
+def test_openai_sdk_floor_supports_max_completion_tokens() -> None:
+    """``max_completion_tokens`` first appears in openai-python 1.45.0."""
+    import re
+    from pathlib import Path
+
+    pyproject = Path(__file__).resolve().parents[3] / "pyproject.toml"
+    floor = re.search(r'"openai>=([0-9.]+)"', pyproject.read_text(encoding="utf-8"))
+
+    assert floor is not None
+    assert tuple(int(part) for part in floor.group(1).split(".")) >= (1, 45, 0)

@@ -61,7 +61,10 @@ Google [Gemini 3](https://aistudio.google.com/docs/gemini-3.md).
 
 Reasoning and thinking tokens count against the completion budget, so `LLM_MAX_OUTPUT_TOKENS`
 defaults to 32,768 (Google recommends at least 32,768 for Gemini 4 Argon). Lower it only for
-older models with smaller output limits.
+older models with smaller output limits. Claude calls pass `AGENT_REASONING_TIMEOUT` as an
+explicit client timeout, which the Anthropic SDK requires before it accepts a non-streaming
+budget this large. Thinking blocks are never returned as the answer: the adapter joins the text
+blocks, and a response with no text raises an adapter error so the router falls back.
 
 ## External APIs
 
