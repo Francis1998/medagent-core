@@ -19,6 +19,8 @@ findings = MethyleneBlueSsriChecker().check(
         Medication(name="sertraline"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## See also

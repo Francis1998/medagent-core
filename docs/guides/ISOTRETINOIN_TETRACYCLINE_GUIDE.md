@@ -31,6 +31,8 @@ findings = IsotretinoinTetracyclineChecker().check(
         Medication(name="Doxycycline 100 mg"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

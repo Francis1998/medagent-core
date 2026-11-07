@@ -34,6 +34,8 @@ from medagent.safety import LinezolidSsriChecker
 findings = LinezolidSsriChecker().check(
     [Medication(name="Linezolid 600 mg BID"), Medication(name="Sertraline 50 mg")]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

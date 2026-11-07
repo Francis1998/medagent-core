@@ -31,6 +31,8 @@ findings = SildenafilNitrateChecker().check(
         Medication(name="Nitroglycerin 0.4 mg SL"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

@@ -23,6 +23,8 @@ findings = GentamicinVancomycinChecker().check(
         Medication(name="vancomycin"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Safety

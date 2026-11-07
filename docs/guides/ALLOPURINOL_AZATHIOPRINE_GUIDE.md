@@ -31,6 +31,8 @@ findings = AllopurinolAzathioprineChecker().check(
         Medication(name="Azathioprine 50 mg"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

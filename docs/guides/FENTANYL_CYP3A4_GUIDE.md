@@ -32,6 +32,8 @@ findings = FentanylCyp3a4Checker().check(
         Medication(name="Ketoconazole 200 mg"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

@@ -31,6 +31,8 @@ findings = MetforminContrastChecker().check(
         Medication(name="Iohexol injection"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

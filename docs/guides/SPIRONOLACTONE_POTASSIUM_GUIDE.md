@@ -28,6 +28,8 @@ from medagent.safety import SpironolactonePotassiumChecker
 findings = SpironolactonePotassiumChecker().check(
     [Medication(name="spironolactone"), Medication(name="potassium chloride")]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Reasoning stack notes

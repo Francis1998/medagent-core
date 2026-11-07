@@ -20,6 +20,8 @@ findings = SofosbuvirAmiodaroneChecker().check(
         Medication(name="amiodarone"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Safety
