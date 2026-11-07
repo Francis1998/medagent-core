@@ -4,7 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from medagent.llm.validator import MedicalOutputValidationError, MedicalOutputValidator
+from medagent.llm.validator import (
+    REDACTED_DIRECTIVE,
+    MedicalOutputValidationError,
+    MedicalOutputValidator,
+    redact_prohibited_language,
+)
 
 _TOO_LONG_CONTENT_LENGTH = 50_001
 
@@ -53,6 +58,48 @@ class TestMedicalOutputValidator:
         """'Administer X mg' language must be rejected."""
         with pytest.raises(MedicalOutputValidationError):
             validator.validate("Administer 10 mg of furosemide intravenously.")
+
+    @pytest.mark.parametrize(
+        "content",
+        [
+            "Administer 0.5 mg of naloxone intravenously.",
+            "We recommend 2.5 mg of apixaban twice daily.",
+            "Use a dosage of 0.25 mg nightly.",
+            "Administer 12.5mg of hydrochlorothiazide.",
+            "Administer .5 mg of lorazepam now.",  # naked leading decimal point
+            "Administer 0,5 mg of lorazepam now.",  # decimal comma
+            "Administer 1,000 mg of ceftriaxone.",  # thousands separator
+            "We recommend 2·5 mg of bisoprolol.",  # typographic decimal point
+        ],
+    )
+    def test_decimal_dose_directives_rejected(
+        self, validator: MedicalOutputValidator, content: str
+    ) -> None:
+        """Decimal doses must be rejected exactly like integer doses."""
+        with pytest.raises(MedicalOutputValidationError, match="prohibited"):
+            validator.validate(content)
+
+    @pytest.mark.parametrize(
+        "content",
+        [
+            "Creatinine rose from 1.1 to 1.5 mg/dL over 48 hours.",
+            "Home medications include apixaban 2.5 mg twice daily.",
+            "EMS administered 0.4 mg of naloxone before arrival.",
+            "Version 2.5 of the guideline recommends shared decision-making.",
+            "Troponin 0.04 ng/mL; we recommend 2 to 3 serial measurements.",
+        ],
+    )
+    def test_non_directive_text_with_decimals_passes(
+        self, validator: MedicalOutputValidator, content: str
+    ) -> None:
+        """Lab values, medication history and other decimals are not directives."""
+        validator.validate(content)
+
+    def test_decimal_dose_directive_is_redacted(self) -> None:
+        """Echoed source text loses decimal-dose directives too."""
+        assert redact_prohibited_language("Administer 0.5 mg nightly") == (
+            f"{REDACTED_DIRECTIVE} nightly"
+        )
 
     def test_validate_json_parses_valid_json(self, validator: MedicalOutputValidator) -> None:
         """validate_json must successfully parse a valid JSON dict."""

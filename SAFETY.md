@@ -53,7 +53,7 @@ Every LLM call includes an immutable system prompt (`src/medagent/safety/disclai
 - Prohibits browsing the internet or executing code
 
 ### 3.3 Medical Output Validation
-The `MedicalOutputValidator` (`src/medagent/llm/validator.py`) scans every LLM completion for prohibited language patterns before it is returned. Outputs containing "prescribe", "administer X mg", or "start the patient on" are **rejected** and trigger the fallback adapter chain.
+The `MedicalOutputValidator` (`src/medagent/llm/validator.py`) scans every LLM completion for prohibited language patterns before it is returned. Outputs containing "prescribe", "start the patient on", or a dose directive ("administer X mg", "dosage of X mg", "recommend X mg") are **rejected** and trigger the fallback adapter chain. The dose X matches integers and decimals in any common notation, regardless of locale: `5`, `0.5`, `0,5` (decimal comma), `1,000`, `2·5` (typographic decimal point) and `.5` (naked leading decimal point). Text without a directive verb, such as lab values, medication lists and past-tense history ("administered 0.4 mg"), is not affected.
 
 ### 3.4 ESCALATE State
 The agent automatically enters `ESCALATE` state (never completing to `OUTPUT`) when:
