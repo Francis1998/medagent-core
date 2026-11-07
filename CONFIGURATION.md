@@ -139,6 +139,20 @@ they are not loaded from `.env`). It also uses `PII_HASH_SALT` above to hash pat
 
 See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
 
+## CDS Hooks
+
+The HL7 CDS Hooks 2.0 services under `/cds-services` are part of the API server and read these
+settings from the environment or `.env`. They also use `PII_HASH_SALT` (hashed patient, user and
+`hookInstance` ids in the audit trail) and `DATABASE_URL` (the `cds_hooks_audit` table).
+
+| Variable | Default | Description |
+|---|---|---|
+| `MEDAGENT_CDS_HOOKS_CORS_ORIGINS` | empty (no CORS) | Comma-separated browser origins allowed to call `/cds-services` (CORS opt-in), e.g. `https://sandbox.cds-hooks.org`. Each entry must be `scheme://host[:port]`; wildcards and paths are rejected at startup. Applies to `/cds-services` paths only — the rest of the API keeps its app-wide CORS policy. |
+
+The services do not verify CDS Hooks JWTs: run them only in research sandboxes, behind a gateway that
+terminates TLS and authenticates the CDS client. See
+[docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md).
+
 ## Evaluation
 
 | Variable | Default | Description |

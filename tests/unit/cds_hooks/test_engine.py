@@ -694,3 +694,15 @@ def test_coverage_card_lists_status_exclusions_but_not_included_drafts() -> None
     )
     assert "include" not in detail.replace("including", "")
     assert "Ibuprofen" not in json.dumps(result.cards)
+
+
+def test_committed_example_response_is_the_services_real_output() -> None:
+    """examples/cds_hooks/order-sign.response.json was captured from the running API."""
+
+    def without_uuids(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [{key: value for key, value in card.items() if key != "uuid"} for card in cards]
+
+    committed = example("order-sign.response.json")["cards"]
+    actual = evaluate_hook(ORDER_SIGN, example("order-sign.json")).cards
+
+    assert without_uuids(actual) == without_uuids(committed)

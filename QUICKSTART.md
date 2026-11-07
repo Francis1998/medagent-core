@@ -138,8 +138,19 @@ Results are saved to `results/drugbank_eval.json`.
 | `/health` | GET | Readiness probe |
 | `/analyze` | POST | Full clinical reasoning run |
 | `/drug-interactions` | POST | Drug-drug interaction check |
+| `/cds-services` | GET | HL7 CDS Hooks 2.0 discovery (`order-sign`, `order-select` medication-safety services) |
+| `/cds-services/{id}` | POST | CDS Hooks service call: screens draft orders, returns cards (no LLM or API keys needed) |
+| `/cds-services/{id}/feedback` | POST | CDS Hooks card feedback, recorded in the audit log |
 | `/docs` | GET | Swagger UI |
 | `/redoc` | GET | ReDoc API docs |
+
+Try the CDS Hooks service with the synthetic example (see
+[docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md)):
+
+```bash
+curl -s -X POST http://localhost:8000/cds-services/medagent-medication-safety \
+  -H "Content-Type: application/json" -d @examples/cds_hooks/order-sign.json
+```
 
 ---
 
