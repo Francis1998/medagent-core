@@ -31,6 +31,8 @@ findings = CodeineCyp2d6Checker().check(
         Medication(name="Fluoxetine 20 mg"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

@@ -31,6 +31,8 @@ findings = ValproateCarbapenemChecker().check(
         Medication(name="Meropenem 1 g"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

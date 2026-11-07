@@ -34,6 +34,8 @@ from medagent.safety import LithiumAceiChecker
 findings = LithiumAceiChecker().check(
     [Medication(name="Lithium 300 mg BID"), Medication(name="Lisinopril 10 mg")]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

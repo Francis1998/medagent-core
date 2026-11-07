@@ -21,6 +21,8 @@ findings = ErgotamineCyp3a4Checker().check(
         Medication(name="clarithromycin"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Safety

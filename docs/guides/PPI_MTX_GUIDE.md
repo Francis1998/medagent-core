@@ -33,6 +33,8 @@ from medagent.safety import PpiMtxChecker
 findings = PpiMtxChecker().check(
     [Medication(name="Methotrexate 15 mg weekly"), Medication(name="Omeprazole 20 mg")]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

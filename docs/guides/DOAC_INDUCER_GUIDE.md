@@ -32,6 +32,8 @@ findings = DoacInducerChecker().check(
         Medication(name="Rifampin 600 mg daily"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

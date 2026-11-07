@@ -32,6 +32,8 @@ findings = ClozapineCyp1a2Checker().check(
         Medication(name="Fluvoxamine 100 mg"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries

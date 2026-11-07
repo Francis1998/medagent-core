@@ -28,6 +28,8 @@ from medagent.safety import EscitalopramQtChecker
 findings = EscitalopramQtChecker().check(
     [Medication(name="escitalopram"), Medication(name="ondansetron")]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Reasoning stack notes

@@ -31,6 +31,8 @@ findings = MtxPenicillinChecker().check(
         Medication(name="Amoxicillin 500 mg"),
     ]
 )
+for finding in findings:
+    print(finding.agent, finding.partner_agent, finding.severity)
 ```
 
 ## Scope boundaries
