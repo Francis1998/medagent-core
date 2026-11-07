@@ -1645,6 +1645,12 @@ rationale. Research-use only; never modifies medications.
 yields a `SofaDeltaOfDeltaRisk` with score, band, positive factors, severity, and
 rationale. Research-use only; never modifies medications.
 
+
+### 3.309 FlaccSerialDelta Panel
+`FlaccSerialDeltaPanel` computes an advisory score (MDCalc / FLACC pediatric pain serial delta-trend panel). Every call
+yields a `FlaccSerialDeltaRisk` with score, band, positive factors, severity, and
+rationale. Research-use only; never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:

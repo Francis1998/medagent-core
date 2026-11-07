@@ -94,6 +94,7 @@ from medagent.safety.feverpain_scorer import FeverPainScorer
 from medagent.safety.fhir_medication_request_adapter import FhirMedicationRequestAdapter
 from medagent.safety.fib4_liver_scorer import Fib4LiverScorer
 from medagent.safety.fisher_grade_scorer import FisherGradeScorer
+from medagent.safety.flacc_serial_delta_panel import FlaccSerialDeltaPanel
 from medagent.safety.flecainide_cyp2d6_checker import FlecainideCyp2d6Checker
 from medagent.safety.fluoroquinolone_corticosteroid_checker import (
     FluoroquinoloneCorticosteroidChecker,
@@ -391,6 +392,7 @@ __all__ = [
     "FhirMedicationRequestAdapter",
     "Fib4LiverScorer",
     "FisherGradeScorer",
+    "FlaccSerialDeltaPanel",
     "FlecainideCyp2d6Checker",
     "FluoroquinoloneCorticosteroidChecker",
     "FluoroquinoloneNsaidChecker",
