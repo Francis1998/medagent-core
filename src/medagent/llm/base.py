@@ -49,7 +49,7 @@ class BaseLLMAdapter(ABC):
         prompt: str,
         *,
         system_prompt: str | None = None,
-        max_tokens: int = 2048,
+        max_tokens: int | None = None,
         temperature: float = 0.1,
     ) -> LLMResponse:
         """Generate a completion for the given prompt.
@@ -57,8 +57,10 @@ class BaseLLMAdapter(ABC):
         Args:
             prompt: The user-facing prompt text.
             system_prompt: Optional system instruction (prepended to context).
-            max_tokens: Maximum tokens in the completion.
-            temperature: Sampling temperature (0 = deterministic).
+            max_tokens: Completion budget including reasoning/thinking tokens;
+                ``None`` uses ``settings.llm_max_output_tokens``.
+            temperature: Sampling temperature (0 = deterministic). Never sent to Claude or to
+                models that fix their sampling parameters.
 
         Returns:
             LLMResponse with the model's completion.

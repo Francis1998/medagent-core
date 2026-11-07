@@ -127,9 +127,14 @@ src/medagent/
 
 | Task | Preferred Provider | Fallback Chain | Rationale |
 |---|---|---|---|
-| Differential diagnosis | Claude Sonnet 4.6 | GPT-5.5 → Gemini → Kimi | Best long-form reasoning |
-| Drug interaction lookup | GPT-5.5 | Claude → Gemini → Kimi | Best structured JSON adherence |
-| Entity resolution | Gemini 3.1 Pro | GPT-5.5 → Claude → Kimi | Fastest for short classification |
+| Differential diagnosis | Claude Opus 5.5 | GPT-6.1 Sol → Gemini 4 Argon → Kimi K3.1 Pro | Best long-form reasoning |
+| Drug interaction lookup | GPT-6.1 Sol | Claude → Gemini → Kimi | Best structured JSON adherence |
+| Entity resolution | Gemini 4 Argon (`GOOGLE_MODEL=gemini-3.8-flash` for lowest latency) | GPT-6.1 Sol → Claude → Kimi | Short classification |
+
+Adapters never send sampling parameters to Claude, omit `temperature` for model families that fix
+it (GPT-5+/o-series, Gemini 3+, Kimi K2.6/K2.7/K3), and size every request with
+`LLM_MAX_OUTPUT_TOKENS`, which includes reasoning tokens — see
+[CONFIGURATION.md](CONFIGURATION.md#sampling-parameter-compatibility).
 
 All responses pass through `MedicalOutputValidator` before returning. If the validator rejects the response (prohibited prescription language), the fallback chain is tried automatically.
 

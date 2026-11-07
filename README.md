@@ -14,7 +14,7 @@
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
   <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
   <a href="SAFETY.md"><img alt="Research Use Only" src="https://img.shields.io/badge/use-research%20only-red.svg"></a>
-  <a href="#live-demos"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--5.5%20%7C%20Claude%20Sonnet%204.6%20%7C%20Gemini%203.x%20%7C%20Kimi%20K2-purple.svg"></a>
+  <a href="#live-demos"><img alt="LLM routing" src="https://img.shields.io/badge/LLM-GPT--6.1%20Sol%20%7C%20Claude%20Opus%205.5%20%7C%20Gemini%204%20Argon%20%7C%20Kimi%20K3.1%20Pro-purple.svg"></a>
 </p>
 
 ---
@@ -313,7 +313,7 @@ Research-only MDCalc / SCCM SIRS criteria screen. Stack: GPT-5.5 / Claude Sonnet
 
 ![medagent escalation demo](assets/demo_escalation.svg)
 
-**Multi-LLM routing — GPT-5.5, Claude Sonnet 4.6, Gemini 3.x, and Kimi K2 failover:**
+**Multi-LLM routing — provider failover across OpenAI, Anthropic, Google, and Kimi** (illustrative recording; current defaults are GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro — see [CONFIGURATION.md](CONFIGURATION.md)):
 
 ![medagent LLM routing demo](assets/demo_llm_routing.svg)
 
@@ -415,12 +415,12 @@ POST /drug-interactions
 **How medagent-core helps:**
 - `scripts/eval_medqa.py` runs the full agent pipeline on MedQA USMLE-style questions
 - Logs per-question reasoning traces (not just accuracy) enabling qualitative failure analysis
-- Compares reasoning quality across GPT-5.5, Claude Sonnet 4.6, Gemini 3.x, and Kimi K2 with identical prompts
+- Compares reasoning quality across GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro with identical prompts
 - Bayesian confidence score measures calibration: does high confidence correlate with correctness?
 - ESCALATE events reveal what the model *doesn't know* — the most clinically important failure mode
 
 ```bash
-# Compare GPT-5.5 vs Claude on USMLE-style questions:
+# Compare GPT-6.1 Sol vs Claude Opus 5.5 on USMLE-style questions:
 ANTHROPIC_API_KEY=sk-ant-... python scripts/eval_medqa.py --max-samples 100
 OPENAI_API_KEY=sk-...       python scripts/eval_medqa.py --max-samples 100
 # Results in results/medqa_eval.json for side-by-side comparison
@@ -742,6 +742,11 @@ medagent-mcp --version                     # dual-era stdio MCP server, no API k
 python scripts/mcp_stdio_demo.py           # drive it over real stdio in both protocol eras
 ```
 See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
+
+**LLM defaults** (override in `.env`): GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon and Kimi K3.1 Pro.
+Adapters shape parameters per model — Claude never receives `temperature`/`top_p`/`top_k`, and
+GPT-5+/o-series, Gemini 3+ and Kimi K2.6+/K3 never receive `temperature` — so switching models
+cannot trigger sampling-parameter errors ([details](CONFIGURATION.md#sampling-parameter-compatibility)).
 
 Full setup: [QUICKSTART.md](QUICKSTART.md) · Docker Compose: `docker-compose up --build`
 
