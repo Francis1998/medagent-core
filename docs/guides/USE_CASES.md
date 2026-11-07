@@ -27,8 +27,8 @@ export PII_HASH_SALT=change-me        # identifiers are HMAC-hashed with this sa
 ## 1. Polypharmacy safety review from an EHR export
 
 **Who:** a pharmacy-informatics researcher with a FHIR R4 export of an older patient's record who
-wants every deterministic medication-safety check run on it, without sending anything to a model
-provider.
+wants medagent's MCP-exposed deterministic checks run on it (13 patient-context and medication-list
+checks plus 83 interaction rules), without sending anything to a model provider.
 
 **Step 1: run the reference MCP client** over real stdio. It parses the synthetic bundle
 `data/sample_fhir_bundle_polypharmacy.json` and screens the result:
@@ -100,7 +100,9 @@ curl -s localhost:8000/health
 {"status":"ok","agent_ready":true,"version":"0.1.0","timestamp":"2026-11-07T08:53:48.089408"}
 ```
 
-**Step 2: ask for a differential** (the STEMI case from [QUICKSTART.md](../../QUICKSTART.md)):
+**Step 2: ask for a differential** (the STEMI case from [QUICKSTART.md](../../QUICKSTART.md)).
+`/analyze` does not de-identify its input: the caller supplies the hashed `patient_id_hash`, and
+free text must not contain identifiers.
 
 ```bash
 curl -s -X POST localhost:8000/analyze -H 'Content-Type: application/json' -d '{
@@ -140,13 +142,14 @@ d0f298af-4959-40fc-be9a-5ca4159a3c0e  ESCALATE       1          0.0
 ```
 
 **With a key:** set any `*_API_KEY` in `.env` (see [CONFIGURATION.md](../../CONFIGURATION.md) for
-the current default models) and repeat step 2. The response then carries ranked hypotheses, an
+the current default models). Restart the API, because settings and provider keys are read at
+startup, then repeat step 2. The response then carries ranked hypotheses, an
 evidence chain and the mandatory disclaimer. It reaches `OUTPUT` only when overall confidence is at
 least 0.6 and the evidence is not contradictory; otherwise it escalates.
 
 **What this demonstrates:**
 - The explicit state machine never fabricates an answer: `ESCALATE` is a first-class outcome.
-- Every run, escalated or not, is persisted to the audit log, keyed by session.
+- Every completed run, escalated or not, is persisted to the audit log, keyed by session.
 
 ---
 
@@ -173,7 +176,7 @@ drug_interaction_dual_source	§3.7	Drug-interaction dual-source validation (HTTP
 hard_timeouts	§3.8	Hard timeouts
 ```
 
-**Step 2: count everything that runs offline** (omit `category` to list all controls):
+**Step 2: see what the catalog covers** (omit `category` to list all entries):
 
 ```bash
 printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{}},"name":"list_safety_controls","arguments":{}}}' \
@@ -183,6 +186,11 @@ printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"_meta":{
 ```json
 {"count":104,"counts_by_category":{"platform":8,"patient_context":7,"medication_list":6,"interaction":83}}
 ```
+
+The 104 entries are a catalog, not 104 offline checks. The 8 `platform` entries are documented
+constraints of the agent, and some run only on the HTTP path: dual-source drug validation, for
+example, queries RxNorm and OpenFDA. The other 96 are the deterministic checks that run offline over
+MCP: 7 patient-context and 6 medication-list screening checks plus 83 interaction rules.
 
 **Step 3: attach the evidence.** Run the suites that enforce these controls and cite the
 corresponding [SAFETY.md](../../SAFETY.md) sections:

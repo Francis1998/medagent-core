@@ -3,10 +3,11 @@
 > **⚠️ RESEARCH USE ONLY — NOT FDA-cleared — NOT for clinical deployment**
 
 **A safety-first clinical decision-support research agent.** An explicit, auditable state machine
-ranks diagnostic hypotheses with Bayesian scoring and screens medications with 300 deterministic
-safety modules. Every output carries a mandatory disclaimer, and every run is written to a durable
-audit log. Use it over HTTP (FastAPI) or from any MCP host: Claude Desktop, Claude Code, Cursor or
-VS Code.
+ranks diagnostic hypotheses with Bayesian scoring and escalates to a human when confidence is low
+or the evidence conflicts. Every output carries a mandatory disclaimer, and every completed
+`/analyze` run is written to a durable audit log. A library of 300 deterministic safety modules
+backs it. 13 medication-screening checks and 83 interaction rules run offline from any MCP host:
+Claude Desktop, Claude Code, Cursor or VS Code.
 
 <p align="left">
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
@@ -47,20 +48,21 @@ The result: every health-AI team re-invents the same safety plumbing for months 
 
 ## Safety-first architecture
 
-Every request walks an explicit state machine. Each stage has a code-enforced safety control, and
-every run ends in the audit log, whether it produced an answer or escalated to a human.
+Every request walks an explicit state machine, and each stage has a code-enforced safety control.
+Every completed run ends in the audit log, whether it produced an answer or escalated to a human.
+MCP tool calls are audited when `--audit-log` or `MEDAGENT_MCP_AUDIT_LOG` is set.
 
 ```mermaid
 flowchart LR
     subgraph FSM["ClinicalAgentStateMachine"]
-        INTAKE["INTAKE<br/>scope enforcement<br/>PII hashing"] --> EXTRACT["ENTITY_EXTRACTION<br/>scispaCy NER + regex"]
+        INTAKE["INTAKE<br/>scope enforcement"] --> EXTRACT["ENTITY_EXTRACTION<br/>scispaCy NER + regex"]
         EXTRACT --> RETRIEVE["KNOWLEDGE_RETRIEVAL<br/>PubMed · RxNorm + OpenFDA · local KB"]
         RETRIEVE --> REASON["REASONING<br/>Bayesian ranking · LLM router<br/>prescription-language validator"]
         REASON --> CHECK{"SAFETY_CHECK<br/>confidence ≥ 0.6 and<br/>no contradictions?"}
         CHECK -- yes --> OUTPUT["OUTPUT<br/>+ mandatory disclaimer"]
         CHECK -- no --> ESCALATE["ESCALATE<br/>human review"]
     end
-    REQ["Clinical query<br/>+ FHIR context"] --> INTAKE
+    REQ["Clinical query + de-identified<br/>FHIR context (caller-hashed IDs)"] --> INTAKE
     OUTPUT --> AUDIT[("Durable audit log")]
     ESCALATE --> AUDIT
     HOST["MCP host<br/>Claude · Cursor · VS Code"] -.->|stdio JSON-RPC| MCP["medagent-mcp<br/>deterministic safety tools<br/>offline · de-identified"]
@@ -90,7 +92,8 @@ claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(wh
 ```
 
 **Run the HTTP API.** Reasoning needs at least one LLM API key; without one, `/analyze` escalates
-instead of guessing:
+instead of guessing. The API does not de-identify its input: send a pre-hashed `patient_id_hash`
+and free text without identifiers.
 
 ```bash
 cp .env.example .env               # then add at least one LLM API key
@@ -109,12 +112,12 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 |---|---|---|---|
 | Explicit agent state machine | INTAKE → … → OUTPUT \| ESCALATE with per-stage timeouts | `src/medagent/agent/state_machine.py` | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Bayesian differential reasoning | Ranked hypotheses with an evidence chain; deterministic SOAP structuring | `src/medagent/reasoning/` | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Deterministic safety layer | 300 modules covering allergy cross-reactivity, pregnancy and lactation, Beers and STOPP/START, renal and hepatic dosing, QTc DDIs, anticoagulant bleeding and boxed warnings, plus scorers and lab-trend bridges | `src/medagent/safety/` | [SAFETY.md](SAFETY.md), [panel catalog](docs/SAFETY_PANEL_CATALOG.md) |
+| Deterministic safety library | 300 modules covering allergy cross-reactivity, pregnancy and lactation, Beers and STOPP/START, renal and hepatic dosing, QTc DDIs, anticoagulant bleeding and boxed warnings, plus scorers and lab-trend bridges. The MCP tools run 13 screening checks and 83 interaction rules from it | `src/medagent/safety/` | [SAFETY.md](SAFETY.md), [panel catalog](docs/SAFETY_PANEL_CATALOG.md) |
 | Drug-interaction checks | Dual-source RxNorm + OpenFDA on the HTTP path; 83 curated pairwise rules offline over MCP | `src/medagent/retrieval/drug_interaction.py`, `src/medagent/mcp/` | [SAFETY.md](SAFETY.md) |
 | FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 4 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
-| Durable audit log | Every run persisted; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
-| Privacy and scope | HMAC-SHA256 identifier hashing before any LLM call; scope enforcement on free text | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
+| Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
+| Privacy and scope | Scope enforcement on queries; HMAC-SHA256 identifier hashing and de-identified output in the FHIR parser and MCP tools. HTTP callers must send de-identified input | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
 | Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
 | HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health` | `src/medagent/api/main.py` | [API](#api) |
 
@@ -453,7 +456,7 @@ python scripts/demo.py --case escalate
 
 | Stage | Component | Timeout |
 |---|---|---|
-| **INTAKE** | `ScopeEnforcer` + PII hashing | — |
+| **INTAKE** | `ScopeEnforcer` (callers send pre-hashed IDs and de-identified text) | — |
 | **ENTITY_EXTRACTION** | `EntityExtractor` (scispaCy NER + regex fallback) | 10s |
 | **KNOWLEDGE_RETRIEVAL** | `RetrievalOrchestrator` (parallel fan-out) | 20s/source |
 | **REASONING** | `ReasoningEngine` + `MedicalRouter` | 90s |
