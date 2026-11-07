@@ -178,19 +178,28 @@ class _SanitisedServerErrors:
         if scope["type"] != "http":
             await self._app(scope, receive, send)
             return
-        started = False
+        started = completed = False
 
         async def tracking_send(message: Message) -> None:
-            nonlocal started
-            started = started or message["type"] == "http.response.start"
+            nonlocal started, completed
+            if message["type"] == "http.response.start":
+                started = True
+            elif message["type"] == "http.response.body" and not message.get("more_body"):
+                completed = True
             await send(message)
 
         try:
             await self._app(scope, receive, tracking_send)
         except Exception as exc:
-            logger.error("unhandled_exception", path=scope.get("path"), **exception_fields(exc))
-            if started:
+            # The request path is caller-controlled text; log the route template.
+            route = getattr(scope.get("route"), "path", None)
+            logger.error("unhandled_exception", route=route, **exception_fields(exc))
+            if completed:
                 return
+            if started:
+                # Headers are already sent, so no 500 can follow: abort the
+                # response without the original exception or its message.
+                raise RuntimeError("Response aborted after an unhandled error") from None
             response = JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={

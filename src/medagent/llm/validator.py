@@ -133,12 +133,10 @@ class MedicalOutputValidator:
         for pattern in _PROHIBITED_PATTERNS:
             match = pattern.search(content)
             if match:
-                logger.warning(
-                    "prohibited_content_detected",
-                    pattern=pattern.pattern,
-                    match=match.group(0),
-                )
+                # The matched text is model output and may carry clinical content,
+                # so neither the log nor the error message repeats it.
+                logger.warning("prohibited_content_detected", pattern=pattern.pattern)
                 raise MedicalOutputValidationError(
-                    f"LLM output contains prohibited prescription language: "
-                    f"'{match.group(0)}' matched pattern '{pattern.pattern}'"
+                    "LLM output contains prohibited prescription language "
+                    f"(pattern '{pattern.pattern}')"
                 )

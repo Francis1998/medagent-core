@@ -22,8 +22,9 @@ from medagent.agent import state_machine
 from medagent.api import main
 from medagent.llm import adapters
 from medagent.llm import router as router_module
+from medagent.llm import validator as validator_module
 from medagent.llm.base import LLMAdapterError
-from medagent.llm.validator import MedicalOutputValidationError
+from medagent.llm.validator import MedicalOutputValidationError, MedicalOutputValidator
 from medagent.logging_config import configure_logging, exception_fields
 from medagent.models import ClinicalQuery, FHIRPatientContext, Medication
 from medagent.reasoning import engine
@@ -36,6 +37,7 @@ LOGGING_MODULES = (
     state_machine,
     adapters,
     router_module,
+    validator_module,
     engine,
     orchestrator,
     drug_interaction,
@@ -399,3 +401,83 @@ async def test_single_source_interactions_are_suppressed_without_logging_names(
 
     assert await client.check_interactions(medications) == []
     assert_logged_without_canary(rendered_logs, "interaction_suppressed_insufficient_sources")
+
+
+def test_validator_never_logs_or_repeats_matched_model_output(rendered_logs: io.StringIO) -> None:
+    content = "Plan: administer 87654321 mg for Jane Canary. " + "Supporting rationale. " * 5
+
+    with pytest.raises(MedicalOutputValidationError) as raised:
+        MedicalOutputValidator().validate(content)
+
+    assert "87654321" not in str(raised.value)
+    assert_logged_without_canary(rendered_logs, "prohibited_content_detected")
+
+
+@pytest.mark.asyncio()
+async def test_unhandled_errors_log_the_route_template_not_the_request_path(
+    rendered_logs: io.StringIO,
+) -> None:
+    async def explode(token: str) -> None:
+        raise RuntimeError("boom")
+
+    main.app.add_api_route("/hygiene-probe/{token}", explode, methods=["GET"])
+    try:
+        transport = httpx.ASGITransport(app=main.app)
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://medagent.test"
+        ) as client:
+            response = await client.get("/hygiene-probe/Jane%20Canary%2087654321")
+    finally:
+        main.app.router.routes.pop()
+
+    assert response.status_code == 500
+    assert "/hygiene-probe/{token}" in rendered_logs.getvalue()
+    assert_logged_without_canary(rendered_logs, "unhandled_exception")
+
+
+async def _receive() -> dict[str, Any]:
+    return {"type": "http.request"}
+
+
+@pytest.mark.asyncio()
+async def test_errors_after_a_partial_response_abort_without_the_original_message(
+    rendered_logs: io.StringIO,
+) -> None:
+    async def partial_then_fail(scope: Any, receive: Any, send: Any) -> None:
+        await send({"type": "http.response.start", "status": 200, "headers": []})
+        await send({"type": "http.response.body", "body": b"{", "more_body": True})
+        raise RuntimeError(CANARY)
+
+    sent: list[dict[str, Any]] = []
+
+    async def send(message: dict[str, Any]) -> None:
+        sent.append(message)
+
+    middleware = main._SanitisedServerErrors(partial_then_fail)
+    with pytest.raises(RuntimeError) as raised:
+        await middleware({"type": "http", "path": "/x"}, _receive, send)
+
+    assert "Canary" not in str(raised.value)
+    assert raised.value.__suppress_context__
+    assert [message["type"] for message in sent] == ["http.response.start", "http.response.body"]
+    assert_logged_without_canary(rendered_logs, "unhandled_exception")
+
+
+@pytest.mark.asyncio()
+async def test_errors_after_a_completed_response_are_logged_and_suppressed(
+    rendered_logs: io.StringIO,
+) -> None:
+    async def complete_then_fail(scope: Any, receive: Any, send: Any) -> None:
+        await send({"type": "http.response.start", "status": 200, "headers": []})
+        await send({"type": "http.response.body", "body": b"{}", "more_body": False})
+        raise RuntimeError(CANARY)
+
+    sent: list[dict[str, Any]] = []
+
+    async def send(message: dict[str, Any]) -> None:
+        sent.append(message)
+
+    await main._SanitisedServerErrors(complete_then_fail)({"type": "http"}, _receive, send)
+
+    assert len(sent) == 2
+    assert_logged_without_canary(rendered_logs, "unhandled_exception")
