@@ -13,6 +13,12 @@ import math
 
 from medagent.models import EvidenceItem, Hypothesis
 
+# Evidence strength is clamped to this range before its log-odds weight is taken.
+# 0.5 is neutral (the default strength), so an item's weight is never negative and
+# it can only move its hypothesis in its labelled direction.
+_NEUTRAL_STRENGTH = 0.5
+_MAX_STRENGTH = 0.95
+
 
 def bayesian_score(
     evidence_for: list[EvidenceItem],
@@ -22,10 +28,13 @@ def bayesian_score(
     """Compute a Bayesian-inspired confidence score for a hypothesis.
 
     Uses a log-odds update rule:
-        log_odds_posterior = log_odds_prior + Σ log(strength_i) for FOR
-                                            - Σ log(strength_i) for AGAINST
+        log_odds_posterior = log_odds_prior + Σ w(strength_i) for FOR
+                                            - Σ w(strength_i) for AGAINST
+        w(s) = log(s / (1 - s)), with s clamped to [0.5, 0.95]
 
-    where strength_i is clamped to (0.05, 0.95) to avoid log(0).
+    ``w`` is never negative, so supporting evidence can only raise the score and
+    contradicting evidence can only lower it. A strength at or below the neutral
+    0.5 adds no weight; the upper clamp avoids log(0).
 
     Args:
         evidence_for: Evidence items supporting the hypothesis.
@@ -41,15 +50,19 @@ def bayesian_score(
     log_odds = math.log(prior / (1.0 - prior))
 
     for item in evidence_for:
-        strength = _clamp(item.strength, 0.05, 0.95)
-        log_odds += math.log(strength / (1.0 - strength))
+        log_odds += _evidence_weight(item.strength)
 
     for item in evidence_against:
-        strength = _clamp(item.strength, 0.05, 0.95)
         # Against evidence subtracts likelihood
-        log_odds -= math.log(strength / (1.0 - strength))
+        log_odds -= _evidence_weight(item.strength)
 
     return _sigmoid(log_odds)
+
+
+def _evidence_weight(strength: float) -> float:
+    """Return the non-negative log-odds weight of one item in its own direction."""
+    clamped = _clamp(strength, _NEUTRAL_STRENGTH, _MAX_STRENGTH)
+    return math.log(clamped / (1.0 - clamped))
 
 
 def _sigmoid(x: float) -> float:
