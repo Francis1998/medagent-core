@@ -18,13 +18,19 @@ from medagent.logging_config import get_logger
 
 logger = get_logger(__name__)
 
+# A dose amount in any common notation: an integer, a number whose groups are
+# separated by ".", "," or the typographic "·" (0.5, 0,5, 2·5, 1,000), or a naked
+# leading decimal point (.5). Separators are locale-agnostic because LLM output and
+# echoed EHR text use all of them, and a decimal dose is as much a directive as 5 mg.
+_DOSE_AMOUNT = r"(?:\d+(?:[.,·]\d+)*|\.\d+)"
+
 # Patterns that indicate a direct prescription — prohibited by the system
 _PROHIBITED_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"\bprescribe\b", re.IGNORECASE),
     re.compile(r"\bstart\s+the\s+patient\s+on\b", re.IGNORECASE),
-    re.compile(r"\badminister\s+\d+\s*mg\b", re.IGNORECASE),
-    re.compile(r"\bdosage\s+of\s+\d+\s*mg\b", re.IGNORECASE),
-    re.compile(r"\brecommend\s+\d+\s*mg\b", re.IGNORECASE),
+    re.compile(rf"\badminister\s+{_DOSE_AMOUNT}\s*mg\b", re.IGNORECASE),
+    re.compile(rf"\bdosage\s+of\s+{_DOSE_AMOUNT}\s*mg\b", re.IGNORECASE),
+    re.compile(rf"\brecommend\s+{_DOSE_AMOUNT}\s*mg\b", re.IGNORECASE),
 ]
 
 _MIN_CONTENT_LENGTH = 10

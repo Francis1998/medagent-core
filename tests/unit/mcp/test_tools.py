@@ -448,6 +448,23 @@ def test_directive_language_in_source_text_is_redacted(separator: str) -> None:
     assert result["medications"][0]["dosage"] == "[REDACTED-DIRECTIVE] nightly"
 
 
+@pytest.mark.parametrize("dose", ["0.4", ".5", "0,5", "2.5"])
+def test_decimal_dose_directive_in_source_text_is_redacted(dose: str) -> None:
+    bundle = _bundle(
+        PATIENT,
+        {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "medicationCodeableConcept": {"text": "Lorazepam"},
+            "dosageInstruction": [{"text": f"Administer {dose} mg nightly"}],
+        },
+    )
+
+    result = run("parse_fhir_bundle", {"bundle": bundle}).structured
+
+    assert result["medications"][0]["dosage"] == "[REDACTED-DIRECTIVE] nightly"
+
+
 def test_egfr_units_are_normalised_and_unknown_units_skipped() -> None:
     def egfr(value: float, unit: str | None) -> dict[str, Any]:
         quantity: dict[str, Any] = {"value": value}

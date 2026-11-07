@@ -108,3 +108,17 @@ class TestMedicalRouter:
 
         with pytest.raises(LLMAdapterError, match="validation"):
             await router.route_drug_interaction("return invalid output")
+
+    @pytest.mark.asyncio()
+    async def test_decimal_dose_directive_falls_back_to_next_adapter(self) -> None:
+        """A decimal-dose directive must be rejected like an integer one (SAFETY.md §3.3)."""
+        anthropic = RecordingAdapter(
+            "anthropic", response_text="Opioid toxicity: administer 0.4 mg of naloxone now."
+        )
+        openai = RecordingAdapter("openai")
+        router = MedicalRouter(anthropic=anthropic, openai=openai)
+
+        result = await router.route_differential("rank diagnoses")
+
+        assert result == openai.response_text
+        assert router.last_model_used == "openai/openai-test"
