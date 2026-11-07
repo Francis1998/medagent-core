@@ -68,6 +68,23 @@ class ScopeEnforcer:
     def __init__(self, strict_mode: bool = False) -> None:
         self._strict_mode = strict_mode
 
+    def find_violation(self, query: str) -> str | None:
+        """Return the prohibited pattern ``query`` matches, without logging the text.
+
+        A logging-safe variant of :meth:`check_query_in_scope` for callers that
+        handle clinical text (for example MCP tool arguments).
+
+        Args:
+            query: Text to check.
+
+        Returns:
+            The matched pattern's source string, or None when the text is in scope.
+        """
+        for pattern in _OUT_OF_SCOPE_PATTERNS:
+            if pattern.search(query):
+                return pattern.pattern
+        return None
+
     def check_query_in_scope(self, query: str) -> None:
         """Verify that a query is within the approved clinical scope.
 

@@ -29,6 +29,24 @@ _PROHIBITED_PATTERNS: list[re.Pattern[str]] = [
 
 _MIN_CONTENT_LENGTH = 10
 _MAX_CONTENT_LENGTH = 50_000
+REDACTED_DIRECTIVE = "[REDACTED-DIRECTIVE]"
+
+
+def redact_prohibited_language(content: str) -> str:
+    """Replace direct prescription language with a neutral placeholder.
+
+    Used for source text (for example EHR dosage instructions) that is echoed
+    back by deterministic tools, so it never reads as a directive from medagent.
+
+    Args:
+        content: Text to neutralise.
+
+    Returns:
+        The text with every prohibited-pattern match replaced.
+    """
+    for pattern in _PROHIBITED_PATTERNS:
+        content = pattern.sub(REDACTED_DIRECTIVE, content)
+    return content
 
 
 class MedicalOutputValidationError(ValueError):
@@ -52,6 +70,19 @@ class MedicalOutputValidator:
             MedicalOutputValidationError: When the content violates any rule.
         """
         self._check_length(content)
+        self._check_prohibited_patterns(content)
+
+    def check_prohibited_language(self, content: str) -> None:
+        """Reject direct prescription language without the LLM length rules.
+
+        Used for deterministic, non-LLM outputs such as MCP tool results.
+
+        Args:
+            content: Text to scan.
+
+        Raises:
+            MedicalOutputValidationError: When the content contains prescription language.
+        """
         self._check_prohibited_patterns(content)
 
     def validate_json(self, content: str, required_keys: list[str]) -> dict[str, object]:

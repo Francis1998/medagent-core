@@ -1,0 +1,100 @@
+{
+  "resourceType": "Bundle",
+  "id": "mcp-demo-polypharmacy",
+  "type": "collection",
+  "meta": {
+    "tag": [{"code": "SYNTHETIC", "display": "Synthetic demo data - not a real patient"}]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "demo-patient-0042",
+        "identifier": [{"system": "http://hospital.example.org/mrn", "value": "MRN-DEMO-0042"}],
+        "name": [{"family": "Demo", "given": ["Ada"]}],
+        "birthDate": "1945-05-14",
+        "gender": "female"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-af",
+        "category": [{"coding": [{"display": "Chief complaint"}]}],
+        "code": {"text": "Atrial fibrillation with new knee pain"}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-oa",
+        "code": {"text": "Osteoarthritis of knee"}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "med-warfarin",
+        "status": "active",
+        "medicationCodeableConcept": {"text": "Warfarin 5 mg tablet"},
+        "dosageInstruction": [{"text": "5 mg once daily", "timing": {"code": {"text": "daily"}}}]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "med-ibuprofen",
+        "status": "active",
+        "medicationCodeableConcept": {"text": "Ibuprofen 400 mg tablet"},
+        "dosageInstruction": [{"text": "400 mg three times daily"}]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "med-simvastatin",
+        "status": "active",
+        "medicationCodeableConcept": {"text": "Simvastatin 40 mg tablet"}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "med-clarithromycin",
+        "status": "active",
+        "medicationCodeableConcept": {"text": "Clarithromycin 500 mg tablet"}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "med-naproxen",
+        "status": "stopped",
+        "medicationCodeableConcept": {"text": "Naproxen 250 mg tablet"}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-egfr",
+        "code": {"text": "eGFR"},
+        "valueQuantity": {"value": 28, "unit": "mL/min/1.73m2"}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-inr",
+        "code": {"text": "INR"},
+        "valueQuantity": {"value": 3.4}
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-penicillin",
+        "code": {"text": "Penicillin"}
+      }
+    }
+  ]
+}

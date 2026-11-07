@@ -19,6 +19,28 @@
 
 ---
 
+### MCP server — medagent's safety checks inside Claude, Cursor and VS Code
+
+![medagent MCP server: real stdio session in both protocol eras](assets/mcp_server_demo.gif)
+
+`medagent-mcp` exposes the deterministic, offline safety layer to any Model Context Protocol host
+over stdio: `screen_medications` (allergy, pregnancy, lactation, Beers, renal/hepatic dosing, QT,
+serotonergic/anticholinergic burden, boxed warnings + 83 interaction rules),
+`check_drug_interactions`, `parse_fhir_bundle` (FHIR R4 → de-identified screening input) and
+`list_safety_controls`. Dual-era: MCP **2026-07-28** (stateless, `server/discover`) and legacy
+`initialize` clients (**2025-11-25** / **2025-06-18**); stdlib-only JSON-RPC, no API keys, no
+network. RESEARCH USE ONLY.
+
+```bash
+pip install -e . && medagent-mcp --version
+claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(which medagent-mcp)"
+```
+
+Guide (Claude Desktop / Claude Code / Cursor / VS Code / MCP Inspector, tool reference, safety
+model): [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md)
+
+---
+
 ### FeverPainScorer (Safety #220)
 
 ![FeverPainScorer](assets/feverpain_demo.gif)
@@ -714,6 +736,13 @@ python scripts/eval_medqa.py --max-samples 3    # demo mode
 python scripts/eval_drugbank.py                  # demo mode
 ```
 
+**Use the safety tools from an MCP host** (Claude Desktop, Claude Code, Cursor, VS Code):
+```bash
+medagent-mcp --version                     # dual-era stdio MCP server, no API keys needed
+python scripts/mcp_stdio_demo.py           # drive it over real stdio in both protocol eras
+```
+See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
+
 Full setup: [QUICKSTART.md](QUICKSTART.md) · Docker Compose: `docker-compose up --build`
 
 ---
@@ -777,12 +806,14 @@ medagent-core/
 │   ├── reasoning/      # Bayesian scorer + evidence chain builder + LLM engine
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
 │   ├── safety/         # PII hashing + scope enforcer + mandatory disclaimers
+│   ├── mcp/            # Dual-era MCP stdio server (medagent-mcp) over the safety layer
 │   └── api/            # FastAPI: /analyze /drug-interactions /health
 ├── tests/              # 396 pytest tests — all typed + documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
 │   ├── eval_drugbank.py# Drug interaction F1 evaluator
+│   ├── mcp_stdio_demo.py # Reference stdio MCP client (modern + legacy sessions)
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
 ├── assets/             # Animated SVG/GIF demos
 ├── data/               # Sample FHIR R4 bundle + KB index

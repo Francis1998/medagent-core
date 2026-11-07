@@ -66,6 +66,11 @@ src/medagent/
 │   ├── pii_hasher.py      # HMAC-SHA256 PII hashing; redact_fhir_pii
 │   └── scope_enforcer.py  # ScopeEnforcer: prohibited pattern detection + jailbreak stripping
 │
+├── mcp/
+│   ├── server.py          # Dual-era MCP stdio server: JSON-RPC, server/discover, initialize
+│   ├── tools.py           # 4 deterministic tools over the safety checkers + FHIR parser
+│   └── schema.py          # Minimal JSON Schema validator for tool arguments
+│
 └── api/
     ├── main.py            # FastAPI app, lifespan, /analyze, /drug-interactions, /health
     └── schemas.py         # API-layer request/response schemas (separate from domain models)
@@ -210,6 +215,38 @@ CREATE TABLE audit_log (
     created_at            DATETIME NOT NULL
 );
 ```
+
+---
+
+## MCP Server
+
+`medagent-mcp` (`python -m medagent.mcp`) is a second, LLM-free entry point next to the FastAPI
+app. It serves newline-delimited JSON-RPC on stdio and reuses the safety layer directly:
+
+```mermaid
+flowchart LR
+    host["MCP host<br/>(Claude Desktop / Code, Cursor, VS Code)"] -- "stdio JSON-RPC" --> server["mcp/server.py<br/>era + version negotiation"]
+    server -- "validate args<br/>(mcp/schema.py)" --> tools["mcp/tools.py"]
+    tools --> parser["extraction/fhir_parser.py<br/>+ FhirMedicationRequestAdapter"]
+    tools --> checks["safety/* checkers<br/>(patient-context, list, 83 interaction rules)"]
+    tools --> guard["MedicalOutputValidator<br/>ScopeEnforcer · pii_hasher"]
+    server -. "hashes + counts" .-> audit[("JSONL audit log")]
+    server -. "logs" .-> stderr["STDERR"]
+```
+
+- **Era selection per request.** A request whose `_meta` carries
+  `io.modelcontextprotocol/protocolVersion = 2026-07-28` (plus `clientCapabilities`) is served
+  statelessly with `resultType` and `serverInfo` in the result `_meta`; `initialize` switches the
+  stdio process into legacy mode (2025-11-25 / 2025-06-18) for clients without `_meta`. Unknown
+  versions get `-32022` with the supported list.
+- **Interaction rules are discovered**, not hard-coded: every class exported by `medagent.safety`
+  whose `check(medications)` returns records with `partner_agent` / `partner_medication` joins the
+  rule set, alongside the QTc, anticoagulant-bleeding and triple-whammy combination checkers.
+- **Tool errors vs protocol errors.** Bad arguments, scope violations and withheld outputs are
+  `isError` tool results; malformed JSON-RPC, unknown tools and version problems are JSON-RPC
+  errors.
+
+See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
 
 ---
 
