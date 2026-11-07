@@ -1639,6 +1639,12 @@ rationale. Research-use only; never modifies medications.
 yields a `NortonSerialDeltaRisk` with score, band, positive factors, severity, and
 rationale. Research-use only; never modifies medications.
 
+
+### 3.308 SofaDeltaOfDelta Panel
+`SofaDeltaOfDeltaPanel` computes an advisory score (MDCalc / SOFA Δ-of-Δ residual organ-failure panel). Every call
+yields a `SofaDeltaOfDeltaRisk` with score, band, positive factors, severity, and
+rationale. Research-use only; never modifies medications.
+
 ## 4. Escalation Policy
 
 When the agent enters `ESCALATE` state:
