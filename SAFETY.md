@@ -64,9 +64,19 @@ The agent automatically enters `ESCALATE` state (never completing to `OUTPUT`) w
 Escalated runs produce a response with `escalated: true` and `recommended_next_steps` that direct users to consult a clinician.
 
 ### 3.5 PII De-identification
-Patient-identifying fields (MRN, name, DOB) are SHA-256 hashed with a configurable salt **before** any LLM call is made. The raw FHIR bundle is stored in the audit log but the `raw_fhir` field is never included in LLM prompts.
+Every `/analyze` request is de-identified at INTAKE, before entity extraction, PubMed/RxNorm/OpenFDA retrieval, any LLM call, the response and the audit record (`deidentify_query` in `src/medagent/safety/deidentify.py`). Exactly this is removed:
 
-Free-text clinical notes pass through `sanitise_clinical_text` (`src/medagent/extraction/fhir_parser.py`), which redacts date-of-birth patterns (`MM/DD/YYYY`, ISO-8601 `YYYY-MM-DD` — the FHIR `birthDate` format — and `DD-Mon-YYYY`), MRN-like digit sequences, US Social Security numbers (`NNN-NN-NNNN`), phone numbers, and email addresses before any text is placed in a prompt.
+- **Narrative fields:** the query, chief complaint, clinical notes, diagnoses and allergies pass through `sanitise_clinical_text` (`src/medagent/extraction/fhir_parser.py`), which redacts:
+  - dates (`MM/DD/YYYY`, ISO-8601 `YYYY-MM-DD`, which is the FHIR `birthDate` format, and `DD-Mon-YYYY`);
+  - `MRN`-labelled numbers of any length, and `MR`-labelled numbers of 6–12 digits (so `MR 2+`, mitral regurgitation, is kept);
+  - US Social Security numbers (`NNN-NN-NNNN`);
+  - phone numbers and email addresses;
+  - capitalised names (including initials and accented letters) introduced by an honorific (Mr, Mrs, Ms, Miss, Mx, Dr, Prof) or by a `Name:`/`Patient name:` label that starts the text, a line or a clause. A name run covers up to six words, including lower-case surname particles (van, der, de, la, …) and, after a label, the `Surname, Given` form. It stops at a lower-case word, at a known clinical term such as COPD, at another honorific, and at the end of the line.
+- **`patient_id_hash`** is HMAC-SHA256 hashed with `PII_HASH_SALT` unless it is already a 64-character hex digest.
+- **`raw_fhir`** has the Patient `name`, `birthDate`, `identifier`, `telecom` and `address` removed (`redact_fhir_pii`), and it is never placed in a prompt. Input that is not a Bundle (`resourceType` `Bundle`), or whose `entry` is not a list of objects with an object `resource`, is rejected with HTTP 400.
+- **Structured medication, lab and vital-sign records** are clinical content and pass unchanged.
+
+Not detected: personal names without an honorific or label, street addresses and other identifiers written in free text. Callers must leave them out. The FHIR parser and the MCP tools apply the same sanitiser to the text they export.
 
 Audit-path logs never carry clinical content or credentials: the audit engine is created with SQLAlchemy `hide_parameters=True`, audit persistence failures are logged as `audit_persist_failed` with only the session id, exception class, SQLAlchemy error code, and driver exception class (`safe_error_fields` in `src/medagent/agent/audit.py`), and the database URL is logged with its password masked and its query string (which can also carry credentials) removed.
 

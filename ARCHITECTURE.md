@@ -63,6 +63,7 @@ src/medagent/
 │
 ├── safety/
 │   ├── disclaimer.py      # Mandatory disclaimer strings + MEDICAL_SYSTEM_PROMPT
+│   ├── deidentify.py      # deidentify_query(): de-identifies /analyze requests at INTAKE
 │   ├── pii_hasher.py      # HMAC-SHA256 PII hashing; redact_fhir_pii
 │   └── scope_enforcer.py  # ScopeEnforcer: prohibited pattern detection + jailbreak stripping
 │
@@ -81,6 +82,8 @@ src/medagent/
 ## State Machine — Detailed Flow
 
 ### INTAKE
+- `deidentify_query()` replaces the request with a de-identified copy before any other stage
+  ([SAFETY.md §3.5](SAFETY.md#35-pii-de-identification))
 - `ScopeEnforcer.check_query_in_scope()` validates the query
 - Transition: → `ENTITY_EXTRACTION` | `ERROR`
 
@@ -176,9 +179,10 @@ FHIRPatientContext (no raw PII in fields)
         │
 ClinicalQuery.patient_context
         │
-Agent State Machine
-        │  Only hashed IDs, clinical text, labs, and meds passed to LLMs
-        │  sanitise_clinical_text() scrubs text fields before LLM dispatch
+Agent State Machine — INTAKE: deidentify_query()
+        │  sanitise_clinical_text() on query, complaint, notes, diagnoses, allergies
+        │  non-digest patient_id_hash → HMAC-SHA256; raw_fhir Patient PII removed
+        │  only the de-identified complaint, entities and evidence reach the LLM
         │
 LLM (no PII exposure)
 ```

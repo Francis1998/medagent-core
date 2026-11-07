@@ -232,7 +232,8 @@ finding is `HIGH` or `CRITICAL`), `network_used: false`, a `coverage_note` and t
 
 `patient` rejects any other property (for example `name`), so direct identifiers cannot be sent
 by accident. Medication and allergy text is de-identified (`sanitise_clinical_text`: dates, phone
-numbers, emails, MRNs, SSNs) before any checker sees it, so findings never echo identifiers.
+numbers, emails, MRNs, SSNs, and names after an honorific or a `Name:` label) before any checker
+sees it, so findings never echo identifiers.
 Example call and (trimmed) result:
 
 ```json
@@ -379,7 +380,7 @@ guessed between. `MedicationStatement.dosage` is kept. Every
 exported free-text field — chief complaint, diagnoses, medication and dosage text, allergies, lab
 and vital strings — has the Patient's own names, logical id, identifiers, telecom, address and
 birth date replaced with `[REDACTED-PATIENT]`, then passes through `sanitise_clinical_text` (dates, phone
-numbers, emails, MRNs and SSNs are redacted); prescription phrasing in source text (for example an
+numbers, emails, MRNs, SSNs and names after an honorific or a `Name:` label are redacted); prescription phrasing in source text (for example an
 EHR dosage instruction "Administer 40 mg") is replaced with `[REDACTED-DIRECTIVE]`. Status codes
 that are not FHIR codes are reported as `unrecognized`, and unknown resource types are counted as
 `Other`, so caller-controlled strings are never echoed. eGFR observations are used only with a recognised unit
@@ -559,7 +560,7 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 - Pregnancy, lactation and hepatic status are never inferred from FHIR.
 - De-identification is pattern- and bundle-based: free text sent to `screen_medications` or
   `check_drug_interactions` is redacted with the generic sanitiser only (those tools never receive a
-  Patient resource), so names typed into medication or allergy strings cannot be recognised there.
+  Patient resource), so only names after an honorific or a `Name:` label are recognised there.
 - stdio transport only (no Streamable HTTP); tools only (no resources or prompts).
 
 ## How this demo was recorded

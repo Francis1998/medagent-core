@@ -274,6 +274,64 @@ class TestSanitiseClinicalText:
         assert ".co.uk" not in compound_tld
         assert "acme" not in compound_tld
 
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            ("Mrs. Jane Canary reports chest pain", "[REDACTED-NAME] reports chest pain"),
+            ("seen by Dr Smith, cardiology", "seen by [REDACTED-NAME], cardiology"),
+            ("Mr. O'Neil-Smith's daughter", "[REDACTED-NAME] daughter"),
+            ("Patient name: Jane Canary.", "Patient name: [REDACTED-NAME]."),
+            ("NAME: Jane Canary", "NAME: [REDACTED-NAME]"),
+            ("Mr. John Q. Canary reports pain", "[REDACTED-NAME] reports pain"),
+            ("Name: José García.", "Name: [REDACTED-NAME]."),
+            ("Dra. Ana Núñez-Peña", "Dra. Ana Núñez-Peña"),
+            ("Mr. Canary\nChest Pain at rest", "[REDACTED-NAME]\nChest Pain at rest"),
+            ("Mr. J.Q. Canary reports pain", "[REDACTED-NAME] reports pain"),
+            ("Name: Jose\u0301 Garci\u0301a.", "Name: [REDACTED-NAME]."),
+            ("Mr. Canary Dr. Smith reviewed", "[REDACTED-NAME] [REDACTED-NAME] reviewed"),
+            ("Name: María Del Carmen García López", "Name: [REDACTED-NAME]"),
+            ("Prof. Dr. John Canary reports pain", "Prof. [REDACTED-NAME] reports pain"),
+            ("Name: Canary, Jane; chest pain", "Name: [REDACTED-NAME]; chest pain"),
+            ("Mr. John van der Canary reports chest pain", "[REDACTED-NAME] reports chest pain"),
+            ("Name: Maria de la Canary", "Name: [REDACTED-NAME]"),
+            ("Mr. Canary COPD exacerbation", "[REDACTED-NAME] COPD exacerbation"),
+            ("Mr. Canary de novo lesion", "[REDACTED-NAME] de novo lesion"),
+        ],
+    )
+    def test_redacts_honorific_and_labelled_names(self, text: str, expected: str) -> None:
+        """Names introduced by an honorific or a ``Name:`` label are redacted."""
+        assert sanitise_clinical_text(text) == expected
+
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            ("MRN: 12345 reports chest pain", "[REDACTED-MRN] reports chest pain"),
+            ("mrn 7", "[REDACTED-MRN]"),
+            ("MRN#123456789012", "[REDACTED-MRN]"),
+            ("MR 2+ on echo", "MR 2+ on echo"),
+        ],
+    )
+    def test_mrn_labelled_numbers_of_any_length_are_redacted(
+        self, text: str, expected: str
+    ) -> None:
+        """``MRN`` labels any number; a bare ``MR`` (mitral regurgitation) needs 6+ digits."""
+        assert sanitise_clinical_text(text) == expected
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "MS Contin 15 mg twice daily",
+            "dr. ordered troponin",
+            "Patient: 65-year-old with chest pain",
+            "Troponin I elevated; aspirin given",
+            "Drug name: Warfarin 5 mg",
+            "Generic name: Atorvastatin",
+        ],
+    )
+    def test_name_rules_leave_clinical_text_alone(self, text: str) -> None:
+        """Without an honorific or ``Name:`` label, nothing is treated as a name."""
+        assert sanitise_clinical_text(text) == text
+
     def test_preserves_clinical_content(self) -> None:
         """Clinical observations must not be redacted."""
         text = "Patient presents with elevated troponin and chest pain"

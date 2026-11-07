@@ -55,14 +55,14 @@ MCP tool calls are audited when `--audit-log` or `MEDAGENT_MCP_AUDIT_LOG` is set
 ```mermaid
 flowchart LR
     subgraph FSM["ClinicalAgentStateMachine"]
-        INTAKE["INTAKE<br/>scope enforcement"] --> EXTRACT["ENTITY_EXTRACTION<br/>scispaCy NER + regex"]
+        INTAKE["INTAKE<br/>de-identification<br/>scope enforcement"] --> EXTRACT["ENTITY_EXTRACTION<br/>scispaCy NER + regex"]
         EXTRACT --> RETRIEVE["KNOWLEDGE_RETRIEVAL<br/>PubMed · RxNorm + OpenFDA · local KB"]
         RETRIEVE --> REASON["REASONING<br/>Bayesian ranking · LLM router<br/>prescription-language validator"]
         REASON --> CHECK{"SAFETY_CHECK<br/>confidence ≥ 0.6 and<br/>no contradictions?"}
         CHECK -- yes --> OUTPUT["OUTPUT<br/>+ mandatory disclaimer"]
         CHECK -- no --> ESCALATE["ESCALATE<br/>human review"]
     end
-    REQ["Clinical query + de-identified<br/>FHIR context (caller-hashed IDs)"] --> INTAKE
+    REQ["Clinical query<br/>+ FHIR context"] --> INTAKE
     OUTPUT --> AUDIT[("Durable audit log")]
     ESCALATE --> AUDIT
     HOST["MCP host<br/>Claude · Cursor · VS Code"] -.->|stdio JSON-RPC| MCP["medagent-mcp<br/>deterministic safety tools<br/>offline · de-identified"]
@@ -92,8 +92,10 @@ claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(wh
 ```
 
 **Run the HTTP API.** Reasoning needs at least one LLM API key; without one, `/analyze` escalates
-instead of guessing. The API does not de-identify its input: send a pre-hashed `patient_id_hash`
-and free text without identifiers.
+instead of guessing. INTAKE de-identifies every request before retrieval or any LLM call. It
+redacts dates, MRNs, SSNs, phone numbers, emails, and names after an honorific or a `Name:` label
+([SAFETY.md §3.5](SAFETY.md#35-pii-de-identification)). Other names are not detected, so leave them
+out.
 
 ```bash
 cp .env.example .env               # then add at least one LLM API key
@@ -117,7 +119,7 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 4 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
-| Privacy and scope | Scope enforcement on queries; HMAC-SHA256 identifier hashing and de-identified output in the FHIR parser and MCP tools. HTTP callers must send de-identified input | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
+| Privacy and scope | De-identification at INTAKE, before retrieval or any LLM call (sanitised narrative fields, HMAC-hashed patient IDs); the same sanitiser in the FHIR parser and MCP tools; scope enforcement on queries | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
 | Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
 | HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health` | `src/medagent/api/main.py` | [API](#api) |
 
@@ -456,7 +458,7 @@ python scripts/demo.py --case escalate
 
 | Stage | Component | Timeout |
 |---|---|---|
-| **INTAKE** | `ScopeEnforcer` (callers send pre-hashed IDs and de-identified text) | — |
+| **INTAKE** | `deidentify_query` (sanitiser + HMAC-hashed IDs) + `ScopeEnforcer` | — |
 | **ENTITY_EXTRACTION** | `EntityExtractor` (scispaCy NER + regex fallback) | 10s |
 | **KNOWLEDGE_RETRIEVAL** | `RetrievalOrchestrator` (parallel fan-out) | 20s/source |
 | **REASONING** | `ReasoningEngine` + `MedicalRouter` | 90s |
@@ -478,7 +480,7 @@ All controls are **technically enforced in code**, not just documented policy:
 | 2 | Medical system prompt | `safety/disclaimer.py` | Prohibits prescriptions, internet, code execution |
 | 3 | Output validation | `llm/validator.py` | Rejects prescription language before returning |
 | 4 | ESCALATE gate | `agent/state_machine.py` | Auto-escalates when confidence < threshold |
-| 5 | PII hashing | `safety/pii_hasher.py` | HMAC-SHA256 before any LLM call |
+| 5 | PII de-identification | `safety/deidentify.py` | At INTAKE, before retrieval or any LLM call: dates, MRNs, SSNs, phones, emails and honorific/`Name:` names redacted; non-digest patient IDs HMAC-SHA256 hashed |
 | 6 | Scope enforcement | `safety/scope_enforcer.py` | Rejects 12 prohibited query patterns |
 | 7 | Dual-source drug validation | `models.py` | Pydantic enforces ≥2 sources at model construction |
 | 8 | Hard timeouts | `api/main.py` | 120s total, per-stage limits |
@@ -684,7 +686,7 @@ medagent-core/
 │   ├── retrieval/      # PubMed + RxNorm/OpenFDA + local KB hybrid retrieval
 │   ├── reasoning/      # Bayesian scorer + evidence chain builder + LLM engine
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
-│   ├── safety/         # 300 deterministic safety modules + PII hashing + scope enforcer
+│   ├── safety/         # 300 deterministic safety modules + de-identification + scope enforcer
 │   ├── mcp/            # Dual-era MCP stdio server (medagent-mcp) over the safety layer
 │   └── api/            # FastAPI: /analyze /drug-interactions /health
 ├── tests/              # pytest suite (unit + integration), typed and documented
