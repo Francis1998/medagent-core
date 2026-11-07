@@ -2,8 +2,8 @@
 
 Routing heuristics (configurable via settings):
   - Complex differential diagnosis → Claude (strongest chain-of-thought)
-  - Drug interaction lookup → GPT-5.5 (best structured JSON adherence)
-  - Quick entity resolution / classification → Gemini Flash (fastest)
+  - Drug interaction lookup → OpenAI GPT-6.1 Sol (best structured JSON adherence)
+  - Quick entity resolution / classification → Gemini (set GOOGLE_MODEL to a Flash model for speed)
   - Overflow / fallback → first available adapter
 
 All routed calls go through the medical output validator before returning.
@@ -86,7 +86,7 @@ class MedicalRouter:
         return response.content
 
     async def route_drug_interaction(self, prompt: str) -> str:
-        """Route a drug interaction query to GPT-5.5 (best structured JSON).
+        """Route a drug interaction query to OpenAI GPT-6.1 Sol (best structured JSON).
 
         Args:
             prompt: Drug interaction lookup prompt.
@@ -102,7 +102,7 @@ class MedicalRouter:
         return response.content
 
     async def route_entity_resolution(self, prompt: str) -> str:
-        """Route a quick entity resolution task to Gemini Flash (fastest).
+        """Route a quick entity resolution task to Gemini (a Flash model is fastest).
 
         Args:
             prompt: Entity classification or normalisation prompt.

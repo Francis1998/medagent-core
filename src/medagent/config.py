@@ -25,10 +25,20 @@ class Settings(BaseSettings):
     google_api_key: str = Field(default="", description="Google Generative AI key")
     kimi_api_key: str = Field(default="", description="Kimi/Moonshot API key")
 
-    openai_model: str = Field(default="gpt-5.5")
-    anthropic_model: str = Field(default="claude-sonnet-4-6")
-    google_model: str = Field(default="gemini-3.1-pro-preview")
-    kimi_model: str = Field(default="kimi-k2")
+    openai_model: str = Field(default="gpt-6.1-sol")
+    anthropic_model: str = Field(default="claude-opus-5-5")
+    google_model: str = Field(default="gemini-4-argon")
+    kimi_model: str = Field(default="kimi-k3.1-pro")
+    kimi_base_url: str = Field(
+        default="https://api.moonshot.ai/v1",
+        description="Kimi/Moonshot OpenAI-compatible endpoint (api.moonshot.cn for China)",
+    )
+    llm_max_output_tokens: int = Field(
+        default=32_768,
+        ge=256,
+        le=1_048_576,
+        description="Completion budget per LLM call, including reasoning/thinking tokens",
+    )
 
     # --- External APIs ---
     pubmed_api_key: str = Field(default="")

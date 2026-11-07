@@ -8,6 +8,7 @@ installed (the CI environment may lack all vendor packages).
 
 from __future__ import annotations
 
+import re
 from typing import Any, cast
 
 from medagent.config import settings
@@ -16,6 +17,39 @@ from medagent.logging_config import get_logger
 from medagent.safety.disclaimer import MEDICAL_SYSTEM_PROMPT
 
 logger = get_logger(__name__)
+
+# Providers that never receive sampling parameters: Anthropic returns 400 for
+# temperature, top_p or top_k on every model since API version 2026-10-21 (and on
+# the Claude 5.5 family for any non-default value).
+_NO_SAMPLING_PROVIDERS = frozenset({"anthropic"})
+
+# Model families whose APIs reject or ignore a caller-set temperature: OpenAI
+# GPT-5+/o-series reasoning models (the adapter never sends reasoning effort
+# "none", the only setting that allows sampling parameters), Gemini 3+ (sampling
+# parameters ignored; Google says to remove them), and Kimi K2.6/K2.7/K3 (fixed
+# at 1.0, other values return an error).
+_FIXED_SAMPLING_MODELS: dict[str, re.Pattern[str]] = {
+    "openai": re.compile(r"^(gpt-[5-9]|o\d)"),
+    "google": re.compile(r"^gemini-([3-9]|\d{2,})"),
+    "kimi": re.compile(r"^kimi-k(2\.[67]|[3-9])"),
+}
+
+
+def accepts_temperature(provider: str, model: str) -> bool:
+    """Return whether ``model`` accepts a caller-set sampling temperature.
+
+    Args:
+        provider: Adapter provider name (``openai``, ``anthropic``, ``google``, ``kimi``).
+        model: Provider model identifier.
+
+    Returns:
+        False for providers and model families that fix their sampling
+        parameters, so the temperature must be omitted from the request.
+    """
+    if provider in _NO_SAMPLING_PROVIDERS:
+        return False
+    pattern = _FIXED_SAMPLING_MODELS.get(provider)
+    return pattern is None or pattern.match(model.strip().lower()) is None
 
 
 # ---------------------------------------------------------------------------
@@ -28,7 +62,7 @@ class OpenAIAdapter(BaseLLMAdapter):
 
     Args:
         api_key: OpenAI API key.
-        model: Model identifier (e.g. ``gpt-5.5``).
+        model: Model identifier (e.g. ``gpt-6.1-sol``).
     """
 
     def __init__(
@@ -49,7 +83,7 @@ class OpenAIAdapter(BaseLLMAdapter):
         prompt: str,
         *,
         system_prompt: str | None = None,
-        max_tokens: int = 2048,
+        max_tokens: int | None = None,
         temperature: float = 0.1,
     ) -> LLMResponse:
         """Run an OpenAI chat completion.
@@ -57,8 +91,8 @@ class OpenAIAdapter(BaseLLMAdapter):
         Args:
             prompt: User message content.
             system_prompt: Override system instruction.
-            max_tokens: Token budget for completion.
-            temperature: Sampling temperature.
+            max_tokens: Completion budget, including reasoning tokens.
+            temperature: Sampling temperature; omitted for reasoning models.
 
         Returns:
             LLMResponse with the generated text.
@@ -76,17 +110,19 @@ class OpenAIAdapter(BaseLLMAdapter):
 
         client = AsyncOpenAI(api_key=self._api_key)
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
+        request: dict[str, Any] = {
+            "model": self._model,
+            "messages": [
+                {"role": "system", "content": sys_msg},
+                {"role": "user", "content": prompt},
+            ],
+            "max_completion_tokens": max_tokens or settings.llm_max_output_tokens,
+        }
+        if accepts_temperature(self.provider_name, self._model):
+            request["temperature"] = temperature
 
         try:
-            response = await client.chat.completions.create(
-                model=self._model,
-                messages=[
-                    {"role": "system", "content": sys_msg},
-                    {"role": "user", "content": prompt},
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
+            response = await client.chat.completions.create(**request)
         except Exception as exc:
             logger.error("openai_api_error", error=str(exc))
             raise LLMAdapterError(f"OpenAI API error: {exc}") from exc
@@ -132,7 +168,7 @@ class AnthropicAdapter(BaseLLMAdapter):
         prompt: str,
         *,
         system_prompt: str | None = None,
-        max_tokens: int = 2048,
+        max_tokens: int | None = None,
         temperature: float = 0.1,
     ) -> LLMResponse:
         """Run a Claude completion via the Anthropic Messages API.
@@ -140,8 +176,9 @@ class AnthropicAdapter(BaseLLMAdapter):
         Args:
             prompt: User message.
             system_prompt: Override system instruction.
-            max_tokens: Token budget.
-            temperature: Sampling temperature.
+            max_tokens: Completion budget, including reasoning/thinking tokens.
+            temperature: Accepted for interface compatibility but never sent: Claude
+                returns 400 for temperature, top_p or top_k (see ``accepts_temperature``).
 
         Returns:
             LLMResponse with Claude's output.
@@ -157,23 +194,36 @@ class AnthropicAdapter(BaseLLMAdapter):
         if not self._api_key:
             raise LLMAdapterError("ANTHROPIC_API_KEY is not set")
 
-        client = anthropic.AsyncAnthropic(api_key=self._api_key)
+        # An explicit timeout bounds each call by the reasoning stage and is required by
+        # the SDK for large non-streaming budgets (it rejects them without one).
+        client = anthropic.AsyncAnthropic(
+            api_key=self._api_key, timeout=float(settings.agent_reasoning_timeout)
+        )
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
 
+        request: dict[str, Any] = {
+            "model": self._model,
+            "max_tokens": max_tokens or settings.llm_max_output_tokens,
+            "system": sys_msg,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+
         try:
-            response = await client.messages.create(
-                model=self._model,
-                max_tokens=max_tokens,
-                system=sys_msg,
-                messages=[{"role": "user", "content": prompt}],
-                extra_body={"temperature": temperature},
-            )
+            response = await client.messages.create(**request)
         except Exception as exc:
             logger.error("anthropic_api_error", error=str(exc))
             raise LLMAdapterError(f"Anthropic API error: {exc}") from exc
 
-        content_block = response.content[0]
-        text = content_block.text if hasattr(content_block, "text") else str(content_block)
+        # Thinking models return thinking blocks before the answer; keep text blocks only.
+        text = "".join(
+            block.text
+            for block in response.content
+            if isinstance(getattr(block, "text", None), str)
+        )
+        if not text:
+            raise LLMAdapterError(
+                f"Anthropic returned no text content (stop_reason={response.stop_reason})"
+            )
         return LLMResponse(
             content=text,
             model=response.model,
@@ -214,7 +264,7 @@ class GoogleAdapter(BaseLLMAdapter):
         prompt: str,
         *,
         system_prompt: str | None = None,
-        max_tokens: int = 2048,
+        max_tokens: int | None = None,
         temperature: float = 0.1,
     ) -> LLMResponse:
         """Run a Gemini generation request.
@@ -222,8 +272,8 @@ class GoogleAdapter(BaseLLMAdapter):
         Args:
             prompt: User prompt text.
             system_prompt: Override system instruction.
-            max_tokens: Token budget.
-            temperature: Sampling temperature.
+            max_tokens: Completion budget, including reasoning/thinking tokens.
+            temperature: Sampling temperature; omitted for models that fix it.
 
         Returns:
             LLMResponse with Gemini's output.
@@ -251,8 +301,12 @@ class GoogleAdapter(BaseLLMAdapter):
                 contents=prompt,
                 config=types_module.GenerateContentConfig(
                     system_instruction=sys_msg,
-                    max_output_tokens=max_tokens,
-                    temperature=temperature,
+                    max_output_tokens=max_tokens or settings.llm_max_output_tokens,
+                    temperature=(
+                        temperature
+                        if accepts_temperature(self.provider_name, self._model)
+                        else None
+                    ),
                 ),
             )
         except Exception as exc:
@@ -278,15 +332,18 @@ class KimiAdapter(BaseLLMAdapter):
     Args:
         api_key: Kimi API key.
         model: Moonshot model identifier.
+        base_url: OpenAI-compatible endpoint; defaults to ``settings.kimi_base_url``.
     """
 
     def __init__(
         self,
         api_key: str = "",
         model: str = "",
+        base_url: str = "",
     ) -> None:
         self._api_key = _normalize_api_key(api_key or settings.kimi_api_key)
         self._model = model or settings.kimi_model
+        self._base_url = base_url or settings.kimi_base_url
 
     @property
     def provider_name(self) -> str:
@@ -298,7 +355,7 @@ class KimiAdapter(BaseLLMAdapter):
         prompt: str,
         *,
         system_prompt: str | None = None,
-        max_tokens: int = 2048,
+        max_tokens: int | None = None,
         temperature: float = 0.1,
     ) -> LLMResponse:
         """Run a Kimi chat completion via the OpenAI-compatible API.
@@ -306,8 +363,8 @@ class KimiAdapter(BaseLLMAdapter):
         Args:
             prompt: User message.
             system_prompt: Override system instruction.
-            max_tokens: Token budget.
-            temperature: Sampling temperature.
+            max_tokens: Completion budget, including reasoning/thinking tokens.
+            temperature: Sampling temperature; omitted for models that fix it.
 
         Returns:
             LLMResponse with Kimi's output.
@@ -323,22 +380,21 @@ class KimiAdapter(BaseLLMAdapter):
         if not self._api_key:
             raise LLMAdapterError("KIMI_API_KEY is not set")
 
-        client = AsyncOpenAI(
-            api_key=self._api_key,
-            base_url="https://api.moonshot.cn/v1",
-        )
+        client = AsyncOpenAI(api_key=self._api_key, base_url=self._base_url)
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
+        request: dict[str, Any] = {
+            "model": self._model,
+            "messages": [
+                {"role": "system", "content": sys_msg},
+                {"role": "user", "content": prompt},
+            ],
+            "max_tokens": max_tokens or settings.llm_max_output_tokens,
+        }
+        if accepts_temperature(self.provider_name, self._model):
+            request["temperature"] = temperature
 
         try:
-            response = await client.chat.completions.create(
-                model=self._model,
-                messages=[
-                    {"role": "system", "content": sys_msg},
-                    {"role": "user", "content": prompt},
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
+            response = await client.chat.completions.create(**request)
         except Exception as exc:
             logger.error("kimi_api_error", error=str(exc))
             raise LLMAdapterError(f"Kimi API error: {exc}") from exc
