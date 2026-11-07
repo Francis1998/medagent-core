@@ -781,3 +781,145 @@ def test_unknown_resource_types_are_counted_without_echoing_them() -> None:
 
     assert result["resource_counts"] == {"Other": 1, "Patient": 1}
     assert "patient@example.com" not in json.dumps(result)
+
+
+# ---------------------------------------------------------------------------
+# Review round 3
+# ---------------------------------------------------------------------------
+
+UNNAMED_ISSUE = (
+    "1 current medication(s) could not be named and are missing from screening_input; "
+    "screening the list unchanged could miss interactions"
+)
+RXNORM = "http://www.nlm.nih.gov/research/umls/rxnorm"
+UCUM = "http://unitsofmeasure.org"
+
+
+def _egfr(quantity: dict[str, Any]) -> dict[str, Any]:
+    return {"resourceType": "Observation", "code": {"text": "eGFR"}, "valueQuantity": quantity}
+
+
+def test_relative_medication_references_resolve_within_the_requesting_server() -> None:
+    patient = {"resourceType": "Patient", "id": "p1"}
+    request = {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "subject": {"reference": "Patient/p1"},
+        "medicationReference": {"reference": "Medication/m1"},
+    }
+    warfarin = _entry(
+        {"resourceType": "Medication", "id": "m1", "code": {"text": "Warfarin 5 mg"}},
+        "https://ehr-a.example/fhir/Medication/m1",
+    )
+    acetaminophen = _entry(
+        {"resourceType": "Medication", "id": "m1", "code": {"text": "Acetaminophen"}},
+        "https://ehr-b.example/fhir/Medication/m1",
+    )
+    request_a = _entry(request, "https://ehr-a.example/fhir/MedicationRequest/r1")
+
+    same_server = _parse([_entry(patient), request_a, warfarin, acetaminophen])
+    ambiguous = _parse([_entry(patient), _entry(request), warfarin, acetaminophen])
+    other_server_only = _parse([_entry(patient), request_a, acetaminophen])
+
+    assert [m["name"] for m in same_server["medications"]] == ["Warfarin 5 mg"]
+    for result in (ambiguous, other_server_only):
+        assert result["medications"] == []
+        assert UNNAMED_ISSUE in result["screening_input_issues"]
+
+
+def test_code_only_medications_are_reported_instead_of_screened_by_code() -> None:
+    code_only = {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "medicationCodeableConcept": {"coding": [{"system": RXNORM, "code": "11289"}]},
+    }
+    display_in_second_coding = {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "medicationCodeableConcept": {
+            "coding": [
+                {"system": "urn:oid:2.16.840.1.113883.6.69", "code": "0093-0311"},
+                {"system": RXNORM, "code": "6809", "display": "Metformin"},
+            ]
+        },
+    }
+    code_only_reference_with_display = {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "contained": [
+            {
+                "resourceType": "Medication",
+                "id": "med",
+                "code": {"coding": [{"system": RXNORM, "code": "1191"}]},
+            }
+        ],
+        "medicationReference": {"reference": "#med", "display": "Aspirin"},
+    }
+
+    result = _parse(
+        [
+            _entry(PATIENT),
+            _entry(code_only),
+            _entry(display_in_second_coding),
+            _entry(code_only_reference_with_display),
+        ]
+    )
+
+    assert [m["name"] for m in result["medications"]] == ["Metformin", "Aspirin"]
+    assert result["screening_input_issues"] == [UNNAMED_ISSUE]
+    assert "11289" not in json.dumps(result["screening_input"])
+
+
+def test_oversized_arrays_stop_validation_before_visiting_items() -> None:
+    schema = TOOLS_BY_NAME["screen_medications"].input_schema
+
+    errors = validate({"medications": [None] * 200_000}, schema)
+
+    assert errors == ["arguments.medications must contain at most 100 items"]
+
+
+def test_converted_egfr_keeps_its_measured_precision() -> None:
+    near_threshold = _parse(
+        [_entry(PATIENT), _entry(_egfr({"value": 30.04, "unit": "mL/min/1.73m2"}))]
+    )
+    converted = _parse([_entry(PATIENT), _entry(_egfr({"value": 0.35, "unit": "mL/s/1.73m2"}))])
+
+    assert near_threshold["screening_input"]["patient"]["egfr"] == 30.04
+    assert converted["screening_input"]["patient"]["egfr"] == 21.0
+
+
+def test_patient_logical_id_is_redacted_from_clinical_text() -> None:
+    patient = {"resourceType": "Patient", "id": "clinical-record-7f3"}
+    condition = {
+        "resourceType": "Condition",
+        "subject": {"reference": "Patient/clinical-record-7f3"},
+        "code": {"text": "AF documented for clinical-record-7f3"},
+    }
+
+    result = _parse([_entry(patient), _entry(condition)])
+
+    assert "clinical-record-7f3" not in json.dumps(result)
+    assert result["diagnoses"] == ["AF documented for [REDACTED-PATIENT]"]
+
+
+def test_ucum_coded_egfr_quantities_drive_unit_conversion() -> None:
+    code_without_unit = _egfr({"value": 28, "system": UCUM, "code": "mL/min/{1.73_m2}"})
+    code_beats_free_text_unit = _egfr(
+        {"value": 0.4, "unit": "mL/s per 1.73 m²", "system": UCUM, "code": "mL/s/{1.73_m2}"}
+    )
+
+    first = _parse([_entry(PATIENT), _entry(code_without_unit)])
+    second = _parse([_entry(PATIENT), _entry(code_beats_free_text_unit)])
+
+    assert first["screening_input"]["patient"]["egfr"] == 28
+    assert second["screening_input"]["patient"]["egfr"] == 24.0
+
+
+def test_malformed_medication_codings_are_tool_errors() -> None:
+    request = {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "medicationCodeableConcept": {"coding": {"display": "Warfarin"}},
+    }
+
+    _rejects([_entry(PATIENT), _entry(request)], "unexpected structure")

@@ -93,7 +93,10 @@ def validate(instance: Any, schema: dict[str, Any], path: str = "arguments") -> 
         if len(instance) < schema.get("minItems", 0):
             errors.append(f"{path} must contain at least {schema['minItems']} item(s)")
         if "maxItems" in schema and len(instance) > schema["maxItems"]:
+            # Stop here: visiting every item of an oversized array would let one
+            # small request build an unbounded list of errors.
             errors.append(f"{path} must contain at most {schema['maxItems']} items")
+            return errors
         if "items" in schema:
             for index, item in enumerate(instance):
                 errors.extend(validate(item, schema["items"], f"{path}[{index}]"))

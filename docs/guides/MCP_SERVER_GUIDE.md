@@ -366,17 +366,24 @@ Every other status (`completed`, `stopped`, `cancelled`, `entered-in-error`, `no
 
 Pass `screening_input` unchanged as the `arguments` of `screen_medications`; it is validated against
 that tool's input schema and any problem (for example more than 100 current medications, or a
-`medicationReference` that cannot be resolved to a name) is listed in `screening_input_issues`
-instead of being silently truncated or split. `medicationReference`s are resolved against
-contained and bundled `Medication` resources, and `MedicationStatement.dosage` is kept. Every
+current medication that cannot be named) is listed in `screening_input_issues` instead of being
+silently truncated or split. A medication is named only by its concept `text`, a coding `display`
+or the reference `display` — never by a bare code, because the checkers match names — so a
+code-only (for example RxNorm-only) medication is reported rather than screened as a number.
+`medicationReference`s are resolved against contained and bundled `Medication` resources: an
+absolute reference by exact `fullUrl`, a relative one on the requesting entry's server (or by a
+logical id that is unique in the bundle), so same-id Medications from different servers are never
+guessed between. `MedicationStatement.dosage` is kept. Every
 exported free-text field — chief complaint, diagnoses, medication and dosage text, allergies, lab
-and vital strings — has the Patient's own names, identifiers, telecom, address and birth date
-replaced with `[REDACTED-PATIENT]`, then passes through `sanitise_clinical_text` (dates, phone
+and vital strings — has the Patient's own names, logical id, identifiers, telecom, address and
+birth date replaced with `[REDACTED-PATIENT]`, then passes through `sanitise_clinical_text` (dates, phone
 numbers, emails, MRNs and SSNs are redacted); prescription phrasing in source text (for example an
 EHR dosage instruction "Administer 40 mg") is replaced with `[REDACTED-DIRECTIVE]`. Status codes
 that are not FHIR codes are reported as `unrecognized`, and unknown resource types are counted as
 `Other`, so caller-controlled strings are never echoed. eGFR observations are used only with a recognised unit
-(`mL/min/1.73m²` in any UCUM spelling, or `mL/s/1.73m²` converted ×60); others are skipped and
+(`mL/min/1.73m²` in any UCUM spelling, or `mL/s/1.73m²` converted ×60 with exact decimal arithmetic
+and no rounding); a UCUM `valueQuantity.code` is used when the display `unit` is missing,
+unrecognised or disagrees with it. Others are skipped and
 counted in `notes`. When several remain, the **lowest** value is used — the conservative choice for
 renal screening. Extracted free text is also checked by the scope enforcer.
 
@@ -544,7 +551,8 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 ## Limitations
 
 - Medication matching is name-based and deterministic (whole-token, plus aliases defined by each
-  checker); there is no RxNorm normalisation, and coverage is limited to the curated rules.
+  checker); there is no RxNorm normalisation or offline code-to-name lookup (code-only FHIR
+  medications are reported in `screening_input_issues`), and coverage is limited to the curated rules.
 - No dose calculations, no indication checks, no lab-trend bridges or scorers over MCP.
 - Pregnancy, lactation and hepatic status are never inferred from FHIR.
 - De-identification is pattern- and bundle-based: free text sent to `screen_medications` or

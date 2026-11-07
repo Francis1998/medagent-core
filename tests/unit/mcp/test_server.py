@@ -606,6 +606,38 @@ def test_lone_surrogate_request_id_does_not_end_the_stdio_session() -> None:
     assert stdout.getvalue().isascii()
 
 
+def test_initialize_logs_only_the_negotiated_version(
+    server: MedagentMcpServer, server_logs: list[dict[str, Any]]
+) -> None:
+    response = server.handle_message(
+        rpc("initialize", {"protocolVersion": "CANARY Jane Doe MRN-0042", "capabilities": {}})
+    )
+
+    assert response is not None
+    assert response["result"]["protocolVersion"] == "2025-11-25"
+    assert "CANARY" not in repr(server_logs)
+    session = next(entry for entry in server_logs if entry["event"] == "mcp_legacy_session")
+    assert session["negotiated"] == "2025-11-25"
+    assert session["requested_supported"] is False
+
+
+def test_internal_error_logs_never_echo_unknown_method_names(
+    server: MedagentMcpServer, monkeypatch: MonkeyPatch, server_logs: list[dict[str, Any]]
+) -> None:
+    def explode(method: str, params: dict[str, Any]) -> tuple[str, str]:
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(server, "_resolve_era", explode)
+
+    response = server.handle_message(rpc("CANARY/MRN-0042", {}))
+
+    assert response is not None
+    assert response["error"]["code"] == -32603
+    assert "CANARY" not in repr(server_logs)
+    failure = next(entry for entry in server_logs if entry["event"] == "mcp_internal_error")
+    assert failure["method"] == "unknown"
+
+
 def test_stdio_subprocess_round_trip_for_both_eras() -> None:
     meta = modern_meta()
     messages = [

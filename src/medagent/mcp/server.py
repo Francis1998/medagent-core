@@ -79,6 +79,7 @@ SERVER_INSTRUCTIONS = (
 
 _LEGACY_METHODS = frozenset({"initialize", "ping", "tools/list", "tools/call"})
 _MODERN_METHODS = frozenset({"server/discover", "tools/list", "tools/call"})
+_KNOWN_METHODS = _LEGACY_METHODS | _MODERN_METHODS
 
 
 class McpError(Exception):
@@ -218,7 +219,7 @@ class MedagentMcpServer:
             frame = traceback.extract_tb(exc.__traceback__)[-1]
             logger.error(
                 "mcp_internal_error",
-                method=method,
+                method=method if method in _KNOWN_METHODS else "unknown",
                 error_type=type(exc).__name__,
                 where=f"{Path(frame.filename).name}:{frame.lineno}",
             )
@@ -309,7 +310,12 @@ class MedagentMcpServer:
         self._legacy_version = negotiated
         client_info = params.get("clientInfo")
         self._legacy_client = client_info if isinstance(client_info, dict) else None
-        logger.info("mcp_legacy_session", requested=requested, negotiated=negotiated)
+        # The requested value is caller-controlled text, so only the outcome is logged.
+        logger.info(
+            "mcp_legacy_session",
+            negotiated=negotiated,
+            requested_supported=requested in LEGACY_PROTOCOL_VERSIONS,
+        )
         return {
             "protocolVersion": negotiated,
             "capabilities": {"tools": {"listChanged": False}},

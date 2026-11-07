@@ -3204,22 +3204,25 @@ constraints are enforced in code:
   patient identifiers and client metadata are HMAC-SHA256 hashed with `PII_HASH_SALT` and never
   echoed; FHIR names, birth dates, identifiers, telecom, addresses and the raw bundle are never
   returned; every exported free-text field (medications, dosage, allergies, conditions, lab and
-  vital strings) has the bundle Patient's own identifiers redacted and passes through
-  `sanitise_clinical_text`; validation errors never echo caller-supplied property names; FHIR
-  parser diagnostics log exception classes only. Bundles whose resources cannot be proven to
+  vital strings) has the bundle Patient's own names, logical id and identifiers redacted and passes
+  through `sanitise_clinical_text`; validation errors never echo caller-supplied property names, and
+  logs never contain caller-supplied protocol versions or method names; FHIR parser diagnostics log
+  exception classes only. Bundles whose resources cannot be proven to
   belong to one Patient are rejected. The server warns on stderr while the default salt is in use.
 - **Clinical correctness.** Only current therapy (status `active` or `on-hold`) is screened by
   default; draft/intended orders are added only with an explicit `include_proposed`, and every
   other status is excluded and counted. Entered-in-error resources, cancelled observations and
-  refuted findings are excluded. eGFR is used only with a recognised unit (mL/min/1.73m², or
-  mL/s/1.73m² converted); a generated `screening_input` that exceeds the screening limits or misses
+  refuted findings are excluded. Medications are named only by text or display, never by a bare
+  code, and relative `medicationReference`s resolve only on the requesting entry's server. eGFR is
+  used only with a recognised unit (mL/min/1.73m², or mL/s/1.73m² converted exactly, never
+  rounded; a UCUM code wins over a missing or unrecognised display unit); a generated `screening_input` that exceeds the screening limits or misses
   an unnamed medication is reported, never truncated.
 - **Scope enforcement (§3.6).** Free-text tool arguments and extracted FHIR text are checked with
   the `ScopeEnforcer` patterns on a logging-safe path (only the matched pattern is logged); a
   violation is returned as a tool error.
 - **Audit.** `--audit-log` / `MEDAGENT_MCP_AUDIT_LOG` appends one JSON line per `tools/call`,
   including calls that end in an internal error, with hashes and counts only (tool, era, protocol
-  version, de-identified client name/version, error kind, duration, HMAC of the arguments, hashed
+  version, HMAC of the client name/version, error kind, duration, HMAC of the arguments, hashed
   patient references, finding count, highest severity) — never the arguments or results.
 - **Protocol hygiene.** STDOUT carries ASCII-escaped strict JSON-RPC only; logs go to STDERR and
   `sys.stdout` is redirected to STDERR inside the server. Inputs are bounded (100 medications, 50

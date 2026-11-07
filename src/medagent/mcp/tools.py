@@ -16,6 +16,7 @@ import typing
 from collections import Counter
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from decimal import Decimal
 from functools import lru_cache
 from typing import Any, cast
 
@@ -77,6 +78,7 @@ READ_ONLY_ANNOTATIONS: dict[str, bool] = {
 _SCOPE_ENFORCER = ScopeEnforcer()
 _EGFR_NAME = re.compile(r"\begfr\b|glomerular filtration", re.IGNORECASE)
 _EGFR_UNIT_FACTORS = {"ml/min/1.73m2": 1.0, "ml/s/1.73m2": 60.0}
+_UCUM_SYSTEM = "http://unitsofmeasure.org"
 _MAX_MEDICATIONS = 100
 
 # Medication statuses screened as current therapy, plus proposed orders that are
@@ -136,6 +138,11 @@ _KNOWN_RESOURCE_TYPES = frozenset(
     }
 )
 _ABSOLUTE_REFERENCE = re.compile(r"^[a-z][a-z0-9+.-]*:", re.IGNORECASE)
+# FHIR RESTful URL: <server base>/<ResourceType>/<id>[/_history/<version>].
+_RESTFUL_URL = re.compile(
+    r"^(?P<base>https?://.+)/[A-Z][A-Za-z]+/[A-Za-z0-9\-.]{1,64}"
+    r"(?:/_history/[A-Za-z0-9\-.]{1,64})?$"
+)
 _INVALIDATED_VERIFICATION = frozenset({"entered-in-error", "refuted"})
 _REDACTED_PATIENT = "[REDACTED-PATIENT]"
 
@@ -646,23 +653,62 @@ def _egfr_unit_factor(unit: str | None) -> float | None:
     return _EGFR_UNIT_FACTORS.get(key)
 
 
+def _exact_egfr(value: Any, factor: float) -> float:
+    """Convert an eGFR value exactly (decimal arithmetic); NaN when it is not numeric."""
+    try:
+        return float(Decimal(str(value).strip()) * Decimal(str(factor)))
+    except (ArithmeticError, ValueError):
+        return math.nan
+
+
 def _lowest_egfr(labs: list[LabResult]) -> tuple[float | None, int, int]:
-    """Return the lowest eGFR in mL/min/1.73m², observations used, observations skipped."""
+    """Return the lowest eGFR in mL/min/1.73m², observations used, observations skipped.
+
+    Values are never rounded, so a measurement just above a dosing threshold
+    (e.g. 30.04) cannot be pushed onto it.
+    """
     values: list[float] = []
     skipped = 0
     for lab in labs:
         if not _EGFR_NAME.search(lab.test_name):
             continue
         factor = _egfr_unit_factor(lab.unit)
-        try:
-            value = float(lab.value)
-        except ValueError:
-            value = math.nan
-        if factor is None or not math.isfinite(value):
+        value = math.nan if factor is None else _exact_egfr(lab.value, factor)
+        if not math.isfinite(value):
             skipped += 1
             continue
-        values.append(round(value * factor, 1))
+        values.append(value)
     return (min(values) if values else None), len(values), skipped
+
+
+def _prefer_ucum_units(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Let a UCUM-coded eGFR unit drive conversion when the display unit cannot.
+
+    The shared parser keeps only ``valueQuantity.unit``; when that display unit is
+    missing, unsupported or disagrees with a supported UCUM ``code``, the coded
+    unit is used instead (the input bundle is not modified).
+    """
+    prepared: list[dict[str, Any]] = []
+    for entry in entries:
+        resource = entry.get("resource", {})
+        quantity = resource.get("valueQuantity")
+        if (
+            resource.get("resourceType") == "Observation"
+            and isinstance(quantity, dict)
+            and quantity.get("system") == _UCUM_SYSTEM
+            and isinstance(code := quantity.get("code"), str)
+        ):
+            unit = quantity.get("unit")
+            coded = _egfr_unit_factor(code)
+            if coded is not None and coded != _egfr_unit_factor(
+                unit if isinstance(unit, str) else None
+            ):
+                entry = {
+                    **entry,
+                    "resource": {**resource, "valueQuantity": {**quantity, "unit": code}},
+                }
+        prepared.append(entry)
+    return prepared
 
 
 def _same_identifier(reference: dict[str, Any], own: dict[str, Any]) -> bool:
@@ -771,8 +817,9 @@ def _patient_redactor(patient: dict[str, Any] | None) -> Callable[[str], str]:
             if isinstance(address, dict):
                 parts = [address.get("text"), address.get("city"), address.get("postalCode")]
                 tokens.update(p for p in [*parts, *address.get("line", [])] if isinstance(p, str))
-        if isinstance(patient.get("birthDate"), str):
-            tokens.add(patient["birthDate"])
+        tokens.update(
+            patient[field] for field in ("id", "birthDate") if isinstance(patient.get(field), str)
+        )
     words = sorted({t.strip() for t in tokens if len(t.strip()) >= 2}, key=len, reverse=True)
     if not words:
         return lambda text: text
@@ -792,21 +839,22 @@ def _status_label(resource_type: str, raw_status: Any) -> str:
 
 
 def _select_medication_resources(
-    resources: list[dict[str, Any]], *, include_proposed: bool
+    entries: list[dict[str, Any]], *, include_proposed: bool
 ) -> tuple[list[dict[str, Any]], list[str]]:
-    """Keep current (and optionally proposed) medications; report what was excluded."""
+    """Keep entries with current (and optionally proposed) medications; report the rest."""
     selected: list[dict[str, Any]] = []
     excluded: Counter[tuple[str, str]] = Counter()
     proposed = 0
-    for resource in resources:
+    for entry in entries:
+        resource = entry.get("resource", {})
         resource_type = str(resource.get("resourceType"))
         if resource_type not in _CURRENT_STATUSES:
             continue
         status = _status_label(resource_type, resource.get("status"))
         if status in _CURRENT_STATUSES[resource_type]:
-            selected.append(resource)
+            selected.append(entry)
         elif include_proposed and status in _PROPOSED_STATUSES[resource_type]:
-            selected.append(resource)
+            selected.append(entry)
             proposed += 1
         else:
             excluded[(resource_type, status)] += 1
@@ -822,33 +870,98 @@ def _select_medication_resources(
     return selected, notes
 
 
+def _concept_name(concept: Any) -> str | None:
+    """Return a CodeableConcept's text or first coding display; a bare code is not a name."""
+    if not isinstance(concept, dict):
+        return None
+    codings = concept.get("coding")
+    candidates = [concept.get("text")]
+    if isinstance(codings, list):
+        candidates += [c.get("display") for c in codings if isinstance(c, dict)]
+    return next((c for c in candidates if isinstance(c, str) and c.strip()), None)
+
+
+def _restful_base(full_url: Any) -> str | None:
+    """Return the server base of a RESTful ``fullUrl``, or None (absent, urn:uuid, ...)."""
+    match = _RESTFUL_URL.match(full_url) if isinstance(full_url, str) else None
+    return match.group("base") if match else None
+
+
+def _resolve_medication(
+    reference: str,
+    entry: dict[str, Any],
+    by_url: dict[str, dict[str, Any]],
+    by_id: dict[str, list[tuple[str | None, dict[str, Any]]]],
+) -> dict[str, Any] | None:
+    """Resolve a medicationReference without guessing across servers or duplicate ids.
+
+    Contained references resolve inside the resource; absolute ones by exact
+    ``fullUrl``; relative ones against the requesting entry's server base, or by
+    a logical id that is unique in the bundle and not hosted on another server.
+    """
+    resource = entry.get("resource", {})
+    if reference.startswith("#"):
+        contained = [
+            item
+            for item in resource.get("contained") or []
+            if isinstance(item, dict)
+            and item.get("resourceType") == "Medication"
+            and f"#{item.get('id')}" == reference
+        ]
+        return contained[0] if len(contained) == 1 else None
+    if reference in by_url:
+        return by_url[reference]
+    if _ABSOLUTE_REFERENCE.match(reference):
+        return None
+    base = _restful_base(entry.get("fullUrl"))
+    if base is not None and f"{base}/{reference}" in by_url:
+        return by_url[f"{base}/{reference}"]
+    candidates = by_id.get(reference, [])
+    if len(candidates) != 1:
+        return None
+    candidate_base, medication = candidates[0]
+    if base is not None and candidate_base is not None and candidate_base != base:
+        return None
+    return medication
+
+
 def _prepare_medication_resources(
     selected: list[dict[str, Any]], entries: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    """Resolve medicationReference names and map MedicationStatement.dosage for the adapter."""
-    index: dict[str, dict[str, Any]] = {}
+    """Name selected medications for the adapter and map MedicationStatement.dosage.
+
+    A medication is named only by concept text, a coding display or the reference
+    display; code-only or unresolvable medications get an empty concept so the
+    adapter skips them and they are reported in ``screening_input_issues``.
+    """
+    by_url: dict[str, dict[str, Any]] = {}
+    by_id: dict[str, list[tuple[str | None, dict[str, Any]]]] = {}
     for entry in entries:
         resource = entry.get("resource", {})
         if resource.get("resourceType") != "Medication":
             continue
+        full_url = entry.get("fullUrl")
+        if isinstance(full_url, str) and full_url:
+            by_url[full_url] = resource
         if isinstance(resource.get("id"), str):
-            index[f"Medication/{resource['id']}"] = resource
-        if isinstance(entry.get("fullUrl"), str):
-            index[entry["fullUrl"]] = resource
+            by_id.setdefault(f"Medication/{resource['id']}", []).append(
+                (_restful_base(full_url), resource)
+            )
     prepared: list[dict[str, Any]] = []
-    for resource in selected:
+    for entry in selected:
+        resource = entry.get("resource", {})
         copy = dict(resource)
+        concept = resource.get("medicationCodeableConcept")
         target = resource.get("medicationReference")
-        reference = target.get("reference") if isinstance(target, dict) else None
-        if "medicationCodeableConcept" not in resource and isinstance(reference, str):
-            contained = {
-                f"#{item.get('id')}": item
-                for item in resource.get("contained", [])
-                if isinstance(item, dict) and item.get("resourceType") == "Medication"
-            }
-            medication = contained.get(reference) or index.get(reference)
-            if medication is not None and isinstance(medication.get("code"), dict):
-                copy["medicationCodeableConcept"] = medication["code"]
+        target = target if isinstance(target, dict) else {}
+        reference = target.get("reference")
+        if concept is None and isinstance(reference, str):
+            medication = _resolve_medication(reference, entry, by_url, by_id)
+            concept = medication.get("code") if medication is not None else None
+        name = _concept_name(concept)
+        copy["medicationCodeableConcept"] = (
+            {**concept, "text": name} if name and isinstance(concept, dict) else {}
+        )
         if resource.get("resourceType") == "MedicationStatement" and "dosageInstruction" not in (
             resource
         ):
@@ -874,10 +987,10 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
     entries = [e for e in all_entries if not _is_invalidated(e.get("resource", {}))]
     invalidated = len(all_entries) - len(entries)
     try:
-        context = parse_fhir_bundle({**bundle, "entry": entries})
+        context = parse_fhir_bundle({**bundle, "entry": _prefer_ucum_units(entries)})
     except FHIRParseError as exc:
         raise ToolInputError(f"Invalid FHIR bundle: {exc}") from exc
-    except (AttributeError, TypeError, ValueError) as exc:
+    except (AttributeError, LookupError, TypeError, ValueError) as exc:
         raise ToolInputError(
             "FHIR bundle could not be parsed: a resource has an unexpected structure "
             f"({type(exc).__name__})."
@@ -885,13 +998,13 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
 
     resources = [entry.get("resource", {}) for entry in entries]
     selected, medication_notes = _select_medication_resources(
-        resources, include_proposed=bool(arguments.get("include_proposed", False))
+        entries, include_proposed=bool(arguments.get("include_proposed", False))
     )
     try:
         adapted = FhirMedicationRequestAdapter().adapt(
             _prepare_medication_resources(selected, entries)
         )
-    except (AttributeError, TypeError, ValueError) as exc:
+    except (AttributeError, LookupError, TypeError, ValueError) as exc:
         raise ToolInputError(
             "FHIR bundle could not be parsed: a medication resource has an unexpected "
             f"structure ({type(exc).__name__})."
