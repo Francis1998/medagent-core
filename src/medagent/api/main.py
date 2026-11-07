@@ -8,6 +8,8 @@ Provides three endpoints:
 
 from __future__ import annotations
 
+import asyncio
+import functools
 import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -29,7 +31,7 @@ from medagent.config import settings
 from medagent.extraction.ner import EntityExtractor
 from medagent.llm.router import MedicalRouter
 from medagent.logging_config import configure_logging, get_logger
-from medagent.models import ClinicalQuery
+from medagent.models import ClinicalQuery, ClinicalReasoning
 from medagent.reasoning.engine import ReasoningEngine
 from medagent.retrieval.drug_interaction import DrugInteractionClient
 from medagent.retrieval.local_kb import LocalKnowledgeBase, build_sample_index
@@ -41,6 +43,67 @@ logger = get_logger(__name__)
 
 # Module-level agent singleton (initialised in lifespan)
 _agent: ClinicalAgentStateMachine | None = None
+
+# Upper bound on how long shutdown waits for in-flight audit writes.
+AUDIT_DRAIN_TIMEOUT_SECONDS = 10.0
+
+# Strong references to in-flight audit writes. The event loop only keeps weak
+# references to tasks, so an untracked write can be garbage collected mid-flight.
+_pending_audit_tasks: set[asyncio.Task[None]] = set()
+
+
+def _on_audit_task_done(task: asyncio.Task[None], *, session_id: str) -> None:
+    """Release a finished audit write and surface any failure as an error log."""
+    _pending_audit_tasks.discard(task)
+    if task.cancelled():
+        logger.error("audit_persist_cancelled", session_id=session_id)
+        return
+    exc = task.exception()
+    if exc is not None:
+        logger.error(
+            "audit_persist_failed",
+            session_id=session_id,
+            error_type=type(exc).__name__,
+            error=str(exc),
+        )
+
+
+def schedule_audit_write(result: ClinicalReasoning) -> asyncio.Task[None]:
+    """Persist ``result`` to the audit log in a tracked background task.
+
+    Args:
+        result: Completed agent run to record.
+
+    Returns:
+        The scheduled task; it stays referenced until it finishes.
+    """
+    task = asyncio.create_task(persist_run(result))
+    _pending_audit_tasks.add(task)
+    task.add_done_callback(functools.partial(_on_audit_task_done, session_id=result.session_id))
+    return task
+
+
+async def drain_audit_tasks(timeout: float = AUDIT_DRAIN_TIMEOUT_SECONDS) -> int:
+    """Wait for in-flight audit writes on the running loop to finish.
+
+    Args:
+        timeout: Maximum seconds to wait before giving up.
+
+    Returns:
+        Number of audit writes still pending when the timeout expired.
+    """
+    loop = asyncio.get_running_loop()
+    pending = {task for task in _pending_audit_tasks if task.get_loop() is loop}
+    if not pending:
+        return 0
+    _, still_pending = await asyncio.wait(pending, timeout=timeout)
+    if still_pending:
+        logger.error(
+            "audit_drain_timeout",
+            pending=len(still_pending),
+            timeout_seconds=timeout,
+        )
+    return len(still_pending)
 
 
 @asynccontextmanager
@@ -73,8 +136,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     )
 
     logger.info("medagent_ready")
-    yield
-    logger.info("medagent_shutdown")
+    try:
+        yield
+    finally:
+        await drain_audit_tasks()
+        logger.info("medagent_shutdown")
 
 
 app = FastAPI(
@@ -158,8 +224,6 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     except ImportError:
         pass
 
-    import asyncio
-
     try:
         result = await asyncio.wait_for(
             _agent.run(query),
@@ -176,9 +240,9 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             detail=str(exc),
         ) from exc
 
-    # Persist to audit log (non-blocking background task)
-    _audit_task = asyncio.ensure_future(persist_run(result))
-    _audit_task.add_done_callback(lambda t: t.exception() if not t.cancelled() else None)
+    # Persist to audit log (non-blocking, tracked so failures are logged and
+    # shutdown drains pending writes)
+    schedule_audit_write(result)
 
     return AnalyzeResponse(
         session_id=result.session_id,
