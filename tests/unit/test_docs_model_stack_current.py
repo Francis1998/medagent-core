@@ -3,6 +3,7 @@
 Guides, SVG demos, docstrings, and runtime finding messages used to recommend
 "GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2" long after the configured
 defaults moved to GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro.
+Claude Fable 5.1 is superseded by Claude Fable 5.2 (verified 2026-11-12).
 CONFIGURATION.md keeps a deliberate legacy-model behaviour table, and historical
 records (CHANGELOG, daily logs, release notes, ADRs) are exempt; tests are not
 scanned.
@@ -14,11 +15,16 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+CONFIGURATION = ROOT / "CONFIGURATION.md"
 
 RETIRED_PROSE = re.compile(
     r"\bGPT-5\.5\b|\bGPT-4o\b|\bClaude\s+(?:Sonnet|Opus)\s+4\.\d\b"
     r"|\bSonnet\s+4\.6\b|\bKimi\s+K2\b(?!\.\d)|\bGemini\s+2\.5\b"
+    r"|\bFable\s+5\.1\b|\bclaude-fable-5-1\b"
 )
+
+# A relative markdown link with a fragment: ``[text](path/to/file.md#anchor)``.
+MARKDOWN_ANCHOR_LINK = re.compile(r"\]\(([^)\s#]+\.md)#([^)\s]+)\)")
 
 EXEMPT = {
     Path("CHANGELOG.md"),
@@ -60,3 +66,28 @@ def test_no_retired_model_stack_in_prose() -> None:
     ]
 
     assert offenders == [], "retired model names in prose:\n" + "\n".join(offenders[:40])
+
+
+def _github_anchor(heading: str) -> str:
+    """Return the fragment GitHub generates for a markdown heading."""
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading).replace("`", "")
+    return re.sub(r"[^\w\- ]", "", text.strip().lower()).replace(" ", "-")
+
+
+def test_links_into_configuration_sections_resolve() -> None:
+    """Refreshing the dated "Why these defaults (verified ...)" heading must not orphan links."""
+    anchors = {
+        _github_anchor(line.lstrip("#"))
+        for line in CONFIGURATION.read_text(encoding="utf-8").splitlines()
+        if line.startswith("#")
+    }
+    links = [
+        (path.relative_to(ROOT).as_posix(), anchor)
+        for path in _prose_files()
+        if path.suffix == ".md"
+        for target, anchor in MARKDOWN_ANCHOR_LINK.findall(path.read_text(encoding="utf-8"))
+        if (path.parent / target).resolve() == CONFIGURATION
+    ]
+
+    assert any(path == "README.md" for path, _ in links)
+    assert [link for link in links if link[1] not in anchors] == []
