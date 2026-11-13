@@ -52,6 +52,8 @@ from medagent.safety.renal_dose_checker import RenalDoseChecker
 from medagent.safety.scope_enforcer import ScopeEnforcer
 from medagent.safety.serotonin_syndrome_checker import SerotoninSyndromeChecker
 from medagent.safety.triple_whammy_checker import TripleWhammyChecker
+from medagent.trials.schema import SCREEN_INPUT_SCHEMA as _TRIAL_SCREEN_INPUT
+from medagent.trials.schema import SCREEN_OUTPUT_SCHEMA as _TRIAL_SCREEN_OUTPUT
 
 logger = get_logger(__name__)
 
@@ -1621,6 +1623,20 @@ _CONTROLS_OUTPUT: dict[str, Any] = {
     "additionalProperties": False,
 }
 
+
+def _screen_trial_eligibility(arguments: dict[str, Any]) -> ToolOutput:
+    """Pre-screen one FHIR patient against structured trial definitions (research only)."""
+    # Imported on use: medagent.trials reuses this module's FHIR normalisation.
+    from medagent.trials.criteria import TrialInputError
+    from medagent.trials.screening import screen_trials_request
+
+    try:
+        screening = screen_trials_request(arguments)
+    except TrialInputError as exc:
+        raise ToolInputError(str(exc)) from None
+    return ToolOutput(screening.structured(), screening.summary())
+
+
 TOOLS: tuple[ToolSpec, ...] = (
     ToolSpec(
         name="check_drug_interactions",
@@ -1725,6 +1741,23 @@ TOOLS: tuple[ToolSpec, ...] = (
         input_schema=_SCREEN_INPUT,
         output_schema=_SCREEN_OUTPUT,
         handler=_screen_medications,
+    ),
+    ToolSpec(
+        name="screen_trial_eligibility",
+        title="Clinical-trial eligibility pre-screen",
+        description=(
+            "Pre-screen one patient's FHIR R4 Bundle against 1-20 structured trial definitions "
+            "(ClinicalTrials.gov eligibilityModule sex and age limits plus structured inclusion "
+            "and exclusion criteria: conditions, current medications, lab thresholds, pregnancy "
+            "and lactation). Each criterion is met, not_met, insufficient_data or "
+            "requires_human_review with evidence pointers; free-text criteria are never "
+            "guessed. Trials are ranked potentially_eligible, needs_review, likely_ineligible. "
+            "Offline and deterministic; never an eligibility determination or enrollment. "
+            "RESEARCH USE ONLY."
+        ),
+        input_schema=_TRIAL_SCREEN_INPUT,
+        output_schema=_TRIAL_SCREEN_OUTPUT,
+        handler=_screen_trial_eligibility,
     ),
 )
 

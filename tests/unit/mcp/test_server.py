@@ -124,6 +124,7 @@ def test_modern_tools_list_is_cacheable_and_deterministic(server: MedagentMcpSer
         "list_safety_controls",
         "parse_fhir_bundle",
         "screen_medications",
+        "screen_trial_eligibility",
     ]
     assert result["tools"] == second["result"]["tools"]
     assert result["resultType"] == "complete"
@@ -679,7 +680,7 @@ def test_stdio_subprocess_round_trip_for_both_eras() -> None:
     assert all(response["jsonrpc"] == "2.0" and "result" in response for response in responses)
     discover, listed, screened, initialized, legacy_call = (r["result"] for r in responses)
     assert discover["supportedVersions"][0] == MODERN
-    assert len(listed["tools"]) == 4
+    assert len(listed["tools"]) == 5
     assert screened["structuredContent"]["escalation_recommended"] is True
     assert initialized["protocolVersion"] == "2025-06-18"
     assert "resultType" not in legacy_call
