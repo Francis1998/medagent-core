@@ -158,6 +158,10 @@ _RESTFUL_URL = re.compile(
     r"(?:/_history/[A-Za-z0-9\-.]{1,64})?$"
 )
 _INVALIDATED_VERIFICATION = frozenset({"entered-in-error", "refuted"})
+_ALLERGY_CLINICAL_SYSTEM = "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical"
+# AllergyIntolerance.clinicalStatus codes meaning the subject is no longer at risk
+# ("resolved" is a kind of "inactive" in the FHIR R4 code system).
+_NO_LONGER_ACTIVE_ALLERGY = frozenset({"inactive", "resolved"})
 _REDACTED_PATIENT = "[REDACTED-PATIENT]"
 
 
@@ -852,6 +856,27 @@ def _is_invalidated(resource: dict[str, Any]) -> bool:
     return bool(codes & _INVALIDATED_VERIFICATION)
 
 
+def _is_inactive_allergy(resource: dict[str, Any]) -> bool:
+    """True for an AllergyIntolerance whose clinicalStatus says it no longer applies.
+
+    Only FHIR clinical-status codings (or codings without a system) count, and
+    every one of them must be ``inactive`` or ``resolved``: a missing,
+    unrecognised or contradictory status is still screened as an allergy.
+    """
+    if resource.get("resourceType") != "AllergyIntolerance":
+        return False
+    status = resource.get("clinicalStatus")
+    codings = status.get("coding") if isinstance(status, dict) else None
+    codes = {
+        coding["code"]
+        for coding in (codings if isinstance(codings, list) else [])
+        if isinstance(coding, dict)
+        and coding.get("system") in (None, _ALLERGY_CLINICAL_SYSTEM)
+        and isinstance(coding.get("code"), str)
+    }
+    return bool(codes) and codes <= _NO_LONGER_ACTIVE_ALLERGY
+
+
 def _patient_redactor(patient: dict[str, Any] | None) -> Callable[[str], str]:
     """Return a function that redacts this Patient's own identifiers from free text."""
     tokens: set[str] = set()
@@ -897,9 +922,15 @@ def _status_label(resource_type: str, raw_status: Any) -> str:
 def _select_medication_resources(
     entries: list[dict[str, Any]], *, include_proposed: bool
 ) -> tuple[list[dict[str, Any]], list[str]]:
-    """Keep entries with current (and optionally proposed) medications; report the rest."""
+    """Keep entries with current (and optionally proposed) medications; report the rest.
+
+    A MedicationRequest with ``doNotPerform`` true (a FHIR R4 modifier element)
+    asks for the medication NOT to be given, so it is excluded and counted
+    separately; ``false`` or any non-boolean value is screened as usual.
+    """
     selected: list[dict[str, Any]] = []
     excluded: Counter[tuple[str, str]] = Counter()
+    do_not_perform = 0
     proposed = 0
     for entry in entries:
         resource = entry.get("resource", {})
@@ -907,17 +938,21 @@ def _select_medication_resources(
         if resource_type not in _CURRENT_STATUSES:
             continue
         status = _status_label(resource_type, resource.get("status"))
-        if status in _CURRENT_STATUSES[resource_type]:
-            selected.append(entry)
-        elif include_proposed and status in _PROPOSED_STATUSES[resource_type]:
-            selected.append(entry)
-            proposed += 1
-        else:
+        is_proposed = include_proposed and status in _PROPOSED_STATUSES[resource_type]
+        if status not in _CURRENT_STATUSES[resource_type] and not is_proposed:
             excluded[(resource_type, status)] += 1
+        elif resource_type == "MedicationRequest" and resource.get("doNotPerform") is True:
+            do_not_perform += 1
+        else:
+            selected.append(entry)
+            if is_proposed:
+                proposed += 1
     notes = [
         f"excluded {resource_type} status {status}: {count}"
         for (resource_type, status), count in sorted(excluded.items())
     ]
+    if do_not_perform:
+        notes.append(f"excluded MedicationRequest doNotPerform true: {do_not_perform}")
     if proposed:
         notes.append(
             f"included {proposed} proposed (draft/intended) medication(s) because "
@@ -1040,8 +1075,10 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
     bundle: dict[str, Any] = arguments["bundle"]
     all_entries: list[dict[str, Any]] = bundle.get("entry", [])
     patient = _require_single_patient(all_entries)
-    entries = [e for e in all_entries if not _is_invalidated(e.get("resource", {}))]
-    invalidated = len(all_entries) - len(entries)
+    valid = [e for e in all_entries if not _is_invalidated(e.get("resource", {}))]
+    invalidated = len(all_entries) - len(valid)
+    entries = [e for e in valid if not _is_inactive_allergy(e.get("resource", {}))]
+    inactive_allergies = len(valid) - len(entries)
     prepared = _prefer_ucum_units(entries)
     try:
         context = parse_fhir_bundle({**bundle, "entry": prepared})
@@ -1124,6 +1161,11 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
         notes.append(
             f"excluded {invalidated} invalidated resource(s) (entered-in-error, cancelled "
             "observations or refuted findings)."
+        )
+    if inactive_allergies:
+        notes.append(
+            f"excluded {inactive_allergies} AllergyIntolerance record(s) with clinicalStatus "
+            "inactive or resolved; they are not screened as allergies."
         )
     if egfr is not None:
         notes.append(f"egfr is the lowest of {egfr_used} eGFR observation(s) in mL/min/1.73m².")

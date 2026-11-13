@@ -3252,8 +3252,12 @@ constraints are enforced in code:
   different servers (they resolve to different patients). The server warns on stderr while the default salt is in use.
 - **Clinical correctness.** Only current therapy (status `active` or `on-hold`) is screened by
   default; draft/intended orders are added only with an explicit `include_proposed`, and every
-  other status is excluded and counted. Entered-in-error resources, cancelled observations and
-  refuted findings are excluded. Medications are named only by text or display, never by a bare
+  other status is excluded and counted. A `MedicationRequest` with `doNotPerform: true` (a request
+  for the medication *not* to be given) is never screened as an order and is counted in
+  `medication_notes`. Entered-in-error resources, cancelled observations and
+  refuted findings are excluded, and so are AllergyIntolerances whose `clinicalStatus` is
+  `inactive` or `resolved` (counted in `notes`); an allergy with a missing, `unconfirmed` or
+  contradictory status is still screened. Medications are named only by text or display, never by a bare
   code, and relative `medicationReference`s resolve only on the requesting entry's server. eGFR
   Observations are recognised by an eGFR LOINC code whatever their display text, or by "eGFR" /
   "glomerular filtration" in their text or a coding display. eGFR is
@@ -3305,6 +3309,11 @@ applies. The following constraints are enforced in code:
   paginated prefetch, unnameable or over-limit medications, and regimens over the screening limit
   are reported on an `info` coverage card (`warning` when no ordered medication could be screened);
   a truncated regimen is never screened.
+- **FHIR status semantics (§9).** `doNotPerform: true` draft orders and current orders are never
+  screened as orders, and inactive, resolved, refuted or entered-in-error allergies never raise
+  allergy cards; an allergy with a missing or `unconfirmed` status still does. Excluded draft
+  orders are counted on the coverage card whenever one is shown; an exclusion alone never adds a
+  card.
 - **Right patient only.** Every draft order and prefetched resource must reference
   `context.patientId` (relative or absolute `Patient/<id>`); a reference to anyone else, or one that
   cannot be verified (identifier-only), rejects the request with HTTP 400 instead of screening it.
