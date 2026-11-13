@@ -20,14 +20,14 @@ logger = get_logger(__name__)
 
 # Providers that never receive sampling parameters: Anthropic returns 400 for
 # temperature, top_p or top_k on every model since API version 2026-10-21 (and on
-# the Claude 5.5 family for any non-default value).
+# the Claude 5.5 family and Claude Fable 5.x for any non-default value).
 _NO_SAMPLING_PROVIDERS = frozenset({"anthropic"})
 
 # Model families whose APIs reject or ignore a caller-set temperature: OpenAI
 # GPT-5+/o-series reasoning models (the adapter never sends reasoning effort
-# "none", the only setting that allows sampling parameters), Gemini 3+ (sampling
-# parameters ignored; Google says to remove them), and Kimi K2.6/K2.7/K3 (fixed
-# at 1.0, other values return an error).
+# "none", the only setting that allows sampling parameters), Gemini 3+ including
+# Gemini 4 Carbon, Argon and Hydrogen (sampling parameters ignored; Google says to
+# remove them), and Kimi K2.6/K2.7/K3 (fixed at 1.0, other values return an error).
 _FIXED_SAMPLING_MODELS: dict[str, re.Pattern[str]] = {
     "openai": re.compile(r"^(gpt-[5-9]|o\d)"),
     "google": re.compile(r"^gemini-([3-9]|\d{2,})"),
@@ -40,7 +40,8 @@ def accepts_temperature(provider: str, model: str) -> bool:
 
     Args:
         provider: Adapter provider name (``openai``, ``anthropic``, ``google``, ``kimi``).
-        model: Provider model identifier.
+        model: Provider model identifier. Resource names such as
+            ``models/gemini-4-hydrogen`` are matched on their final path segment.
 
     Returns:
         False for providers and model families that fix their sampling
@@ -49,7 +50,8 @@ def accepts_temperature(provider: str, model: str) -> bool:
     if provider in _NO_SAMPLING_PROVIDERS:
         return False
     pattern = _FIXED_SAMPLING_MODELS.get(provider)
-    return pattern is None or pattern.match(model.strip().lower()) is None
+    model_id = model.strip().lower().rsplit("/", 1)[-1]
+    return pattern is None or pattern.match(model_id) is None
 
 
 # ---------------------------------------------------------------------------
