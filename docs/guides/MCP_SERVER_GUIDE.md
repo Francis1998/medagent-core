@@ -328,13 +328,19 @@ bundle is rejected as a tool error rather than merged. A relative reference reso
 entry's server (FHIR bundle rules), so a bundle whose relative patient references or Patient span
 more than one server is rejected too: `Patient/p1` on two servers names two different patients.
 Without a Patient resource, all references must name the same subject. Resources recorded `entered-in-error`, cancelled Observations and
-refuted Conditions/AllergyIntolerances are excluded before parsing and counted in `notes`. Uses the existing
+refuted Conditions/AllergyIntolerances are excluded before parsing and counted in `notes`. So are
+AllergyIntolerances whose `clinicalStatus` is `inactive` or `resolved` (FHIR R4: the patient is no
+longer at risk), counted separately in `notes`. An allergy whose status is missing, `unconfirmed`,
+coded only in another system or contradictory (`active` and `resolved`) is still screened. Uses the existing
 `extraction.fhir_parser` for patient context and `FhirMedicationRequestAdapter` for medications.
 Only current therapy is kept by default: `MedicationRequest` and `MedicationStatement` entries with
 status `active` or `on-hold`. Set `include_proposed: true` to also keep draft `MedicationRequest`s
 and intended `MedicationStatement`s, so a proposed order can be screened against current therapy.
 Every other status (`completed`, `stopped`, `cancelled`, `entered-in-error`, `not-taken`,
-`unknown` or missing) is excluded and counted in `medication_notes`. Result for
+`unknown` or missing) is excluded and counted in `medication_notes`. A `MedicationRequest` with
+`doNotPerform: true` asks for the medication *not* to be given (a FHIR R4 modifier element), so it
+is excluded too and counted as `excluded MedicationRequest doNotPerform true: N`; `false`, an absent
+value or a non-boolean value is screened. Result for
 [`data/sample_fhir_bundle_polypharmacy.json`](../../data/sample_fhir_bundle_polypharmacy.json)
 (synthetic data, trimmed):
 
@@ -549,6 +555,7 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 | `isError: true` with `Invalid arguments: …` | Fix the argument at the reported path (for example `arguments.patient.egfr must be <= 250`). |
 | `Input rejected by scope enforcement` | A free-text argument asked for browsing, code execution or a non-clinical task. |
 | Fewer checks than expected | Look at `checks_skipped`; supply `age`, `egfr`, `hepatic_function`, `pregnant`, `breastfeeding` or `allergies`. |
+| A medication or allergy from the bundle is not screened | Look at `medication_notes` and `notes`: non-current statuses, `doNotPerform` orders and inactive, resolved, refuted or entered-in-error allergies are excluded and counted there. |
 | Large bundle rejected (`Message exceeds 8388608 bytes`) | Send only the Patient, MedicationRequest, MedicationStatement, Observation and AllergyIntolerance entries. |
 | `Bundle contains 2 Patient resources` / `Bundle mixes patients` | Send one patient's resources per call (filter by `subject`). |
 | `screening_input_issues` is not empty | The regimen cannot be screened unchanged (for example more than 100 current medications); review it rather than splitting it, which would miss cross-medication interactions. |

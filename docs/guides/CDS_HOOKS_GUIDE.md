@@ -261,12 +261,12 @@ flowchart LR
 | `hookInstance` | Not used for screening | HMAC-SHA256 `hook_instance_hash` |
 | `context.patientId` | Every draft `MedicationRequest` and prefetched resource used for screening must reference `Patient/<patientId>` (relative, or an absolute URL ending in it, optionally `/_history/<v>`); anything else, including identifier-only references, is a 400 | HMAC `patient_id_hash` |
 | `context.userId` | Not used for screening | HMAC `user_id_hash` |
-| `context.draftOrders` `MedicationRequest` (`draft`, `active`, `on-hold`) | Ordered medications. Named by `medicationCodeableConcept.text`, a coding `display`, a contained or bundled `Medication`, or `medicationReference.display` — never by a bare code. Other statuses (`stopped`, `cancelled`, …) are not screened | "draft order" / "selected order" in `detail`; uuids of the cards that involve them |
+| `context.draftOrders` `MedicationRequest` (`draft`, `active`, `on-hold`) | Ordered medications. Named by `medicationCodeableConcept.text`, a coding `display`, a contained or bundled `Medication`, or `medicationReference.display` — never by a bare code. Other statuses (`stopped`, `cancelled`, …) and `doNotPerform: true` ("do not give") orders are not screened; when a coverage card is shown, it counts them | "draft order" / "selected order" in `detail`; uuids of the cards that involve them |
 | other `draftOrders` resources (`ServiceRequest`, `NutritionOrder`, …) | Ignored | — |
 | `context.selections` (`order-select`) | `Type/id` or `fullUrl` of draftOrders entries; the focus of the screen (unknown references are a 400) | "selected order" |
 | `prefetch.patient` | `birthDate` → age (Beers 65+); names, identifiers, telecom and address are used only to redact them from free text | — |
-| `prefetch.activeMedications` (`active`, `on-hold`; `_include`d `Medication`s resolve references) | Current medications. One that is also being revised in `draftOrders` (same id) is screened once, as the draft | "current medication" |
-| `prefetch.allergies` | Allergy text (entered-in-error and refuted records excluded); `null` = none on record, so the allergy checks run | — |
+| `prefetch.activeMedications` (`active`, `on-hold`; `_include`d `Medication`s resolve references) | Current medications. One that is also being revised in `draftOrders` (same id) is screened once, as the draft. `doNotPerform: true` orders are not current therapy and are not screened | "current medication" |
+| `prefetch.allergies` | Allergy text. Records whose `clinicalStatus` is `inactive` or `resolved`, or whose `verificationStatus` is `refuted` or `entered-in-error`, are excluded; a missing or `unconfirmed` status is still screened. `null` = none on record, so the allergy checks run | — |
 | `prefetch.egfr` | eGFR in mL/min/1.73 m² (UCUM-checked, mL/s converted exactly); the **lowest** returned value is used. Observations are recognised by the requested LOINC codes whatever their display text (code-only, LOINC display or short name, local text) | — |
 | `fhirServer`, `fhirAuthorization` | **Ignored.** No FHIR server is ever queried; access tokens are never logged or stored | — |
 | finding `severity` | — | `indicator` |
@@ -517,7 +517,7 @@ These are read from the environment or `.env` (see [CONFIGURATION.md](../../CONF
 
 | Symptom | Cause and fix |
 | --- | --- |
-| `{"cards": []}` for an order you expected to flag | Check the medication has a name (`text` or a coding `display`), its status is `draft`/`active`/`on-hold`, and the partner drug was prefetched. Name matching is whole-token. |
+| `{"cards": []}` for an order you expected to flag | Check the medication has a name (`text` or a coding `display`), its status is `draft`/`active`/`on-hold` and it is not a `doNotPerform` order, and the partner drug was prefetched. Name matching is whole-token. An allergy only counts while its `clinicalStatus` is not `inactive`/`resolved` and it is not `refuted` or `entered-in-error`. |
 | Info card "missing prefetch …" | The client did not send those keys. Configure the EHR or sandbox to satisfy the templates from `GET /cds-services`. |
 | `400` "must reference context.patientId" | A draft order or prefetched resource names another patient, or uses an identifier-only reference. Send one patient's resources. |
 | `400` "context.selections must reference resources in context.draftOrders" | Each selection must be `ResourceType/id` (or the `fullUrl`) of an entry in `draftOrders`. |

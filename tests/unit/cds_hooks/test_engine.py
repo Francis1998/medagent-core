@@ -26,6 +26,12 @@ ORDER_SIGN = SERVICES_BY_ID["medagent-medication-safety"]
 ORDER_SELECT = SERVICES_BY_ID["medagent-medication-safety-select"]
 PATIENT_ID = "cds-demo-ada"
 LOINC = "http://loinc.org"
+ALLERGY_CLINICAL = "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical"
+ALLERGY_VERIFICATION = "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification"
+AMOXICILLIN_ALLERGY_CARD = (
+    "warning",
+    "High — Drug-allergy conflicts (direct and intra-class): Amoxicillin 500 mg capsule",
+)
 
 
 def example(name: str) -> dict[str, Any]:
@@ -226,6 +232,49 @@ def test_allergy_checks_use_prefetched_allergies() -> None:
             "High — Drug-allergy conflicts (direct and intra-class): Amoxicillin 500 mg capsule",
         )
     ]
+
+
+def _penicillin_allergy(clinical: str | None, verification: str | None) -> dict[str, Any]:
+    """An amoxicillin order for the example patient, whose penicillin allergy has these statuses."""
+    body = order_sign(draft("Amoxicillin 500 mg capsule"))
+    allergy = body["prefetch"]["allergies"]["entry"][0]["resource"]
+    for field, system, code in (
+        ("clinicalStatus", ALLERGY_CLINICAL, clinical),
+        ("verificationStatus", ALLERGY_VERIFICATION, verification),
+    ):
+        allergy.pop(field, None)
+        if code is not None:
+            allergy[field] = {"coding": [{"system": system, "code": code}]}
+    return body
+
+
+@pytest.mark.parametrize(
+    ("clinical", "verification"),
+    [
+        ("inactive", "confirmed"),
+        ("resolved", "confirmed"),
+        ("active", "refuted"),
+        (None, "entered-in-error"),
+    ],
+)
+def test_inactive_resolved_refuted_or_erroneous_allergies_raise_no_card(
+    clinical: str | None, verification: str | None
+) -> None:
+    result = evaluate_hook(ORDER_SIGN, _penicillin_allergy(clinical, verification))
+
+    assert result.cards == []
+
+
+@pytest.mark.parametrize(
+    ("clinical", "verification"),
+    [("active", "unconfirmed"), ("active", None), (None, None)],
+)
+def test_allergies_with_an_unconfirmed_or_missing_status_are_still_screened(
+    clinical: str | None, verification: str | None
+) -> None:
+    result = evaluate_hook(ORDER_SIGN, _penicillin_allergy(clinical, verification))
+
+    assert summaries(result.cards) == [AMOXICILLIN_ALLERGY_CARD]
 
 
 @pytest.mark.parametrize(
@@ -450,6 +499,50 @@ def test_discontinued_and_non_medication_orders_produce_no_cards() -> None:
 
     assert evaluate_hook(ORDER_SIGN, order_sign(stopped)).cards == []
     assert evaluate_hook(ORDER_SIGN, order_sign(lab, prefetch=None)).cards == []
+
+
+def test_do_not_perform_orders_are_not_screened_as_orders() -> None:
+    do_not_give = draft("Ibuprofen 400 mg tablet", doNotPerform=True)
+
+    assert evaluate_hook(ORDER_SIGN, order_sign(do_not_give)).cards == []
+
+
+def test_current_do_not_perform_orders_are_not_screened_as_current_therapy() -> None:
+    body = order_sign()
+    body["prefetch"]["activeMedications"]["entry"][0]["resource"]["doNotPerform"] = True
+
+    result = evaluate_hook(ORDER_SIGN, body)
+
+    assert summaries(result.cards) == [
+        ("warning", "Moderate — Additive QT-prolongation burden: Fluconazole 150 mg tablet")
+    ]
+
+
+@pytest.mark.parametrize("value", [False, "true"])
+def test_orders_that_are_not_clearly_do_not_perform_are_screened(value: Any) -> None:
+    ibuprofen = draft("Ibuprofen 400 mg tablet", doNotPerform=value)
+
+    result = evaluate_hook(ORDER_SIGN, order_sign(ibuprofen))
+
+    assert [card["summary"] for card in result.cards] == [
+        "High — Renal dosing against eGFR: Ibuprofen 400 mg tablet (2 checks)",
+        "High — Drug-drug interaction: Warfarin sodium 5 mg tablet + Ibuprofen 400 mg tablet "
+        "(2 checks)",
+    ]
+
+
+def test_coverage_card_lists_excluded_do_not_perform_orders() -> None:
+    fluconazole = example("order-sign.json")["context"]["draftOrders"]["entry"][0]["resource"]
+    do_not_give = draft("Ibuprofen 400 mg tablet", "draft-do-not-give", doNotPerform=True)
+
+    result = evaluate_hook(ORDER_SIGN, order_sign(fluconazole, do_not_give, prefetch=None))
+
+    detail = result.cards[-1]["detail"]
+    assert (
+        "- Not screened because of order status: excluded MedicationRequest doNotPerform true: 1."
+        in detail
+    )
+    assert "Ibuprofen" not in json.dumps(result.cards)
 
 
 def test_regimens_over_the_screening_limit_are_reported_rather_than_truncated() -> None:
