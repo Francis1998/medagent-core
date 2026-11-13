@@ -53,8 +53,9 @@ medagent.
 | `check_drug_interactions` | Runs only the offline interaction rules: 80 pairwise checkers auto-discovered from `medagent.safety`, plus QTc pairs, anticoagulant-bleeding and triple-whammy combinations (83 today). | `medications` (2–100) |
 | `parse_fhir_bundle` | FHIR R4 Bundle for **one** patient → de-identified context (HMAC-hashed patient id, age, sex, current medications, allergies, labs, vitals) and a `screening_input` object to pass straight to `screen_medications` (validated against its limits). | `bundle`; optional `include_proposed` |
 | `list_safety_controls` | Catalogue of the hard constraints (SAFETY.md §3.1–3.8) and every check the tools run, with SAFETY.md sections and required inputs. | optional `category`, `query` |
+| `screen_trial_eligibility` | Research-only clinical-trial pre-screen: one patient's FHIR R4 Bundle against 1–20 structured trial definitions (ClinicalTrials.gov `eligibilityModule` + typed criteria); criterion-level `met` / `not_met` / `insufficient_data` / `requires_human_review` with evidence pointers and a deterministic trial ranking. See the [trial eligibility guide](TRIAL_ELIGIBILITY_GUIDE.md). | `bundle`, `trials`; optional `patient_context`, `as_of`, `patient_ref` |
 
-All four tools are annotated `readOnlyHint: true`, `destructiveHint: false`,
+All five tools are annotated `readOnlyHint: true`, `destructiveHint: false`,
 `idempotentHint: true`, `openWorldHint: false`, make no network or LLM calls, and keep no state
 between requests. `tools/list` returns them in a deterministic (alphabetical) order.
 
@@ -418,6 +419,15 @@ medication-list checks, 83 interaction rules):
 ```
 
 (`{"query": "warfarin"}` shown.)
+
+### `screen_trial_eligibility`
+
+Pre-screens one patient's FHIR R4 Bundle against structured trial definitions, reusing
+`parse_fhir_bundle`'s de-identification. Free-text criteria are always `requires_human_review`,
+missing data is `insufficient_data`, and a trial is `potentially_eligible` only when every criterion
+was decided favourably; it is never an eligibility determination. The definition format, every
+argument and result field, and real output are in the
+[trial eligibility guide](TRIAL_ELIGIBILITY_GUIDE.md).
 
 ## Protocol and dual-era compatibility
 
