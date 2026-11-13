@@ -810,6 +810,7 @@ UNNAMED_ISSUE = (
 )
 RXNORM = "http://www.nlm.nih.gov/research/umls/rxnorm"
 UCUM = "http://unitsofmeasure.org"
+LOINC = "http://loinc.org"
 
 
 def _egfr(quantity: dict[str, Any]) -> dict[str, Any]:
@@ -930,6 +931,45 @@ def test_ucum_coded_egfr_quantities_drive_unit_conversion() -> None:
 
     assert first["screening_input"]["patient"]["egfr"] == 28
     assert second["screening_input"]["patient"]["egfr"] == 24.0
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        {"coding": [{"system": LOINC, "code": "98979-8"}]},
+        {
+            "coding": [
+                {"system": LOINC, "code": "98979-8", "display": "eGFRcr SerPlBld CKD-EPI 2021"}
+            ]
+        },
+        {"coding": [{"system": LOINC, "code": "77147-7"}], "text": "GFR (MDRD)"},
+    ],
+    ids=["code-only", "loinc-short-name", "local-text"],
+)
+def test_loinc_coded_egfr_is_used_whatever_its_name(code: dict[str, Any]) -> None:
+    observation = {
+        "resourceType": "Observation",
+        "code": code,
+        "valueQuantity": {"value": 28, "unit": "mL/min/1.73m2"},
+    }
+
+    result = _parse([_entry(PATIENT), _entry(observation)])
+
+    assert result["screening_input"]["patient"]["egfr"] == 28
+    assert "egfr is the lowest of 1 eGFR observation(s)" in " ".join(result["notes"])
+
+
+def test_only_loinc_egfr_codes_identify_an_unnamed_egfr() -> None:
+    other_system = {"coding": [{"system": "urn:oid:2.16.840.1.113883.19", "code": "98979-8"}]}
+    creatinine = {"coding": [{"system": LOINC, "code": "2160-0"}]}
+
+    def observation(code: dict[str, Any]) -> dict[str, Any]:
+        quantity = {"value": 28, "unit": "mL/min/1.73m2"}
+        return _entry({"resourceType": "Observation", "code": code, "valueQuantity": quantity})
+
+    result = _parse([_entry(PATIENT), observation(other_system), observation(creatinine)])
+
+    assert "egfr" not in result["screening_input"]["patient"]
 
 
 def test_malformed_medication_codings_are_tool_errors() -> None:

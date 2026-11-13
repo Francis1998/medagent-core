@@ -3254,7 +3254,9 @@ constraints are enforced in code:
   default; draft/intended orders are added only with an explicit `include_proposed`, and every
   other status is excluded and counted. Entered-in-error resources, cancelled observations and
   refuted findings are excluded. Medications are named only by text or display, never by a bare
-  code, and relative `medicationReference`s resolve only on the requesting entry's server. eGFR is
+  code, and relative `medicationReference`s resolve only on the requesting entry's server. eGFR
+  Observations are recognised by an eGFR LOINC code whatever their display text, or by "eGFR" /
+  "glomerular filtration" in their text or a coding display. eGFR is
   used only with a recognised unit (mL/min/1.73m², or mL/s/1.73m² converted exactly, never
   rounded; a UCUM code wins over a missing or unrecognised display unit); a generated `screening_input` that exceeds the screening limits or misses
   an unnamed medication is reported, never truncated.

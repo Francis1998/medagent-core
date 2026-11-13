@@ -31,7 +31,7 @@ from medagent.extraction.fhir_parser import (
 from medagent.llm.validator import redact_prohibited_language
 from medagent.logging_config import get_logger
 from medagent.mcp.schema import validate
-from medagent.models import HepaticFunction, LabResult, Medication, Severity
+from medagent.models import HepaticFunction, Medication, Severity
 from medagent.safety.acei_arb_duplication_checker import AceiArbDuplicationChecker
 from medagent.safety.allergy_checker import AllergyChecker
 from medagent.safety.allergy_interclass_checker import AllergyInterClassCrossReactivityChecker
@@ -78,6 +78,20 @@ READ_ONLY_ANNOTATIONS: dict[str, bool] = {
 _SCOPE_ENFORCER = ScopeEnforcer()
 _EGFR_NAME = re.compile(r"\begfr\b|glomerular filtration", re.IGNORECASE)
 _EGFR_UNIT_FACTORS = {"ml/min/1.73m2": 1.0, "ml/s/1.73m2": 60.0}
+_LOINC_SYSTEM = "http://loinc.org"
+# Creatinine-based (and creatinine + cystatin C) eGFR LOINC codes: CKD-EPI 2021,
+# CKD-EPI and MDRD variants. The CDS Hooks ``egfr`` prefetch template requests
+# exactly these codes.
+EGFR_LOINC_CODES: tuple[str, ...] = (
+    "98979-8",
+    "98980-6",
+    "62238-1",
+    "77147-7",
+    "33914-3",
+    "48642-3",
+    "48643-1",
+    "50044-7",
+)
 _UCUM_SYSTEM = "http://unitsofmeasure.org"
 _MAX_MEDICATIONS = 100
 
@@ -661,19 +675,47 @@ def _exact_egfr(value: Any, factor: float) -> float:
         return math.nan
 
 
-def _lowest_egfr(labs: list[LabResult]) -> tuple[float | None, int, int]:
+def _is_egfr_observation(resource: Any) -> bool:
+    """True for an Observation that reports an eGFR.
+
+    An eGFR LOINC code identifies it whatever its display text, because
+    code-only codings and LOINC's own Display Name ("GFR Creatinine-based
+    formula ...") and Short Name ("eGFRcr SerPlBld ...") contain neither "eGFR"
+    as a word nor "glomerular filtration". Without such a code, its text or a
+    coding display must contain one of them.
+    """
+    if not isinstance(resource, dict) or resource.get("resourceType") != "Observation":
+        return False
+    code = resource.get("code")
+    if not isinstance(code, dict):
+        return False
+    codings = code.get("coding")
+    codings = [c for c in codings if isinstance(c, dict)] if isinstance(codings, list) else []
+    if any(c.get("system") == _LOINC_SYSTEM and c.get("code") in EGFR_LOINC_CODES for c in codings):
+        return True
+    names = [code.get("text"), *(coding.get("display") for coding in codings)]
+    return any(isinstance(name, str) and _EGFR_NAME.search(name) for name in names)
+
+
+def _lowest_egfr(entries: list[dict[str, Any]]) -> tuple[float | None, int, int]:
     """Return the lowest eGFR in mL/min/1.73m², observations used, observations skipped.
 
-    Values are never rounded, so a measurement just above a dosing threshold
-    (e.g. 30.04) cannot be pushed onto it.
+    Each eGFR Observation's ``valueQuantity`` is converted from its unit; one
+    without a supported unit or a numeric value is skipped. Values are never
+    rounded, so a measurement just above a dosing threshold (e.g. 30.04) cannot
+    be pushed onto it.
     """
     values: list[float] = []
     skipped = 0
-    for lab in labs:
-        if not _EGFR_NAME.search(lab.test_name):
+    for entry in entries:
+        resource = entry.get("resource", {})
+        if not _is_egfr_observation(resource):
             continue
-        factor = _egfr_unit_factor(lab.unit)
-        value = math.nan if factor is None else _exact_egfr(lab.value, factor)
+        quantity = resource.get("valueQuantity")
+        quantity = quantity if isinstance(quantity, dict) else {}
+        unit = quantity.get("unit")
+        factor = _egfr_unit_factor(unit if isinstance(unit, str) else None)
+        value = math.nan if factor is None else _exact_egfr(quantity.get("value"), factor)
         if not math.isfinite(value):
             skipped += 1
             continue
@@ -1000,8 +1042,9 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
     patient = _require_single_patient(all_entries)
     entries = [e for e in all_entries if not _is_invalidated(e.get("resource", {}))]
     invalidated = len(all_entries) - len(entries)
+    prepared = _prefer_ucum_units(entries)
     try:
-        context = parse_fhir_bundle({**bundle, "entry": _prefer_ucum_units(entries)})
+        context = parse_fhir_bundle({**bundle, "entry": prepared})
     except FHIRParseError as exc:
         raise ToolInputError(f"Invalid FHIR bundle: {exc}") from exc
     except (AttributeError, LookupError, TypeError, ValueError) as exc:
@@ -1051,7 +1094,7 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
 
     medications = [_medication_dict(medication, clean) for medication in adapted.medications]
     allergies = [clean(allergy) for allergy in context.allergies]
-    egfr, egfr_used, egfr_skipped = _lowest_egfr(context.lab_results)
+    egfr, egfr_used, egfr_skipped = _lowest_egfr(prepared)
     screening_patient: dict[str, Any] = {}
     if context.age is not None:
         screening_patient["age"] = context.age

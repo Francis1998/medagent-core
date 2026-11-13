@@ -383,7 +383,11 @@ birth date replaced with `[REDACTED-PATIENT]`, then passes through `sanitise_cli
 numbers, emails, MRNs, SSNs and names after an honorific or a `Name:` label are redacted); prescription phrasing in source text (for example an
 EHR dosage instruction "Administer 40 mg") is replaced with `[REDACTED-DIRECTIVE]`. Status codes
 that are not FHIR codes are reported as `unrecognized`, and unknown resource types are counted as
-`Other`, so caller-controlled strings are never echoed. eGFR observations are used only with a recognised unit
+`Other`, so caller-controlled strings are never echoed. An Observation is an eGFR when a coding
+carries an eGFR LOINC code (98979-8 and 98980-6 for CKD-EPI 2021, 62238-1 for CKD-EPI, 77147-7,
+33914-3, 48642-3, 48643-1 and 50044-7 for MDRD) whatever its display text, so code-only codings and
+LOINC's own display and short names ("GFR Creatinine-based formula …", "eGFRcr …") count; without
+such a code, its text or a coding display must contain "eGFR" or "glomerular filtration". eGFR observations are used only with a recognised unit
 (`mL/min/1.73m²` in any UCUM spelling, or `mL/s/1.73m²` converted ×60 with exact decimal arithmetic
 and no rounding); a UCUM `valueQuantity.code` is used when the display `unit` is missing,
 unrecognised or disagrees with it. Others are skipped and
@@ -548,7 +552,7 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 | Large bundle rejected (`Message exceeds 8388608 bytes`) | Send only the Patient, MedicationRequest, MedicationStatement, Observation and AllergyIntolerance entries. |
 | `Bundle contains 2 Patient resources` / `Bundle mixes patients` | Send one patient's resources per call (filter by `subject`). |
 | `screening_input_issues` is not empty | The regimen cannot be screened unchanged (for example more than 100 current medications); review it rather than splitting it, which would miss cross-medication interactions. |
-| No `egfr` in `screening_input` | The eGFR observations had no recognised unit or a non-numeric value (see `notes`); pass `egfr` explicitly in mL/min/1.73m². |
+| No `egfr` in `screening_input` | No Observation was recognised as an eGFR (it needs an eGFR LOINC code, or "eGFR" / "glomerular filtration" in its text or a coding display), or the eGFR observations had no recognised unit or a non-numeric value (see `notes`); pass `egfr` explicitly in mL/min/1.73m². |
 | Gemini/OpenAPI clients reject a schema | Not expected: `tools/list --strict` in the MCP Inspector reports 0 errors and 0 warnings. Please open an issue with the client name. |
 
 ## Limitations

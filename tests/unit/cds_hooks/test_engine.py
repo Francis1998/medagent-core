@@ -25,6 +25,7 @@ EXAMPLES = Path(__file__).resolve().parents[3] / "examples" / "cds_hooks"
 ORDER_SIGN = SERVICES_BY_ID["medagent-medication-safety"]
 ORDER_SELECT = SERVICES_BY_ID["medagent-medication-safety-select"]
 PATIENT_ID = "cds-demo-ada"
+LOINC = "http://loinc.org"
 
 
 def example(name: str) -> dict[str, Any]:
@@ -224,6 +225,45 @@ def test_allergy_checks_use_prefetched_allergies() -> None:
             "warning",
             "High — Drug-allergy conflicts (direct and intra-class): Amoxicillin 500 mg capsule",
         )
+    ]
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        {"coding": [{"system": LOINC, "code": "98979-8"}]},
+        {
+            "coding": [
+                {
+                    "system": LOINC,
+                    "code": "98979-8",
+                    "display": "GFR Creatinine-based formula (CKD-EPI 2021)/1.73 sq M (S/P/Bld) "
+                    "[Vol rate/Area]",
+                }
+            ]
+        },
+        {
+            "coding": [
+                {"system": LOINC, "code": "98980-6", "display": "eGFRcr-cys SerPlBld CKD-EPI 2021"}
+            ]
+        },
+        {"coding": [{"system": LOINC, "code": "62238-1"}], "text": "GFR, estimated"},
+    ],
+    ids=["code-only", "loinc-display-name", "loinc-short-name", "local-text"],
+)
+def test_egfr_prefetched_by_its_loinc_code_drives_renal_dosing(code: dict[str, Any]) -> None:
+    """The egfr template requests these LOINC codes, whatever name the EHR displays.
+
+    LOINC's own Display Name ("GFR Creatinine-based formula ...") and Short Name
+    ("eGFRcr-cys ...") do not contain "eGFR" as a word or "glomerular filtration".
+    """
+    body = order_sign(draft("Nitrofurantoin 100 mg capsule"))
+    body["prefetch"]["egfr"]["entry"][0]["resource"]["code"] = code
+
+    result = evaluate_hook(ORDER_SIGN, body)
+
+    assert summaries(result.cards) == [
+        ("warning", "High — Renal dosing against eGFR: Nitrofurantoin 100 mg capsule")
     ]
 
 
