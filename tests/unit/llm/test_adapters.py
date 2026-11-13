@@ -226,6 +226,7 @@ class TestSamplingParameterCompatibility:
         "model",
         [
             "claude-opus-5-5",
+            "claude-fable-5-2",
             "claude-sonnet-5-5",
             "claude-haiku-5-5",
             "claude-fable-5-1",
@@ -236,7 +237,11 @@ class TestSamplingParameterCompatibility:
     async def test_anthropic_never_receives_sampling_parameters(
         self, monkeypatch: pytest.MonkeyPatch, model: str
     ) -> None:
-        """Claude returns 400 for temperature, top_p or top_k (every model since 2026-10-21)."""
+        """Claude returns 400 for temperature, top_p or top_k (every model since 2026-10-21).
+
+        ``thinking`` is omitted too: Claude Fable 5.2 returns 400 for ``enabled`` or
+        ``disabled`` thinking because adaptive thinking is always on.
+        """
         import anthropic
 
         create = AsyncMock(
@@ -256,17 +261,28 @@ class TestSamplingParameterCompatibility:
         request = create.await_args.kwargs
         assert not SAMPLING_PARAMETERS & request.keys()
         assert not SAMPLING_PARAMETERS & (request.get("extra_body") or {}).keys()
+        assert "thinking" not in request
         assert request["max_tokens"] == 32_768
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         ("model", "expected_temperature"),
-        [("gemini-4-argon", None), ("gemini-3.8-flash", None), ("gemini-2.5-pro", 0.1)],
+        [
+            ("gemini-4-argon", None),
+            ("gemini-4-carbon", None),
+            ("gemini-4-hydrogen", None),
+            ("gemini-3.8-flash", None),
+            ("gemini-2.5-pro", 0.1),
+        ],
     )
     async def test_google_sampling_parameters_follow_model_family(
         self, monkeypatch: pytest.MonkeyPatch, model: str, expected_temperature: float | None
     ) -> None:
-        """Gemini 3+/4 ignore or discourage sampling overrides; thinking shares the budget."""
+        """Gemini 3+/4 ignore or discourage sampling overrides; thinking shares the budget.
+
+        No thinking config is sent, so each model keeps its default thinking level (Gemini 4
+        Hydrogen rejects ``minimal``).
+        """
         import google.genai as genai
 
         generate_content = AsyncMock(return_value=MagicMock(text="Differential: pneumonia."))
@@ -280,7 +296,26 @@ class TestSamplingParameterCompatibility:
         assert config.temperature == expected_temperature
         assert config.top_p is None
         assert config.top_k is None
+        assert config.thinking_config is None
         assert config.max_output_tokens == 32_768
+
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize("model", ["models/gemini-4-carbon", "models/gemini-4-hydrogen"])
+    async def test_google_resource_name_ids_never_receive_temperature(
+        self, monkeypatch: pytest.MonkeyPatch, model: str
+    ) -> None:
+        """google-genai sends ``models/<id>`` verbatim, so it must be shaped like the bare id."""
+        import google.genai as genai
+
+        generate_content = AsyncMock(return_value=MagicMock(text="Differential: pneumonia."))
+        fake_client = MagicMock()
+        fake_client.aio.models.generate_content = generate_content
+        monkeypatch.setattr(genai, "Client", MagicMock(return_value=fake_client))
+
+        await GoogleAdapter(api_key="k", model=model).complete("cough and fever")
+
+        assert generate_content.await_args.kwargs["model"] == model
+        assert generate_content.await_args.kwargs["config"].temperature is None
 
 
 @pytest.mark.parametrize(
@@ -292,12 +327,17 @@ class TestSamplingParameterCompatibility:
         ("openai", "gpt-4.1", True),
         ("anthropic", "claude-opus-5-5", False),
         ("anthropic", "claude-haiku-5-5", False),
+        ("anthropic", "claude-fable-5-2", False),
         ("anthropic", "claude-fable-5-1", False),
         ("anthropic", "claude-opus-4-7", False),
         ("anthropic", "claude-sonnet-4-6", False),
         ("anthropic", "claude-3-5-haiku-latest", False),
         ("openai", "gpt-6.1-terra", False),
         ("google", "gemini-4-argon", False),
+        ("google", "gemini-4-carbon", False),
+        ("google", "gemini-4-hydrogen", False),
+        ("google", "models/gemini-4-hydrogen", False),
+        ("google", "models/gemini-2.5-pro", True),
         ("google", "gemini-2.5-flash", True),
         ("kimi", "kimi-k3.1-pro", False),
         ("kimi", "KIMI-K3", False),
@@ -325,14 +365,15 @@ def _anthropic_via_real_sdk(
     sent: dict[str, Any] = {}
 
     def handler(request: Any) -> Any:
-        sent.update(json.loads(request.content))
+        body = json.loads(request.content)
+        sent.update(body)
         return http.Response(
             200,
             json={
                 "id": "msg_test",
                 "type": "message",
                 "role": "assistant",
-                "model": "claude-opus-5-5",
+                "model": body["model"],
                 "content": content,
                 "stop_reason": stop_reason,
                 "stop_sequence": None,
@@ -351,8 +392,9 @@ def _anthropic_via_real_sdk(
 
 
 @pytest.mark.asyncio()
+@pytest.mark.parametrize("model", ["claude-opus-5-5", "claude-fable-5-2"])
 async def test_anthropic_default_budget_and_thinking_blocks_with_real_sdk(
-    monkeypatch: pytest.MonkeyPatch,
+    monkeypatch: pytest.MonkeyPatch, model: str
 ) -> None:
     """The 32k default must pass the SDK's non-streaming guard; thinking is not the answer."""
     sent = _anthropic_via_real_sdk(
@@ -365,11 +407,14 @@ async def test_anthropic_default_budget_and_thinking_blocks_with_real_sdk(
         "end_turn",
     )
 
-    response = await AnthropicAdapter(api_key="k", model="claude-opus-5-5").complete("chest pain")
+    response = await AnthropicAdapter(api_key="k", model=model).complete("chest pain")
 
     assert response.content == "Differential: acute coronary syndrome."
+    assert response.model == model
+    assert sent["model"] == model
     assert sent["max_tokens"] == 32_768
     assert not SAMPLING_PARAMETERS & sent.keys()
+    assert "thinking" not in sent
 
 
 @pytest.mark.asyncio()
