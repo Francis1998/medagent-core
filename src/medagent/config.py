@@ -1,7 +1,12 @@
 """Global configuration loaded from environment variables via pydantic-settings."""
 
-from pydantic import Field
+import re
+
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# A browser origin: scheme://host[:port], without a path, query or wildcard.
+_ORIGIN = re.compile(r"https?://[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:\d{1,5})?")
 
 
 class Settings(BaseSettings):
@@ -70,6 +75,39 @@ class Settings(BaseSettings):
         default="insecure-default-change-me",
         description="Hex salt for PII field hashing — must be overridden in production",
     )
+
+    # --- CDS Hooks ---
+    cds_hooks_cors_origins: str = Field(
+        default="",
+        validation_alias="MEDAGENT_CDS_HOOKS_CORS_ORIGINS",
+        description=(
+            "Comma-separated browser origins allowed to call /cds-services (CORS opt-in); "
+            "empty means no CORS headers on /cds-services"
+        ),
+    )
+
+    @field_validator("cds_hooks_cors_origins")
+    @classmethod
+    def _normalise_cds_hooks_cors_origins(cls, value: str) -> str:
+        """Validate the CDS Hooks CORS allow-list and store it as ``a,b`` (lower case)."""
+        origins: list[str] = []
+        for item in re.split(r"[,\s]+", value.strip()):
+            origin = item.rstrip("/").lower()
+            if not origin:
+                continue
+            if not _ORIGIN.fullmatch(origin):
+                raise ValueError(
+                    "MEDAGENT_CDS_HOOKS_CORS_ORIGINS must list browser origins such as "
+                    "https://sandbox.cds-hooks.org (scheme://host[:port]; no wildcard or path)"
+                )
+            if origin not in origins:
+                origins.append(origin)
+        return ",".join(origins)
+
+    @property
+    def cds_hooks_cors_origin_list(self) -> tuple[str, ...]:
+        """Origins allowed to call ``/cds-services`` from a browser; empty disables CORS."""
+        return tuple(origin for origin in self.cds_hooks_cors_origins.split(",") if origin)
 
     # --- Evaluation ---
     medqa_data_path: str = Field(default="./data/medqa_usmle_4_options_test.jsonl")

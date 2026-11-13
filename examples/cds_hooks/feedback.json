@@ -1,0 +1,17 @@
+{
+  "feedback": [
+    {
+      "card": "00000000-0000-4000-8000-000000000000",
+      "outcome": "overridden",
+      "overrideReason": {
+        "reason": {
+          "system": "https://github.com/Francis1998/medagent-core/cds-hooks/CodeSystem/override-reason",
+          "code": "benefit-outweighs-risk",
+          "display": "Benefit outweighs risk; will monitor"
+        },
+        "userComment": "Free-text comment: validated, never stored or logged."
+      },
+      "outcomeTimestamp": "2026-11-07T18:05:31Z"
+    }
+  ]
+}

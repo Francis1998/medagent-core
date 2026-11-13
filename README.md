@@ -6,14 +6,16 @@
 ranks diagnostic hypotheses with Bayesian scoring and escalates to a human when confidence is low
 or the evidence conflicts. Every output carries a mandatory disclaimer, and every completed
 `/analyze` run is written to a durable audit log. A library of 300 deterministic safety modules
-backs it. 13 medication-screening checks and 83 interaction rules run offline from any MCP host:
-Claude Desktop, Claude Code, Cursor or VS Code.
+backs it. 13 medication-screening checks and 83 interaction rules run offline from any MCP host —
+Claude Desktop, Claude Code, Cursor or VS Code — and from EHR order workflows through an HL7
+[CDS Hooks 2.0](docs/guides/CDS_HOOKS_GUIDE.md) service (`order-sign`, `order-select`).
 
 <p align="left">
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.python.org/downloads/"><img alt="Python 3.10 | 3.11 | 3.12" src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-green.svg"></a>
   <a href="docs/guides/MCP_SERVER_GUIDE.md"><img alt="MCP 2026-07-28 and 2025-11-25" src="https://img.shields.io/badge/MCP-2026--07--28%20%7C%202025--11--25-blue.svg"></a>
+  <a href="docs/guides/CDS_HOOKS_GUIDE.md"><img alt="HL7 CDS Hooks 2.0" src="https://img.shields.io/badge/HL7%20CDS%20Hooks-2.0-blue.svg"></a>
   <a href="#quality-gates"><img alt="Coverage gate: 70% minimum" src="https://img.shields.io/badge/coverage%20gate-%E2%89%A570%25-brightgreen.svg"></a>
   <a href="#quality-gates"><img alt="Ruff" src="https://img.shields.io/badge/lint-ruff-46a2f1.svg"></a>
   <a href="#quality-gates"><img alt="mypy" src="https://img.shields.io/badge/types-mypy-2a6db2.svg"></a>
@@ -50,7 +52,8 @@ The result: every health-AI team re-invents the same safety plumbing for months 
 
 Every request walks an explicit state machine, and each stage has a code-enforced safety control.
 Every completed run ends in the audit log, whether it produced an answer or escalated to a human.
-MCP tool calls are audited when `--audit-log` or `MEDAGENT_MCP_AUDIT_LOG` is set.
+MCP tool calls are audited when `--audit-log` or `MEDAGENT_MCP_AUDIT_LOG` is set; CDS Hooks calls,
+cards and feedback always are, with hashes, ids and codes only.
 
 ```mermaid
 flowchart LR
@@ -66,6 +69,8 @@ flowchart LR
     OUTPUT --> AUDIT[("Durable audit log")]
     ESCALATE --> AUDIT
     HOST["MCP host<br/>Claude · Cursor · VS Code"] -.->|stdio JSON-RPC| MCP["medagent-mcp<br/>deterministic safety tools<br/>offline · de-identified"]
+    EHR["EHR order workflow<br/>order-select · order-sign"] -.->|HL7 CDS Hooks 2.0| CDS["CDS Hooks service<br/>same checks → cards<br/>no auto-actions · audited"]
+    CDS --> AUDIT
 ```
 
 Stage details and timeouts are in [Architecture](#architecture--observe--decide--act) below and in
@@ -89,6 +94,17 @@ the [MCP guide](docs/guides/MCP_SERVER_GUIDE.md#connect-a-client)):
 
 ```bash
 claude mcp add --env PII_HASH_SALT=change-me --transport stdio medagent -- "$(which medagent-mcp)"
+```
+
+**Call it from an EHR order workflow** over HL7 CDS Hooks 2.0 (no API keys; research sandboxes
+behind an authenticating gateway only — see the [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md)):
+
+```console
+$ PII_HASH_SALT=change-me medagent --port 8000 &
+$ curl -s -X POST localhost:8000/cds-services/medagent-medication-safety -H 'Content-Type: application/json' \
+    -d @examples/cds_hooks/order-sign.json | jq -r '.cards[] | "\(.indicator)  \(.summary)"'
+critical  Critical — Drug-drug interaction: Warfarin sodium 5 mg tablet + Fluconazole 150 mg tablet
+warning  Moderate — Additive QT-prolongation burden: Fluconazole 150 mg tablet
 ```
 
 **Run the HTTP API.** Reasoning needs at least one LLM API key; without one, `/analyze` escalates
@@ -116,12 +132,13 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | Bayesian differential reasoning | Ranked hypotheses with an evidence chain; deterministic SOAP structuring | `src/medagent/reasoning/` | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Deterministic safety library | 300 modules covering allergy cross-reactivity, pregnancy and lactation, Beers and STOPP/START, renal and hepatic dosing, QTc DDIs, anticoagulant bleeding and boxed warnings, plus scorers and lab-trend bridges. The MCP tools run 13 screening checks and 83 interaction rules from it | `src/medagent/safety/` | [SAFETY.md](SAFETY.md), [panel catalog](docs/SAFETY_PANEL_CATALOG.md) |
 | Drug-interaction checks | Dual-source RxNorm + OpenFDA on the HTTP path; 83 curated pairwise rules offline over MCP | `src/medagent/retrieval/drug_interaction.py`, `src/medagent/mcp/` | [SAFETY.md](SAFETY.md) |
-| FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
+| FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP and CDS Hooks | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 4 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
-| Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
-| Privacy and scope | De-identification at INTAKE, before retrieval or any LLM call (sanitised narrative fields, HMAC-hashed patient IDs); the same sanitiser in the FHIR parser and MCP tools; scope enforcement on queries | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
+| HL7 CDS Hooks 2.0 service | `order-sign` and `order-select` services that screen draft orders against prefetched current medications, allergies, age and eGFR with the same checks; advisory cards only (no suggestions or system actions), info card when prefetch is missing, de-identified feedback; no FHIR server, LLM or network calls | `src/medagent/cds_hooks/`, `src/medagent/api/cds_hooks.py` | [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md) |
+| Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; CDS Hooks calls, cards and feedback recorded with hashes and codes only; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
+| Privacy and scope | De-identification at INTAKE, before retrieval or any LLM call (sanitised narrative fields, HMAC-hashed patient IDs); the same sanitiser in the FHIR parser, MCP tools and CDS Hooks service; scope enforcement on queries | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
 | Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
-| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health` | `src/medagent/api/main.py` | [API](#api) |
+| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health`, and CDS Hooks under `/cds-services` | `src/medagent/api/main.py` | [API](#api) |
 
 ## Docs map
 
@@ -130,7 +147,8 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | [QUICKSTART.md](QUICKSTART.md) | Installation options, first API call, Docker |
 | [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) | Three end-to-end scenarios with real commands and output |
 | [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md) | Connecting Claude Desktop, Claude Code, Cursor or VS Code; tool reference |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing and MCP design |
+| [docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md) | Calling the checks from an EHR order workflow (HL7 CDS Hooks 2.0): quickstart, cards, prefetch, feedback, CORS, security limits |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing, MCP and CDS Hooks design |
 | [SAFETY.md](SAFETY.md) | Every hard control, regulatory status and escalation policy |
 | [CONFIGURATION.md](CONFIGURATION.md) | Environment variables, model defaults and provider parameter rules |
 | [docs/SAFETY_PANEL_CATALOG.md](docs/SAFETY_PANEL_CATALOG.md) | Per-panel summaries and demo GIFs |
@@ -648,6 +666,20 @@ Response includes `ranked_hypotheses`, `drug_interactions_flagged`, `overall_con
 ### `POST /drug-interactions` — Targeted interaction check
 ### `GET /health` — Readiness probe
 
+### HL7 CDS Hooks 2.0 — `/cds-services`
+
+![medagent CDS Hooks service: a real curl session against order-sign, order-select and feedback](assets/cds_hooks_demo.gif)
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /cds-services` | Discovery: `medagent-medication-safety` (`order-sign`) and `medagent-medication-safety-select` (`order-select`) with their prefetch templates |
+| `POST /cds-services/{id}` | Screen the request's draft orders and prefetched data; returns `{"cards": [...]}` |
+| `POST /cds-services/{id}/feedback` | Record card outcomes (uuid, outcome, override reason code) in the audit log |
+
+Cards carry the mandatory disclaimer and never suggest order changes. JWT client authentication is
+not implemented, so deploy behind an authenticating gateway; CORS is opt-in with
+`MEDAGENT_CDS_HOOKS_CORS_ORIGINS`. See the [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md).
+
 Interactive docs: http://localhost:8000/docs
 
 ---
@@ -688,17 +720,20 @@ medagent-core/
 │   ├── llm/            # OpenAI/Anthropic/Google/Kimi adapters + router + validator
 │   ├── safety/         # 300 deterministic safety modules + de-identification + scope enforcer
 │   ├── mcp/            # Dual-era MCP stdio server (medagent-mcp) over the safety layer
-│   └── api/            # FastAPI: /analyze /drug-interactions /health
+│   ├── cds_hooks/      # HL7 CDS Hooks 2.0 services: discovery, FHIR → screen → cards, feedback
+│   └── api/            # FastAPI: /analyze /drug-interactions /health /cds-services
 ├── tests/              # pytest suite (unit + integration), typed and documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
 │   ├── eval_drugbank.py# Drug interaction F1 evaluator
 │   ├── mcp_stdio_demo.py # Reference stdio MCP client (modern + legacy sessions)
+│   ├── cds_hooks_demo.sh # curl session against /cds-services (source of the CDS Hooks GIF)
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
 ├── assets/             # Animated SVG/GIF demos
 ├── docs/               # Guides, use cases, safety panel catalog, ADRs
 ├── data/               # Sample FHIR R4 bundle + KB index
+├── examples/cds_hooks/ # Synthetic CDS Hooks requests (order-sign, order-select, feedback) + a real response
 ├── results/            # Benchmark outputs (gitignored except .gitkeep)
 ├── .github/workflows/  # CI (ruff, mypy, pytest), security scan, release
 ├── docker-compose.yml

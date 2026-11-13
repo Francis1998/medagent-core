@@ -8,6 +8,7 @@
 ┌─────────────────────────────────────────────────────────┐
 │                    FastAPI REST Layer                    │
 │         /analyze  /drug-interactions  /health           │
+│   /cds-services (HL7 CDS Hooks 2.0, deterministic only) │
 └───────────────────────┬─────────────────────────────────┘
                         │
 ┌───────────────────────▼─────────────────────────────────┐
@@ -72,8 +73,14 @@ src/medagent/
 │   ├── tools.py           # 4 deterministic tools over the safety checkers + FHIR parser
 │   └── schema.py          # Minimal JSON Schema validator for tool arguments
 │
+├── cds_hooks/
+│   ├── services.py        # CDS Hooks 2.0 service definitions, prefetch templates, override reasons
+│   ├── requests.py        # Validation of service calls and feedback (errors never echo input)
+│   └── engine.py          # Patient binding, MCP parse/screen reuse, focus filter, cards, audit events
+│
 └── api/
     ├── main.py            # FastAPI app, lifespan, /analyze, /drug-interactions, /health
+    ├── cds_hooks.py       # /cds-services router, path-scoped opt-in CORS, background audit writes
     └── schemas.py         # API-layer request/response schemas (separate from domain models)
 ```
 
@@ -226,7 +233,31 @@ CREATE TABLE audit_log (
     entities_json         TEXT,                    -- JSON array
     created_at            DATETIME NOT NULL
 );
+
+-- CDS Hooks service calls, issued cards and feedback (hashes, ids and codes only)
+CREATE TABLE cds_hooks_audit (
+    id                    INTEGER PRIMARY KEY,
+    event                 TEXT NOT NULL,           -- service_call | card | feedback
+    service_id            TEXT NOT NULL,
+    hook                  TEXT,                    -- order-sign | order-select
+    hook_instance_hash    TEXT,                    -- HMAC-SHA256 of hookInstance
+    patient_id_hash       TEXT,                    -- HMAC-SHA256 of context.patientId
+    user_id_hash          TEXT,                    -- HMAC-SHA256 of context.userId
+    card_uuid             TEXT,                    -- uuid of a card this service issued
+    indicator             TEXT,                    -- critical | warning | info
+    check_ids             TEXT,                    -- deterministic checks that fired
+    card_count            INTEGER,
+    finding_count         INTEGER,
+    prefetch_gaps         TEXT,                    -- prefetch keys missing or unusable
+    outcome               TEXT,                    -- accepted | overridden
+    override_reason_code  TEXT,                    -- this service's code or "unrecognized"
+    created_at            DATETIME NOT NULL
+);
 ```
+
+`get_engine()` initialises the engine once under a per-event-loop lock and publishes it only after
+the tables exist, so concurrent first writes (several background audit tasks) cannot see a
+half-initialised engine.
 
 ---
 
@@ -259,6 +290,45 @@ flowchart LR
   errors.
 
 See [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md).
+
+---
+
+## CDS Hooks Service
+
+`/cds-services` exposes the same deterministic checks to EHR order workflows through HL7 CDS Hooks
+2.0. It lives in the FastAPI app but never touches the agent, an LLM or the network:
+
+```mermaid
+flowchart LR
+    ehr["EHR / CDS Hooks sandbox"] -- "GET /cds-services" --> disc["discovery<br/>order-sign · order-select<br/>prefetch templates"]
+    ehr -- "POST /cds-services/{id}" --> api["api/cds_hooks.py<br/>8 MiB limit · JSON · 400/404"]
+    api --> req["cds_hooks/requests.py<br/>validate hook, context, draftOrders"]
+    req --> eng["cds_hooks/engine.py<br/>bind resources to context.patientId"]
+    eng --> parse["MCP parse_fhir_bundle<br/>status policy · naming · de-identification"]
+    parse --> screen["MCP screen_medications<br/>13 checks + 83 interaction rules"]
+    screen --> cards["focus filter → cards<br/>indicator · inert Markdown · output guard"]
+    cards --> ehr
+    api -. "service_call + card rows<br/>(tracked background task)" .-> audit[("cds_hooks_audit")]
+    ehr -- "POST /cds-services/{id}/feedback" --> fb["card uuid · outcome · reason code"]
+    fb --> audit
+```
+
+- **Reuse, not duplication.** Draft orders and prefetched resources are normalised by the MCP
+  `parse_fhir_bundle` tool and screened once by `screen_medications`, so the CDS service inherits the
+  check registry, medication status policy, naming rules, de-identification, scope enforcement and
+  eGFR unit handling. The engine adds what CDS Hooks needs: binding every resource to
+  `context.patientId`, the `order-select` focus on selected orders, de-duplication of orders that are
+  both drafts and current, grouping findings into cards, and the coverage card for missing prefetch.
+- **No FHIR server calls.** Missing prefetch is reported on an `info` card instead of being fetched.
+- **Cards are advisory.** No `suggestions`, `selectionBehavior` or `systemActions`; card text from the
+  EHR is escaped Markdown, and every card passes the prescription-language output guard.
+- **CORS** is applied by `CdsHooksCORSMiddleware`: the app-wide policy everywhere except
+  `/cds-services`, where only origins in `MEDAGENT_CDS_HOOKS_CORS_ORIGINS` get CORS headers.
+- **Audit** rows are written in tracked background tasks (drained at shutdown, failures logged with
+  class names only); feedback is written before the response (503 when it cannot be recorded).
+
+See [docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md) and
+[SAFETY.md §10](SAFETY.md#10-cds-hooks-service-safety-model).
 
 ---
 

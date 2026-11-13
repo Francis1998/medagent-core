@@ -593,6 +593,7 @@ ffmpeg -i mcp_raw.gif -filter_complex \
 ## See also
 
 - [SAFETY.md §9](../../SAFETY.md#9-mcp-server-model-context-protocol-safety-model) — MCP safety model
+- [CDS_HOOKS_GUIDE.md](CDS_HOOKS_GUIDE.md) — the same checks for EHR order workflows (HL7 CDS Hooks 2.0)
 - [ARCHITECTURE.md](../../ARCHITECTURE.md#mcp-server) — where the server sits
 - [Use cases](USE_CASES.md) — end-to-end scenarios, including MCP screening of a FHIR export
 - Spec: [MCP 2026-07-28 versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning),

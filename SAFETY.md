@@ -3271,3 +3271,65 @@ constraints are enforced in code:
 
 Operators must keep the host's tool-approval prompts enabled and route every finding to a licensed
 clinician. See `docs/guides/MCP_SERVER_GUIDE.md`.
+
+## 10. CDS Hooks Service Safety Model
+
+`/cds-services` (`src/medagent/cds_hooks/`, `src/medagent/api/cds_hooks.py`) lets an EHR order
+workflow call the deterministic medication-safety checks through HL7 CDS Hooks 2.0: an `order-sign`
+service (`medagent-medication-safety`) and an `order-select` service
+(`medagent-medication-safety-select`), plus discovery and feedback. It adds no clinical logic: draft
+orders and prefetched resources are normalised by the MCP `parse_fhir_bundle` tool and screened by
+`screen_medications` (§9), so every MCP constraint on FHIR handling, de-identification and scope
+applies. The following constraints are enforced in code:
+
+- **No automatic actions.** Cards never carry `suggestions` or `selectionBehavior`, and responses
+  never carry `systemActions`, so a card cannot create, modify or cancel an order — not even with one
+  click. Cards offer override reasons and a documentation link only. Rationale: a suggestion would
+  turn advisory research output into an order change, which §3.1–3.3 forbid; the clinician decides
+  and acts in the EHR.
+- **Mandatory disclaimer (§3.1).** Every card's `detail` starts with the full disclaimer; the card
+  `source.label` is "medagent-core (research use only)" and every service description says
+  RESEARCH USE ONLY.
+- **No prescribing directives (§3.3).** Every string and key of every card is screened in raw form
+  with the `MedicalOutputValidator` prohibited-prescription patterns before it is returned; a match
+  replaces the card with a "finding withheld — escalate" card of the same indicator
+  (`cds_hooks_card_withheld`).
+- **Escalation, not reassurance (§3.4).** The card indicator comes from the most severe finding
+  (`CRITICAL` → `critical`; `HIGH`, `MODERATE` and `UNKNOWN` → `warning`; `LOW` → `info`); HIGH and
+  CRITICAL cards state that escalation is recommended; every card states that the absence of a
+  finding is not evidence of safety and lists the checks that could not run.
+- **No silent partial screens.** The service never queries the FHIR server or any network service,
+  even when `fhirServer`/`fhirAuthorization` are sent. Missing, erroneous (OperationOutcome) or
+  paginated prefetch, unnameable or over-limit medications, and regimens over the screening limit
+  are reported on an `info` coverage card (`warning` when no ordered medication could be screened);
+  a truncated regimen is never screened.
+- **Right patient only.** Every draft order and prefetched resource must reference
+  `context.patientId` (relative or absolute `Patient/<id>`); a reference to anyone else, or one that
+  cannot be verified (identifier-only), rejects the request with HTTP 400 instead of screening it.
+- **PII (§3.5).** Raw patient and user ids, `hookInstance`, FHIR resources, medication and allergy
+  text, access tokens and feedback comments are never logged or stored. The audit table
+  `cds_hooks_audit` holds HMAC-SHA256 hashes (`PII_HASH_SALT`) of `hookInstance`, `patientId` and
+  `userId`, server-generated card uuids, server-defined check ids and indicators, prefetch gap keys,
+  feedback outcomes and this service's override-reason codes (anything else is stored as
+  `unrecognized`). Check ids linked to a hashed patient are pseudonymised clinical data: protect the
+  audit database accordingly. Logs carry service ids, counts, indicators, gap keys and exception
+  classes only. Error responses name specification fields only and never echo request values or
+  unknown service ids.
+- **Inert card text.** EHR-supplied text is stripped of control and bidi-override characters and
+  Markdown-escaped, so it cannot inject links, images, HTML, code or emphasis into card `detail`.
+- **Scope enforcement (§3.6).** Extracted FHIR text goes through the `ScopeEnforcer` patterns (via
+  the MCP tools); a violation is an HTTP 400.
+- **Audit.** Each service call and each card issued is recorded in a tracked background task that
+  app shutdown drains; failures are logged as `cds_hooks_audit_persist_failed` with class names and
+  codes only. Feedback is recorded before the response, and an audit failure returns 503 so the
+  client can retry.
+- **Bounded input and CORS.** Bodies are limited to 8 MiB, Bundles to 5,000 entries and feedback to
+  100 entries. CORS on `/cds-services` is opt-in (`MEDAGENT_CDS_HOOKS_CORS_ORIGINS`, explicit
+  origins only, no credentials); other paths keep the app-wide policy.
+- **Authentication is NOT implemented.** The service does not verify the JWT that CDS Hooks 2.0
+  clients send. It is for research sandboxes only and must sit behind a gateway that terminates TLS
+  and verifies the client's JWT (issuer/`jku` allow-list, signature, `aud`, `exp`, `jti` replay);
+  never expose it directly to an EHR network or the internet.
+
+Pregnancy, lactation and hepatic dosing are never evaluated by this service (those statuses are not
+derived from FHIR), and medication matching is name-based. See `docs/guides/CDS_HOOKS_GUIDE.md`.
