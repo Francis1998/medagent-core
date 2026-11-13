@@ -703,6 +703,82 @@ def test_entered_in_error_and_cancelled_resources_are_excluded() -> None:
     assert "excluded 2 invalidated resource(s)" in " ".join(result["notes"])
 
 
+ALLERGY_CLINICAL = "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical"
+
+
+def test_inactive_and_resolved_allergies_are_excluded_and_counted() -> None:
+    def allergy(name: str, *codings: dict[str, Any]) -> dict[str, Any]:
+        resource: dict[str, Any] = {"resourceType": "AllergyIntolerance", "code": {"text": name}}
+        if codings:
+            resource["clinicalStatus"] = {"coding": list(codings)}
+        return resource
+
+    result = _parse(
+        [
+            _entry(PATIENT),
+            _entry(allergy("Penicillin", {"system": ALLERGY_CLINICAL, "code": "active"})),
+            _entry(allergy("Sulfonamides", {"system": ALLERGY_CLINICAL, "code": "inactive"})),
+            _entry(allergy("Codeine", {"code": "resolved"})),
+            _entry(allergy("Latex")),
+            _entry(
+                allergy("Iodine", {"system": "urn:oid:2.16.840.1.113883.19", "code": "inactive"})
+            ),
+            _entry(
+                allergy(
+                    "Aspirin",
+                    {"system": ALLERGY_CLINICAL, "code": "resolved"},
+                    {"system": ALLERGY_CLINICAL, "code": "active"},
+                )
+            ),
+        ]
+    )
+
+    kept = ["Penicillin", "Latex", "Iodine", "Aspirin"]
+    assert result["allergies"] == kept
+    assert result["screening_input"]["patient"]["allergies"] == kept
+    assert (
+        "excluded 2 AllergyIntolerance record(s) with clinicalStatus inactive or resolved"
+        in " ".join(result["notes"])
+    )
+
+
+def test_do_not_perform_medication_requests_are_excluded_and_counted() -> None:
+    def request(name: str, **fields: Any) -> dict[str, Any]:
+        return {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "medicationCodeableConcept": {"text": name},
+            **fields,
+        }
+
+    bundle = [
+        _entry(PATIENT),
+        _entry(request("Warfarin")),
+        _entry(request("Ibuprofen", doNotPerform=True)),
+        _entry(request("Aspirin", doNotPerform=False)),
+        _entry(request("Naproxen", status="stopped", doNotPerform=True)),
+        _entry(request("Ketorolac", status="draft", doNotPerform=True)),
+    ]
+
+    result = _parse(bundle)
+    proposed = run(
+        "parse_fhir_bundle",
+        {"bundle": {"resourceType": "Bundle", "entry": bundle}, "include_proposed": True},
+    ).structured
+
+    assert [m["name"] for m in result["medications"]] == ["Warfarin", "Aspirin"]
+    assert result["medication_notes"] == [
+        "excluded MedicationRequest status draft: 1",
+        "excluded MedicationRequest status stopped: 1",
+        "excluded MedicationRequest doNotPerform true: 1",
+    ]
+    assert [m["name"] for m in proposed["medications"]] == ["Warfarin", "Aspirin"]
+    assert proposed["medication_notes"] == [
+        "excluded MedicationRequest status stopped: 1",
+        "excluded MedicationRequest doNotPerform true: 2",
+    ]
+
+
 def test_medication_references_are_resolved_or_reported() -> None:
     resolvable = {
         "resourceType": "MedicationRequest",
