@@ -316,7 +316,8 @@ flowchart LR
 - **Reuse, not duplication.** Draft orders and prefetched resources are normalised by the MCP
   `parse_fhir_bundle` tool and screened once by `screen_medications`, so the CDS service inherits the
   check registry, medication status policy, naming rules, de-identification, scope enforcement and
-  eGFR unit handling. The engine adds what CDS Hooks needs: binding every resource to
+  eGFR recognition (by the same LOINC codes the `egfr` prefetch template requests) and unit
+  handling. The engine adds what CDS Hooks needs: binding every resource to
   `context.patientId`, the `order-select` focus on selected orders, de-duplication of orders that are
   both drafts and current, grouping findings into cards, and the coverage card for missing prefetch.
 - **No FHIR server calls.** Missing prefetch is reported on an `info` card instead of being fetched.

@@ -11,6 +11,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from medagent.mcp.tools import EGFR_LOINC_CODES
+
 SPEC_VERSION = "2.0"
 ORDER_SIGN = "order-sign"
 ORDER_SELECT = "order-select"
@@ -22,21 +24,9 @@ SOURCE_LABEL = "medagent-core (research use only)"
 TOPIC_SYSTEM = f"{PROJECT_URL}/cds-hooks/CodeSystem/topic"
 OVERRIDE_REASON_SYSTEM = f"{PROJECT_URL}/cds-hooks/CodeSystem/override-reason"
 
-# Creatinine-based (and creatinine + cystatin C) eGFR LOINC codes: CKD-EPI 2021,
-# CKD-EPI and MDRD variants.
-EGFR_LOINC_CODES: tuple[str, ...] = (
-    "98979-8",
-    "98980-6",
-    "62238-1",
-    "77147-7",
-    "33914-3",
-    "48642-3",
-    "48643-1",
-    "50044-7",
-)
-
 # Prefetch key -> FHIR query template. Order matters: it is the order in which
-# missing keys are reported.
+# missing keys are reported. ``egfr`` requests the eGFR LOINC codes that the MCP
+# ``parse_fhir_bundle`` tool recognises whatever their display text.
 PREFETCH_TEMPLATES: dict[str, str] = {
     "patient": "Patient/{{context.patientId}}",
     "activeMedications": "MedicationRequest?patient={{context.patientId}}&status=active",

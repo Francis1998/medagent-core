@@ -959,6 +959,19 @@ def test_loinc_coded_egfr_is_used_whatever_its_name(code: dict[str, Any]) -> Non
     assert "egfr is the lowest of 1 eGFR observation(s)" in " ".join(result["notes"])
 
 
+def test_only_loinc_egfr_codes_identify_an_unnamed_egfr() -> None:
+    other_system = {"coding": [{"system": "urn:oid:2.16.840.1.113883.19", "code": "98979-8"}]}
+    creatinine = {"coding": [{"system": LOINC, "code": "2160-0"}]}
+
+    def observation(code: dict[str, Any]) -> dict[str, Any]:
+        quantity = {"value": 28, "unit": "mL/min/1.73m2"}
+        return _entry({"resourceType": "Observation", "code": code, "valueQuantity": quantity})
+
+    result = _parse([_entry(PATIENT), observation(other_system), observation(creatinine)])
+
+    assert "egfr" not in result["screening_input"]["patient"]
+
+
 def test_malformed_medication_codings_are_tool_errors() -> None:
     request = {
         "resourceType": "MedicationRequest",

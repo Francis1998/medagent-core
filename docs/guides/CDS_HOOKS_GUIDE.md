@@ -267,7 +267,7 @@ flowchart LR
 | `prefetch.patient` | `birthDate` → age (Beers 65+); names, identifiers, telecom and address are used only to redact them from free text | — |
 | `prefetch.activeMedications` (`active`, `on-hold`; `_include`d `Medication`s resolve references) | Current medications. One that is also being revised in `draftOrders` (same id) is screened once, as the draft | "current medication" |
 | `prefetch.allergies` | Allergy text (entered-in-error and refuted records excluded); `null` = none on record, so the allergy checks run | — |
-| `prefetch.egfr` | eGFR in mL/min/1.73 m² (UCUM-checked, mL/s converted exactly); the **lowest** returned value is used | — |
+| `prefetch.egfr` | eGFR in mL/min/1.73 m² (UCUM-checked, mL/s converted exactly); the **lowest** returned value is used. Observations are recognised by the requested LOINC codes whatever their display text (code-only, LOINC display or short name, local text) | — |
 | `fhirServer`, `fhirAuthorization` | **Ignored.** No FHIR server is ever queried; access tokens are never logged or stored | — |
 | finding `severity` | — | `indicator` |
 | finding `check_id`, `checker`, `safety_section`, `rationale` | — | `detail`; `check_ids` in the audit trail |
@@ -299,7 +299,9 @@ nothing dropped at `order-select` escapes the final screen.
 | `egfr` | `Observation?patient={{context.patientId}}&code=http://loinc.org\|98979-8,…&_sort=-date&_count=5` | Renal dosing (lowest of the 5 most recent eGFRs) | Renal dosing does not run |
 
 The `egfr` template requests LOINC 98979-8 and 98980-6 (CKD-EPI 2021), 62238-1 (CKD-EPI), 77147-7,
-33914-3, 48642-3, 48643-1 and 50044-7 (MDRD).
+33914-3, 48642-3, 48643-1 and 50044-7 (MDRD). An Observation carrying one of these codes is used
+whatever its display text: a code-only coding, LOINC's own Display Name ("GFR Creatinine-based
+formula (CKD-EPI 2021)/1.73 sq M …") and Short Name ("eGFRcr SerPlBld CKD-EPI 2021") all count.
 
 What the service does with each prefetch value (CDS Hooks 2.0 semantics):
 
