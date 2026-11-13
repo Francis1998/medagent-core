@@ -299,6 +299,24 @@ class TestSamplingParameterCompatibility:
         assert config.thinking_config is None
         assert config.max_output_tokens == 32_768
 
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize("model", ["models/gemini-4-carbon", "models/gemini-4-hydrogen"])
+    async def test_google_resource_name_ids_never_receive_temperature(
+        self, monkeypatch: pytest.MonkeyPatch, model: str
+    ) -> None:
+        """google-genai sends ``models/<id>`` verbatim, so it must be shaped like the bare id."""
+        import google.genai as genai
+
+        generate_content = AsyncMock(return_value=MagicMock(text="Differential: pneumonia."))
+        fake_client = MagicMock()
+        fake_client.aio.models.generate_content = generate_content
+        monkeypatch.setattr(genai, "Client", MagicMock(return_value=fake_client))
+
+        await GoogleAdapter(api_key="k", model=model).complete("cough and fever")
+
+        assert generate_content.await_args.kwargs["model"] == model
+        assert generate_content.await_args.kwargs["config"].temperature is None
+
 
 @pytest.mark.parametrize(
     ("provider", "model", "expected"),
@@ -318,6 +336,8 @@ class TestSamplingParameterCompatibility:
         ("google", "gemini-4-argon", False),
         ("google", "gemini-4-carbon", False),
         ("google", "gemini-4-hydrogen", False),
+        ("google", "models/gemini-4-hydrogen", False),
+        ("google", "models/gemini-2.5-pro", True),
         ("google", "gemini-2.5-flash", True),
         ("kimi", "kimi-k3.1-pro", False),
         ("kimi", "KIMI-K3", False),
