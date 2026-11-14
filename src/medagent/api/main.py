@@ -7,6 +7,7 @@ Provides these endpoints:
   GET  /cds-services                  — HL7 CDS Hooks 2.0 discovery
   POST /cds-services/{id}             — CDS Hooks order-sign / order-select service call
   POST /cds-services/{id}/feedback    — CDS Hooks card feedback
+  POST /trials/eligibility            — research-only clinical-trial eligibility pre-screen
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 from medagent.agent.audit import persist_run, safe_error_fields
 from medagent.agent.state_machine import ClinicalAgentStateMachine
 from medagent.api import cds_hooks
+from medagent.api import trials as trials_api
 from medagent.api.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
@@ -143,6 +145,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     finally:
         await drain_audit_tasks()
         await cds_hooks.drain_audit_writes()
+        await trials_api.drain_audit_writes()
         logger.info("medagent_shutdown")
 
 
@@ -220,6 +223,7 @@ class _SanitisedServerErrors:
 
 app.add_middleware(_SanitisedServerErrors)
 app.include_router(cds_hooks.router)
+app.include_router(trials_api.router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Operations"])

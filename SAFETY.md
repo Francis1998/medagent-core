@@ -3278,6 +3278,9 @@ constraints are enforced in code:
 Operators must keep the host's tool-approval prompts enabled and route every finding to a licensed
 clinician. See `docs/guides/MCP_SERVER_GUIDE.md`.
 
+A fifth tool, `screen_trial_eligibility`, pre-screens clinical-trial eligibility with the same FHIR
+normalisation, disclaimer, output screening and audit log; its additional constraints are in §11.
+
 ## 10. CDS Hooks Service Safety Model
 
 `/cds-services` (`src/medagent/cds_hooks/`, `src/medagent/api/cds_hooks.py`) lets an EHR order
@@ -3344,3 +3347,61 @@ applies. The following constraints are enforced in code:
 
 Pregnancy, lactation and hepatic dosing are never evaluated by this service (those statuses are not
 derived from FHIR), and medication matching is name-based. See `docs/guides/CDS_HOOKS_GUIDE.md`.
+
+## 11. Clinical-Trial Eligibility Pre-Screening Safety Model
+
+The MCP tool `screen_trial_eligibility` and `POST /trials/eligibility` (`src/medagent/trials/`,
+`src/medagent/api/trials.py`) evaluate one patient's FHIR R4 Bundle against structured trial
+definitions (the ClinicalTrials.gov API v2 `eligibilityModule` plus typed inclusion and exclusion
+criteria). The bundle is normalised by the MCP `parse_fhir_bundle` tool (§9), so every constraint on
+FHIR handling, de-identification and scope applies. The following constraints are enforced in
+code:
+
+- **A pre-screen, never a determination.** Criterion results are `met`, `not_met`,
+  `insufficient_data` or `requires_human_review`; trial statuses are `potentially_eligible`,
+  `needs_review` or `likely_ineligible`. Nothing establishes eligibility, records consent, enrolls,
+  contacts or refers anyone, and no result is written back to an EHR. Every result carries a
+  coverage note saying so and the mandatory disclaimer (§3.1), including MCP tool errors.
+- **Never guessed.** `free_text` criteria are always `requires_human_review`, as are
+  `genderBased` trials and sub-day age limits. Missing data is `insufficient_data`: absence counts
+  as evidence only when the record documents the domain (at least one Condition, or at least one
+  MedicationRequest/MedicationStatement with every current medication named), and pregnancy or
+  breastfeeding status comes only from coded status Observations or a caller-asserted
+  `patient_context` (observations dated after `as_of` are ignored), never from sex or age. A lab
+  criterion is decided by the most recent matching result in its window, and is
+  `insufficient_data` when that result cannot be compared: an older result never stands in for it.
+  Censored lab values decide only when every value they allow agrees; units convert exactly and
+  only within one dimension.
+- **Human review by construction.** Only trials whose every criterion was decided favourably can be
+  `potentially_eligible`; `blocking_criteria` (exclusions first) and `open_criteria` tell the
+  reviewer exactly what to check. Ranking is deterministic and explained (`rank_reason`).
+- **No prescribing directives (§3.3).** Echoed trial text has prescription phrasing replaced with
+  `[REDACTED-DIRECTIVE]`; every string of the HTTP result is screened with the
+  `MedicalOutputValidator` patterns (a match returns 422, "result withheld — escalate"), and the MCP
+  server screens tool results the same way.
+- **PII (§3.5).** Results contain the HMAC-SHA256 patient hash, de-identified display text, codes,
+  values, units and clinical dates as evidence pointers, and an age range. Names, identifiers,
+  telecom, addresses, resource ids, `Patient.birthDate` (used only to derive the age range) and the
+  raw bundle are never returned, and a clinical date that falls on a possible birth date is
+  withheld. Criteria are matched against the recorded codes, units and words, and every exported
+  string is a separately de-identified copy, so redaction never changes a decision. Error
+  responses and logs never echo caller values.
+- **Scope enforcement (§3.6).** Trial titles, criterion text, terms, ingredients and the
+  eligibilityModule free text are checked with the `ScopeEnforcer` patterns before any patient data
+  is read; extracted FHIR text is checked by the MCP tool.
+- **Audit.** HTTP calls are recorded in `trial_screening_audit` (tracked background task, drained at
+  shutdown): a server-generated screening id, HMAC-SHA256 hashes of the request, patient id and
+  `patient_ref`, the evaluation date, trial ids and versions, statuses, ranks, counts and blocking
+  criterion ids — never clinical text, codes, values or dates of the record. Trial ids and statuses
+  linked to a hashed patient are pseudonymised clinical data: protect the audit database
+  accordingly. MCP calls are covered by the §9 JSONL audit log.
+- **Bounded input.** 8 MiB bodies, 5,000 bundle entries, 20 trials, 50 criteria per section,
+  thresholds within ±10^15; facts are indexed by code and word so large requests stay fast.
+  Malformed input, including invalid Unicode, is a 400 or 422, never a 500.
+- **Bias and limits.** FHIR administrative gender is neither sex assigned at birth nor gender
+  identity; fragmented records produce more `insufficient_data` and lower ranks, which must be read
+  as "unknown", not "unsuitable"; term matching is English-only; code hierarchies are not expanded;
+  results are only as faithful as the structured encoding of each trial. No authentication is
+  implemented: research sandboxes behind an authenticating gateway only.
+
+See `docs/guides/TRIAL_ELIGIBILITY_GUIDE.md`.

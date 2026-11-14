@@ -8,7 +8,9 @@ or the evidence conflicts. Every output carries a mandatory disclaimer, and ever
 `/analyze` run is written to a durable audit log. A library of 300 deterministic safety modules
 backs it. 13 medication-screening checks and 83 interaction rules run offline from any MCP host —
 Claude Desktop, Claude Code, Cursor or VS Code — and from EHR order workflows through an HL7
-[CDS Hooks 2.0](docs/guides/CDS_HOOKS_GUIDE.md) service (`order-sign`, `order-select`).
+[CDS Hooks 2.0](docs/guides/CDS_HOOKS_GUIDE.md) service (`order-sign`, `order-select`). A
+research-only [clinical-trial pre-screen](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) ranks structured
+trial definitions against a FHIR patient with criterion-level evidence, over MCP and HTTP.
 
 <p align="left">
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
@@ -53,7 +55,7 @@ The result: every health-AI team re-invents the same safety plumbing for months 
 Every request walks an explicit state machine, and each stage has a code-enforced safety control.
 Every completed run ends in the audit log, whether it produced an answer or escalated to a human.
 MCP tool calls are audited when `--audit-log` or `MEDAGENT_MCP_AUDIT_LOG` is set; CDS Hooks calls,
-cards and feedback always are, with hashes, ids and codes only.
+cards and feedback, and HTTP trial pre-screens, always are, with hashes, ids and codes only.
 
 ```mermaid
 flowchart LR
@@ -71,6 +73,8 @@ flowchart LR
     HOST["MCP host<br/>Claude · Cursor · VS Code"] -.->|stdio JSON-RPC| MCP["medagent-mcp<br/>deterministic safety tools<br/>offline · de-identified"]
     EHR["EHR order workflow<br/>order-select · order-sign"] -.->|HL7 CDS Hooks 2.0| CDS["CDS Hooks service<br/>same checks → cards<br/>no auto-actions · audited"]
     CDS --> AUDIT
+    RES["Research team or MCP host"] -.->|"POST /trials/eligibility · MCP"| TRIALS["Trial pre-screen<br/>criterion traces · ranking<br/>never a determination"]
+    TRIALS --> AUDIT
 ```
 
 Stage details and timeouts are in [Architecture](#architecture--observe--decide--act) below and in
@@ -107,6 +111,18 @@ critical  Critical — Drug-drug interaction: Warfarin sodium 5 mg tablet + Fluc
 warning  Moderate — Additive QT-prolongation burden: Fluconazole 150 mg tablet
 ```
 
+**Pre-screen clinical trials** (research use only; four fictional `EXAMPLE-*` trials and a synthetic
+FHIR patient — see the [trial eligibility guide](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md)):
+
+```console
+$ jq -s '{bundle: .[0], trials: .[1], as_of: "2026-11-12"}' examples/trials/patient-bundle.json examples/trials/example-trials.json \
+    | curl -s -X POST localhost:8000/trials/eligibility -H 'Content-Type: application/json' -d @- | jq -r '.trials[] | "#\(.rank) \(.trial_id)  \(.rank_reason)"'
+#1 EXAMPLE-ENDO-004  potentially_eligible: 0 blocking, 6 of 6 criteria favourable, 0 open
+#2 EXAMPLE-ONC-001  needs_review: 0 blocking, 7 of 8 criteria favourable, 1 open
+#3 EXAMPLE-CARD-002  needs_review: 0 blocking, 5 of 7 criteria favourable, 2 open
+#4 EXAMPLE-RHEU-003  likely_ineligible: 3 blocking, 2 of 5 criteria favourable, 0 open
+```
+
 **Run the HTTP API.** Reasoning needs at least one LLM API key; without one, `/analyze` escalates
 instead of guessing. INTAKE de-identifies every request before retrieval or any LLM call. It
 redacts dates, MRNs, SSNs, phone numbers, emails, and names after an honorific or a `Name:` label
@@ -132,13 +148,14 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | Bayesian differential reasoning | Ranked hypotheses with an evidence chain; deterministic SOAP structuring | `src/medagent/reasoning/` | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Deterministic safety library | 300 modules covering allergy cross-reactivity, pregnancy and lactation, Beers and STOPP/START, renal and hepatic dosing, QTc DDIs, anticoagulant bleeding and boxed warnings, plus scorers and lab-trend bridges. The MCP tools run 13 screening checks and 83 interaction rules from it | `src/medagent/safety/` | [SAFETY.md](SAFETY.md), [panel catalog](docs/SAFETY_PANEL_CATALOG.md) |
 | Drug-interaction checks | Dual-source RxNorm + OpenFDA on the HTTP path; 83 curated pairwise rules offline over MCP | `src/medagent/retrieval/drug_interaction.py`, `src/medagent/mcp/` | [SAFETY.md](SAFETY.md) |
-| FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP and CDS Hooks | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
-| MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 4 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
+| FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP and CDS Hooks, and patient facts for trial pre-screening | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
+| MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 5 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | HL7 CDS Hooks 2.0 service | `order-sign` and `order-select` services that screen draft orders against prefetched current medications, allergies, age and eGFR with the same checks; advisory cards only (no suggestions or system actions), info card when prefetch is missing, de-identified feedback; no FHIR server, LLM or network calls | `src/medagent/cds_hooks/`, `src/medagent/api/cds_hooks.py` | [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md) |
-| Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; CDS Hooks calls, cards and feedback recorded with hashes and codes only; failures logged without clinical parameters | `src/medagent/agent/audit.py` | [SAFETY.md](SAFETY.md) |
+| Clinical-trial pre-screening (research only) | One FHIR patient against 1–20 structured trial definitions (ClinicalTrials.gov `eligibilityModule` + condition, medication, lab, pregnancy, lactation and free-text criteria): `met` / `not_met` / `insufficient_data` / `requires_human_review` per criterion with evidence pointers, deterministic ranking, free text never guessed, never an eligibility determination; MCP tool `screen_trial_eligibility` and `POST /trials/eligibility` | `src/medagent/trials/`, `src/medagent/api/trials.py` | [Trial eligibility guide](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) |
+| Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; CDS Hooks calls, cards and feedback, and HTTP trial pre-screens, recorded with hashes, ids and codes only; failures logged without clinical parameters | `src/medagent/agent/audit.py`, `src/medagent/trials/audit.py` | [SAFETY.md](SAFETY.md) |
 | Privacy and scope | De-identification at INTAKE, before retrieval or any LLM call (sanitised narrative fields, HMAC-hashed patient IDs); the same sanitiser in the FHIR parser, MCP tools and CDS Hooks service; scope enforcement on queries | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
 | Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
-| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health`, and CDS Hooks under `/cds-services` | `src/medagent/api/main.py` | [API](#api) |
+| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health`, CDS Hooks under `/cds-services`, and `POST /trials/eligibility` | `src/medagent/api/main.py` | [API](#api) |
 
 ## Docs map
 
@@ -148,7 +165,8 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) | Three end-to-end scenarios with real commands and output |
 | [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md) | Connecting Claude Desktop, Claude Code, Cursor or VS Code; tool reference |
 | [docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md) | Calling the checks from an EHR order workflow (HL7 CDS Hooks 2.0): quickstart, cards, prefetch, feedback, CORS, security limits |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing, MCP and CDS Hooks design |
+| [docs/guides/TRIAL_ELIGIBILITY_GUIDE.md](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) | Research-only clinical-trial pre-screening: trial definition format 1.0, criterion statuses, ranking, MCP and HTTP reference, audit, bias and limits |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing, MCP, CDS Hooks and trial pre-screening design |
 | [SAFETY.md](SAFETY.md) | Every hard control, regulatory status and escalation policy |
 | [CONFIGURATION.md](CONFIGURATION.md) | Environment variables, model defaults and provider parameter rules |
 | [docs/SAFETY_PANEL_CATALOG.md](docs/SAFETY_PANEL_CATALOG.md) | Per-panel summaries and demo GIFs |
@@ -448,6 +466,32 @@ python scripts/demo.py --case escalate
 
 ---
 
+### 8. Clinical-Trial Pre-Screening Research
+
+**The problem:** Recruitment stalls on manual chart review, and LLM trial matchers such as
+[TrialGPT](https://github.com/ncbi-nlp/TrialGPT) explain criterion by criterion but need a hosted
+model and infer facts a note does not mention. Teams evaluating them lack a reproducible,
+explainable baseline that never guesses.
+
+**How medagent-core helps:**
+- Encodes trials as ClinicalTrials.gov `eligibilityModule` + typed criteria (format 1.0), keeping
+  anything it cannot express as `free_text` for humans
+- Evaluates a FHIR patient offline with criterion-level evidence pointers and explicit
+  `insufficient_data` for missing facts; ranks trials deterministically with the reason spelled out
+- Same evaluator over MCP and HTTP, with hashes-only audit rows and the mandatory disclaimer
+
+```bash
+python -c "import json; from medagent.trials.screening import screen_trials; \
+print(screen_trials(json.load(open('examples/trials/patient-bundle.json')), \
+json.load(open('examples/trials/example-trials.json')), as_of='2026-11-12').summary())"
+```
+
+**Research angle:** Use the structured pre-screen as a deterministic reference when measuring an LLM
+matcher's criterion-level agreement, or study how record completeness shifts `insufficient_data`
+across patient groups.
+
+---
+
 ## Architecture — Observe → Decide → Act
 
 ```
@@ -683,6 +727,17 @@ Cards carry the mandatory disclaimer and never suggest order changes. JWT client
 not implemented, so deploy behind an authenticating gateway; CORS is opt-in with
 `MEDAGENT_CDS_HOOKS_CORS_ORIGINS`. See the [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md).
 
+### `POST /trials/eligibility` — Clinical-trial pre-screening (research only)
+
+![medagent trial eligibility pre-screen: a real curl and MCP session ranking four fictional trials for one synthetic patient](assets/trial_eligibility_demo.gif)
+
+Screens one patient's FHIR R4 Bundle against 1–20 structured trial definitions and returns ranked
+trials (`potentially_eligible`, `needs_review`, `likely_ineligible`) with every criterion's status,
+rationale and evidence pointers; the MCP tool `screen_trial_eligibility` returns the same result.
+Malformed JSON is `400`, invalid definitions or FHIR data `422`; every screening is audited with
+hashes, ids and counts only. It never determines eligibility or enrolls anyone. See the
+[trial eligibility guide](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md).
+
 Interactive docs: http://localhost:8000/docs
 
 ---
@@ -724,7 +779,8 @@ medagent-core/
 │   ├── safety/         # 300 deterministic safety modules + de-identification + scope enforcer
 │   ├── mcp/            # Dual-era MCP stdio server (medagent-mcp) over the safety layer
 │   ├── cds_hooks/      # HL7 CDS Hooks 2.0 services: discovery, FHIR → screen → cards, feedback
-│   └── api/            # FastAPI: /analyze /drug-interactions /health /cds-services
+│   ├── trials/         # Research-only clinical-trial pre-screening: format 1.0, evaluator, ranking
+│   └── api/            # FastAPI: /analyze /drug-interactions /health /cds-services /trials
 ├── tests/              # pytest suite (unit + integration), typed and documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
@@ -732,11 +788,13 @@ medagent-core/
 │   ├── eval_drugbank.py# Drug interaction F1 evaluator
 │   ├── mcp_stdio_demo.py # Reference stdio MCP client (modern + legacy sessions)
 │   ├── cds_hooks_demo.sh # curl session against /cds-services (source of the CDS Hooks GIF)
+│   ├── trial_eligibility_demo.sh # curl + MCP session for trial pre-screening (source of its GIF)
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
 ├── assets/             # Animated SVG/GIF demos
 ├── docs/               # Guides, use cases, safety panel catalog, ADRs
 ├── data/               # Sample FHIR R4 bundle + KB index
 ├── examples/cds_hooks/ # Synthetic CDS Hooks requests (order-sign, order-select, feedback) + a real response
+├── examples/trials/    # Synthetic FHIR patient, four fictional EXAMPLE-* trials + a real response
 ├── results/            # Benchmark outputs (gitignored except .gitkeep)
 ├── .github/workflows/  # CI (ruff, mypy, pytest), security scan, release
 ├── docker-compose.yml

@@ -141,6 +141,7 @@ Results are saved to `results/drugbank_eval.json`.
 | `/cds-services` | GET | HL7 CDS Hooks 2.0 discovery (`order-sign`, `order-select` medication-safety services) |
 | `/cds-services/{id}` | POST | CDS Hooks service call: screens draft orders, returns cards (no LLM or API keys needed) |
 | `/cds-services/{id}/feedback` | POST | CDS Hooks card feedback, recorded in the audit log |
+| `/trials/eligibility` | POST | Research-only clinical-trial pre-screen: criterion-level statuses and ranked trials (no LLM or API keys needed) |
 | `/docs` | GET | Swagger UI |
 | `/redoc` | GET | ReDoc API docs |
 
@@ -150,6 +151,16 @@ Try the CDS Hooks service with the synthetic example (see
 ```bash
 curl -s -X POST http://localhost:8000/cds-services/medagent-medication-safety \
   -H "Content-Type: application/json" -d @examples/cds_hooks/order-sign.json
+```
+
+Pre-screen the synthetic patient against four fictional trials (see
+[docs/guides/TRIAL_ELIGIBILITY_GUIDE.md](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md); needs `jq`):
+
+```bash
+jq -s '{bundle: .[0], trials: .[1], as_of: "2026-11-12"}' \
+  examples/trials/patient-bundle.json examples/trials/example-trials.json \
+  | curl -s -X POST http://localhost:8000/trials/eligibility \
+      -H "Content-Type: application/json" -d @-
 ```
 
 ---

@@ -1,0 +1,217 @@
+[
+  {
+    "schema_version": "1.0",
+    "trial_id": "EXAMPLE-ONC-001",
+    "version": "2026-11-01",
+    "title": "Synthetic example: oral targeted therapy in advanced non-small cell lung cancer (fictional, not a registered study)",
+    "eligibilityModule": {
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "healthyVolunteers": false,
+      "stdAges": ["ADULT", "OLDER_ADULT"],
+      "eligibilityCriteria": "Inclusion Criteria:\n\n* Diagnosis of advanced non-small cell lung cancer\n* eGFR >= 30 mL/min/1.73 m2 within 28 days\n* ALT <= 3 x ULN within 28 days\n* Hemoglobin >= 9 g/dL within 28 days\n\nExclusion Criteria:\n\n* Pregnant\n* Breastfeeding\n* History of interstitial lung disease"
+    },
+    "inclusion": [
+      {
+        "id": "inc-nsclc",
+        "type": "condition",
+        "text": "Diagnosis of non-small cell lung cancer",
+        "codes": [
+          {"system": "http://snomed.info/sct", "code": "254637007"},
+          {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "C34", "match": "prefix"}
+        ],
+        "terms": ["non-small cell lung cancer"],
+        "status": "active"
+      },
+      {
+        "id": "inc-egfr",
+        "type": "lab",
+        "text": "eGFR >= 30 mL/min/1.73 m2 within 28 days",
+        "codes": [{"system": "http://loinc.org", "code": "98979-8"}],
+        "terms": ["eGFR"],
+        "operator": ">=",
+        "value": 30,
+        "unit": "mL/min/1.73m2",
+        "within_days": 28
+      },
+      {
+        "id": "inc-alt",
+        "type": "lab",
+        "text": "ALT <= 3 x ULN within 28 days",
+        "codes": [{"system": "http://loinc.org", "code": "1742-6"}],
+        "operator": "<=",
+        "value": 3,
+        "relative_to": "uln",
+        "within_days": 28
+      },
+      {
+        "id": "inc-hemoglobin",
+        "type": "lab",
+        "text": "Hemoglobin >= 9 g/dL within 28 days",
+        "codes": [{"system": "http://loinc.org", "code": "718-7"}],
+        "operator": ">=",
+        "value": 9,
+        "unit": "g/dL",
+        "within_days": 28
+      }
+    ],
+    "exclusion": [
+      {"id": "exc-pregnant", "type": "pregnancy", "text": "Pregnant", "within_days": 30},
+      {"id": "exc-breastfeeding", "type": "lactation", "text": "Breastfeeding"},
+      {
+        "id": "exc-ild",
+        "type": "condition",
+        "text": "History of interstitial lung disease",
+        "codes": [{"system": "http://snomed.info/sct", "code": "233703007"}],
+        "terms": ["interstitial lung disease"]
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "trial_id": "EXAMPLE-CARD-002",
+    "version": "2026-10-15",
+    "title": "Synthetic example: wearable rhythm-monitoring study in atrial fibrillation (fictional, not a registered study)",
+    "eligibilityModule": {
+      "sex": "ALL",
+      "minimumAge": "40 Years",
+      "maximumAge": "85 Years",
+      "healthyVolunteers": false,
+      "stdAges": ["ADULT", "OLDER_ADULT"]
+    },
+    "inclusion": [
+      {
+        "id": "inc-af",
+        "type": "condition",
+        "text": "Atrial fibrillation",
+        "codes": [
+          {"system": "http://snomed.info/sct", "code": "49436004"},
+          {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "I48", "match": "prefix"}
+        ],
+        "status": "active"
+      },
+      {
+        "id": "inc-oral-anticoagulant",
+        "type": "medication",
+        "text": "Currently treated with an oral anticoagulant",
+        "ingredients": ["apixaban", "rivaroxaban", "dabigatran", "edoxaban", "warfarin"]
+      },
+      {
+        "id": "inc-lvef",
+        "type": "lab",
+        "text": "Left ventricular ejection fraction >= 40% within 180 days",
+        "codes": [{"system": "http://loinc.org", "code": "10230-1"}],
+        "terms": ["ejection fraction"],
+        "operator": ">=",
+        "value": 40,
+        "unit": "%",
+        "within_days": 180
+      }
+    ],
+    "exclusion": [
+      {
+        "id": "exc-device",
+        "type": "free_text",
+        "text": "Implanted pacemaker or cardioverter-defibrillator"
+      },
+      {
+        "id": "exc-egfr",
+        "type": "lab",
+        "text": "eGFR < 15 mL/min/1.73 m2 within 90 days",
+        "codes": [{"system": "http://loinc.org", "code": "98979-8"}],
+        "operator": "<",
+        "value": 15,
+        "unit": "mL/min/1.73m2",
+        "within_days": 90
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "trial_id": "EXAMPLE-RHEU-003",
+    "version": "2026-09-30",
+    "title": "Synthetic example: topical anti-inflammatory gel in knee osteoarthritis (fictional, not a registered study)",
+    "eligibilityModule": {
+      "sex": "ALL",
+      "minimumAge": "40 Years",
+      "maximumAge": "64 Years",
+      "healthyVolunteers": false,
+      "stdAges": ["ADULT"]
+    },
+    "inclusion": [
+      {
+        "id": "inc-knee-oa",
+        "type": "condition",
+        "text": "Osteoarthritis of the knee",
+        "codes": [
+          {"system": "http://snomed.info/sct", "code": "239873007"},
+          {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "M17", "match": "prefix"}
+        ],
+        "terms": ["osteoarthritis of knee", "knee osteoarthritis"]
+      }
+    ],
+    "exclusion": [
+      {
+        "id": "exc-anticoagulant",
+        "type": "medication",
+        "text": "Current anticoagulant therapy",
+        "classes": ["anticoagulants"]
+      },
+      {
+        "id": "exc-egfr",
+        "type": "lab",
+        "text": "eGFR < 30 mL/min/1.73 m2 within 90 days",
+        "codes": [{"system": "http://loinc.org", "code": "98979-8"}],
+        "operator": "<",
+        "value": 30,
+        "unit": "mL/min/1.73m2",
+        "within_days": 90
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "trial_id": "EXAMPLE-ENDO-004",
+    "version": "2026-08-20",
+    "title": "Synthetic example: lifestyle coaching program in type 2 diabetes (fictional, not a registered study)",
+    "eligibilityModule": {
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "maximumAge": "65 Years",
+      "healthyVolunteers": false,
+      "stdAges": ["ADULT", "OLDER_ADULT"]
+    },
+    "inclusion": [
+      {
+        "id": "inc-t2dm",
+        "type": "condition",
+        "text": "Type 2 diabetes mellitus",
+        "codes": [
+          {"system": "http://snomed.info/sct", "code": "44054006"},
+          {"system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "E11", "match": "prefix"}
+        ],
+        "status": "active"
+      },
+      {
+        "id": "inc-hba1c",
+        "type": "lab",
+        "text": "HbA1c between 7.0% and 10.5% within 90 days",
+        "codes": [{"system": "http://loinc.org", "code": "4548-4"}],
+        "operator": "between",
+        "low": 7.0,
+        "high": 10.5,
+        "unit": "%",
+        "within_days": 90
+      }
+    ],
+    "exclusion": [
+      {"id": "exc-pregnant", "type": "pregnancy", "text": "Pregnant", "within_days": 30},
+      {
+        "id": "exc-insulin",
+        "type": "medication",
+        "text": "Current insulin therapy",
+        "ingredients": ["insulin"]
+      }
+    ]
+  }
+]

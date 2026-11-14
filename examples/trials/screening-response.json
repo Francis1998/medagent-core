@@ -1,0 +1,644 @@
+{
+  "screening_id": "8482767e-b278-45a9-972c-f5798f178350",
+  "as_of": "2026-11-12",
+  "inputs_hash": "d0ccea3589603bc07c25334aeba2612cd3fc880d91d89037e05d96c8eb522a5e",
+  "patient_id_hash": "427abc9f67123fc703a8d8a36d7459fb21d243c11fd0ed8377eaf3dd2ab45398",
+  "patient_ref_hash": "1941c99b076a6054789e5f07d30db25d1fb0117579378fa70c15aff1bd3c83b8",
+  "patient_summary": {
+    "age_years": {
+      "min": 65,
+      "max": 65
+    },
+    "sex": "female",
+    "conditions": 4,
+    "current_medications": 3,
+    "observations": 6
+  },
+  "trial_count": 4,
+  "status_counts": {
+    "potentially_eligible": 2,
+    "needs_review": 1,
+    "likely_ineligible": 1
+  },
+  "trials": [
+    {
+      "rank": 1,
+      "trial_id": "EXAMPLE-ENDO-004",
+      "trial_version": "2026-08-20",
+      "title": "Synthetic example: lifestyle coaching program in type 2 diabetes (fictional, not a registered study)",
+      "status": "potentially_eligible",
+      "score": 1.0,
+      "rank_reason": "potentially_eligible: 0 blocking, 6 of 6 criteria favourable, 0 open",
+      "counts": {
+        "met": 4,
+        "not_met": 2,
+        "insufficient_data": 0,
+        "requires_human_review": 0,
+        "favourable": 6,
+        "blocking": 0,
+        "open": 0,
+        "total": 6
+      },
+      "blocking_criteria": [],
+      "open_criteria": [],
+      "eligibility_module": {
+        "sex": "ALL",
+        "minimumAge": "18 Years",
+        "maximumAge": "65 Years",
+        "healthyVolunteers": false,
+        "genderBased": null,
+        "stdAges": [
+          "ADULT",
+          "OLDER_ADULT"
+        ],
+        "source_criteria_text_supplied": false
+      },
+      "criteria": [
+        {
+          "criterion_id": "eligibility.minimum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Minimum age: 18 Years (inclusive)",
+          "status": "met",
+          "rationale": "Age 65 years on 2026-11-12 meets the minimum age 18 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "eligibility.maximum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Maximum age: 65 Years (inclusive)",
+          "status": "met",
+          "rationale": "Age 65 years on 2026-11-12 is within the maximum age 65 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-t2dm",
+          "section": "inclusion",
+          "type": "condition",
+          "text": "Type 2 diabetes mellitus",
+          "status": "met",
+          "rationale": "Found active Condition 'Type 2 diabetes mellitus' (SNOMED CT 44054006), matched by code.",
+          "evidence": [
+            {
+              "resource_type": "Condition",
+              "system": "http://snomed.info/sct",
+              "code": "44054006",
+              "display": "Type 2 diabetes mellitus",
+              "value": "active",
+              "comparator": null,
+              "unit": null,
+              "date": "2014-03-10"
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-hba1c",
+          "section": "inclusion",
+          "type": "lab",
+          "text": "HbA1c between 7.0% and 10.5% within 90 days",
+          "status": "met",
+          "rationale": "Most recent matching Observation (2026-09-15, 58 days before as_of): 7.4 % satisfies between 7 and 10.5 %.",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "HbA1c",
+              "value": 7.4,
+              "comparator": null,
+              "unit": "%",
+              "date": "2026-09-15"
+            }
+          ]
+        },
+        {
+          "criterion_id": "exc-pregnant",
+          "section": "exclusion",
+          "type": "pregnancy",
+          "text": "Pregnant",
+          "status": "not_met",
+          "rationale": "Documented as not pregnant (Observation dated 2026-11-02).",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://snomed.info/sct",
+              "code": "60001007",
+              "display": "Pregnancy status",
+              "value": "not pregnant",
+              "comparator": null,
+              "unit": null,
+              "date": "2026-11-02"
+            }
+          ]
+        },
+        {
+          "criterion_id": "exc-insulin",
+          "section": "exclusion",
+          "type": "medication",
+          "text": "Current insulin therapy",
+          "status": "not_met",
+          "rationale": "No current (active or on-hold) medication matches among 4 supplied medication resource(s); absence from a partial record is not proof of absence.",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "trial_id": "EXAMPLE-ONC-001",
+      "trial_version": "2026-11-01",
+      "title": "Synthetic example: oral targeted therapy in advanced non-small cell lung cancer (fictional, not a registered study)",
+      "status": "potentially_eligible",
+      "score": 1.0,
+      "rank_reason": "potentially_eligible: 0 blocking, 8 of 8 criteria favourable, 0 open",
+      "counts": {
+        "met": 5,
+        "not_met": 3,
+        "insufficient_data": 0,
+        "requires_human_review": 0,
+        "favourable": 8,
+        "blocking": 0,
+        "open": 0,
+        "total": 8
+      },
+      "blocking_criteria": [],
+      "open_criteria": [],
+      "eligibility_module": {
+        "sex": "ALL",
+        "minimumAge": "18 Years",
+        "maximumAge": null,
+        "healthyVolunteers": false,
+        "genderBased": null,
+        "stdAges": [
+          "ADULT",
+          "OLDER_ADULT"
+        ],
+        "source_criteria_text_supplied": true
+      },
+      "criteria": [
+        {
+          "criterion_id": "eligibility.minimum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Minimum age: 18 Years (inclusive)",
+          "status": "met",
+          "rationale": "Age 65 years on 2026-11-12 meets the minimum age 18 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-nsclc",
+          "section": "inclusion",
+          "type": "condition",
+          "text": "Diagnosis of non-small cell lung cancer",
+          "status": "met",
+          "rationale": "Found active Condition 'Non-small cell lung cancer, stage IV' (SNOMED CT 254637007), matched by code.",
+          "evidence": [
+            {
+              "resource_type": "Condition",
+              "system": "http://snomed.info/sct",
+              "code": "254637007",
+              "display": "Non-small cell lung cancer, stage IV",
+              "value": "active",
+              "comparator": null,
+              "unit": null,
+              "date": "2026-06-02"
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-egfr",
+          "section": "inclusion",
+          "type": "lab",
+          "text": "eGFR >= 30 mL/min/1.73 m2 within 28 days",
+          "status": "met",
+          "rationale": "Most recent matching Observation (2026-10-30, 13 days before as_of): 0.87 mL/s/1.73m2 (= 52.2 mL/min/1.73m2) satisfies >= 30 mL/min/1.73m2.",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://loinc.org",
+              "code": "98979-8",
+              "display": "eGFR (CKD-EPI 2021)",
+              "value": 0.87,
+              "comparator": null,
+              "unit": "mL/s/1.73m2",
+              "date": "2026-10-30"
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-alt",
+          "section": "inclusion",
+          "type": "lab",
+          "text": "ALT <= 3 x ULN within 28 days",
+          "status": "met",
+          "rationale": "Most recent matching Observation (2026-10-30, 13 days before as_of): 28 U/L with upper limit 40 U/L = 0.7 x ULN satisfies <= 3 x ULN.",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://loinc.org",
+              "code": "1742-6",
+              "display": "ALT",
+              "value": 28,
+              "comparator": null,
+              "unit": "U/L",
+              "date": "2026-10-30"
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-hemoglobin",
+          "section": "inclusion",
+          "type": "lab",
+          "text": "Hemoglobin >= 9 g/dL within 28 days",
+          "status": "met",
+          "rationale": "Most recent matching Observation (2026-10-30, 13 days before as_of): 118 g/L (= 11.8 g/dL) satisfies >= 9 g/dL.",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://loinc.org",
+              "code": "718-7",
+              "display": "Hemoglobin",
+              "value": 118,
+              "comparator": null,
+              "unit": "g/L",
+              "date": "2026-10-30"
+            }
+          ]
+        },
+        {
+          "criterion_id": "exc-pregnant",
+          "section": "exclusion",
+          "type": "pregnancy",
+          "text": "Pregnant",
+          "status": "not_met",
+          "rationale": "Documented as not pregnant (Observation dated 2026-11-02).",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://snomed.info/sct",
+              "code": "60001007",
+              "display": "Pregnancy status",
+              "value": "not pregnant",
+              "comparator": null,
+              "unit": null,
+              "date": "2026-11-02"
+            }
+          ]
+        },
+        {
+          "criterion_id": "exc-breastfeeding",
+          "section": "exclusion",
+          "type": "lactation",
+          "text": "Breastfeeding",
+          "status": "not_met",
+          "rationale": "Documented as not breastfeeding (patient_context (caller-asserted)).",
+          "evidence": [
+            {
+              "resource_type": "patient_context",
+              "system": null,
+              "code": null,
+              "display": "caller-asserted breastfeeding status",
+              "value": false,
+              "comparator": null,
+              "unit": null,
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "exc-ild",
+          "section": "exclusion",
+          "type": "condition",
+          "text": "History of interstitial lung disease",
+          "status": "not_met",
+          "rationale": "No matching Condition among 4 supplied Condition resource(s); absence from a partial record is not proof of absence.",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "trial_id": "EXAMPLE-CARD-002",
+      "trial_version": "2026-10-15",
+      "title": "Synthetic example: wearable rhythm-monitoring study in atrial fibrillation (fictional, not a registered study)",
+      "status": "needs_review",
+      "score": 0.714,
+      "rank_reason": "needs_review: 0 blocking, 5 of 7 criteria favourable, 2 open",
+      "counts": {
+        "met": 4,
+        "not_met": 1,
+        "insufficient_data": 1,
+        "requires_human_review": 1,
+        "favourable": 5,
+        "blocking": 0,
+        "open": 2,
+        "total": 7
+      },
+      "blocking_criteria": [],
+      "open_criteria": [
+        "inc-lvef",
+        "exc-device"
+      ],
+      "eligibility_module": {
+        "sex": "ALL",
+        "minimumAge": "40 Years",
+        "maximumAge": "85 Years",
+        "healthyVolunteers": false,
+        "genderBased": null,
+        "stdAges": [
+          "ADULT",
+          "OLDER_ADULT"
+        ],
+        "source_criteria_text_supplied": false
+      },
+      "criteria": [
+        {
+          "criterion_id": "eligibility.minimum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Minimum age: 40 Years (inclusive)",
+          "status": "met",
+          "rationale": "Age 65 years on 2026-11-12 meets the minimum age 40 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "eligibility.maximum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Maximum age: 85 Years (inclusive)",
+          "status": "met",
+          "rationale": "Age 65 years on 2026-11-12 is within the maximum age 85 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-af",
+          "section": "inclusion",
+          "type": "condition",
+          "text": "Atrial fibrillation",
+          "status": "met",
+          "rationale": "Found active Condition 'Atrial fibrillation' (SNOMED CT 49436004), matched by code.",
+          "evidence": [
+            {
+              "resource_type": "Condition",
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation",
+              "value": "active",
+              "comparator": null,
+              "unit": null,
+              "date": "2025-02-17"
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-oral-anticoagulant",
+          "section": "inclusion",
+          "type": "medication",
+          "text": "Currently treated with an oral anticoagulant",
+          "status": "met",
+          "rationale": "Current medication 'Apixaban 5 mg tablet' matches by ingredient 'apixaban'.",
+          "evidence": [
+            {
+              "resource_type": "MedicationRequest",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1364445",
+              "display": "Apixaban 5 mg tablet",
+              "value": "current",
+              "comparator": null,
+              "unit": null,
+              "date": "2025-02-20"
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-lvef",
+          "section": "inclusion",
+          "type": "lab",
+          "text": "Left ventricular ejection fraction >= 40% within 180 days",
+          "status": "insufficient_data",
+          "rationale": "No matching Observation among 6 supplied Observation resource(s).",
+          "evidence": []
+        },
+        {
+          "criterion_id": "exc-device",
+          "section": "exclusion",
+          "type": "free_text",
+          "text": "Implanted pacemaker or cardioverter-defibrillator",
+          "status": "requires_human_review",
+          "rationale": "Free-text criterion: never evaluated automatically; the study team must review it against the full record.",
+          "evidence": []
+        },
+        {
+          "criterion_id": "exc-egfr",
+          "section": "exclusion",
+          "type": "lab",
+          "text": "eGFR < 15 mL/min/1.73 m2 within 90 days",
+          "status": "not_met",
+          "rationale": "Most recent matching Observation (2026-10-30, 13 days before as_of): 0.87 mL/s/1.73m2 (= 52.2 mL/min/1.73m2) does not satisfy < 15 mL/min/1.73m2.",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://loinc.org",
+              "code": "98979-8",
+              "display": "eGFR (CKD-EPI 2021)",
+              "value": 0.87,
+              "comparator": null,
+              "unit": "mL/s/1.73m2",
+              "date": "2026-10-30"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "trial_id": "EXAMPLE-RHEU-003",
+      "trial_version": "2026-09-30",
+      "title": "Synthetic example: topical anti-inflammatory gel in knee osteoarthritis (fictional, not a registered study)",
+      "status": "likely_ineligible",
+      "score": 0.4,
+      "rank_reason": "likely_ineligible: 3 blocking, 2 of 5 criteria favourable, 0 open",
+      "counts": {
+        "met": 2,
+        "not_met": 3,
+        "insufficient_data": 0,
+        "requires_human_review": 0,
+        "favourable": 2,
+        "blocking": 3,
+        "open": 0,
+        "total": 5
+      },
+      "blocking_criteria": [
+        "exc-anticoagulant",
+        "eligibility.maximum_age",
+        "inc-knee-oa"
+      ],
+      "open_criteria": [],
+      "eligibility_module": {
+        "sex": "ALL",
+        "minimumAge": "40 Years",
+        "maximumAge": "64 Years",
+        "healthyVolunteers": false,
+        "genderBased": null,
+        "stdAges": [
+          "ADULT"
+        ],
+        "source_criteria_text_supplied": false
+      },
+      "criteria": [
+        {
+          "criterion_id": "eligibility.minimum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Minimum age: 40 Years (inclusive)",
+          "status": "met",
+          "rationale": "Age 65 years on 2026-11-12 meets the minimum age 40 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "eligibility.maximum_age",
+          "section": "inclusion",
+          "type": "age",
+          "text": "Maximum age: 64 Years (inclusive)",
+          "status": "not_met",
+          "rationale": "Age 65 years on 2026-11-12 is above the maximum age 64 Years (inclusive).",
+          "evidence": [
+            {
+              "resource_type": "Patient",
+              "system": null,
+              "code": null,
+              "display": "age in completed years on as_of (birthDate is not returned)",
+              "value": 65,
+              "comparator": null,
+              "unit": "years",
+              "date": null
+            }
+          ]
+        },
+        {
+          "criterion_id": "inc-knee-oa",
+          "section": "inclusion",
+          "type": "condition",
+          "text": "Osteoarthritis of the knee",
+          "status": "not_met",
+          "rationale": "No matching Condition among 4 supplied Condition resource(s); absence from a partial record is not proof of absence.",
+          "evidence": []
+        },
+        {
+          "criterion_id": "exc-anticoagulant",
+          "section": "exclusion",
+          "type": "medication",
+          "text": "Current anticoagulant therapy",
+          "status": "met",
+          "rationale": "Current medication 'Apixaban 5 mg tablet' matches by class anticoagulants.",
+          "evidence": [
+            {
+              "resource_type": "MedicationRequest",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1364445",
+              "display": "Apixaban 5 mg tablet",
+              "value": "current",
+              "comparator": null,
+              "unit": null,
+              "date": "2025-02-20"
+            }
+          ]
+        },
+        {
+          "criterion_id": "exc-egfr",
+          "section": "exclusion",
+          "type": "lab",
+          "text": "eGFR < 30 mL/min/1.73 m2 within 90 days",
+          "status": "not_met",
+          "rationale": "Most recent matching Observation (2026-10-30, 13 days before as_of): 0.87 mL/s/1.73m2 (= 52.2 mL/min/1.73m2) does not satisfy < 30 mL/min/1.73m2.",
+          "evidence": [
+            {
+              "resource_type": "Observation",
+              "system": "http://loinc.org",
+              "code": "98979-8",
+              "display": "eGFR (CKD-EPI 2021)",
+              "value": 0.87,
+              "comparator": null,
+              "unit": "mL/s/1.73m2",
+              "date": "2026-10-30"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "data_notes": [
+    "excluded 1 invalidated resource(s) (entered-in-error, cancelled observations or refuted findings)",
+    "excluded MedicationRequest status stopped: 1",
+    "breastfeeding status taken from patient_context (caller-asserted)"
+  ],
+  "network_used": false,
+  "coverage_note": "Research pre-screen only: medagent does not determine eligibility and never enrolls, contacts or refers anyone. Statuses come from a structured encoding of each trial that may be incomplete and from a partial, de-identified record; free-text criteria are never interpreted. The study team must verify every criterion against the full protocol and the patient's chart.",
+  "disclaimer": "⚠️  RESEARCH USE ONLY. This output is generated by an AI system and has NOT been reviewed by a licensed clinician. It is NOT FDA-cleared and MUST NOT be used to guide clinical treatment decisions. Always consult a qualified healthcare professional for medical advice, diagnosis, or treatment."
+}

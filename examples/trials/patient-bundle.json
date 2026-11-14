@@ -1,0 +1,484 @@
+{
+  "resourceType": "Bundle",
+  "id": "trial-demo-bundle",
+  "type": "collection",
+  "meta": {
+    "tag": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+        "code": "HTEST",
+        "display": "test health data"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:0b6f6b52-5d1c-4f7e-9d38-7a0c3a1e0001",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "trial-demo-pt-7",
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "MRN-TRIAL-DEMO-0007"
+          }
+        ],
+        "name": [
+          {
+            "family": "Example",
+            "given": [
+              "Rowan"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "415-555-0177"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "1 Synthetic Way"
+            ],
+            "city": "Testville",
+            "postalCode": "94000"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1961-05-14"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-nsclc",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "254637007",
+              "display": "Non-small cell lung cancer"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "C34.90",
+              "display": "Malignant neoplasm of unspecified part of unspecified bronchus or lung"
+            }
+          ],
+          "text": "Non-small cell lung cancer, stage IV"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "onsetDateTime": "2026-06-02"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-t2dm",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44054006",
+              "display": "Type 2 diabetes mellitus"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "E11.9",
+              "display": "Type 2 diabetes mellitus without complications"
+            }
+          ],
+          "text": "Type 2 diabetes mellitus"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "onsetDateTime": "2014-03-10"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-htn",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "59621000",
+              "display": "Essential hypertension"
+            }
+          ],
+          "text": "Essential hypertension"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-af",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "I48.91",
+              "display": "Unspecified atrial fibrillation"
+            }
+          ],
+          "text": "Atrial fibrillation"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "onsetDateTime": "2025-02-17"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medreq-apixaban",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1364445",
+              "display": "apixaban 5 MG Oral Tablet"
+            }
+          ],
+          "text": "Apixaban 5 mg tablet"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "authoredOn": "2025-02-20"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "medstmt-metformin",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "861007",
+              "display": "metformin hydrochloride 500 MG Oral Tablet"
+            }
+          ],
+          "text": "Metformin 500 mg tablet"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-10-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medreq-lisinopril",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "314077",
+              "display": "lisinopril 10 MG Oral Tablet"
+            }
+          ],
+          "text": "Lisinopril 10 mg tablet"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "authoredOn": "2023-08-09"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medreq-atorvastatin",
+        "status": "stopped",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "text": "Atorvastatin 40 mg tablet"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "authoredOn": "2022-01-12"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-egfr-recent",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "98979-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI 2021)"
+            }
+          ],
+          "text": "eGFR (CKD-EPI 2021)"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-10-30",
+        "valueQuantity": {
+          "value": 0.87,
+          "unit": "mL/s/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/s/{1.73_m2}"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-egfr-older",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "98979-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI 2021)"
+            }
+          ],
+          "text": "eGFR (CKD-EPI 2021)"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-05-04",
+        "valueQuantity": {
+          "value": 61,
+          "unit": "mL/min/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/min/{1.73_m2}"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-alt",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "text": "ALT"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-10-30",
+        "valueQuantity": {
+          "value": 28,
+          "unit": "U/L",
+          "system": "http://unitsofmeasure.org",
+          "code": "U/L"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 7,
+              "unit": "U/L"
+            },
+            "high": {
+              "value": 40,
+              "unit": "U/L"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-hemoglobin",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "text": "Hemoglobin"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-10-30",
+        "valueQuantity": {
+          "value": 118,
+          "unit": "g/L",
+          "system": "http://unitsofmeasure.org",
+          "code": "g/L"
+        },
+        "referenceRange": [
+          {
+            "low": {
+              "value": 120,
+              "unit": "g/L"
+            },
+            "high": {
+              "value": 160,
+              "unit": "g/L"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-hemoglobin-error",
+        "status": "entered-in-error",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "text": "Hemoglobin"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-11-05",
+        "valueQuantity": {
+          "value": 6.1,
+          "unit": "g/dL",
+          "system": "http://unitsofmeasure.org",
+          "code": "g/dL"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-hba1c",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+            }
+          ],
+          "text": "HbA1c"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-09-15",
+        "valueQuantity": {
+          "value": 7.4,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-pregnancy-status",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "82810-3",
+              "display": "Pregnancy status"
+            }
+          ],
+          "text": "Pregnancy status"
+        },
+        "subject": {
+          "reference": "Patient/trial-demo-pt-7"
+        },
+        "effectiveDateTime": "2026-11-02",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "60001007",
+              "display": "Not pregnant"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
