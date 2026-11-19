@@ -177,18 +177,18 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 
 ## Current model stack
 
-Verified against the official provider pages on 2026-11-12. Every listed alternative gets the same
+Verified against the official provider pages on 2026-11-19. Every listed alternative gets the same
 request shaping as its provider's default.
 
 | Provider | Default | Alternatives | Request shaping |
 |---|---|---|---|
-| OpenAI | `gpt-6.1-sol` | `gpt-6-astra`, `gpt-6.1-terra`, `gpt-6-luna` | No `temperature` for GPT-5+/o-series reasoning models; budget sent as `max_completion_tokens` |
+| OpenAI | `gpt-6.2-sol` | `gpt-6.2-astra` (frontier flagship), `gpt-6.1-terra`, `gpt-6-luna`; the superseded `gpt-6.1-sol` and `gpt-6-astra` remain available | No `temperature` for GPT-5+/o-series reasoning models, and no `reasoning_effort` or tools (GPT-6.2 rejects effort `none` and needs the Responses API for tools); budget sent as `max_completion_tokens` |
 | Anthropic | `claude-opus-5-5` | `claude-fable-5-2` (demanding reasoning), `claude-sonnet-5-5`, `claude-haiku-5-5` | Never receives `temperature`, `top_p`, `top_k` or a `thinking` override; thinking blocks are never returned as the answer |
-| Google | `gemini-4-argon` | `gemini-4-carbon` (strongest reasoning), `gemini-4-hydrogen` (lower latency), `gemini-3.8-flash` | No sampling parameters or thinking config for Gemini 3+/4 |
+| Google | `gemini-4-argon` | `gemini-4-carbon` (strongest reasoning), `gemini-4-neon` (near-Carbon quality at a lower cost per task; paid tier only), `gemini-4-hydrogen` (lower latency), `gemini-3.8-flash` | No sampling parameters or thinking config for Gemini 3+/4 |
 | Kimi | `kimi-k3.1-pro` | `kimi-k3.1-pro-highspeed`, `kimi-k3` | No `temperature` (fixed at 1.0 for K3); endpoint set by `KIMI_BASE_URL` |
 
 Override any default in `.env`. Defaults, prices and provider sources are in
-[CONFIGURATION.md](CONFIGURATION.md#why-these-defaults-verified-2026-11-12). Every request is sized
+[CONFIGURATION.md](CONFIGURATION.md#why-these-defaults-verified-2026-11-19). Every request is sized
 by `LLM_MAX_OUTPUT_TOKENS` (32,768 by default), which includes reasoning tokens.
 
 > **Disclaimer:** medagent-core is research software. It is not FDA-cleared, has not been clinically
@@ -280,7 +280,7 @@ by `LLM_MAX_OUTPUT_TOKENS` (32,768 by default), which includes reasoning tokens.
 
 ![medagent escalation demo](assets/demo_escalation.svg)
 
-**Multi-LLM routing — provider failover across OpenAI, Anthropic, Google, and Kimi** (illustrative recording; current defaults are GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro — see [CONFIGURATION.md](CONFIGURATION.md)):
+**Multi-LLM routing — provider failover across OpenAI, Anthropic, Google, and Kimi** (illustrative recording; current defaults are GPT-6.2 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro — see [CONFIGURATION.md](CONFIGURATION.md)):
 
 ![medagent LLM routing demo](assets/demo_llm_routing.svg)
 
@@ -365,12 +365,12 @@ POST /drug-interactions
 **How medagent-core helps:**
 - `scripts/eval_medqa.py` runs the full agent pipeline on MedQA USMLE-style questions
 - Logs per-question reasoning traces (not just accuracy) enabling qualitative failure analysis
-- Compares reasoning quality across GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro with identical prompts
+- Compares reasoning quality across GPT-6.2 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pro with identical prompts
 - Bayesian confidence score measures calibration: does high confidence correlate with correctness?
 - ESCALATE events reveal what the model *doesn't know* — the most clinically important failure mode
 
 ```bash
-# Compare GPT-6.1 Sol vs Claude Opus 5.5 on USMLE-style questions:
+# Compare GPT-6.2 Sol vs Claude Opus 5.5 on USMLE-style questions:
 ANTHROPIC_API_KEY=sk-ant-... python scripts/eval_medqa.py --max-samples 100
 OPENAI_API_KEY=sk-...       python scripts/eval_medqa.py --max-samples 100
 # Results in results/medqa_eval.json for side-by-side comparison

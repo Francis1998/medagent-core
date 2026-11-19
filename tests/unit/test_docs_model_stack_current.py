@@ -6,7 +6,8 @@ defaults moved to GPT-6.1 Sol, Claude Opus 5.5, Gemini 4 Argon, and Kimi K3.1 Pr
 Claude Fable 5.1 is superseded by Claude Fable 5.2 (verified 2026-11-12).
 CONFIGURATION.md keeps a deliberate legacy-model behaviour table, and historical
 records (CHANGELOG, daily logs, release notes, ADRs) are exempt; tests are not
-scanned.
+scanned. The default models in README.md, CONFIGURATION.md and .env.example must
+match config.py, and their "verified" dates must agree, so a partial refresh fails.
 """
 
 from __future__ import annotations
@@ -14,8 +15,21 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from medagent.config import Settings
+
 ROOT = Path(__file__).resolve().parents[2]
 CONFIGURATION = ROOT / "CONFIGURATION.md"
+README = ROOT / "README.md"
+ENV_EXAMPLE = ROOT / ".env.example"
+
+# Provider label in the README / CONFIGURATION.md tables -> (env variable, Settings field).
+DEFAULT_MODEL_SETTINGS = {
+    "OpenAI": ("OPENAI_MODEL", "openai_model"),
+    "Anthropic": ("ANTHROPIC_MODEL", "anthropic_model"),
+    "Google": ("GOOGLE_MODEL", "google_model"),
+    "Kimi": ("KIMI_MODEL", "kimi_model"),
+}
+VERIFIED_STAMP = re.compile(r"\b[Vv]erified\b[^.\n]*?(\d{4}-\d{2}-\d{2})")
 
 RETIRED_PROSE = re.compile(
     r"\bGPT-5\.5\b|\bGPT-4o\b|\bClaude\s+(?:Sonnet|Opus)\s+4\.\d\b"
@@ -91,3 +105,28 @@ def test_links_into_configuration_sections_resolve() -> None:
 
     assert any(path == "README.md" for path, _ in links)
     assert [link for link in links if link[1] not in anchors] == []
+
+
+def test_documented_default_models_match_settings() -> None:
+    """README, CONFIGURATION.md and .env.example name the defaults config.py ships."""
+    readme = README.read_text(encoding="utf-8")
+    configuration = CONFIGURATION.read_text(encoding="utf-8")
+    env_example = ENV_EXAMPLE.read_text(encoding="utf-8").splitlines()
+
+    for provider, (variable, field) in DEFAULT_MODEL_SETTINGS.items():
+        default = Settings.model_fields[field].default
+        assert f"| {provider} | `{default}` |" in readme, (provider, default)
+        assert f"| {provider} | `{default}` |" in configuration, (provider, default)
+        assert f"| `{variable}` | `{default}` |" in configuration, (variable, default)
+        assert f"{variable}={default}" in env_example, (variable, default)
+
+
+def test_model_stack_verification_dates_agree() -> None:
+    """A refresh must restamp README, CONFIGURATION.md and .env.example together."""
+    stamps = {
+        path.name: VERIFIED_STAMP.findall(path.read_text(encoding="utf-8"))
+        for path in (README, CONFIGURATION, ENV_EXAMPLE)
+    }
+
+    assert all(stamps.values()), stamps
+    assert len({date for dates in stamps.values() for date in dates}) == 1, stamps
