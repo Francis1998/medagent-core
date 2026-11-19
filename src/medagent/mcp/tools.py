@@ -95,6 +95,11 @@ EGFR_LOINC_CODES: tuple[str, ...] = (
     "50044-7",
 )
 _UCUM_SYSTEM = "http://unitsofmeasure.org"
+# FHIR R4 Quantity.comparator (a modifier element): the real value is at or below
+# ("<", "<=") or at or above (">", ">=") the stated value.
+_UPPER_BOUND_COMPARATORS = frozenset({"<", "<="})
+_LOWER_BOUND_COMPARATORS = frozenset({">", ">="})
+_QUANTITY_COMPARATORS = _UPPER_BOUND_COMPARATORS | _LOWER_BOUND_COMPARATORS
 _MAX_MEDICATIONS = 100
 
 # Medication statuses screened as current therapy, plus proposed orders that are
@@ -703,16 +708,31 @@ def _is_egfr_observation(resource: Any) -> bool:
     return any(isinstance(name, str) and _EGFR_NAME.search(name) for name in names)
 
 
-def _lowest_egfr(entries: list[dict[str, Any]]) -> tuple[float | None, int, int]:
-    """Return the lowest eGFR in mL/min/1.73m², observations used, observations skipped.
+@dataclass(frozen=True)
+class _EgfrSelection:
+    """The lowest usable eGFR and how the bundle's eGFR observations were used."""
+
+    lowest: float | None
+    used: int
+    upper_bounds: int
+    lower_bounds: int
+    skipped: int
+
+
+def _lowest_egfr(entries: list[dict[str, Any]]) -> _EgfrSelection:
+    """Return the lowest eGFR in mL/min/1.73m² and how each eGFR observation was used.
 
     Each eGFR Observation's ``valueQuantity`` is converted from its unit; one
     without a supported unit or a numeric value is skipped. Values are never
     rounded, so a measurement just above a dosing threshold (e.g. 30.04) cannot
-    be pushed onto it.
+    be pushed onto it. ``valueQuantity.comparator`` changes what the value means:
+    an upper bound (``<15``) is used at its stated value, because the real eGFR is
+    no higher; a lower bound (``>60``) is skipped, because it never shows an eGFR
+    at or below a dosing threshold (read as 60, it would flag drugs dosed at or
+    below 60); any other comparator is skipped as unsupported.
     """
     values: list[float] = []
-    skipped = 0
+    upper_bounds = lower_bounds = skipped = 0
     for entry in entries:
         resource = entry.get("resource", {})
         if not _is_egfr_observation(resource):
@@ -722,11 +742,25 @@ def _lowest_egfr(entries: list[dict[str, Any]]) -> tuple[float | None, int, int]
         unit = quantity.get("unit")
         factor = _egfr_unit_factor(unit if isinstance(unit, str) else None)
         value = math.nan if factor is None else _exact_egfr(quantity.get("value"), factor)
-        if not math.isfinite(value):
+        comparator = quantity.get("comparator")
+        if not math.isfinite(value) or not (
+            comparator is None
+            or (isinstance(comparator, str) and comparator in _QUANTITY_COMPARATORS)
+        ):
             skipped += 1
-            continue
-        values.append(value)
-    return (min(values) if values else None), len(values), skipped
+        elif comparator in _LOWER_BOUND_COMPARATORS:
+            lower_bounds += 1
+        else:
+            values.append(value)
+            if comparator is not None:
+                upper_bounds += 1
+    return _EgfrSelection(
+        lowest=min(values) if values else None,
+        used=len(values),
+        upper_bounds=upper_bounds,
+        lower_bounds=lower_bounds,
+        skipped=skipped,
+    )
 
 
 def _prefer_ucum_units(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1133,14 +1167,14 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
 
     medications = [_medication_dict(medication, clean) for medication in adapted.medications]
     allergies = [clean(allergy) for allergy in context.allergies]
-    egfr, egfr_used, egfr_skipped = _lowest_egfr(prepared)
+    egfr = _lowest_egfr(prepared)
     screening_patient: dict[str, Any] = {}
     if context.age is not None:
         screening_patient["age"] = context.age
     if allergies:
         screening_patient["allergies"] = allergies
-    if egfr is not None:
-        screening_patient["egfr"] = egfr
+    if egfr.lowest is not None:
+        screening_patient["egfr"] = egfr.lowest
     screening_input = {"medications": medications, "patient": screening_patient}
     issues = validate(screening_input, _SCREEN_INPUT, "screening_input")
     if adapted.skipped_count:
@@ -1169,12 +1203,24 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
             f"excluded {inactive_allergies} AllergyIntolerance record(s) with clinicalStatus "
             "inactive or resolved; they are not screened as allergies."
         )
-    if egfr is not None:
-        notes.append(f"egfr is the lowest of {egfr_used} eGFR observation(s) in mL/min/1.73m².")
-    if egfr_skipped:
+    if egfr.lowest is not None:
+        notes.append(f"egfr is the lowest of {egfr.used} eGFR observation(s) in mL/min/1.73m².")
+    if egfr.upper_bounds:
         notes.append(
-            f"skipped {egfr_skipped} eGFR observation(s) with missing or unsupported units "
-            "or non-numeric values."
+            f"{egfr.upper_bounds} eGFR observation(s) reported only as an upper bound "
+            "(valueQuantity.comparator < or <=, e.g. <15) were used at the stated value; the "
+            "real eGFR may be lower."
+        )
+    if egfr.lower_bounds:
+        notes.append(
+            f"skipped {egfr.lower_bounds} eGFR observation(s) reported only as a lower bound "
+            "(valueQuantity.comparator > or >=, e.g. >60): a lower bound never shows an eGFR "
+            "at or below a dosing threshold."
+        )
+    if egfr.skipped:
+        notes.append(
+            f"skipped {egfr.skipped} eGFR observation(s) with missing or unsupported units, "
+            "non-numeric values or an unsupported comparator."
         )
 
     resource_types = Counter(

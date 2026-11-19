@@ -3262,7 +3262,10 @@ constraints are enforced in code:
   Observations are recognised by an eGFR LOINC code whatever their display text, or by "eGFR" /
   "glomerular filtration" in their text or a coding display. eGFR is
   used only with a recognised unit (mL/min/1.73m², or mL/s/1.73m² converted exactly, never
-  rounded; a UCUM code wins over a missing or unrecognised display unit); a generated `screening_input` that exceeds the screening limits or misses
+  rounded; a UCUM code wins over a missing or unrecognised display unit). The
+  `valueQuantity.comparator` modifier is honoured: a lower bound such as `>60` is skipped (it never
+  shows an eGFR at or below a dosing threshold), an upper bound such as `<15` is used at its stated
+  value, and both are counted in `notes`; a generated `screening_input` that exceeds the screening limits or misses
   an unnamed medication is reported, never truncated.
 - **Scope enforcement (§3.6).** Free-text tool arguments and extracted FHIR text are checked with
   the `ScopeEnforcer` patterns on a logging-safe path (only the matched pattern is logged); a
