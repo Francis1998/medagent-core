@@ -148,15 +148,17 @@ src/medagent/
 
 | Task | Preferred Provider | Fallback Chain | Rationale |
 |---|---|---|---|
-| Differential diagnosis | Claude Opus 5.5 | GPT-6.1 Sol → Gemini 4 Argon → Kimi K3.1 Pro | Best long-form reasoning |
-| Drug interaction lookup | GPT-6.1 Sol | Claude → Gemini → Kimi | Best structured JSON adherence |
-| Entity resolution | Gemini 4 Argon (`GOOGLE_MODEL=gemini-4-hydrogen` for lower latency) | GPT-6.1 Sol → Claude → Kimi | Short classification |
+| Differential diagnosis | Claude Opus 5.5 | GPT-6.2 Sol → Gemini 4 Argon → Kimi K3.1 Pro | Best long-form reasoning |
+| Drug interaction lookup | GPT-6.2 Sol | Claude → Gemini → Kimi | Best structured JSON adherence |
+| Entity resolution | Gemini 4 Argon (`GOOGLE_MODEL=gemini-4-hydrogen` for lower latency) | GPT-6.2 Sol → Claude → Kimi | Short classification |
 
 Adapters never send sampling parameters or a thinking override to Claude, omit `temperature` for
 model families that fix it (GPT-5+/o-series, Gemini 3+/4, Kimi K2.6/K2.7/K3), and size every
-request with `LLM_MAX_OUTPUT_TOKENS`, which includes reasoning tokens. Documented alternatives such
-as Claude Fable 5.2 and Gemini 4 Carbon or Hydrogen get the same shaping — see
-[CONFIGURATION.md](CONFIGURATION.md#sampling-parameter-compatibility).
+request with `LLM_MAX_OUTPUT_TOKENS`, which includes reasoning tokens. The OpenAI adapter sends no
+`reasoning_effort`, tools or `service_tier`, so its Chat Completions request stays valid for GPT-6.2,
+which rejects effort `none` and supports tool calling only through the Responses API. Documented
+alternatives such as GPT-6.2 Astra, Claude Fable 5.2 and Gemini 4 Carbon, Neon or Hydrogen get the
+same shaping — see [CONFIGURATION.md](CONFIGURATION.md#sampling-parameter-compatibility).
 
 All responses pass through `MedicalOutputValidator` before returning. If the validator rejects the response (prohibited prescription language), the fallback chain is tried automatically.
 
