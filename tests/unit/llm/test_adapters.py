@@ -22,7 +22,7 @@ def test_settings_default_models_use_current_stack() -> None:
     """Default live-provider models must track the current agentic AI stack."""
     configured_settings = Settings(_env_file=None)
 
-    assert configured_settings.openai_model == "gpt-6.1-sol"
+    assert configured_settings.openai_model == "gpt-6.2-sol"
     assert configured_settings.anthropic_model == "claude-opus-5-5"
     assert configured_settings.google_model == "gemini-4-argon"
     assert configured_settings.kimi_model == "kimi-k3.1-pro"

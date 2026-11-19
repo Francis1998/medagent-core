@@ -182,7 +182,7 @@ request shaping as its provider's default.
 
 | Provider | Default | Alternatives | Request shaping |
 |---|---|---|---|
-| OpenAI | `gpt-6.1-sol` | `gpt-6-astra`, `gpt-6.1-terra`, `gpt-6-luna` | No `temperature` for GPT-5+/o-series reasoning models; budget sent as `max_completion_tokens` |
+| OpenAI | `gpt-6.2-sol` | `gpt-6-astra`, `gpt-6.1-terra`, `gpt-6-luna` | No `temperature` for GPT-5+/o-series reasoning models; budget sent as `max_completion_tokens` |
 | Anthropic | `claude-opus-5-5` | `claude-fable-5-2` (demanding reasoning), `claude-sonnet-5-5`, `claude-haiku-5-5` | Never receives `temperature`, `top_p`, `top_k` or a `thinking` override; thinking blocks are never returned as the answer |
 | Google | `gemini-4-argon` | `gemini-4-carbon` (strongest reasoning), `gemini-4-hydrogen` (lower latency), `gemini-3.8-flash` | No sampling parameters or thinking config for Gemini 3+/4 |
 | Kimi | `kimi-k3.1-pro` | `kimi-k3.1-pro-highspeed`, `kimi-k3` | No `temperature` (fixed at 1.0 for K3); endpoint set by `KIMI_BASE_URL` |

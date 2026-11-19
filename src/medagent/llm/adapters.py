@@ -25,8 +25,9 @@ _NO_SAMPLING_PROVIDERS = frozenset({"anthropic"})
 
 # Model families whose APIs reject or ignore a caller-set temperature: OpenAI
 # GPT-5+/o-series reasoning models (the adapter never sends reasoning effort
-# "none", the only setting that allows sampling parameters), Gemini 3+ including
-# Gemini 4 Carbon, Argon and Hydrogen (sampling parameters ignored; Google says to
+# "none", the only setting that allows sampling parameters; GPT-6.2 Astra and Sol
+# reject "none" outright, so they never accept them), Gemini 3+ including Gemini 4
+# Carbon, Argon, Neon and Hydrogen (sampling parameters ignored; Google says to
 # remove them), and Kimi K2.6/K2.7/K3 (fixed at 1.0, other values return an error).
 _FIXED_SAMPLING_MODELS: dict[str, re.Pattern[str]] = {
     "openai": re.compile(r"^(gpt-[5-9]|o\d)"),
@@ -62,9 +63,13 @@ def accepts_temperature(provider: str, model: str) -> bool:
 class OpenAIAdapter(BaseLLMAdapter):
     """OpenAI chat completion adapter using the official ``openai`` SDK.
 
+    Requests use Chat Completions without tools and send no ``reasoning_effort`` or
+    ``service_tier``, so they stay valid for GPT-6.2, which rejects effort ``none``,
+    requires the Responses API for tool calling and has no Flex processing.
+
     Args:
         api_key: OpenAI API key.
-        model: Model identifier (e.g. ``gpt-6.1-sol``).
+        model: Model identifier (e.g. ``gpt-6.2-sol``).
     """
 
     def __init__(

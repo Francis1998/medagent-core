@@ -19,7 +19,7 @@ The agent falls back gracefully — for a differential diagnosis, if Claude is u
 
 | Variable | Default | Description |
 |---|---|---|
-| `OPENAI_MODEL` | `gpt-6.1-sol` | OpenAI model name |
+| `OPENAI_MODEL` | `gpt-6.2-sol` | OpenAI model name |
 | `ANTHROPIC_MODEL` | `claude-opus-5-5` | Anthropic model name |
 | `GOOGLE_MODEL` | `gemini-4-argon` | Google model name |
 | `KIMI_MODEL` | `kimi-k3.1-pro` | Kimi model name |
@@ -34,7 +34,7 @@ Every alternative below gets the same request shaping as its provider's default 
 
 | Provider | Default | Why | Alternatives |
 |---|---|---|---|
-| OpenAI | `gpt-6.1-sol` | Near-Astra reasoning at a fifth of Astra's price ($2 / $10 vs $10 / $50); OpenAI's choice for balancing intelligence and cost; Chat Completions without tools is supported | `gpt-6-astra` (flagship, $10 / $50), `gpt-6.1-terra` ($1 / $5) and `gpt-6-luna` ($0.10 / $0.50) for faster, cheaper calls — [models](https://developers.openai.com/api/docs/models) |
+| OpenAI | `gpt-6.2-sol` | Near-Astra reasoning at a fifth of Astra's price ($2 / $10 vs $10 / $50); OpenAI's choice for balancing intelligence and cost; Chat Completions without tools is supported | `gpt-6-astra` (flagship, $10 / $50), `gpt-6.1-terra` ($1 / $5) and `gpt-6-luna` ($0.10 / $0.50) for faster, cheaper calls — [models](https://developers.openai.com/api/docs/models) |
 | Anthropic | `claude-opus-5-5` | Anthropic's recommended starting point for most workloads and medagent's preferred model for differential diagnosis; adaptive thinking ($4 / $20) | `claude-fable-5-2` (new; for demanding reasoning and long-horizon agentic work, $8 / $40, 1M context, 128K output; supersedes `claude-fable-5-1`; requires 30-day data retention, so it is not available under zero data retention), `claude-sonnet-5-5` ($2 / $10), `claude-haiku-5-5` (from $0.10 / $0.50) — [models](https://platform.claude.com/docs/en/models/overview), [Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview) |
 | Google | `gemini-4-argon` | Flagship reasoning with fewer thinking tokens per turn than Carbon ($2 / $10 through 2026-11-30, $4 / $20 from 2026-12-01) | `gemini-4-carbon` (strongest reasoning, same price, more thinking per turn), `gemini-4-hydrogen` (new; fast Gemini 4 and the lower-latency choice, $1.50 / $7.50), `gemini-3.8-flash` (previous-generation Flash, $0.75 / $3.75 through 2026-12-31, then $1.50 / $7.50) — [models](https://aistudio.google.com/docs/models), [Hydrogen](https://aistudio.google.com/docs/whats-new-gemini-4-hydrogen), [pricing](https://aistudio.google.com/docs/pricing) |
 | Kimi | `kimi-k3.1-pro` | Kimi's flagship ($2 / $10, 1,048,576-token context); the K2 series closed to new users on 2026-10-31 and retires by the end of December 2026 | `kimi-k3.1-pro-highspeed` (2–3× faster, $4 / $20), `kimi-k3` ($3 / $15) — [quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart.md), [pricing](https://platform.kimi.ai/docs/pricing/chat.md) |
