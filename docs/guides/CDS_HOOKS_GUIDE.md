@@ -267,7 +267,7 @@ flowchart LR
 | `prefetch.patient` | `birthDate` → age (Beers 65+); names, identifiers, telecom and address are used only to redact them from free text | — |
 | `prefetch.activeMedications` (`active`, `on-hold`; `_include`d `Medication`s resolve references) | Current medications. One that is also being revised in `draftOrders` (same id) is screened once, as the draft. `doNotPerform: true` orders are not current therapy and are not screened | "current medication" |
 | `prefetch.allergies` | Allergy text. Records whose `clinicalStatus` is `inactive` or `resolved`, or whose `verificationStatus` is `refuted` or `entered-in-error`, are excluded; a missing or `unconfirmed` status is still screened. `null` = none on record, so the allergy checks run | — |
-| `prefetch.egfr` | eGFR in mL/min/1.73 m² (UCUM-checked, mL/s converted exactly); the **lowest** returned value is used. Observations are recognised by the requested LOINC codes whatever their display text (code-only, LOINC display or short name, local text) | — |
+| `prefetch.egfr` | eGFR in mL/min/1.73 m² (UCUM-checked, mL/s converted exactly); the **lowest** returned value is used. Observations are recognised by the requested LOINC codes whatever their display text (code-only, LOINC display or short name, local text). A result reported only as a lower bound (`valueQuantity.comparator` `>`/`>=`, e.g. `>60`) is not used, because it never shows an eGFR at or below a dosing threshold; an upper bound (`<15`) is used at its stated value | — |
 | `fhirServer`, `fhirAuthorization` | **Ignored.** No FHIR server is ever queried; access tokens are never logged or stored | — |
 | finding `severity` | — | `indicator` |
 | finding `check_id`, `checker`, `safety_section`, `rationale` | — | `detail`; `check_ids` in the audit trail |
@@ -481,7 +481,9 @@ To try the services in the sandbox (instructions only; this PR did not test the 
   appropriateness beyond the renal and Beers checks.
 - **FHIR R4 `MedicationRequest` drafts only**: no `MedicationDispense`, no DSTU2 `MedicationOrder`.
 - **eGFR** is the lowest of the five most recent values: conservative, but may reflect a resolved
-  acute kidney injury.
+  acute kidney injury. Results reported only as a lower bound (`>60`) are not used, so renal
+  dosing does not run when every prefetched eGFR is a lower bound (no agent in the renal table is
+  flagged above an eGFR of 60).
 - **order-select** cards only cover the selected orders; interactions among other unsigned drafts
   are left to `order-sign`.
 - **HIGH maps to `warning`**, which most EHRs show non-interruptively.

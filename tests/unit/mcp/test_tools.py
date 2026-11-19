@@ -1048,6 +1048,79 @@ def test_only_loinc_egfr_codes_identify_an_unnamed_egfr() -> None:
     assert "egfr" not in result["screening_input"]["patient"]
 
 
+def _active(name: str) -> dict[str, Any]:
+    return _entry(
+        {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "medicationCodeableConcept": {"text": name},
+        }
+    )
+
+
+def _renal_dose_findings(parsed: dict[str, Any]) -> list[str]:
+    findings = run("screen_medications", parsed["screening_input"]).structured["findings"]
+    return [
+        finding["medications"][0] for finding in findings if finding["check_id"] == "renal_dose"
+    ]
+
+
+@pytest.mark.parametrize(
+    ("comparator", "note"),
+    [
+        (">", "skipped 1 eGFR observation(s) reported only as a lower bound"),
+        (">=", "skipped 1 eGFR observation(s) reported only as a lower bound"),
+        ("ad", "skipped 1 eGFR observation(s) with missing or unsupported units"),
+        ([">"], "skipped 1 eGFR observation(s) with missing or unsupported units"),
+    ],
+    ids=["greater-than", "at-least", "ad", "not-a-code"],
+)
+def test_egfr_lower_bounds_are_not_read_as_the_patients_egfr(comparator: Any, note: str) -> None:
+    """Quantity.comparator is a FHIR modifier: an eGFR reported as ">60" is above 60, not 60.
+
+    Gabapentin is flagged at or below 60, so reading that common report of normal
+    kidney function as exactly 60 raised a false "reduce dose" finding.
+    """
+    reported = _egfr({"value": 60, "comparator": comparator, "unit": "mL/min/1.73m2"})
+
+    result = _parse([_entry(PATIENT), _active("Gabapentin 300 mg capsule"), _entry(reported)])
+
+    assert "egfr" not in result["screening_input"]["patient"]
+    assert note in " ".join(result["notes"])
+    assert _renal_dose_findings(result) == []
+
+
+def test_an_egfr_lower_bound_never_becomes_the_lowest_egfr() -> None:
+    above_30 = _egfr({"value": 30, "comparator": ">", "unit": "mL/min/1.73m2"})
+    measured = _egfr({"value": 45, "unit": "mL/min/1.73m2"})
+
+    result = _parse(
+        [
+            _entry(PATIENT),
+            _active("Metformin 500 mg tablet"),
+            _active("Gabapentin 300 mg capsule"),
+            _entry(above_30),
+            _entry(measured),
+        ]
+    )
+
+    assert result["screening_input"]["patient"]["egfr"] == 45
+    assert "egfr is the lowest of 1 eGFR observation(s)" in " ".join(result["notes"])
+    # Metformin is avoided at or below 30; both observations put the eGFR above 30.
+    assert _renal_dose_findings(result) == ["Gabapentin 300 mg capsule"]
+
+
+@pytest.mark.parametrize("comparator", ["<", "<="])
+def test_egfr_upper_bounds_are_used_at_their_stated_value(comparator: str) -> None:
+    below_15 = _egfr({"value": 15, "comparator": comparator, "unit": "mL/min/1.73m2"})
+
+    result = _parse([_entry(PATIENT), _active("Nitrofurantoin 100 mg capsule"), _entry(below_15)])
+
+    assert result["screening_input"]["patient"]["egfr"] == 15
+    assert "1 eGFR observation(s) reported only as an upper bound" in " ".join(result["notes"])
+    assert _renal_dose_findings(result) == ["Nitrofurantoin 100 mg capsule"]
+
+
 def test_malformed_medication_codings_are_tool_errors() -> None:
     request = {
         "resourceType": "MedicationRequest",
