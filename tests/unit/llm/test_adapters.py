@@ -184,7 +184,17 @@ class TestSamplingParameterCompatibility:
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
-        "model", ["gpt-6.1-sol", "gpt-6-astra", "gpt-6.1-terra", "gpt-6-luna", "gpt-5.5", "o4-mini"]
+        "model",
+        [
+            "gpt-6.2-sol",
+            "gpt-6.2-astra",
+            "gpt-6.1-sol",
+            "gpt-6-astra",
+            "gpt-6.1-terra",
+            "gpt-6-luna",
+            "gpt-5.5",
+            "o4-mini",
+        ],
     )
     async def test_openai_reasoning_models_omit_temperature(
         self, monkeypatch: pytest.MonkeyPatch, model: str
@@ -202,6 +212,34 @@ class TestSamplingParameterCompatibility:
         assert "reasoning_effort" not in request
         assert "max_tokens" not in request
         assert request["max_completion_tokens"] == 32_768
+
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize("model", ["gpt-6.2-sol", "gpt-6.2-astra"])
+    async def test_gpt_6_2_receives_only_fields_it_accepts(
+        self, monkeypatch: pytest.MonkeyPatch, model: str
+    ) -> None:
+        """GPT-6.2 gets a tool-free Chat Completions request with no optional knobs.
+
+        OpenAI's GPT-6.2 rules: reasoning effort ``none`` is rejected (use ``low`` instead
+        of ``none`` or ``minimal``), so ``temperature``, ``top_p``, ``logprobs`` and
+        ``top_logprobs`` are never accepted; tool calling requires the Responses API; Flex
+        processing is unavailable; output is capped at 128,000 tokens. Sending no
+        ``reasoning_effort`` keeps the model default, which is never ``none``.
+        """
+        import openai
+
+        captured: dict[str, Any] = {}
+        monkeypatch.setattr(openai, "AsyncOpenAI", _openai_style_client(captured))
+
+        response = await OpenAIAdapter(api_key="k", model=model).complete(
+            "chest pain", temperature=0.2
+        )
+
+        request = captured["request"]
+        assert set(request) == {"model", "messages", "max_completion_tokens"}
+        assert request["model"] == model
+        assert request["max_completion_tokens"] <= 128_000
+        assert response.content == "Differential: atrial fibrillation."
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
@@ -270,6 +308,7 @@ class TestSamplingParameterCompatibility:
         [
             ("gemini-4-argon", None),
             ("gemini-4-carbon", None),
+            ("gemini-4-neon", None),
             ("gemini-4-hydrogen", None),
             ("gemini-3.8-flash", None),
             ("gemini-2.5-pro", 0.1),
@@ -281,7 +320,8 @@ class TestSamplingParameterCompatibility:
         """Gemini 3+/4 ignore or discourage sampling overrides; thinking shares the budget.
 
         No thinking config is sent, so each model keeps its default thinking level (Gemini 4
-        Hydrogen rejects ``minimal``).
+        Hydrogen rejects ``minimal``; Gemini 4 Neon offers ``low`` to ``xhigh``, default
+        ``high``). The 32,768-token budget fits every Gemini 4 synchronous output cap.
         """
         import google.genai as genai
 
@@ -300,7 +340,9 @@ class TestSamplingParameterCompatibility:
         assert config.max_output_tokens == 32_768
 
     @pytest.mark.asyncio()
-    @pytest.mark.parametrize("model", ["models/gemini-4-carbon", "models/gemini-4-hydrogen"])
+    @pytest.mark.parametrize(
+        "model", ["models/gemini-4-carbon", "models/gemini-4-neon", "models/gemini-4-hydrogen"]
+    )
     async def test_google_resource_name_ids_never_receive_temperature(
         self, monkeypatch: pytest.MonkeyPatch, model: str
     ) -> None:
@@ -321,6 +363,10 @@ class TestSamplingParameterCompatibility:
 @pytest.mark.parametrize(
     ("provider", "model", "expected"),
     [
+        ("openai", "gpt-6.2-sol", False),
+        ("openai", "gpt-6.2-astra", False),
+        ("openai", "GPT-6.2-Sol", False),
+        ("openai", "openai/gpt-6.2-astra", False),
         ("openai", "gpt-6.1-sol", False),
         ("openai", "gpt-6-luna", False),
         ("openai", "o3-mini", False),
@@ -336,6 +382,8 @@ class TestSamplingParameterCompatibility:
         ("google", "gemini-4-argon", False),
         ("google", "gemini-4-carbon", False),
         ("google", "gemini-4-hydrogen", False),
+        ("google", "gemini-4-neon", False),
+        ("google", "models/gemini-4-neon", False),
         ("google", "models/gemini-4-hydrogen", False),
         ("google", "models/gemini-2.5-pro", True),
         ("google", "gemini-2.5-flash", True),
