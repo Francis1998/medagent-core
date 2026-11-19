@@ -316,6 +316,19 @@ def test_egfr_prefetched_by_its_loinc_code_drives_renal_dosing(code: dict[str, A
     ]
 
 
+def test_egfr_reported_as_a_lower_bound_does_not_card_renal_dosing() -> None:
+    """EHRs commonly report normal kidney function as eGFR ">60" (Quantity.comparator ">").
+
+    Gabapentin is flagged at or below 60, so reading ">60" as exactly 60 put a
+    Moderate "reduce dose" warning card on a patient whose eGFR is above 60.
+    """
+    body = order_sign(draft("Gabapentin 300 mg capsule"))
+    quantity = body["prefetch"]["egfr"]["entry"][0]["resource"]["valueQuantity"]
+    quantity.update(value=60, comparator=">")
+
+    assert evaluate_hook(ORDER_SIGN, body).cards == []
+
+
 def test_prefetch_operation_outcomes_and_pagination_are_reported() -> None:
     body = order_sign()
     body["prefetch"]["activeMedications"] = {
