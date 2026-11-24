@@ -490,3 +490,123 @@ def test_openai_sdk_floor_supports_max_completion_tokens() -> None:
 
     assert floor is not None
     assert tuple(int(part) for part in floor.group(1).split(".")) >= (1, 45, 0)
+
+
+# ---------------------------------------------------------------------------
+# OpenAI healthcare model configurations (Responses API only, released 2026-11-24)
+# ---------------------------------------------------------------------------
+
+ANSWER = "Differential: atrial fibrillation."
+
+
+def _responses_body(model: str, output: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Return a completed Responses API body: a reasoning item, then one final answer."""
+    return {
+        "id": "resp_test",
+        "object": "response",
+        "created_at": 0,
+        "status": "completed",
+        "model": model,
+        "output": output
+        if output is not None
+        else [
+            {"type": "reasoning", "id": "rs_test", "summary": []},
+            {
+                "type": "message",
+                "id": "msg_test",
+                "role": "assistant",
+                "status": "completed",
+                "phase": "final_answer",
+                "content": [{"type": "output_text", "text": ANSWER, "annotations": []}],
+            },
+        ],
+        "incomplete_details": None,
+        "error": None,
+        "usage": {
+            "input_tokens": 120,
+            "input_tokens_details": {"cached_tokens": 0},
+            "output_tokens": 340,
+            "output_tokens_details": {"reasoning_tokens": 300},
+            "total_tokens": 460,
+        },
+    }
+
+
+def _openai_via_real_sdk(
+    monkeypatch: pytest.MonkeyPatch, responses_body: dict[str, Any] | None = None
+) -> list[tuple[str, dict[str, Any]]]:
+    """Serve OpenAI calls through the real SDK; return each request's (path, JSON body).
+
+    ``/v1/chat/completions`` returns one choice; ``/v1/responses`` returns ``responses_body``
+    (by default a completed answer from the requested model).
+    """
+    import json
+
+    import openai
+    import openai._base_client as sdk_client
+
+    # Recent SDKs build on httpx2, older ones on httpx; use whichever the SDK imports.
+    http = getattr(sdk_client, "httpx2", None) or sdk_client.httpx
+    sent: list[tuple[str, dict[str, Any]]] = []
+
+    def handler(request: Any) -> Any:
+        body = json.loads(request.content)
+        sent.append((request.url.path, body))
+        if request.url.path.endswith("/responses"):
+            return http.Response(200, json=responses_body or _responses_body(body["model"]))
+        return http.Response(
+            200,
+            json={
+                "id": "chatcmpl-test",
+                "object": "chat.completion",
+                "created": 0,
+                "model": body["model"],
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {"role": "assistant", "content": ANSWER},
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {"prompt_tokens": 12, "completion_tokens": 34, "total_tokens": 46},
+            },
+        )
+
+    real_client = openai.AsyncOpenAI
+
+    def client_with_mock_transport(**kwargs: Any) -> Any:
+        transport = http.MockTransport(handler)
+        return real_client(**kwargs, http_client=http.AsyncClient(transport=transport))
+
+    monkeypatch.setattr(openai, "AsyncOpenAI", client_with_mock_transport)
+    return sent
+
+
+@pytest.mark.asyncio()
+@pytest.mark.parametrize(
+    "model",
+    [
+        "gpt-6.2-astra-healthcare",
+        "gpt-6.2-sol-healthcare",
+        "gpt-6-astra-healthcare",
+        "gpt-6.1-sol-healthcare",
+    ],
+)
+async def test_openai_healthcare_configurations_are_sent_to_the_responses_api(
+    monkeypatch: pytest.MonkeyPatch, model: str
+) -> None:
+    """OpenAI serves healthcare model configurations on ``/v1/responses`` only.
+
+    Setting ``OPENAI_MODEL`` to one of them must not produce a Chat Completions request,
+    which these configurations do not support.
+    """
+    from medagent.llm import adapters
+
+    sent = _openai_via_real_sdk(monkeypatch)
+    monkeypatch.setattr(adapters.settings, "openai_model", model)
+
+    response = await OpenAIAdapter(api_key="k").complete("chest pain")
+
+    assert [path for path, _ in sent] == ["/v1/responses"]
+    assert sent[0][1]["model"] == model
+    assert response.content == ANSWER
