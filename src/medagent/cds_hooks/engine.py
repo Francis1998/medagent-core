@@ -53,6 +53,7 @@ from medagent.mcp.tools import (
     TOOLS_BY_NAME,
     ToolInputError,
     _select_medication_resources,
+    _unnamed_allergies,
     interaction_checks,
     screening_checks,
 )
@@ -152,6 +153,7 @@ class _Coverage:
     gaps: dict[str, str]
     unscreened_ordered: int = 0
     unscreened_other: int = 0
+    unscreened_allergies: int = 0
     status_notes: list[str] = field(default_factory=list)
     unused_context: list[str] = field(default_factory=list)
     not_run: str | None = None
@@ -161,6 +163,7 @@ class _Coverage:
             self.gaps
             or self.unscreened_ordered
             or self.unscreened_other
+            or self.unscreened_allergies
             or self.unused_context
             or self.not_run
         )
@@ -516,6 +519,8 @@ def _coverage_card(coverage: _Coverage) -> dict[str, Any]:
             )
         if unscreened:
             parts.append(f"{unscreened} medication(s) not screened")
+        if coverage.unscreened_allergies:
+            parts.append(f"{coverage.unscreened_allergies} allergy record(s) not screened")
         if coverage.unused_context:
             parts.append("unusable " + ", ".join(coverage.unused_context))
         summary = _fit("Partial medication-safety screen: ", "; ".join(parts))
@@ -543,6 +548,12 @@ def _coverage_card(coverage: _Coverage) -> dict[str, Any]:
         detail.append(
             f"- {coverage.unscreened_other} other medication(s) (unsigned or current) could not "
             "be screened for the same reasons."
+        )
+    if coverage.unscreened_allergies:
+        detail.append(
+            f"- {coverage.unscreened_allergies} allergy record(s) could not be screened: no "
+            "substance name (no `code.text` or coding `display`), and the allergy checks match "
+            "names."
         )
     for key in coverage.unused_context:
         detail.append(f"- `{key}` was outside the screening limits and was not used.")
@@ -814,6 +825,7 @@ def evaluate_hook(service: CdsService, body: Any) -> HookResult:
         gaps=context.gaps,
         unscreened_ordered=unscreened_ordered,
         unscreened_other=unscreened_other + unscreened_current,
+        unscreened_allergies=_unnamed_allergies(context.allergies),
         # Only exclusions matter here; the policy also notes included draft orders.
         status_notes=[note for note in status_notes if note.startswith("excluded ")],
     )

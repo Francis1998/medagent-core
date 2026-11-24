@@ -3257,8 +3257,10 @@ constraints are enforced in code:
   `medication_notes`. Entered-in-error resources, cancelled observations and
   refuted findings are excluded, and so are AllergyIntolerances whose `clinicalStatus` is
   `inactive` or `resolved` (counted in `notes`); an allergy with a missing, `unconfirmed` or
-  contradictory status is still screened. Medications are named only by text or display, never by a bare
-  code, and relative `medicationReference`s resolve only on the requesting entry's server. eGFR
+  contradictory status is still screened. Medications and allergies are named only by text or a
+  display on any of their codings, never by a bare code; an allergy without a name is reported in
+  `screening_input_issues`, never dropped silently. Relative `medicationReference`s resolve only
+  on the requesting entry's server. eGFR
   Observations are recognised by an eGFR LOINC code whatever their display text, or by "eGFR" /
   "glomerular filtration" in their text or a coding display. eGFR is
   used only with a recognised unit (mL/min/1.73m², or mL/s/1.73m² converted exactly, never
@@ -3312,8 +3314,8 @@ applies. The following constraints are enforced in code:
   finding is not evidence of safety and lists the checks that could not run.
 - **No silent partial screens.** The service never queries the FHIR server or any network service,
   even when `fhirServer`/`fhirAuthorization` are sent. Missing, erroneous (OperationOutcome) or
-  paginated prefetch, unnameable or over-limit medications, and regimens over the screening limit
-  are reported on an `info` coverage card (`warning` when no ordered medication could be screened);
+  paginated prefetch, unnameable or over-limit medications, unnameable (code-only) allergies, and
+  regimens over the screening limit are reported on an `info` coverage card (`warning` when no ordered medication could be screened);
   a truncated regimen is never screened.
 - **FHIR status semantics (§9).** `doNotPerform: true` draft orders and current orders are never
   screened as orders, and inactive, resolved, refuted or entered-in-error allergies never raise
