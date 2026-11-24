@@ -1158,3 +1158,59 @@ def test_relative_patient_references_resolve_on_their_own_server() -> None:
         "mixes patients",
     )
     assert _parse([patient_a, _condition_on("ehr-a", "c1", "AF")])["diagnoses"] == ["AF"]
+
+
+# ---------------------------------------------------------------------------
+# Allergy naming
+# ---------------------------------------------------------------------------
+
+SNOMED = "http://snomed.info/sct"
+UNNAMED_ALLERGY_ISSUE = (
+    "2 allergy record(s) could not be named and are missing from screening_input; "
+    "screening the list unchanged could miss drug-allergy conflicts"
+)
+
+
+def _allergy(code: dict[str, Any] | None, status: str | None = None) -> dict[str, Any]:
+    allergy: dict[str, Any] = {"resourceType": "AllergyIntolerance"}
+    if code is not None:
+        allergy["code"] = code
+    if status is not None:
+        allergy["clinicalStatus"] = {"coding": [{"system": ALLERGY_CLINICAL, "code": status}]}
+    return _entry(allergy)
+
+
+def test_allergies_are_named_by_any_coding_display() -> None:
+    penicillin = {
+        "coding": [
+            {"system": SNOMED, "code": "764146007"},
+            {"system": RXNORM, "code": "7980", "display": "Penicillin G"},
+        ]
+    }
+
+    result = _parse([_entry(PATIENT), _active("Amoxicillin 500 mg capsule"), _allergy(penicillin)])
+
+    assert result["allergies"] == ["Penicillin G"]
+    assert result["screening_input"]["patient"]["allergies"] == ["Penicillin G"]
+    assert result["screening_input_issues"] == []
+    screen = run("screen_medications", result["screening_input"]).structured
+    assert "allergy" in {finding["check_id"] for finding in screen["findings"]}
+
+
+def test_allergies_without_a_name_are_reported_instead_of_dropped() -> None:
+    code_only = {"coding": [{"system": RXNORM, "code": "7980"}]}
+    entries = [
+        _entry(PATIENT),
+        _active("Amoxicillin 500 mg capsule"),
+        _allergy(code_only),
+        _allergy(None),
+        # Excluded before naming: a resolved allergy is not a screening gap.
+        _allergy(code_only, status="resolved"),
+    ]
+
+    output = run("parse_fhir_bundle", {"bundle": {"resourceType": "Bundle", "entry": entries}})
+
+    result = output.structured
+    assert result["allergies"] == []
+    assert result["screening_input_issues"] == [UNNAMED_ALLERGY_ISSUE]
+    assert UNNAMED_ALLERGY_ISSUE in output.summary

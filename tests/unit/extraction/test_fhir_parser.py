@@ -171,6 +171,35 @@ class TestParseFhirBundle:
         assert hba1c is not None
         assert hba1c.abnormal is True
 
+    @pytest.mark.parametrize(
+        "code",
+        [
+            {
+                "coding": [
+                    {"system": "http://snomed.info/sct", "code": "764146007"},
+                    {
+                        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                        "code": "7980",
+                        "display": "Penicillin G",
+                    },
+                ]
+            },
+            {"text": "  ", "coding": [{"code": "7980"}, {"display": "Penicillin G"}]},
+        ],
+        ids=["display-on-a-later-coding", "blank-text"],
+    )
+    def test_allergy_is_named_by_any_coding_display(self, code: dict[str, Any]) -> None:
+        """An allergy whose first coding has no display is still named by a later one."""
+        bundle = {
+            "resourceType": "Bundle",
+            "entry": [
+                {"resource": {"resourceType": "Patient", "id": "p1"}},
+                {"resource": {"resourceType": "AllergyIntolerance", "code": code}},
+            ],
+        }
+        ctx = parse_fhir_bundle(bundle, pii_salt="test-salt")
+        assert ctx.allergies == ["Penicillin G"]
+
     def test_raw_fhir_preserved(self, minimal_fhir_bundle: dict[str, Any]) -> None:
         """raw_fhir must preserve the original bundle for audit."""
         ctx = parse_fhir_bundle(minimal_fhir_bundle, pii_salt="test-salt")
