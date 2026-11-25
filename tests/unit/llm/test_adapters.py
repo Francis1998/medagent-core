@@ -706,7 +706,11 @@ class TestOpenAIHealthcareConfigurations:
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         ("reason", "finish_reason"),
-        [("max_output_tokens", "length"), ("content_filter", "content_filter")],
+        [
+            ("max_output_tokens", "length"),
+            ("content_filter", "content_filter"),
+            (LEAK, "unknown"),
+        ],
     )
     async def test_partial_answers_keep_chat_completions_finish_reasons(
         self, monkeypatch: pytest.MonkeyPatch, reason: str, finish_reason: str
@@ -755,8 +759,31 @@ class TestOpenAIHealthcareConfigurations:
                 r"response failed \(code=server_error\)",
             ),
             ({"status": "in_progress"}, r"did not finish \(status=in_progress\)"),
+            ({"status": f"stopped for {LEAK}"}, r"did not finish \(status=unknown\)"),
+            (
+                {"status": "failed", "error": {"code": f"{LEAK} MRN 87654321", "message": LEAK}},
+                r"response failed \(code=unknown\)",
+            ),
+            (
+                {
+                    "output": [REASONING_ITEM],
+                    "status": "incomplete",
+                    "incomplete_details": {"reason": LEAK},
+                },
+                r"no text content \(status=incomplete, reason=unknown\)",
+            ),
         ],
-        ids=["refusal", "empty", "commentary-only", "budget-spent", "failed", "unfinished"],
+        ids=[
+            "refusal",
+            "empty",
+            "commentary-only",
+            "budget-spent",
+            "failed",
+            "unfinished",
+            "undocumented-status",
+            "undocumented-error-code",
+            "undocumented-reason",
+        ],
     )
     async def test_responses_without_a_usable_answer_raise_for_fallback(
         self, monkeypatch: pytest.MonkeyPatch, fields: dict[str, Any], error: str
