@@ -52,6 +52,42 @@ Every LLM call includes an immutable system prompt (`src/medagent/safety/disclai
 - Requires framing all outputs as research hypotheses
 - Prohibits browsing the internet or executing code
 
+#### OpenAI healthcare model configurations
+
+`OPENAI_MODEL` may name one of OpenAI's healthcare model configurations (`gpt-6.2-sol-healthcare`,
+`gpt-6.2-astra-healthcare`, `gpt-6.1-sol-healthcare`, `gpt-6-astra-healthcare`; Responses API
+only, released 2026-11-24). This opt-in vendor option is bound by these rules
+(`OpenAIAdapter` in `src/medagent/llm/adapters.py`):
+
+- **A vendor configuration is not clinical validation.** OpenAI tailors the harness to clinical
+  questions; that does not make medagent a medical device or clinically validated, and §1–§2 still
+  apply. Its output goes through the same system prompt, scope enforcement (§3.6), output validator
+  (§3.3), ESCALATE rules (§3.4), deterministic checks and mandatory disclaimer (§3.1), and it gets
+  no extra trust in routing: a refusal or a response without answer text is an adapter error, so
+  the router falls back to the next provider.
+- **No web search, no tools.** When the model uses web search, the configuration searches a
+  dedicated index of medical sources; medagent never sends tools, so that search never runs.
+  Evidence comes only from medagent's own retrieval (PubMed, RxNorm/OpenFDA with dual-source
+  validation (§3.7), the local knowledge base), which is deterministic, source-attributed and
+  recorded in the audit trail. Vendor search results would be neither reproducible nor visible to
+  those checks, and the system prompt above forbids browsing anyway.
+- **No stored response state.** Requests set `store: false`, so the Responses API does not keep
+  the response for retrieval or chaining (by default it stores response data for at least 30
+  days). This does not change OpenAI's abuse-monitoring logs (up to 30 days unless the
+  organisation has Zero Data Retention or Modified Abuse Monitoring) or its default prompt caching,
+  which can keep encrypted key/value tensors of a prompt for at least 30 minutes
+  ([data controls](https://developers.openai.com/api/docs/guides/your-data),
+  [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching)).
+- **PHI rules are unchanged.** De-identification (§3.5) runs at INTAKE, before any LLM call,
+  whatever the model, and callers must still leave out identifiers the sanitiser cannot detect.
+  A healthcare configuration does not make an OpenAI account eligible to process PHI: OpenAI
+  allows that only under an executed Business Associate and Healthcare Addendum with a
+  provisioned account configuration. medagent is not to be given identifiable patient data either
+  way.
+- **Logs stay metadata-only (§3.5).** Responses API errors log only the exception class and HTTP
+  status, and adapter errors name only a documented response status, error code or incomplete
+  reason (any other value is reported as `unknown`), never model output or refusal text.
+
 ### 3.3 Medical Output Validation
 The `MedicalOutputValidator` (`src/medagent/llm/validator.py`) scans every LLM completion for prohibited language patterns before it is returned. Outputs containing "prescribe", "start the patient on", or a dose directive ("administer X mg", "dosage of X mg", "recommend X mg") are **rejected** and trigger the fallback adapter chain. The dose X matches integers and decimals in any common notation, regardless of locale: `5`, `0.5`, `0,5` (decimal comma), `1,000`, `2·5` (typographic decimal point) and `.5` (naked leading decimal point). Text without a directive verb, such as lab values, medication lists and past-tense history ("administered 0.4 mg"), is not affected.
 
@@ -85,7 +121,7 @@ Audit-path logs never carry clinical content or credentials: the audit engine is
 Application logs carry safe metadata only (`exception_fields` in `src/medagent/logging_config.py`): event names, session ids, counts, the exception class and any HTTP status code. Exception messages, tracebacks, query text, model output and request URLs are never logged, because each can echo clinical text. The rule covers:
 - the API: unhandled exceptions become a sanitised HTTP 500 inside the application, so the server never logs their traceback. They are logged with the route template, never the caller-controlled request path, and a failure after the response has started aborts it with a fixed message;
 - the agent's unexpected-error path, whose response and audit `uncertainty_flags` also name only the exception class;
-- the LLM adapters, whose `LLMAdapterError` messages name only the exception class;
+- the LLM adapters, whose `LLMAdapterError` messages name only the exception class (or, for a Responses API reply without a usable answer, its documented status, error code or incomplete reason, with any other value reported as `unknown`);
 - the output validator, which logs only the matched rule and whose error message does not repeat model output, plus the router and the reasoning engine;
 - scope checks, which log only the matched rule and never query text;
 - the PubMed, RxNorm/OpenFDA and local-KB retrieval paths, including interactions suppressed for lack of a second source, which log only the source names.

@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from typing import Any, cast
 
-from medagent.config import settings
+from medagent.config import openai_healthcare_base_model, settings
 from medagent.llm.base import BaseLLMAdapter, LLMAdapterError, LLMResponse
 from medagent.logging_config import describe_exception, exception_fields, get_logger
 from medagent.safety.disclaimer import MEDICAL_SYSTEM_PROMPT
@@ -59,17 +59,55 @@ def accepts_temperature(provider: str, model: str) -> bool:
 # OpenAI (GPT)
 # ---------------------------------------------------------------------------
 
+# Reasoning effort for healthcare model configurations. OpenAI's GPT-6.2 guidance: start with
+# "medium", and never send "none" or "minimal" (rejected; use "low"). The other base models,
+# GPT-6.1 Sol and GPT-6 Astra, accept only "low" to "max", so "medium" suits all four.
+_HEALTHCARE_REASONING_EFFORT = "medium"
+
+# Responses API ``incomplete_details.reason`` -> the Chat Completions ``finish_reason`` it matches.
+_INCOMPLETE_FINISH_REASONS = {"max_output_tokens": "length", "content_filter": "content_filter"}
+
+# Documented values of the Responses API fields that adapter errors and finish reasons quote.
+# The SDK builds responses without validation, so any other value (from a proxy behind
+# OPENAI_BASE_URL, say) is reported as "unknown": adapter errors are logged, never response text.
+_RESPONSE_STATUSES = frozenset(
+    {"completed", "incomplete", "failed", "in_progress", "cancelled", "queued"}
+)
+_INCOMPLETE_REASONS = frozenset({"max_output_tokens", "content_filter", "max_messages", "steered"})
+_RESPONSE_ERROR_CODES = frozenset(
+    {
+        "server_error", "rate_limit_exceeded", "invalid_prompt", "data_residency_mismatch",
+        "bio_policy", "misalignment_policy_violation", "vector_store_timeout", "invalid_image",
+        "invalid_image_format", "invalid_base64_image", "invalid_image_url", "image_too_large",
+        "image_too_small", "image_parse_error", "image_content_policy_violation",
+        "invalid_image_mode", "image_file_too_large", "unsupported_image_media_type",
+        "empty_image_file", "failed_to_download_image", "image_file_not_found",
+    }
+)  # fmt: skip
+
+
+def _documented(value: Any, allowed: frozenset[str]) -> str:
+    """Return ``value`` if it is one of the ``allowed`` strings, otherwise ``"unknown"``."""
+    return value if isinstance(value, str) and value in allowed else "unknown"
+
 
 class OpenAIAdapter(BaseLLMAdapter):
-    """OpenAI chat completion adapter using the official ``openai`` SDK.
+    """OpenAI adapter using the official ``openai`` SDK, with two request paths.
 
-    Requests use Chat Completions without tools and send no ``reasoning_effort`` or
+    Most models use Chat Completions without tools and send no ``reasoning_effort`` or
     ``service_tier``, so they stay valid for GPT-6.2, which rejects effort ``none``,
     requires the Responses API for tool calling and has no Flex processing.
+
+    The OpenAI healthcare model configurations (``OPENAI_HEALTHCARE_CONFIGURATIONS`` in
+    ``medagent.config``) are served by the Responses API only, so they use it: same system
+    prompt and budget, no tools (so no web search), ``store`` false and a fixed reasoning effort.
 
     Args:
         api_key: OpenAI API key.
         model: Model identifier (e.g. ``gpt-6.2-sol``).
+
+    Raises:
+        ValueError: If ``model`` is an unknown ``*-healthcare`` identifier.
     """
 
     def __init__(
@@ -79,6 +117,7 @@ class OpenAIAdapter(BaseLLMAdapter):
     ) -> None:
         self._api_key = _normalize_api_key(api_key or settings.openai_api_key)
         self._model = model or settings.openai_model
+        self._healthcare_base_model = openai_healthcare_base_model(self._model)
 
     @property
     def provider_name(self) -> str:
@@ -93,7 +132,7 @@ class OpenAIAdapter(BaseLLMAdapter):
         max_tokens: int | None = None,
         temperature: float = 0.1,
     ) -> LLMResponse:
-        """Run an OpenAI chat completion.
+        """Run an OpenAI chat completion, or a Responses call for a healthcare configuration.
 
         Args:
             prompt: User message content.
@@ -105,7 +144,8 @@ class OpenAIAdapter(BaseLLMAdapter):
             LLMResponse with the generated text.
 
         Raises:
-            LLMAdapterError: On OpenAI API errors.
+            LLMAdapterError: On OpenAI API errors, and for a healthcare configuration's
+                refusal, failed or unfinished response, or response without answer text.
         """
         try:
             from openai import AsyncOpenAI
@@ -117,6 +157,10 @@ class OpenAIAdapter(BaseLLMAdapter):
 
         client = AsyncOpenAI(api_key=self._api_key)
         sys_msg = system_prompt or MEDICAL_SYSTEM_PROMPT
+        if self._healthcare_base_model is not None:
+            return await self._complete_with_responses(
+                client, prompt, sys_msg, max_tokens or settings.llm_max_output_tokens
+            )
         request: dict[str, Any] = {
             "model": self._model,
             "messages": [
@@ -142,6 +186,98 @@ class OpenAIAdapter(BaseLLMAdapter):
             completion_tokens=response.usage.completion_tokens if response.usage else 0,
             finish_reason=choice.finish_reason or "stop",
         )
+
+    async def _complete_with_responses(
+        self, client: Any, prompt: str, system_prompt: str, max_output_tokens: int
+    ) -> LLMResponse:
+        """Run a healthcare model configuration through the Responses API, its only endpoint.
+
+        The system prompt is the leading ``developer`` input item rather than top-level
+        ``instructions``: from GPT-6.2 on, the Responses API appends ``instructions`` after
+        ``input`` and bills them uncached, so the safety constraints would follow the case
+        text instead of preceding it as on Chat Completions. No tools are sent, so the
+        configuration's medical web search never runs; ``store`` is false, so the response is
+        not kept for retrieval or chaining; sampling parameters are never sent.
+
+        Args:
+            client: ``openai.AsyncOpenAI`` client.
+            prompt: User message content.
+            system_prompt: System instruction.
+            max_output_tokens: Completion budget, including reasoning tokens.
+
+        Returns:
+            LLMResponse with the answer text.
+
+        Raises:
+            LLMAdapterError: On API errors and on responses without a usable answer.
+        """
+        request: dict[str, Any] = {
+            "model": self._model,
+            "input": [
+                {"role": "developer", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+            "max_output_tokens": max_output_tokens,
+            "reasoning": {"effort": _HEALTHCARE_REASONING_EFFORT},
+            "store": False,
+        }
+        try:
+            response = await client.responses.create(**request)
+        except Exception as exc:
+            logger.error("openai_api_error", **exception_fields(exc))
+            raise LLMAdapterError(f"OpenAI API error ({describe_exception(exc)})") from exc
+        return _responses_llm_response(response, self._model)
+
+
+def _responses_llm_response(response: Any, requested_model: str) -> LLMResponse:
+    """Map a Responses API result onto the LLMResponse a Chat Completions call returns.
+
+    Only ``output_text`` parts of answer messages form the content: reasoning items and
+    ``commentary`` messages (intermediate preambles) are not the answer. A failed or
+    unfinished response, a refusal, or no answer text raises LLMAdapterError so the router
+    falls back, as for a Claude response without text. Errors name only a documented status,
+    error code or incomplete reason (anything else is ``unknown``), never model output.
+
+    Args:
+        response: ``openai.types.responses.Response``.
+        requested_model: Configured model, used if the response names none.
+
+    Returns:
+        LLMResponse with the answer text, token usage and a Chat Completions finish reason.
+
+    Raises:
+        LLMAdapterError: As described above.
+    """
+    status = _documented(response.status or "completed", _RESPONSE_STATUSES)
+    if status == "failed":
+        code = _documented(getattr(response.error, "code", None), _RESPONSE_ERROR_CODES)
+        raise LLMAdapterError(f"OpenAI response failed (code={code})")
+    if status not in ("completed", "incomplete"):
+        raise LLMAdapterError(f"OpenAI response did not finish (status={status})")
+
+    parts = [
+        part
+        for item in response.output or []
+        if item.type == "message" and getattr(item, "phase", None) != "commentary"
+        for part in item.content
+    ]
+    if any(part.type == "refusal" for part in parts):
+        raise LLMAdapterError("OpenAI declined the request (refusal)")
+    text = "".join(part.text for part in parts if part.type == "output_text")
+    reason = _documented(getattr(response.incomplete_details, "reason", None), _INCOMPLETE_REASONS)
+    if not text:
+        raise LLMAdapterError(f"OpenAI returned no text content (status={status}, reason={reason})")
+
+    usage = response.usage
+    return LLMResponse(
+        content=text,
+        model=response.model or requested_model,
+        prompt_tokens=usage.input_tokens if usage else 0,
+        completion_tokens=usage.output_tokens if usage else 0,
+        finish_reason=(
+            "stop" if status == "completed" else _INCOMPLETE_FINISH_REASONS.get(reason, reason)
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
