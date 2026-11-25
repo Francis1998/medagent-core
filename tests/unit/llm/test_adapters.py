@@ -6,8 +6,9 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+from pydantic import ValidationError
 
-from medagent.config import Settings
+from medagent.config import OPENAI_HEALTHCARE_CONFIGURATIONS, Settings, openai_healthcare_base_model
 from medagent.llm.adapters import (
     AnthropicAdapter,
     GoogleAdapter,
@@ -16,6 +17,9 @@ from medagent.llm.adapters import (
     accepts_temperature,
 )
 from medagent.llm.base import LLMAdapterError
+from medagent.llm.router import MedicalRouter
+from medagent.safety.disclaimer import MEDICAL_SYSTEM_PROMPT
+from tests.unit.llm.test_router import RecordingAdapter
 
 
 def test_settings_default_models_use_current_stack() -> None:
@@ -480,8 +484,8 @@ async def test_anthropic_response_without_text_is_an_adapter_error(
         await AnthropicAdapter(api_key="k", model="claude-opus-5-5").complete("chest pain")
 
 
-def test_openai_sdk_floor_supports_max_completion_tokens() -> None:
-    """``max_completion_tokens`` first appears in openai-python 1.45.0."""
+def test_openai_sdk_floor_supports_both_request_paths() -> None:
+    """``max_completion_tokens`` appears in openai-python 1.45.0, ``responses`` in 1.66.0."""
     import re
     from pathlib import Path
 
@@ -489,7 +493,7 @@ def test_openai_sdk_floor_supports_max_completion_tokens() -> None:
     floor = re.search(r'"openai>=([0-9.]+)"', pyproject.read_text(encoding="utf-8"))
 
     assert floor is not None
-    assert tuple(int(part) for part in floor.group(1).split(".")) >= (1, 45, 0)
+    assert tuple(int(part) for part in floor.group(1).split(".")) >= (1, 66, 0)
 
 
 # ---------------------------------------------------------------------------
@@ -497,29 +501,41 @@ def test_openai_sdk_floor_supports_max_completion_tokens() -> None:
 # ---------------------------------------------------------------------------
 
 ANSWER = "Differential: atrial fibrillation."
+# Model output that must never reach an error message (it can quote clinical text).
+LEAK = "Jane Canary"
 
 
-def _responses_body(model: str, output: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-    """Return a completed Responses API body: a reasoning item, then one final answer."""
+def _message(*texts: str, phase: str | None = "final_answer") -> dict[str, Any]:
+    """Return an assistant output message with one ``output_text`` part per text."""
     return {
+        "type": "message",
+        "id": "msg_test",
+        "role": "assistant",
+        "status": "completed",
+        "phase": phase,
+        "content": [{"type": "output_text", "text": text, "annotations": []} for text in texts],
+    }
+
+
+REASONING_ITEM = {"type": "reasoning", "id": "rs_test", "summary": []}
+
+
+def _refusal(text: str) -> dict[str, Any]:
+    """Return an assistant message whose only content part is a refusal."""
+    return _message() | {"content": [{"type": "refusal", "refusal": text}]}
+
+
+def _responses_body(
+    model: str, output: list[dict[str, Any]] | None = None, **fields: Any
+) -> dict[str, Any]:
+    """Return a Responses API body (default: completed, reasoning then one final answer)."""
+    body = {
         "id": "resp_test",
         "object": "response",
         "created_at": 0,
         "status": "completed",
         "model": model,
-        "output": output
-        if output is not None
-        else [
-            {"type": "reasoning", "id": "rs_test", "summary": []},
-            {
-                "type": "message",
-                "id": "msg_test",
-                "role": "assistant",
-                "status": "completed",
-                "phase": "final_answer",
-                "content": [{"type": "output_text", "text": ANSWER, "annotations": []}],
-            },
-        ],
+        "output": [REASONING_ITEM, _message(ANSWER)] if output is None else output,
         "incomplete_details": None,
         "error": None,
         "usage": {
@@ -530,15 +546,18 @@ def _responses_body(model: str, output: list[dict[str, Any]] | None = None) -> d
             "total_tokens": 460,
         },
     }
+    return {**body, **fields}
 
 
 def _openai_via_real_sdk(
-    monkeypatch: pytest.MonkeyPatch, responses_body: dict[str, Any] | None = None
+    monkeypatch: pytest.MonkeyPatch,
+    responses_body: dict[str, Any] | None = None,
+    responses_status: int = 200,
 ) -> list[tuple[str, dict[str, Any]]]:
     """Serve OpenAI calls through the real SDK; return each request's (path, JSON body).
 
     ``/v1/chat/completions`` returns one choice; ``/v1/responses`` returns ``responses_body``
-    (by default a completed answer from the requested model).
+    (by default a completed answer from the requested model) with ``responses_status``.
     """
     import json
 
@@ -553,7 +572,8 @@ def _openai_via_real_sdk(
         body = json.loads(request.content)
         sent.append((request.url.path, body))
         if request.url.path.endswith("/responses"):
-            return http.Response(200, json=responses_body or _responses_body(body["model"]))
+            payload = responses_body or _responses_body(body["model"])
+            return http.Response(responses_status, json=payload)
         return http.Response(
             200,
             json={
@@ -610,3 +630,251 @@ async def test_openai_healthcare_configurations_are_sent_to_the_responses_api(
     assert [path for path, _ in sent] == ["/v1/responses"]
     assert sent[0][1]["model"] == model
     assert response.content == ANSWER
+
+
+class TestOpenAIHealthcareConfigurations:
+    """Healthcare configurations get a tool-free, stateless Responses request."""
+
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize(("model", "base_model"), OPENAI_HEALTHCARE_CONFIGURATIONS)
+    async def test_request_shape_follows_the_base_model_rules(
+        self, monkeypatch: pytest.MonkeyPatch, model: str, base_model: str
+    ) -> None:
+        """Exactly these fields: no tools (so no web search), sampling knobs or chaining.
+
+        The system prompt leads ``input`` as a developer message because GPT-6.2 appends
+        top-level ``instructions`` after ``input``. Every base model rejects reasoning effort
+        ``none`` and ``minimal``, so the effort is OpenAI's recommended starting ``medium``.
+        """
+        sent = _openai_via_real_sdk(monkeypatch)
+
+        await OpenAIAdapter(api_key="k", model=model).complete("chest pain", temperature=0.2)
+
+        assert sent == [
+            (
+                "/v1/responses",
+                {
+                    "model": model,
+                    "input": [
+                        {"role": "developer", "content": MEDICAL_SYSTEM_PROMPT},
+                        {"role": "user", "content": "chest pain"},
+                    ],
+                    "max_output_tokens": 32_768,
+                    "reasoning": {"effort": "medium"},
+                    "store": False,
+                },
+            )
+        ]
+        assert not accepts_temperature("openai", base_model)
+
+    @pytest.mark.asyncio()
+    async def test_caller_system_prompt_and_budget_are_sent(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Overrides reach the request as they do on Chat Completions."""
+        sent = _openai_via_real_sdk(monkeypatch)
+
+        await OpenAIAdapter(api_key="k", model="gpt-6.2-astra-healthcare").complete(
+            "chest pain", system_prompt="Answer as JSON.", max_tokens=4_096
+        )
+
+        body = sent[0][1]
+        assert body["input"][0] == {"role": "developer", "content": "Answer as JSON."}
+        assert body["max_output_tokens"] == 4_096
+
+    @pytest.mark.asyncio()
+    async def test_answer_and_usage_map_onto_the_chat_completions_result(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Reasoning items and commentary preambles are not the answer; usage is reported."""
+        output = [
+            REASONING_ITEM,
+            _message("Reviewing the case first.", phase="commentary"),
+            _message("Differential: ", "atrial fibrillation."),
+        ]
+        _openai_via_real_sdk(monkeypatch, _responses_body("gpt-6.2-sol-healthcare", output))
+
+        response = await OpenAIAdapter(api_key="k", model="gpt-6.2-sol-healthcare").complete(
+            "chest pain"
+        )
+
+        assert response.content == ANSWER
+        assert response.model == "gpt-6.2-sol-healthcare"
+        assert (response.prompt_tokens, response.completion_tokens) == (120, 340)
+        assert response.finish_reason == "stop"
+
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize(
+        ("reason", "finish_reason"),
+        [("max_output_tokens", "length"), ("content_filter", "content_filter")],
+    )
+    async def test_partial_answers_keep_chat_completions_finish_reasons(
+        self, monkeypatch: pytest.MonkeyPatch, reason: str, finish_reason: str
+    ) -> None:
+        """A cut-off answer is returned like a Chat Completions ``length`` choice."""
+        body = _responses_body(
+            "gpt-6.2-sol-healthcare",
+            [_message("Differential: atrial")],
+            status="incomplete",
+            incomplete_details={"reason": reason},
+            usage=None,
+        )
+        _openai_via_real_sdk(monkeypatch, body)
+
+        response = await OpenAIAdapter(api_key="k", model="gpt-6.2-sol-healthcare").complete(
+            "chest pain"
+        )
+
+        assert response.content == "Differential: atrial"
+        assert response.finish_reason == finish_reason
+        assert (response.prompt_tokens, response.completion_tokens) == (0, 0)
+
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize(
+        ("fields", "error"),
+        [
+            (
+                {"output": [_refusal(f"I can't discuss {LEAK}.")]},
+                r"declined the request \(refusal\)",
+            ),
+            ({"output": []}, r"no text content \(status=completed, reason=unknown\)"),
+            (
+                {"output": [_message(f"Reviewing {LEAK}.", phase="commentary")]},
+                r"no text content \(status=completed",
+            ),
+            (
+                {
+                    "output": [REASONING_ITEM],
+                    "status": "incomplete",
+                    "incomplete_details": {"reason": "max_output_tokens"},
+                },
+                r"no text content \(status=incomplete, reason=max_output_tokens\)",
+            ),
+            (
+                {"status": "failed", "error": {"code": "server_error", "message": LEAK}},
+                r"response failed \(code=server_error\)",
+            ),
+            ({"status": "in_progress"}, r"did not finish \(status=in_progress\)"),
+        ],
+        ids=["refusal", "empty", "commentary-only", "budget-spent", "failed", "unfinished"],
+    )
+    async def test_responses_without_a_usable_answer_raise_for_fallback(
+        self, monkeypatch: pytest.MonkeyPatch, fields: dict[str, Any], error: str
+    ) -> None:
+        """Like a Claude reply without text: the router must fall back, not get ""."""
+        _openai_via_real_sdk(monkeypatch, _responses_body("gpt-6.2-sol-healthcare", **fields))
+        adapter = OpenAIAdapter(api_key="k", model="gpt-6.2-sol-healthcare")
+
+        with pytest.raises(LLMAdapterError, match=error) as raised:
+            await adapter.complete("chest pain")
+
+        assert LEAK not in str(raised.value)
+
+    @pytest.mark.asyncio()
+    async def test_api_errors_name_only_the_error_type(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """An HTTP error is an adapter error without the provider's message."""
+        error = {"error": {"message": LEAK, "type": "invalid_request_error", "code": None}}
+        _openai_via_real_sdk(monkeypatch, error, responses_status=400)
+        adapter = OpenAIAdapter(api_key="k", model="gpt-6.1-sol-healthcare")
+
+        with pytest.raises(LLMAdapterError) as raised:
+            await adapter.complete("chest pain")
+
+        assert str(raised.value) == "OpenAI API error (BadRequestError, HTTP 400)"
+
+    @pytest.mark.asyncio()
+    async def test_router_records_the_configuration_and_falls_back_on_refusal(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """The audit trail names the configuration; a refusal hands over to the next model."""
+        openai = OpenAIAdapter(api_key="k", model="gpt-6.2-sol-healthcare")
+        anthropic = RecordingAdapter("anthropic")
+        router = MedicalRouter(openai=openai, anthropic=anthropic)
+
+        _openai_via_real_sdk(monkeypatch)
+        assert await router.route_drug_interaction("warfarin and fluconazole") == ANSWER
+        assert router.last_model_used == "openai/gpt-6.2-sol-healthcare"
+
+        refusal = _responses_body("gpt-6.2-sol-healthcare", [_refusal("I can't help with that.")])
+        _openai_via_real_sdk(monkeypatch, refusal)
+        assert await router.route_drug_interaction("warfarin and fluconazole") == (
+            anthropic.response_text
+        )
+        assert router.last_model_used == "anthropic/anthropic-test"
+
+
+@pytest.mark.parametrize(("model", "base_model"), OPENAI_HEALTHCARE_CONFIGURATIONS)
+def test_settings_accept_each_healthcare_configuration(
+    monkeypatch: pytest.MonkeyPatch, model: str, base_model: str
+) -> None:
+    """``OPENAI_MODEL`` may name any documented configuration, mapped to its base model."""
+    monkeypatch.setenv("OPENAI_MODEL", model)
+
+    assert Settings(_env_file=None).openai_model == model
+    assert openai_healthcare_base_model(model) == base_model
+
+
+@pytest.mark.parametrize(
+    "model",
+    [
+        "gpt-7-healthcare",
+        "gpt-6.1-terra-healthcare",
+        "GPT-6.2-SOL-HEALTHCARE",
+        "openai/gpt-6.2-sol-healthcare",
+        "gpt-6.2-sol-healthcare ",
+    ],
+)
+def test_unknown_healthcare_configurations_fail_fast(
+    monkeypatch: pytest.MonkeyPatch, model: str
+) -> None:
+    """No request shape is known for them, and Chat Completions does not serve them."""
+    monkeypatch.setenv("OPENAI_MODEL", model)
+
+    with pytest.raises(ValidationError, match="not a supported OpenAI healthcare model"):
+        Settings(_env_file=None)
+    with pytest.raises(ValueError, match=r"use one of: gpt-6\.2-astra-healthcare, "):
+        OpenAIAdapter(api_key="k", model=model)
+
+
+@pytest.mark.parametrize(
+    "model", ["gpt-6.2-sol", "gpt-6.1-sol", "ft:gpt-6.1-terra:acme:healthcare:abc123", "test"]
+)
+def test_other_models_are_not_healthcare_configurations(model: str) -> None:
+    """Base models and fine-tunes whose name merely contains "healthcare" are unaffected."""
+    assert openai_healthcare_base_model(model) is None
+
+
+@pytest.mark.asyncio()
+@pytest.mark.parametrize(
+    ("model", "temperature"),
+    [
+        ("gpt-6.2-sol", None),
+        ("gpt-6.2-astra", None),
+        ("gpt-6.1-sol", None),
+        ("gpt-6-astra", None),
+        ("gpt-4.1", 0.1),
+    ],
+)
+async def test_other_openai_models_keep_the_unchanged_chat_completions_request(
+    monkeypatch: pytest.MonkeyPatch, model: str, temperature: float | None
+) -> None:
+    """Every non-healthcare model sends exactly the Chat Completions body it sent before."""
+    sent = _openai_via_real_sdk(monkeypatch)
+
+    response = await OpenAIAdapter(api_key="k", model=model).complete("chest pain")
+
+    expected: dict[str, Any] = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": MEDICAL_SYSTEM_PROMPT},
+            {"role": "user", "content": "chest pain"},
+        ],
+        "max_completion_tokens": 32_768,
+    }
+    if temperature is not None:
+        expected["temperature"] = temperature
+    assert sent == [("/v1/chat/completions", expected)]
+    assert (response.content, response.model) == (ANSWER, model)
+    assert (response.prompt_tokens, response.completion_tokens) == (12, 34)

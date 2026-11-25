@@ -210,6 +210,25 @@ async def test_provider_api_errors_log_and_raise_only_the_error_type(
 
 
 @pytest.mark.asyncio()
+async def test_openai_healthcare_configuration_errors_log_and_raise_only_the_error_type(
+    rendered_logs: io.StringIO, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import openai
+
+    client = MagicMock()
+    client.responses.create = AsyncMock(side_effect=RuntimeError(CANARY))
+    monkeypatch.setattr(openai, "AsyncOpenAI", MagicMock(return_value=client))
+    adapter = adapters.OpenAIAdapter(api_key="k", model="gpt-6.2-sol-healthcare")
+
+    with pytest.raises(LLMAdapterError) as raised:
+        await adapter.complete("chest pain")
+
+    assert str(raised.value) == "OpenAI API error (RuntimeError)"
+    client.chat.completions.create.assert_not_called()
+    assert_logged_without_canary(rendered_logs, "openai_api_error")
+
+
+@pytest.mark.asyncio()
 async def test_router_validation_failures_log_only_the_error_type(
     rendered_logs: io.StringIO, monkeypatch: pytest.MonkeyPatch
 ) -> None:

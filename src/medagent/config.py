@@ -8,6 +8,43 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # A browser origin: scheme://host[:port], without a path, query or wildcard.
 _ORIGIN = re.compile(r"https?://[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:\d{1,5})?")
 
+# OpenAI healthcare model configurations (released 2026-11-24): each pairs a base model with
+# a harness tailored to clinical questions, is served by the Responses API only and is billed
+# at its base model's per-token rates. The base model sets the request-shaping rules.
+OPENAI_HEALTHCARE_CONFIGURATIONS: tuple[tuple[str, str], ...] = (
+    ("gpt-6.2-astra-healthcare", "gpt-6.2-astra"),
+    ("gpt-6.2-sol-healthcare", "gpt-6.2-sol"),
+    ("gpt-6-astra-healthcare", "gpt-6-astra"),
+    ("gpt-6.1-sol-healthcare", "gpt-6.1-sol"),
+)
+
+
+def openai_healthcare_base_model(model: str) -> str | None:
+    """Return the base model of an OpenAI healthcare model configuration.
+
+    Args:
+        model: OpenAI model identifier, e.g. the value of ``OPENAI_MODEL``.
+
+    Returns:
+        The base model whose request-shaping rules ``model`` follows, or ``None`` when
+        ``model`` is not a healthcare configuration.
+
+    Raises:
+        ValueError: For any other ``*-healthcare`` identifier. Only the listed configurations
+            are known, and none of them is served by Chat Completions, so an unknown one fails
+            at startup instead of on the first clinical request.
+    """
+    for configuration, base_model in OPENAI_HEALTHCARE_CONFIGURATIONS:
+        if model == configuration:
+            return base_model
+    if model.strip().lower().rsplit("/", 1)[-1].endswith("-healthcare"):
+        supported = ", ".join(name for name, _ in OPENAI_HEALTHCARE_CONFIGURATIONS)
+        raise ValueError(
+            f"OPENAI_MODEL={model!r} is not a supported OpenAI healthcare model configuration "
+            f"(Responses API only); use one of: {supported}"
+        )
+    return None
+
 
 class Settings(BaseSettings):
     """Application-wide settings resolved from environment / .env file.
@@ -44,6 +81,13 @@ class Settings(BaseSettings):
         le=1_048_576,
         description="Completion budget per LLM call, including reasoning/thinking tokens",
     )
+
+    @field_validator("openai_model")
+    @classmethod
+    def _check_openai_healthcare_configuration(cls, value: str) -> str:
+        """Reject an unknown ``*-healthcare`` OpenAI model at startup."""
+        openai_healthcare_base_model(value)
+        return value
 
     # --- External APIs ---
     pubmed_api_key: str = Field(default="")
