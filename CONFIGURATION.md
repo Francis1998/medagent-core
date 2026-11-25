@@ -19,14 +19,14 @@ The agent falls back gracefully — for a differential diagnosis, if Claude is u
 
 | Variable | Default | Description |
 |---|---|---|
-| `OPENAI_MODEL` | `gpt-6.2-sol` | OpenAI model name |
+| `OPENAI_MODEL` | `gpt-6.2-sol` | OpenAI model name; a [healthcare model configuration](#openai-healthcare-model-configurations-opt-in) ID switches to the Responses API |
 | `ANTHROPIC_MODEL` | `claude-opus-5-5` | Anthropic model name |
 | `GOOGLE_MODEL` | `gemini-4-argon` | Google model name |
 | `KIMI_MODEL` | `kimi-k3.1-pro` | Kimi model name |
 | `KIMI_BASE_URL` | `https://api.moonshot.ai/v1` | Kimi OpenAI-compatible endpoint (`https://api.moonshot.cn/v1` for mainland China accounts) |
 | `LLM_MAX_OUTPUT_TOKENS` | `32768` | Completion budget per call, **including reasoning/thinking tokens** |
 
-### Why these defaults (verified 2026-11-19)
+### Why these defaults (verified 2026-11-24)
 
 Every alternative below gets the same request shaping as its provider's default (see
 [Sampling-parameter compatibility](#sampling-parameter-compatibility)); set it with the matching
@@ -68,14 +68,76 @@ Hydrogen runs at its default `high`; Google still rates it Fast (Argon: Moderate
 2027-01-01. Hydrogen also has a free tier, but Google may use free-tier prompts to improve its
 products, so use a paid key for research data.
 
+If you pin an older Claude model, plan the move now: Claude Sonnet 4.5
+(`claude-sonnet-4-5-20250929`) retires on 2026-11-30, and Claude Opus 4.5 (`claude-opus-4-5`),
+deprecated on 2026-11-23, retires from the Claude API on 2027-01-22. Their replacements are
+`claude-sonnet-5-5` and the default `claude-opus-5-5`
+([model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations)).
+
+### OpenAI healthcare model configurations (opt-in)
+
+On 2026-11-24 OpenAI released
+[healthcare model configurations](https://developers.openai.com/api/docs/pricing#healthcare-model-configurations)
+for the Responses API, "pairing select OpenAI models with a harness tailored to clinical
+questions" ([changelog](https://developers.openai.com/api/docs/changelog)). They are served on
+`/v1/responses` only, so medagent calls the Responses API for exactly these IDs
+(`OPENAI_HEALTHCARE_CONFIGURATIONS` in `src/medagent/config.py`) and keeps the Chat Completions
+request, byte for byte, for every other OpenAI model. The default stays `gpt-6.2-sol`.
+
+| `OPENAI_MODEL` | Base model (request rules) | Input / cached input / output per 1M tokens (≤272K input) |
+|---|---|---|
+| `gpt-6.2-sol-healthcare` | `gpt-6.2-sol` | $2 / $0.10 / $10 |
+| `gpt-6.2-astra-healthcare` | `gpt-6.2-astra` | $8 / $0.40 / $40 |
+| `gpt-6.1-sol-healthcare` | `gpt-6.1-sol` | $2 / $0.10 / $10 |
+| `gpt-6-astra-healthcare` | `gpt-6-astra` | $10 / $1.00 / $50 |
+
+These are the base models' rates; OpenAI lists them as promotional pricing available at least
+through 2026-12-31, and longer requests use the long-context rates on the pricing page. To opt in:
+
+```bash
+OPENAI_MODEL=gpt-6.2-sol-healthcare
+```
+
+What the adapter sends (`OpenAIAdapter` in `src/medagent/llm/adapters.py`):
+
+- `input`: the medagent system prompt as the first `developer` message, then the case as the
+  `user` message. Not top-level `instructions`: from GPT-6.2 on, the Responses API appends them
+  after `input`, so the safety constraints would follow the case text, and bills them uncached on
+  every call. The [GPT-6.2 migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra)
+  recommends a leading developer message for reusable instructions.
+- `reasoning: {"effort": "medium"}`, OpenAI's recommended starting point. GPT-6.2 rejects `none`
+  and `minimal`; GPT-6.1 Sol and GPT-6 Astra accept only `low` to `max`.
+- `max_output_tokens` set to `LLM_MAX_OUTPUT_TOKENS` (reasoning tokens included).
+- `store: false`. No `tools`, `tool_choice`, `include`, `instructions`, `previous_response_id`,
+  `temperature`, `top_p` or `top_logprobs`, so the configuration's web search over medical sources
+  never runs (see [SAFETY.md](SAFETY.md#openai-healthcare-model-configurations)).
+
+The answer is the `output_text` of the final answer message: reasoning items and `commentary`
+preambles are skipped, and usage is reported as prompt and completion tokens. A refusal, a failed
+or unfinished response, or one without answer text raises an adapter error, so the router falls
+back to the next provider, as when Claude returns no text. A cut-off answer is returned with finish
+reason `length`, as on Chat Completions. Errors and logs name only the status, error code or HTTP
+status, never model output. Any other `*-healthcare` value, including a differently cased or
+prefixed ID, stops startup with a validation error listing the supported IDs. The Responses path
+needs `openai>=1.66.0`, the first SDK release with `client.responses`.
+
+Prompt caching stays on (OpenAI enables it by default and `store: false` does not turn it off). On
+GPT-5.6 and later models the default breakpoint follows the last user message, so a prompt of at
+least 1,024 tokens, de-identified case included, can be written to the cache at 1.25× the input
+rate with a 30-minute minimum lifetime
+([prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching)). medagent sets no
+`prompt_cache_options`.
+
 ### Sampling-parameter compatibility
 
 Current reasoning models fix or reject sampling parameters, so each adapter shapes its request
 per model (`accepts_temperature()` in `src/medagent/llm/adapters.py`): the clinical
 `temperature=0.1` is sent only where the provider allows it, and no adapter ever sends `top_p`,
 `top_k`, `logprobs` or `top_logprobs`. Model families are matched on the final path segment of the
-id, so a resource name such as `models/gemini-4-hydrogen` is shaped like `gemini-4-hydrogen`. No
-adapter sends a thinking or reasoning-effort setting either, so each model keeps its default. The
+id, so a resource name such as `models/gemini-4-hydrogen` is shaped like `gemini-4-hydrogen`. Apart
+from the OpenAI [healthcare model configurations](#openai-healthcare-model-configurations-opt-in)
+(reasoning effort `medium` on the Responses API), no adapter sends a thinking or reasoning-effort
+setting, so each model keeps its default. The
 OpenAI adapter also sends no tools or `service_tier`: GPT-6.2 supports tool calling only through
 the Responses API and offers no Flex processing. Switching to any model below cannot trigger a
 sampling-parameter `400`.
@@ -83,7 +145,7 @@ sampling-parameter `400`.
 | Family | Provider rule | medagent |
 |---|---|---|
 | Claude (every model) | `400` for `temperature`, `top_p` or `top_k` on every model since API version 2026-10-21, and for any non-default value on the Claude 5.5 family (`claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5`) and Claude Fable 5.x (`claude-fable-5-2`, `claude-fable-5-1`); `output_config.effort` is the supported knob. Claude Fable 5.2 also returns `400` for `thinking` set to `enabled` or `disabled` (adaptive thinking is always on) | never sent; `thinking` is omitted too |
-| OpenAI GPT-5+/o-series | `temperature`, `top_p`, `top_logprobs` (and `logprobs` on Chat Completions) rejected unless reasoning effort is `none`. GPT-6.2 Sol / GPT-6.2 Astra reject `none` (OpenAI: use `low` instead of `none` or `minimal`), so they never accept these parameters; GPT-6.1 Sol / GPT-6 Astra support only `low`…`max`, GPT-6.1 Terra / GPT-6 Luna accept `none` | omitted (no `reasoning_effort` is sent, so the model default applies); budget sent as `max_completion_tokens` |
+| OpenAI GPT-5+/o-series | `temperature`, `top_p`, `top_logprobs` (and `logprobs` on Chat Completions) rejected unless reasoning effort is `none`. GPT-6.2 Sol / GPT-6.2 Astra reject `none` (OpenAI: use `low` instead of `none` or `minimal`), so they never accept these parameters; GPT-6.1 Sol / GPT-6 Astra support only `low`…`max`, GPT-6.1 Terra / GPT-6 Luna accept `none` | omitted (no `reasoning_effort` is sent, so the model default applies); budget sent as `max_completion_tokens`. Healthcare configurations: Responses API with `reasoning.effort` `medium` and `max_output_tokens` |
 | Gemini 3.x / Gemini 4 (incl. `gemini-3.8-flash`, `gemini-4-argon`, `gemini-4-carbon`, `gemini-4-neon`, `gemini-4-hydrogen`) | Google says to remove `temperature`, `top_p` and `top_k`; if provided they are ignored. Default thinking level is `medium` on Carbon and Argon and `high` on Neon and Hydrogen (Hydrogen rejects `minimal`; Neon offers `low` to `xhigh`) | omitted; no thinking config is sent |
 | Kimi K2.6 / K2.7 / K3 series | `temperature` is fixed (`1.0`; `kimi-k2.6` uses `0.6` with thinking off); other values return an error (`reasoning_effort` `low`/`high`/`max` is the K3 knob) | omitted |
 | Older models (e.g. `gpt-4.1`, Gemini 2.5) | Accept sampling parameters. From 2026-12-01 Google serves `gemini-2.5-pro` requests with `gemini-3.8-flash` (and `gemini-2.5-flash` with `gemini-3.5-flash-lite`), which ignore the temperature. Kimi's `moonshot-v1` and original K2 preview models are already retired | `temperature=0.1` |

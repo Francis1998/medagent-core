@@ -59,7 +59,7 @@ src/medagent/
 │
 ├── llm/
 │   ├── base.py            # BaseLLMAdapter ABC + LLMResponse dataclass
-│   ├── adapters.py        # OpenAI, Anthropic, Google, Kimi concrete adapters
+│   ├── adapters.py        # OpenAI (Chat Completions; Responses for healthcare configs), Anthropic, Google, Kimi
 │   ├── router.py          # MedicalRouter: task-to-provider routing with fallback chain
 │   └── validator.py       # MedicalOutputValidator: prohibited content detection
 │
@@ -154,11 +154,24 @@ src/medagent/
 
 Adapters never send sampling parameters or a thinking override to Claude, omit `temperature` for
 model families that fix it (GPT-5+/o-series, Gemini 3+/4, Kimi K2.6/K2.7/K3), and size every
-request with `LLM_MAX_OUTPUT_TOKENS`, which includes reasoning tokens. The OpenAI adapter sends no
-`reasoning_effort`, tools or `service_tier`, so its Chat Completions request stays valid for GPT-6.2,
-which rejects effort `none` and supports tool calling only through the Responses API. Documented
+request with `LLM_MAX_OUTPUT_TOKENS`, which includes reasoning tokens. Documented
 alternatives such as GPT-6.2 Astra, Claude Fable 5.2 and Gemini 4 Carbon, Neon or Hydrogen get the
 same shaping — see [CONFIGURATION.md](CONFIGURATION.md#sampling-parameter-compatibility).
+
+The OpenAI adapter has two request paths, chosen when it is built from its model (`OPENAI_MODEL` by
+default):
+
+| Path | Models | Request |
+|---|---|---|
+| Chat Completions (`client.chat.completions.create`) | every OpenAI model except the healthcare configurations | System + user messages, `max_completion_tokens`; no `reasoning_effort`, tools or `service_tier`, so it stays valid for GPT-6.2, which rejects effort `none` and supports tool calling only through the Responses API |
+| Responses (`client.responses.create`) | the opt-in healthcare model configurations in `OPENAI_HEALTHCARE_CONFIGURATIONS` (`src/medagent/config.py`), which OpenAI serves on `/v1/responses` only | System prompt as the leading `developer` input item, case as the `user` item, `max_output_tokens`, `reasoning.effort` `medium`, `store: false`; no tools (no web search) or sampling parameters |
+
+Both paths share the client, timeouts, retries and log redaction, and return the same
+`LLMResponse`. The Responses path returns only the final answer text (reasoning items and
+`commentary` preambles are skipped) and raises `LLMAdapterError` on a refusal, a failed or
+unfinished response, or no answer text, so the router falls back. An unknown `*-healthcare` model
+fails at startup — see
+[CONFIGURATION.md](CONFIGURATION.md#openai-healthcare-model-configurations-opt-in).
 
 All responses pass through `MedicalOutputValidator` before returning. If the validator rejects the response (prohibited prescription language), the fallback chain is tried automatically.
 
