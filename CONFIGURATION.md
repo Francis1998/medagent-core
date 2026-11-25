@@ -116,8 +116,9 @@ The answer is the `output_text` of the final answer message: reasoning items and
 preambles are skipped, and usage is reported as prompt and completion tokens. A refusal, a failed
 or unfinished response, or one without answer text raises an adapter error, so the router falls
 back to the next provider, as when Claude returns no text. A cut-off answer is returned with finish
-reason `length`, as on Chat Completions. Errors and logs name only the status, error code or HTTP
-status, never model output. Any other `*-healthcare` value, including a differently cased or
+reason `length`, as on Chat Completions. Errors and logs name only a documented status, error code
+or incomplete reason (anything else is reported as `unknown`) or the HTTP status, never model
+output. Any other `*-healthcare` value, including a differently cased or
 prefixed ID, stops startup with a validation error listing the supported IDs. The Responses path
 needs `openai>=1.66.0`, the first SDK release with `client.responses`.
 

@@ -67,6 +67,29 @@ _HEALTHCARE_REASONING_EFFORT = "medium"
 # Responses API ``incomplete_details.reason`` -> the Chat Completions ``finish_reason`` it matches.
 _INCOMPLETE_FINISH_REASONS = {"max_output_tokens": "length", "content_filter": "content_filter"}
 
+# Documented values of the Responses API fields that adapter errors and finish reasons quote.
+# The SDK builds responses without validation, so any other value (from a proxy behind
+# OPENAI_BASE_URL, say) is reported as "unknown": adapter errors are logged, never response text.
+_RESPONSE_STATUSES = frozenset(
+    {"completed", "incomplete", "failed", "in_progress", "cancelled", "queued"}
+)
+_INCOMPLETE_REASONS = frozenset({"max_output_tokens", "content_filter", "max_messages", "steered"})
+_RESPONSE_ERROR_CODES = frozenset(
+    {
+        "server_error", "rate_limit_exceeded", "invalid_prompt", "data_residency_mismatch",
+        "bio_policy", "misalignment_policy_violation", "vector_store_timeout", "invalid_image",
+        "invalid_image_format", "invalid_base64_image", "invalid_image_url", "image_too_large",
+        "image_too_small", "image_parse_error", "image_content_policy_violation",
+        "invalid_image_mode", "image_file_too_large", "unsupported_image_media_type",
+        "empty_image_file", "failed_to_download_image", "image_file_not_found",
+    }
+)  # fmt: skip
+
+
+def _documented(value: Any, allowed: frozenset[str]) -> str:
+    """Return ``value`` if it is one of the ``allowed`` strings, otherwise ``"unknown"``."""
+    return value if isinstance(value, str) and value in allowed else "unknown"
+
 
 class OpenAIAdapter(BaseLLMAdapter):
     """OpenAI adapter using the official ``openai`` SDK, with two request paths.
@@ -212,8 +235,8 @@ def _responses_llm_response(response: Any, requested_model: str) -> LLMResponse:
     Only ``output_text`` parts of answer messages form the content: reasoning items and
     ``commentary`` messages (intermediate preambles) are not the answer. A failed or
     unfinished response, a refusal, or no answer text raises LLMAdapterError so the router
-    falls back, as for a Claude response without text. Errors name only the status, error code
-    or incomplete reason, never model output.
+    falls back, as for a Claude response without text. Errors name only a documented status,
+    error code or incomplete reason (anything else is ``unknown``), never model output.
 
     Args:
         response: ``openai.types.responses.Response``.
@@ -225,9 +248,9 @@ def _responses_llm_response(response: Any, requested_model: str) -> LLMResponse:
     Raises:
         LLMAdapterError: As described above.
     """
-    status = response.status or "completed"
+    status = _documented(response.status or "completed", _RESPONSE_STATUSES)
     if status == "failed":
-        code = getattr(response.error, "code", None) or "unknown"
+        code = _documented(getattr(response.error, "code", None), _RESPONSE_ERROR_CODES)
         raise LLMAdapterError(f"OpenAI response failed (code={code})")
     if status not in ("completed", "incomplete"):
         raise LLMAdapterError(f"OpenAI response did not finish (status={status})")
@@ -241,7 +264,7 @@ def _responses_llm_response(response: Any, requested_model: str) -> LLMResponse:
     if any(part.type == "refusal" for part in parts):
         raise LLMAdapterError("OpenAI declined the request (refusal)")
     text = "".join(part.text for part in parts if part.type == "output_text")
-    reason = getattr(response.incomplete_details, "reason", None) or "unknown"
+    reason = _documented(getattr(response.incomplete_details, "reason", None), _INCOMPLETE_REASONS)
     if not text:
         raise LLMAdapterError(f"OpenAI returned no text content (status={status}, reason={reason})")
 

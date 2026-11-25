@@ -85,8 +85,8 @@ only, released 2026-11-24). This opt-in vendor option is bound by these rules
   provisioned account configuration. medagent is not to be given identifiable patient data either
   way.
 - **Logs stay metadata-only (§3.5).** Responses API errors log only the exception class and HTTP
-  status, and adapter errors name only the response status, error code or incomplete reason, never
-  model output or refusal text.
+  status, and adapter errors name only a documented response status, error code or incomplete
+  reason (any other value is reported as `unknown`), never model output or refusal text.
 
 ### 3.3 Medical Output Validation
 The `MedicalOutputValidator` (`src/medagent/llm/validator.py`) scans every LLM completion for prohibited language patterns before it is returned. Outputs containing "prescribe", "start the patient on", or a dose directive ("administer X mg", "dosage of X mg", "recommend X mg") are **rejected** and trigger the fallback adapter chain. The dose X matches integers and decimals in any common notation, regardless of locale: `5`, `0.5`, `0,5` (decimal comma), `1,000`, `2·5` (typographic decimal point) and `.5` (naked leading decimal point). Text without a directive verb, such as lab values, medication lists and past-tense history ("administered 0.4 mg"), is not affected.
@@ -121,7 +121,7 @@ Audit-path logs never carry clinical content or credentials: the audit engine is
 Application logs carry safe metadata only (`exception_fields` in `src/medagent/logging_config.py`): event names, session ids, counts, the exception class and any HTTP status code. Exception messages, tracebacks, query text, model output and request URLs are never logged, because each can echo clinical text. The rule covers:
 - the API: unhandled exceptions become a sanitised HTTP 500 inside the application, so the server never logs their traceback. They are logged with the route template, never the caller-controlled request path, and a failure after the response has started aborts it with a fixed message;
 - the agent's unexpected-error path, whose response and audit `uncertainty_flags` also name only the exception class;
-- the LLM adapters, whose `LLMAdapterError` messages name only the exception class (or, for a Responses API reply without a usable answer, its status, error code or incomplete reason);
+- the LLM adapters, whose `LLMAdapterError` messages name only the exception class (or, for a Responses API reply without a usable answer, its documented status, error code or incomplete reason, with any other value reported as `unknown`);
 - the output validator, which logs only the matched rule and whose error message does not repeat model output, plus the router and the reasoning engine;
 - scope checks, which log only the matched rule and never query text;
 - the PubMed, RxNorm/OpenFDA and local-KB retrieval paths, including interactions suppressed for lack of a second source, which log only the source names.
