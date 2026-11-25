@@ -25,6 +25,7 @@ from pydantic import BaseModel
 import medagent.safety as safety_pkg
 from medagent.extraction.fhir_parser import (
     FHIRParseError,
+    concept_name,
     parse_fhir_bundle,
     sanitise_clinical_text,
 )
@@ -913,6 +914,25 @@ def _is_inactive_allergy(resource: dict[str, Any]) -> bool:
     return bool(codes) and codes <= _NO_LONGER_ACTIVE_ALLERGY
 
 
+def _unnamed_allergies(entries: list[dict[str, Any]]) -> int:
+    """Count the screenable AllergyIntolerances that have no substance name.
+
+    The allergy checks match names, so an allergy whose ``code`` has neither
+    ``text`` nor any coding ``display`` (code-only, or no ``code``) cannot be
+    screened; it is counted so that callers report it instead of screening as
+    if it were not on record. Invalidated and inactive allergies are excluded
+    first, exactly as ``parse_fhir_bundle`` excludes them.
+    """
+    return sum(
+        1
+        for entry in entries
+        if (resource := entry.get("resource", {})).get("resourceType") == "AllergyIntolerance"
+        and not _is_invalidated(resource)
+        and not _is_inactive_allergy(resource)
+        and concept_name(resource.get("code")) is None
+    )
+
+
 def _patient_redactor(patient: dict[str, Any] | None) -> Callable[[str], str]:
     """Return a function that redacts this Patient's own identifiers from free text."""
     tokens: set[str] = set()
@@ -997,17 +1017,6 @@ def _select_medication_resources(
     return selected, notes
 
 
-def _concept_name(concept: Any) -> str | None:
-    """Return a CodeableConcept's text or first coding display; a bare code is not a name."""
-    if not isinstance(concept, dict):
-        return None
-    codings = concept.get("coding")
-    candidates = [concept.get("text")]
-    if isinstance(codings, list):
-        candidates += [c.get("display") for c in codings if isinstance(c, dict)]
-    return next((c for c in candidates if isinstance(c, str) and c.strip()), None)
-
-
 def _restful_base(full_url: Any) -> str | None:
     """Return the server base of a RESTful ``fullUrl``, or None (absent, urn:uuid, ...)."""
     match = _RESTFUL_URL.match(full_url) if isinstance(full_url, str) else None
@@ -1085,7 +1094,7 @@ def _prepare_medication_resources(
         if concept is None and isinstance(reference, str):
             medication = _resolve_medication(reference, entry, by_url, by_id)
             concept = medication.get("code") if medication is not None else None
-        name = _concept_name(concept)
+        name = concept_name(concept)
         copy["medicationCodeableConcept"] = (
             {**concept, "text": name} if name and isinstance(concept, dict) else {}
         )
@@ -1181,6 +1190,12 @@ def _parse_fhir_bundle(arguments: dict[str, Any]) -> ToolOutput:
         issues.append(
             f"{adapted.skipped_count} current medication(s) could not be named and are missing "
             "from screening_input; screening the list unchanged could miss interactions"
+        )
+    unnamed_allergies = _unnamed_allergies(entries)
+    if unnamed_allergies:
+        issues.append(
+            f"{unnamed_allergies} allergy record(s) could not be named and are missing from "
+            "screening_input; screening the list unchanged could miss drug-allergy conflicts"
         )
 
     notes = [

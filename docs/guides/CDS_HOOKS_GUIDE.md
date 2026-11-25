@@ -266,7 +266,7 @@ flowchart LR
 | `context.selections` (`order-select`) | `Type/id` or `fullUrl` of draftOrders entries; the focus of the screen (unknown references are a 400) | "selected order" |
 | `prefetch.patient` | `birthDate` → age (Beers 65+); names, identifiers, telecom and address are used only to redact them from free text | — |
 | `prefetch.activeMedications` (`active`, `on-hold`; `_include`d `Medication`s resolve references) | Current medications. One that is also being revised in `draftOrders` (same id) is screened once, as the draft. `doNotPerform: true` orders are not current therapy and are not screened | "current medication" |
-| `prefetch.allergies` | Allergy text. Records whose `clinicalStatus` is `inactive` or `resolved`, or whose `verificationStatus` is `refuted` or `entered-in-error`, are excluded; a missing or `unconfirmed` status is still screened. `null` = none on record, so the allergy checks run | — |
+| `prefetch.allergies` | Allergy names: `code.text` or a coding `display` (any coding, not just the first). An allergy without a name (code-only, or no `code`) cannot be matched and is counted on the coverage card (`N allergy record(s) not screened`) instead of being dropped silently. Records whose `clinicalStatus` is `inactive` or `resolved`, or whose `verificationStatus` is `refuted` or `entered-in-error`, are excluded; a missing or `unconfirmed` status is still screened. `null` = none on record, so the allergy checks run | — |
 | `prefetch.egfr` | eGFR in mL/min/1.73 m² (UCUM-checked, mL/s converted exactly); the **lowest** returned value is used. Observations are recognised by the requested LOINC codes whatever their display text (code-only, LOINC display or short name, local text). A result reported only as a lower bound (`valueQuantity.comparator` `>`/`>=`, e.g. `>60`) is not used, because it never shows an eGFR at or below a dosing threshold; an upper bound (`<15`) is used at its stated value | — |
 | `fhirServer`, `fhirAuthorization` | **Ignored.** No FHIR server is ever queried; access tokens are never logged or stored | — |
 | finding `severity` | — | `indicator` |
@@ -462,7 +462,7 @@ To try the services in the sandbox (instructions only; this PR did not test the 
   "finding withheld — escalate" card with the same indicator.
 - **Escalation, not reassurance** (§3.4): HIGH and CRITICAL cards say so; every card states that the
   absence of a finding is not evidence of safety; a coverage card reports missing data, unscreened
-  orders and checks that did not run.
+  orders and allergies, and checks that did not run.
 - **Right patient only**: resources that reference anyone but `context.patientId` are rejected.
 - **De-identified** (§3.5): free text goes through the same redaction as the MCP tools; audit rows
   and logs hold hashes, ids and codes only.
@@ -475,8 +475,9 @@ To try the services in the sandbox (instructions only; this PR did not test the 
 - **No JWT authentication** (see above); research sandboxes behind a gateway only.
 - **No FHIR server queries**: data the client does not prefetch is not screened; paginated prefetch
   is screened from its first page only.
-- **Name-based matching**: code-only medications (an RxNorm code with no text or display) are not
-  screened and are reported on the coverage card; coverage is limited to the curated rules.
+- **Name-based matching**: code-only medications and allergies (an RxNorm or SNOMED CT code with no
+  text or display) are not screened and are reported on the coverage card; coverage is limited to
+  the curated rules.
 - **Not evaluated**: pregnancy, lactation and hepatic dosing (not derived from FHIR); dose
   appropriateness beyond the renal and Beers checks.
 - **FHIR R4 `MedicationRequest` drafts only**: no `MedicationDispense`, no DSTU2 `MedicationOrder`.
@@ -519,7 +520,7 @@ These are read from the environment or `.env` (see [CONFIGURATION.md](../../CONF
 
 | Symptom | Cause and fix |
 | --- | --- |
-| `{"cards": []}` for an order you expected to flag | Check the medication has a name (`text` or a coding `display`), its status is `draft`/`active`/`on-hold` and it is not a `doNotPerform` order, and the partner drug was prefetched. Name matching is whole-token. An allergy only counts while its `clinicalStatus` is not `inactive`/`resolved` and it is not `refuted` or `entered-in-error`. |
+| `{"cards": []}` for an order you expected to flag | Check the medication has a name (`text` or a coding `display`), its status is `draft`/`active`/`on-hold` and it is not a `doNotPerform` order, and the partner drug was prefetched. Name matching is whole-token. An allergy only counts while it has a name (`code.text` or a coding `display`; otherwise the coverage card counts it), its `clinicalStatus` is not `inactive`/`resolved` and it is not `refuted` or `entered-in-error`. |
 | Info card "missing prefetch …" | The client did not send those keys. Configure the EHR or sandbox to satisfy the templates from `GET /cds-services`. |
 | `400` "must reference context.patientId" | A draft order or prefetched resource names another patient, or uses an identifier-only reference. Send one patient's resources. |
 | `400` "context.selections must reference resources in context.draftOrders" | Each selection must be `ResourceType/id` (or the `fullUrl`) of an entry in `draftOrders`. |

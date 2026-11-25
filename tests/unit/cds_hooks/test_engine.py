@@ -277,6 +277,45 @@ def test_allergies_with_an_unconfirmed_or_missing_status_are_still_screened(
     assert summaries(result.cards) == [AMOXICILLIN_ALLERGY_CARD]
 
 
+SNOMED = "http://snomed.info/sct"
+RXNORM = "http://www.nlm.nih.gov/research/umls/rxnorm"
+
+
+def _amoxicillin_with_allergy_code(code: dict[str, Any]) -> dict[str, Any]:
+    """An amoxicillin order for the example patient, whose allergy is coded as ``code``."""
+    body = order_sign(draft("Amoxicillin 500 mg capsule"))
+    body["prefetch"]["allergies"]["entry"][0]["resource"]["code"] = code
+    return body
+
+
+def test_an_allergy_named_by_a_later_coding_display_raises_the_allergy_card() -> None:
+    code = {
+        "coding": [
+            {"system": SNOMED, "code": "764146007"},
+            {"system": RXNORM, "code": "7980", "display": "Penicillin G"},
+        ]
+    }
+
+    result = evaluate_hook(ORDER_SIGN, _amoxicillin_with_allergy_code(code))
+
+    assert summaries(result.cards) == [AMOXICILLIN_ALLERGY_CARD]
+
+
+def test_a_code_only_allergy_is_reported_on_the_coverage_card() -> None:
+    code = {"coding": [{"system": RXNORM, "code": "7980"}]}
+
+    result = evaluate_hook(ORDER_SIGN, _amoxicillin_with_allergy_code(code))
+
+    assert summaries(result.cards) == [
+        ("info", "Partial medication-safety screen: 1 allergy record(s) not screened")
+    ]
+    assert (
+        "- 1 allergy record(s) could not be screened: no substance name"
+        in result.cards[0]["detail"]
+    )
+    assert result.prefetch_gaps == ()
+
+
 @pytest.mark.parametrize(
     "code",
     [

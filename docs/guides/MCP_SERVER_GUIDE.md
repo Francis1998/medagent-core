@@ -376,10 +376,14 @@ value or a non-boolean value is screened. Result for
 
 Pass `screening_input` unchanged as the `arguments` of `screen_medications`; it is validated against
 that tool's input schema and any problem (for example more than 100 current medications, or a
-current medication that cannot be named) is listed in `screening_input_issues` instead of being
-silently truncated or split. A medication is named only by its concept `text`, a coding `display`
-or the reference `display` — never by a bare code, because the checkers match names — so a
-code-only (for example RxNorm-only) medication is reported rather than screened as a number.
+current medication or allergy that cannot be named) is listed in `screening_input_issues` instead
+of being silently truncated, split or dropped. A medication is named only by its concept `text`, a
+coding `display` (any coding, not just the first) or the reference `display` — never by a bare
+code, because the checkers match names — so a code-only (for example RxNorm-only) medication is
+reported rather than screened as a number. An allergy is named the same way from its `code`, so a
+substance named only on a later coding (a SNOMED CT code without a display, then an RxNorm coding
+with one) is still screened, and a code-only allergy is reported as `N allergy record(s) could not
+be named and are missing from screening_input` rather than screened as if it were not on record.
 `medicationReference`s are resolved against contained and bundled `Medication` resources: an
 absolute reference by exact `fullUrl`, a relative one on the requesting entry's server (or by a
 logical id that is unique in the bundle), so same-id Medications from different servers are never
@@ -569,7 +573,7 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 | `isError: true` with `Invalid arguments: …` | Fix the argument at the reported path (for example `arguments.patient.egfr must be <= 250`). |
 | `Input rejected by scope enforcement` | A free-text argument asked for browsing, code execution or a non-clinical task. |
 | Fewer checks than expected | Look at `checks_skipped`; supply `age`, `egfr`, `hepatic_function`, `pregnant`, `breastfeeding` or `allergies`. |
-| A medication or allergy from the bundle is not screened | Look at `medication_notes` and `notes`: non-current statuses, `doNotPerform` orders and inactive, resolved, refuted or entered-in-error allergies are excluded and counted there. |
+| A medication or allergy from the bundle is not screened | Look at `medication_notes` and `notes`: non-current statuses, `doNotPerform` orders and inactive, resolved, refuted or entered-in-error allergies are excluded and counted there. Medications and allergies without a name (no `text` or coding `display`) are counted in `screening_input_issues`; add their names before screening. |
 | Large bundle rejected (`Message exceeds 8388608 bytes`) | Send only the Patient, MedicationRequest, MedicationStatement, Observation and AllergyIntolerance entries. |
 | `Bundle contains 2 Patient resources` / `Bundle mixes patients` | Send one patient's resources per call (filter by `subject`). |
 | `screening_input_issues` is not empty | The regimen cannot be screened unchanged (for example more than 100 current medications); review it rather than splitting it, which would miss cross-medication interactions. |
@@ -580,7 +584,8 @@ audit write is logged (`mcp_audit_write_failed`) and never breaks the tool call.
 
 - Medication matching is name-based and deterministic (whole-token, plus aliases defined by each
   checker); there is no RxNorm normalisation or offline code-to-name lookup (code-only FHIR
-  medications are reported in `screening_input_issues`), and coverage is limited to the curated rules.
+  medications and allergies are reported in `screening_input_issues`), and coverage is limited to
+  the curated rules.
 - No dose calculations, no indication checks, no lab-trend bridges or scorers over MCP.
 - Pregnancy, lactation and hepatic status are never inferred from FHIR.
 - De-identification is pattern- and bundle-based: free text sent to `screen_medications` or

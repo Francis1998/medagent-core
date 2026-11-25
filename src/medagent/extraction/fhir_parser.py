@@ -265,19 +265,34 @@ def _extract_observations(observations: list[dict[str, Any]]) -> list[LabResult]
     return labs
 
 
+def concept_name(concept: Any) -> str | None:
+    """Return a CodeableConcept's ``text``, else the first non-blank coding ``display``.
+
+    Every coding is considered, not just the first: FHIR makes ``display``
+    optional, so the name is often on a later coding (for example a SNOMED CT
+    code without a display followed by an RxNorm coding with one). A bare code
+    is not a name, because the safety checkers match names.
+    """
+    if not isinstance(concept, dict):
+        return None
+    codings = concept.get("coding")
+    candidates = [concept.get("text")]
+    if isinstance(codings, list):
+        candidates += [coding.get("display") for coding in codings if isinstance(coding, dict)]
+    return next((c for c in candidates if isinstance(c, str) and c.strip()), None)
+
+
 def _extract_allergies(allergy_list: list[dict[str, Any]]) -> list[str]:
-    """Extract allergy substance names from AllergyIntolerance resources."""
-    allergies: list[str] = []
-    for allergy in allergy_list:
-        code = allergy.get("code", {})
-        text = code.get("text")
-        if not text:
-            codings = code.get("coding", [])
-            if codings:
-                text = codings[0].get("display")
-        if text:
-            allergies.append(text)
-    return allergies
+    """Extract allergy substance names from AllergyIntolerance resources.
+
+    An allergy is named by :func:`concept_name` of its ``code``; one without a
+    name (code-only, or no ``code``) cannot be screened by name and is left out,
+    so callers that screen allergies must report it (the MCP
+    ``parse_fhir_bundle`` tool does).
+    """
+    return [
+        name for allergy in allergy_list if (name := concept_name(allergy.get("code"))) is not None
+    ]
 
 
 def _extract_chief_complaint(resources: dict[str, list[dict[str, Any]]]) -> str:
