@@ -301,6 +301,12 @@ def test_an_allergy_named_by_a_later_coding_display_raises_the_allergy_card() ->
     assert summaries(result.cards) == [AMOXICILLIN_ALLERGY_CARD]
 
 
+def test_an_allergy_recorded_as_its_drug_class_raises_the_allergy_card() -> None:
+    result = evaluate_hook(ORDER_SIGN, _amoxicillin_with_allergy_code({"text": "Penicillins"}))
+
+    assert summaries(result.cards) == [AMOXICILLIN_ALLERGY_CARD]
+
+
 def test_a_code_only_allergy_is_reported_on_the_coverage_card() -> None:
     code = {"coding": [{"system": RXNORM, "code": "7980"}]}
 
