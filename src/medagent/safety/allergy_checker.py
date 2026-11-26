@@ -8,7 +8,8 @@ flags two failure modes that cause real harm:
    patient is documented as allergic to.
 2. **Cross-reactivity** conflicts — a medication in the same drug class as an
    allergen, where class-level cross-reactivity is well documented (for example
-   the penicillins, or the sulfonamide antibiotics).
+   the penicillins, or the sulfonamide antibiotics). An allergy recorded by the
+   class itself ("Penicillins", "Sulfa", "NSAIDs") is an allergen of that class.
 
 The checker is deliberately conservative and deterministic: it matches on
 whole-word/component tokens (never loose substrings) and only within
@@ -84,6 +85,27 @@ _CROSS_REACTIVITY_CLASSES: list[tuple[str, Severity, frozenset[str]]] = [
     ),
 ]
 
+# Names an allergy record gives a whole class instead of one member, as EHR allergen
+# pick-lists ("Penicillins", "Sulfa (Sulfonamide Antibiotics)", "NSAIDs") and SNOMED CT
+# substance displays ("Cephalosporin", "Non-steroidal anti-inflammatory agent") do. A name
+# matches when all of its whole tokens occur in the allergy text. Medication names are never
+# matched against them: a medication names a drug, not its class.
+_ALLERGY_CLASS_NAMES: dict[str, tuple[frozenset[str], ...]] = {
+    "penicillins": (frozenset({"penicillins"}),),
+    "cephalosporins": (frozenset({"cephalosporin"}), frozenset({"cephalosporins"})),
+    "sulfonamides": (
+        frozenset({"sulfa"}),
+        frozenset({"sulfonamide"}),
+        frozenset({"sulfonamides"}),
+    ),
+    "nsaids": (
+        frozenset({"nsaid"}),
+        frozenset({"nsaids"}),
+        frozenset({"nonsteroidal", "anti", "inflammatory"}),
+        frozenset({"non", "steroidal", "anti", "inflammatory"}),
+    ),
+}
+
 
 class AllergyChecker:
     """Flag conflicts between medications and documented patient allergies."""
@@ -126,7 +148,7 @@ class AllergyChecker:
                         )
                     )
                     continue
-                shared_class = self._shared_class(med_classes, self._classes_for(allergy_toks))
+                shared_class = self._shared_class(med_classes, self._allergy_classes(allergy_toks))
                 if shared_class is not None:
                     class_name, severity = shared_class
                     conflicts.append(
@@ -187,6 +209,24 @@ class AllergyChecker:
             for class_name, _severity, members in _CROSS_REACTIVITY_CLASSES
             if tokens & members
         }
+
+    @staticmethod
+    def _allergy_classes(tokens: set[str]) -> set[str]:
+        """Return the cross-reactivity classes an allergy names.
+
+        Args:
+            tokens: Component tokens of an allergy name.
+
+        Returns:
+            Classes with a member among the tokens, plus classes the allergy
+            names as a whole (``Penicillins``, ``Sulfa``, ``NSAIDs``, ...).
+        """
+        named = {
+            class_name
+            for class_name, names in _ALLERGY_CLASS_NAMES.items()
+            if any(name <= tokens for name in names)
+        }
+        return AllergyChecker._classes_for(tokens) | named
 
     @staticmethod
     def _shared_class(

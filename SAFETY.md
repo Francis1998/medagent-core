@@ -148,7 +148,7 @@ These are configured in `.env` and enforced via `asyncio.wait_for`. The agent ca
 `safety/allergy_checker.py` cross-checks a patient's active medications against their documented allergies (both already present on `FHIRPatientContext`). It flags two conflict types:
 
 - **Direct** — the medication is, or contains as a component, a documented allergen (e.g. `Penicillin V Potassium` vs a `penicillin` allergy).
-- **Cross-reactivity** — the medication and allergen belong to the same well-established drug class with documented intra-class cross-reactivity (penicillins, cephalosporins, sulfonamides, NSAIDs).
+- **Cross-reactivity** — the medication and allergen belong to the same well-established drug class with documented intra-class cross-reactivity (penicillins, cephalosporins, sulfonamides, NSAIDs). An allergy recorded by the class itself, as EHR allergen lists and SNOMED CT substance names do, is an allergen of that class: `Penicillins`, `Cephalosporin(s)`, `Sulfa` / `Sulfonamide(s)`, and `NSAID(s)` / `Non-steroidal anti-inflammatory` (e.g. amoxicillin vs a `Penicillins` allergy, or sulfamethoxazole-trimethoprim vs `Sulfa`). Class names are matched in allergy text only; a broader class such as `Beta-lactams` is not mapped onto these classes.
 
 Matching is deterministic and whole-token based to avoid loose-substring false positives; a direct match takes precedence over a cross-reactivity match. Per the research-use posture, the checker does not model inter-class cross-reactivity (e.g. penicillin ↔ cephalosporin) to avoid false alarms. Conflicts are returned as `AllergyConflict` records and are **advisory** — they never auto-modify a medication list.
 
