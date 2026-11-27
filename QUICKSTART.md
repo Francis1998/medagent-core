@@ -129,6 +129,18 @@ python scripts/eval_drugbank.py
 
 Results are saved to `results/drugbank_eval.json`.
 
+### Rubric evaluation (free-text answer safety)
+
+```bash
+python -m medagent.evals run \
+    --dataset examples/rubric_eval/safety_rubrics.jsonl \
+    --responses careful=examples/rubric_eval/responses_careful.jsonl \
+    --generate-offline
+```
+
+Grades answers against HealthBench-style rubrics offline and writes `results/rubric_eval.json`
+and `results/rubric_eval.md`. See [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides/RUBRIC_EVAL_GUIDE.md).
+
 ---
 
 ## Key Endpoints

@@ -3446,3 +3446,31 @@ code:
   implemented: research sandboxes behind an authenticating gateway only.
 
 See `docs/guides/TRIAL_ELIGIBILITY_GUIDE.md`.
+
+---
+
+## 12. Rubric Evaluation Safety Model
+
+`python -m medagent.evals` (`src/medagent/evals/`) grades free-text answers against
+HealthBench-style rubrics. It is a research benchmark, not a safety certification.
+
+- **Research only.** A rubric score ranks answers against the criteria in one dataset; it is not
+  evidence that any answer, model configuration or medagent itself is clinically safe. Every
+  report and the CLI output carry the research-use notice.
+- **Never guessed.** Only criteria with a machine-checkable `check` spec are graded. All others
+  are reported as `ungraded`, excluded from both sums of the score and listed in every report,
+  together with the share of positive points that was graded.
+- **Heuristic grader limits.** Detectors are English-only regular expressions over the answer
+  (not the conversation) with clause-level negation handling. Dose detection is deliberately
+  conservative (a maximum-dose warning counts as a dose directive); unusual phrasings of
+  emergency advice can be missed; patterns check wording, not clinical appropriateness.
+- **No clinical text in logs or errors.** The harness logs nothing about prompts or answers; the
+  pipeline's own logs carry ids, states and counts (§3.5). Validation errors name file, line and
+  field, never values.
+- **Data handling.** Reports quote criteria and up to 160-character answer excerpts
+  (`--no-evidence` drops them from the JSON). Use synthetic, PHI-free datasets such as
+  `examples/rubric_eval/`; generated reports under `results/` are git-ignored.
+- **Offline by default.** Grading and `--generate-offline` make no network calls and need no
+  keys; the harness never calls an LLM itself.
+
+See `docs/guides/RUBRIC_EVAL_GUIDE.md`.

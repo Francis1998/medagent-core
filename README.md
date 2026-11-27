@@ -152,6 +152,7 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 5 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | HL7 CDS Hooks 2.0 service | `order-sign` and `order-select` services that screen draft orders against prefetched current medications, allergies, age and eGFR with the same checks; advisory cards only (no suggestions or system actions), info card when prefetch is missing, de-identified feedback; no FHIR server, LLM or network calls | `src/medagent/cds_hooks/`, `src/medagent/api/cds_hooks.py` | [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md) |
 | Clinical-trial pre-screening (research only) | One FHIR patient against 1–20 structured trial definitions (ClinicalTrials.gov `eligibilityModule` + condition, medication, lab, pregnancy, lactation and free-text criteria): `met` / `not_met` / `insufficient_data` / `requires_human_review` per criterion with evidence pointers, deterministic ranking, free text never guessed, never an eligibility determination; MCP tool `screen_trial_eligibility` and `POST /trials/eligibility` | `src/medagent/trials/`, `src/medagent/api/trials.py` | [Trial eligibility guide](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) |
+| Rubric evaluation (HealthBench-style) | Grade free-text answers against physician-style rubrics (positive and negative points, `axis:` / `theme:` tags; HealthBench JSONL loads unchanged): deterministic offline checks for emergency escalation, dose directives, disclaimers, referrals and clarifying questions; ungraded criteria disclosed, never guessed; per-axis and per-theme scores with a seeded bootstrap CI; JSON + Markdown reports and a `--fail-under` CI gate | `src/medagent/evals/` | [Rubric evaluation guide](docs/guides/RUBRIC_EVAL_GUIDE.md) |
 | Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; CDS Hooks calls, cards and feedback, and HTTP trial pre-screens, recorded with hashes, ids and codes only; failures logged without clinical parameters | `src/medagent/agent/audit.py`, `src/medagent/trials/audit.py` | [SAFETY.md](SAFETY.md) |
 | Privacy and scope | De-identification at INTAKE, before retrieval or any LLM call (sanitised narrative fields, HMAC-hashed patient IDs); the same sanitiser in the FHIR parser, MCP tools and CDS Hooks service; scope enforcement on queries | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
 | Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
@@ -166,6 +167,7 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md) | Connecting Claude Desktop, Claude Code, Cursor or VS Code; tool reference |
 | [docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md) | Calling the checks from an EHR order workflow (HL7 CDS Hooks 2.0): quickstart, cards, prefetch, feedback, CORS, security limits |
 | [docs/guides/TRIAL_ELIGIBILITY_GUIDE.md](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) | Research-only clinical-trial pre-screening: trial definition format 1.0, criterion statuses, ranking, MCP and HTTP reference, audit, bias and limits |
+| [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides/RUBRIC_EVAL_GUIDE.md) | HealthBench-style rubric evaluation of free-text answers: dataset and check-spec format, scoring formula with a worked example, CLI and report reference, comparing model configurations, limits |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing, MCP, CDS Hooks and trial pre-screening design |
 | [SAFETY.md](SAFETY.md) | Every hard control, regulatory status and escalation policy |
 | [CONFIGURATION.md](CONFIGURATION.md) | Environment variables, model defaults and provider parameter rules |
@@ -759,9 +761,25 @@ Interactive docs: http://localhost:8000/docs
 ```bash
 python scripts/eval_medqa.py --max-samples 100   # MedQA USMLE accuracy
 python scripts/eval_drugbank.py                   # Drug interaction F1/precision/recall
+python -m medagent.evals run \
+  --dataset examples/rubric_eval/safety_rubrics.jsonl \
+  --responses careful=examples/rubric_eval/responses_careful.jsonl \
+  --generate-offline                              # HealthBench-style rubric scores
 ```
 
-Results saved to `results/` as JSON + printed summary.
+Results saved to `results/` as JSON + printed summary (the rubric evaluation also writes a
+Markdown report).
+
+**Rubric evaluation of free-text answers.** Multiple-choice accuracy does not show whether an
+answer escalates a red flag, avoids dosing directives or asks for missing context.
+`python -m medagent.evals` grades answers against physician-style rubrics in OpenAI
+HealthBench's format: deterministic, offline checks; criteria without a check reported as
+ungraded and excluded from the denominator; per-axis and per-theme scores with a seeded
+bootstrap CI. Grade recorded answers from any configuration (for example GPT-6.2 Sol versus the
+opt-in `gpt-6.2-sol-healthcare` configuration) next to medagent's own offline pipeline. See the
+[rubric evaluation guide](docs/guides/RUBRIC_EVAL_GUIDE.md).
+
+![Rubric evaluation demo: three configurations graded on 12 synthetic safety cases](assets/rubric_eval_demo.gif)
 
 ---
 
@@ -792,21 +810,25 @@ medagent-core/
 │   ├── mcp/            # Dual-era MCP stdio server (medagent-mcp) over the safety layer
 │   ├── cds_hooks/      # HL7 CDS Hooks 2.0 services: discovery, FHIR → screen → cards, feedback
 │   ├── trials/         # Research-only clinical-trial pre-screening: format 1.0, evaluator, ranking
+│   ├── evals/          # HealthBench-style rubric evaluation: dataset, rule grader, scoring, reports, CLI
 │   └── api/            # FastAPI: /analyze /drug-interactions /health /cds-services /trials
 ├── tests/              # pytest suite (unit + integration), typed and documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
 │   ├── eval_medqa.py   # USMLE benchmark runner
 │   ├── eval_drugbank.py# Drug interaction F1 evaluator
+│   ├── eval_rubric.py  # HealthBench-style rubric evaluation (same CLI as python -m medagent.evals)
 │   ├── mcp_stdio_demo.py # Reference stdio MCP client (modern + legacy sessions)
 │   ├── cds_hooks_demo.sh # curl session against /cds-services (source of the CDS Hooks GIF)
 │   ├── trial_eligibility_demo.sh # curl + MCP session for trial pre-screening (source of its GIF)
+│   ├── rubric_eval_demo.sh # rubric evaluation CLI session (source of its GIF)
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
 ├── assets/             # Animated SVG/GIF demos
 ├── docs/               # Guides, use cases, safety panel catalog, ADRs
 ├── data/               # Sample FHIR R4 bundle + KB index
 ├── examples/cds_hooks/ # Synthetic CDS Hooks requests (order-sign, order-select, feedback) + a real response
 ├── examples/trials/    # Synthetic FHIR patient, four fictional EXAMPLE-* trials + a real response
+├── examples/rubric_eval/ # 12 synthetic safety rubric cases + two hand-written answer sets
 ├── results/            # Benchmark outputs (gitignored except .gitkeep)
 ├── .github/workflows/  # CI (ruff, mypy, pytest), security scan, release
 ├── docker-compose.yml
