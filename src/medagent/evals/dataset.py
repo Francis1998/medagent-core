@@ -83,7 +83,10 @@ def _validate_patterns(patterns: list[str]) -> list[str]:
         try:
             re.compile(pattern, re.IGNORECASE)
         except re.error as exc:
-            detail = f"pattern {index} is not a valid regular expression ({exc.msg})"
+            # exc.msg can quote the pattern (e.g. a group name), so report only the position.
+            detail = f"pattern {index} is not a valid regular expression"
+            if exc.pos is not None:
+                detail += f" (error at position {exc.pos})"
             raise ValueError(detail) from None
     return patterns
 
@@ -150,8 +153,8 @@ class ClinicianReferralCheck(_CheckBase):
 class EmergencyCareCheck(_CheckBase):
     """Met when the response recommends emergency care (call 911, go to the ED, ...).
 
-    With ``immediate`` the same sentence must also carry an immediacy cue
-    ("now", "immediately", "right away", ...).
+    With ``immediate`` the recommendation's clause must also carry a
+    non-negated immediacy cue ("now", "immediately", "right away", ...).
     """
 
     type: Literal["emergency_care"]
@@ -233,7 +236,8 @@ class RubricItem(_Strict):
     def _finite_number(cls, value: Any) -> float:
         if isinstance(value, bool) or not isinstance(value, int | float):
             raise ValueError("points must be a number")
-        if not math.isfinite(value) or abs(value) > MAX_ABS_POINTS:
+        # Bound first: math.isfinite() overflows on a huge JSON integer.
+        if abs(value) > MAX_ABS_POINTS or not math.isfinite(value):
             raise ValueError(f"points must be finite and within ±{MAX_ABS_POINTS:g}")
         return float(value)
 
@@ -312,22 +316,93 @@ class RubricDataset:
         )
 
 
+_KNOWN_FIELDS: frozenset[str] = frozenset(
+    name
+    for model in (
+        Message,
+        RubricItem,
+        RubricExample,
+        ResponseRecord,
+        PatternCheck,
+        DisclaimerCheck,
+        ClinicianReferralCheck,
+        EmergencyCareCheck,
+        DoseDirectiveCheck,
+        ClarifyingQuestionCheck,
+        LengthCheck,
+    )
+    for name in model.model_fields
+) | frozenset(CHECK_TYPES)
+
+# Pydantic error types whose messages never contain input values (only limits, expected
+# literals or our own validators' value-free text). Others get a generic message.
+_VALUE_FREE_ERRORS = frozenset(
+    {
+        "missing",
+        "extra_forbidden",
+        "list_type",
+        "tuple_type",
+        "string_type",
+        "dict_type",
+        "model_type",
+        "model_attributes_type",
+        "bool_type",
+        "bool_parsing",
+        "int_type",
+        "int_parsing",
+        "int_from_float",
+        "float_type",
+        "float_parsing",
+        "finite_number",
+        "string_too_short",
+        "string_too_long",
+        "too_short",
+        "too_long",
+        "string_pattern_mismatch",
+        "literal_error",
+        "greater_than",
+        "greater_than_equal",
+        "less_than",
+        "less_than_equal",
+        "union_tag_not_found",
+        "value_error",
+    }
+)
+
+
 def _format_location(loc: tuple[int | str, ...]) -> str:
+    """Join a pydantic location; names that are not format fields (input keys) are masked."""
     parts: list[str] = []
     for part in loc:
         if isinstance(part, int):
             parts.append(f"[{part}]")
         else:
-            parts.append(f".{part}" if parts else str(part))
+            name = part if part in _KNOWN_FIELDS else "<unknown>"
+            parts.append(f".{name}" if parts else name)
     return "".join(parts)
 
 
+def _error_message(error: Any) -> str:
+    kind = str(error["type"])
+    if kind == "union_tag_invalid":
+        return f"unknown check type (expected one of: {', '.join(CHECK_TYPES)})"
+    if kind in _VALUE_FREE_ERRORS:
+        return str(error["msg"])
+    return f"invalid value ({kind})"
+
+
 def format_validation_error(exc: ValidationError, limit: int = 3) -> str:
-    """Summarise a pydantic error by field path and message, without input values."""
+    """Summarise a pydantic error by field path and message, without input values.
+
+    Messages come from an allow-list of value-free pydantic templates and this
+    module's own validators; location parts that are not format field names
+    (for example an unknown key) are shown as ``<unknown>``.
+    """
     messages = []
     for error in exc.errors(include_url=False, include_input=False, include_context=False):
         location = _format_location(tuple(error["loc"]))
-        messages.append(f"{location}: {error['msg']}" if location else str(error["msg"]))
+        message = _error_message(error)
+        messages.append(f"{location}: {message}" if location else message)
     summary = "; ".join(messages[:limit])
     if len(messages) > limit:
         summary += f" (+{len(messages) - limit} more)"
@@ -356,6 +431,9 @@ def _read_jsonl(path: str | Path) -> tuple[str, str, list[tuple[int, dict[str, A
         except json.JSONDecodeError as exc:
             detail = f"invalid JSON ({exc.msg} at column {exc.colno})"
             raise RubricDatasetError(source, lineno, detail) from None
+        except ValueError:
+            # Integers longer than sys.get_int_max_str_digits() (4,300 digits by default).
+            raise RubricDatasetError(source, lineno, "invalid JSON (number too long)") from None
         if not isinstance(obj, dict):
             raise RubricDatasetError(source, lineno, "each line must be a JSON object")
         rows.append((lineno, obj))

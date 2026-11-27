@@ -113,7 +113,8 @@ def render_answer(result: ClinicalReasoning) -> str:
     """Render a pipeline result as the plain-text answer that gets graded.
 
     Every user-visible field of the ``/analyze`` result is included, in order:
-    ranked hypotheses, overall confidence, drug-interaction warnings,
+    ranked hypotheses with their evidence statements for and against, overall
+    confidence, drug-interaction warnings (mechanism and consequence),
     uncertainty flags, the escalation notice, recommended next steps and the
     mandatory disclaimer. Run metadata (ids, timings) is left out so the text
     is reproducible.
@@ -134,13 +135,21 @@ def render_answer(result: ClinicalReasoning) -> str:
             if hypothesis.uncertainty_note:
                 line += f": {_sentence(hypothesis.uncertainty_note)}"
             lines.append(line)
+            lines.extend(
+                f"   Evidence for: {_sentence(item.statement)}" for item in hypothesis.evidence_for
+            )
+            lines.extend(
+                f"   Evidence against: {_sentence(item.statement)}"
+                for item in hypothesis.evidence_against
+            )
     else:
         lines.append("No research hypotheses were generated.")
     lines.append(f"Overall confidence: {result.overall_confidence:.2f}.")
     for warning in result.drug_interactions_flagged:
         lines.append(
             f"Drug interaction flagged: {warning.drug_a} + {warning.drug_b} "
-            f"({warning.severity.value}): {_sentence(warning.clinical_consequence)}"
+            f"({warning.severity.value}): {_sentence(warning.mechanism)} "
+            f"{_sentence(warning.clinical_consequence)}"
         )
     if result.uncertainty_flags:
         lines.append("Uncertainty flags:")

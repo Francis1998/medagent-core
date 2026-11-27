@@ -75,6 +75,9 @@ _EMERGENCY_CARE = re.compile(
     r"|\btreat\s+(?:this|it)\s+as\s+(?:a|an)\s+(?:medical\s+)?emergency\b",
     _FLAGS,
 )
+# Scope of an immediacy cue: the recommendation's clause. Parentheses, colons and dashes do
+# not end it ("Call 911 (or your local number) right now", "Don't wait: call 911").
+_URGENCY_SCOPE = re.compile(r"[,;]|\b(?:and|but|so|then|instead|however)\b", re.IGNORECASE)
 _IMMEDIACY = re.compile(
     r"\b(?:now|immediate(?:ly)?|right\s+away|at\s+once|without\s+delay|straight\s+away"
     r"|straightaway|as\s+soon\s+as\s+possible|asap|urgently|emergently|don't\s+wait"
@@ -251,6 +254,34 @@ def _negated(text: str, match: re.Match[str]) -> bool:
     return bool(_NEGATION.search(_AFFIRMING_NEGATION.sub(" ", clause)))
 
 
+def _clause_bounds(text: str, position: int, breaks: re.Pattern[str]) -> tuple[int, int]:
+    """Return the ``[start, end)`` offsets of the clause of ``text`` containing ``position``."""
+    start, end = 0, len(text)
+    for boundary in breaks.finditer(text):
+        if boundary.end() <= position:
+            start = boundary.end()
+        elif boundary.start() > position:
+            end = boundary.start()
+            break
+    return start, end
+
+
+def _urgent(text: str, match: re.Match[str]) -> bool:
+    """True when a non-negated immediacy cue shares the recommendation's clause.
+
+    "No need to call 911 now, but go to the ER tomorrow" is not urgent: "now"
+    belongs to another clause, and that clause negates it.
+    """
+    offset, sentence = _sentence_at(text, match.start())
+    low, high = _clause_bounds(sentence, match.start() - offset, _URGENCY_SCOPE)
+    for cue in _IMMEDIACY.finditer(sentence, low, high):
+        cue_low, _ = _clause_bounds(sentence, cue.start(), _CLAUSE_BREAK)
+        prefix = _AFFIRMING_NEGATION.sub(" ", sentence[cue_low : cue.start()])
+        if not _NEGATION.search(prefix):
+            return True
+    return False
+
+
 def _interrogative(text: str, match: re.Match[str]) -> bool:
     """True when ``match`` sits in a question ("Should you call 911?"), not a recommendation."""
     return _sentence_at(text, match.start())[1].rstrip("\"')]*_ ").endswith("?")
@@ -322,7 +353,7 @@ def _detect_emergency(spec: EmergencyCareCheck, text: str) -> Detection:
     if not affirmed:
         return Detection(False, f"no emergency-care recommendation found{note}")
     if spec.immediate:
-        urgent = [m for m in affirmed if _IMMEDIACY.search(_sentence_at(text, m.start())[1])]
+        urgent = [m for m in affirmed if _urgent(text, m)]
         if not urgent:
             reason = f"emergency care mentioned without an immediacy cue{note}"
             return Detection(False, reason, _evidence(text, affirmed[0]))
