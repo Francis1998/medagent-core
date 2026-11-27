@@ -33,3 +33,19 @@ def test_invalid_factor() -> None:
 
     with pytest.raises(ValueError, match="must be 0 or 1"):
         MeldNaScorer().check(MeldNaFactors(bilirubin_ge_2=2))
+
+
+def test_all_five_abnormal_flags_are_not_low_risk() -> None:
+    """Bilirubin >= 2, INR >= 1.5, dialysis and Na < 135 imply a MELD-Na of at least 28.
+
+    The OPTN MELD-Na (Kim 2008, PMID 18768945) of the mildest labs consistent with
+    every flag (bilirubin 2.0 mg/dL, INR 1.5, creatinine 4.0 for dialysis, Na 135)
+    is 28, which Wiesner 2003 (PMID 12512033) places far above the low band.
+    """
+    findings = MeldNaScorer().check(
+        MeldNaFactors(
+            bilirubin_ge_2=1, inr_ge_1_5=1, creatinine_ge_1_5=1, sodium_lt_135=1, dialysis=1
+        )
+    )
+    assert findings[0].band == "high"
+    assert findings[0].score >= 20
