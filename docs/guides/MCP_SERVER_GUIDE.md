@@ -53,9 +53,11 @@ medagent.
 | `check_drug_interactions` | Runs only the offline interaction rules: 80 pairwise checkers auto-discovered from `medagent.safety`, plus QTc pairs, anticoagulant-bleeding and triple-whammy combinations (83 today). | `medications` (2–100) |
 | `parse_fhir_bundle` | FHIR R4 Bundle for **one** patient → de-identified context (HMAC-hashed patient id, age, sex, current medications, allergies, labs, vitals) and a `screening_input` object to pass straight to `screen_medications` (validated against its limits). | `bundle`; optional `include_proposed` |
 | `list_safety_controls` | Catalogue of the hard constraints (SAFETY.md §3.1–3.8) and every check the tools run, with SAFETY.md sections and required inputs. | optional `category`, `query` |
+| `list_calculators` | Catalogue of the 13 audited clinical calculators (CURB-65, CHA2DS2-VASc, HAS-BLED, HEART, Wells PE, PERC, qSOFA, NEWS2, MELD-Na, Child-Pugh, GCS, Centor/McIsaac, CKD-EPI 2021) with each input's type, unit, accepted units, range and choices, the bands and the citation. See the [clinical calculators guide](CLINICAL_CALCULATORS_GUIDE.md). | optional `category`, `calculator_id` |
+| `run_calculator` | Computes one calculator from raw values with units; returns the score, every criterion's points and the rule that fired, the published band, citations, limitations and the disclaimer. Missing or out-of-range inputs are errors, never assumed absent. | `calculator_id`, `inputs` |
 | `screen_trial_eligibility` | Research-only clinical-trial pre-screen: one patient's FHIR R4 Bundle against 1–20 structured trial definitions (ClinicalTrials.gov `eligibilityModule` + typed criteria); criterion-level `met` / `not_met` / `insufficient_data` / `requires_human_review` with evidence pointers and a deterministic trial ranking. See the [trial eligibility guide](TRIAL_ELIGIBILITY_GUIDE.md). | `bundle`, `trials`; optional `patient_context`, `as_of`, `patient_ref` |
 
-All five tools are annotated `readOnlyHint: true`, `destructiveHint: false`,
+All seven tools are annotated `readOnlyHint: true`, `destructiveHint: false`,
 `idempotentHint: true`, `openWorldHint: false`, make no network or LLM calls, and keep no state
 between requests. `tools/list` returns them in a deterministic (alphabetical) order.
 
@@ -427,6 +429,26 @@ medication-list checks, 83 interaction rules):
 ```
 
 (`{"query": "warfarin"}` shown.)
+
+### `list_calculators` and `run_calculator`
+
+`list_calculators` returns `count`, `categories`, `calculators[]` (id, name, version, category,
+purpose, score unit and range, the wrapped scorer, `inputs[]` with type, unit, accepted units,
+`unit_required`, choices, range and default, `bands[]` and the primary citation) and the
+`disclaimer`; filter with `category` or `calculator_id`. `run_calculator` takes
+`{"calculator_id": "curb_65", "inputs": {...}}`; quantities with alternative units are sent as
+`{"value": 26, "unit": "mg/dL"}`. The result carries `score`, `interpretation` (band, label,
+range, description, severity), `components[]` (criterion, points, rule, inputs), `details`, an
+`inputs` echo in canonical units, `citations`, `limitations` and the `disclaimer`. Invalid inputs
+return `isError: true` with a message that names the input but not its value. The input
+format, every calculator, the audit and real output are in the
+[clinical calculators guide](CLINICAL_CALCULATORS_GUIDE.md).
+
+```json
+{"name": "run_calculator", "arguments": {"calculator_id": "gcs", "inputs": {"eye": 3, "verbal": 4, "motor": 6}}}
+```
+
+returns the summary `Glasgow Coma Scale: 13 points -> Mild or no impairment (13-15). ...`.
 
 ### `screen_trial_eligibility`
 
