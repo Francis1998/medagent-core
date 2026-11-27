@@ -121,8 +121,9 @@ def _breakdown_rows(run: EvalRun, kind: str) -> list[str]:
     if not names:
         return []
     labels = [_cell(config.label) for config in run.configurations]
+    header = {"axes": "Axis", "themes": "Theme"}[kind]
     rows = [
-        f"| {kind[:-1].capitalize()} | " + " | ".join(labels) + " |",
+        f"| {header} | " + " | ".join(labels) + " |",
         "|---|" + "---:|" * len(labels),
     ]
     for name in names:

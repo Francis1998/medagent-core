@@ -90,13 +90,15 @@ def bootstrap_interval(
         ``(ci_low, ci_high, bootstrap_std)``.
 
     Raises:
-        ValueError: Empty ``values``, ``samples`` outside 1-100,000 or
-            ``confidence`` outside (0, 1).
+        ValueError: Empty ``values``, ``samples`` outside 1-100,000, a negative
+            ``seed`` or ``confidence`` outside (0, 1).
     """
     if not values:
         raise ValueError("bootstrap needs at least one value")
     if not 1 <= samples <= MAX_BOOTSTRAP_SAMPLES:
         raise ValueError(f"samples must be within 1-{MAX_BOOTSTRAP_SAMPLES}")
+    if seed < 0:
+        raise ValueError("seed must be a non-negative integer")
     if not 0.0 < confidence < 1.0:
         raise ValueError("confidence must be within (0, 1)")
     data = np.asarray(values, dtype=float)

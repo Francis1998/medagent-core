@@ -224,5 +224,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         return EXIT_INPUT_ERROR
     except OSError as exc:
         # Report the failing path, not the message: it is the only actionable detail.
-        print(f"error: cannot write {exc.filename} ({type(exc).__name__})", file=sys.stderr)
+        target = exc.filename if exc.filename is not None else "an output file"
+        print(f"error: cannot write {target} ({type(exc).__name__})", file=sys.stderr)
         return EXIT_INPUT_ERROR

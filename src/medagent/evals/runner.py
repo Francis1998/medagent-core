@@ -126,7 +126,7 @@ async def run_evaluation(
 
     Raises:
         EvalConfigError: No configuration, duplicate or invalid labels, or
-            bootstrap settings out of range.
+            bootstrap settings out of range (including a negative seed).
         RubricDatasetError: A responses file is unreadable or invalid.
     """
     from medagent.evals.generate import OFFLINE_LABEL, OFFLINE_SOURCE, generate_responses
@@ -137,6 +137,8 @@ async def run_evaluation(
     _check_labels([source.label for source in sources] + ([label] if generate_offline else []))
     if not 0 <= bootstrap_samples <= MAX_BOOTSTRAP_SAMPLES:
         raise EvalConfigError(f"bootstrap samples must be within 0-{MAX_BOOTSTRAP_SAMPLES}")
+    if seed < 0:
+        raise EvalConfigError("seed must be a non-negative integer")
     if not 0.0 < confidence < 1.0:
         raise EvalConfigError("confidence must be within (0, 1)")
 
