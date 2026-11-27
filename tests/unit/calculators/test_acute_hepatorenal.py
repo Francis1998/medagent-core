@@ -312,3 +312,15 @@ def test_ckd_epi_2021_matches_the_published_equation() -> None:
     expected = 142 * (1.2 / 0.7) ** -1.2 * 0.9938**65 * 1.012
     assert ckd_epi_2021_egfr(1.2, 65, female=True) == pytest.approx(expected)
     assert round(expected) == 50
+
+
+def test_ckd_epi_2021_bands_and_reports_the_unrounded_egfr() -> None:
+    # 59.88 mL/min/1.73 m2 is below 60, so KDIGO G3a; rounding first would report G2.
+    result = run_calculator(
+        "ckd_epi_2021",
+        {"creatinine": {"value": 1.18, "unit": "mg/dL"}, "age": 40, "sex": "female"},
+    )
+    assert result["score"] == pytest.approx(ckd_epi_2021_egfr(1.18, 40, female=True))
+    assert 59.5 < result["score"] < 60
+    assert result["interpretation"]["band"] == "g3a"
+    assert result["details"]["egfr_rounded"] == 60

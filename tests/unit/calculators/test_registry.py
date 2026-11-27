@@ -253,3 +253,10 @@ def test_every_result_matches_the_output_schema(calculator_id: str) -> None:
 
 def test_examples_cover_every_calculator() -> None:
     assert sorted(EXAMPLES) == sorted(c.id for c in CALCULATORS)
+
+
+def test_integers_too_large_for_a_float_are_input_errors() -> None:
+    huge = 10**400
+    assert problems("ckd_epi_2021", {**CKD, "age": huge}) == ["inputs.age must be a finite number"]
+    found = problems("ckd_epi_2021", {**CKD, "creatinine": {"value": huge, "unit": "mg/dL"}})
+    assert found == ["inputs.creatinine.value must be a finite number"]

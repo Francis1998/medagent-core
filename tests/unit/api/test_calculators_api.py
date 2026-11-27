@@ -149,3 +149,14 @@ async def test_logs_never_contain_input_values(every_log: Callable[[], str]) -> 
     assert "calculator_run" in logs and "calculator_rejected" in logs
     for leaked in ("1.234567", "Jane", "Canary", "female"):
         assert leaked not in logs
+
+
+async def test_an_integer_too_large_for_a_float_is_a_422_not_a_500() -> None:
+    body = '{"inputs": {"eye": 4, "verbal": 5, "motor": ' + "9" * 400 + "}}"
+    response = await call(
+        "POST", "/calculators/gcs", content=body, headers={"Content-Type": "application/json"}
+    )
+    assert response.status_code == 422
+    assert (
+        response.json()["detail"] == "Invalid inputs for gcs: inputs.motor must be a finite number"
+    )
