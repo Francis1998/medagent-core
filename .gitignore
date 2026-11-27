@@ -50,6 +50,8 @@ data/*.db
 
 # Results (generated)
 results/*.json
+results/*.md
+results/*.jsonl
 
 # Secrets
 *.pem
