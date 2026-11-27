@@ -29,8 +29,8 @@ curl -s $URL | jq -r '.calculators[] | "\(.id) [\(.category)] " + (if .citation.
 curl -s -X POST $URL/curb_65 -H "$H" -d '{"inputs": {"confusion": false, "urea": {"value": 26, "unit": "mg/dL"}, "respiratory_rate": 31, "systolic_bp": 118, "diastolic_bp": 72, "age": 72}}' | jq -r '"score \(.score) -> \(.interpretation.label) (\(.interpretation.range))", (.components[] | "  \(.points)  \(.rule)")'
 # MELD-Na in SI units: the OPTN formula terms are returned, not just the total
 curl -s -X POST $URL/meld_na -H "$H" -d '{"inputs": {"bilirubin": {"value": 42.75, "unit": "µmol/L"}, "inr": 1.8, "creatinine": {"value": 168, "unit": "µmol/L"}, "sodium": 129, "dialysis": false}}' | jq -r '"MELD-Na \(.score): \(.interpretation.description)", (.components[] | "  \(.rule)")'
-# race-free CKD-EPI 2021 eGFR with its KDIGO G category and citation
-curl -s -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": {"value": 1.3, "unit": "mg/dL"}, "age": 67, "sex": "female"}}' | jq -c '{score, score_unit, band: .interpretation.label, doi: .citations[0].doi}'
+# race-free CKD-EPI 2021 eGFR: the band uses the unrounded value; labs report the whole number
+curl -s -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": {"value": 1.3, "unit": "mg/dL"}, "age": 67, "sex": "female"}}' | jq -c '{score, egfr_rounded: .details.egfr_rounded, band: .interpretation.label, doi: .citations[0].doi}'
 # a missing input is a 422 that names it (never silently "absent"); a creatinine without a unit is rejected
 curl -s -w '  HTTP %{http_code}\n' -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": 1.3, "age": 67}}'
 # the same registry over MCP: one stateless 2026-07-28 tools/call of run_calculator

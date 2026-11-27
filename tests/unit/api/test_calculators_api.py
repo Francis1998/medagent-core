@@ -76,7 +76,8 @@ async def test_compute_returns_the_scored_result_and_is_not_cached() -> None:
     result = response.json()
     assert validate(result, RUN_OUTPUT_SCHEMA, "body") == []
     # 142 x (1.234567/0.7)^-1.2 x 0.9938^67 x 1.012 = 47.95
-    assert result["score"] == 48
+    assert result["score"] == pytest.approx(47.9514, abs=1e-4)
+    assert result["details"] == {"egfr_rounded": 48}
     assert result["interpretation"]["band"] == "g3a"
     assert result["disclaimer"] == MANDATORY_DISCLAIMER
 

@@ -322,8 +322,16 @@ class ParsedInputs:
     echo: dict[str, Any]
 
 
-def _is_number(value: Any) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
+def _finite_float(value: Any) -> float | None:
+    """``value`` as a finite float, or ``None`` for non-numbers, NaN, infinities and
+    integers too large for a float (JSON allows arbitrarily long integers)."""
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except OverflowError:
+        return None
+    return number if math.isfinite(number) else None
 
 
 def _parse_quantity(spec: InputSpec, raw: Any, path: str) -> tuple[float, dict[str, Any]] | str:
@@ -341,18 +349,20 @@ def _parse_quantity(spec: InputSpec, raw: Any, path: str) -> tuple[float, dict[s
         if unit is None:
             accepted = ", ".join(u.symbol for u in spec.units)
             return f"{path}.unit must be one of {accepted}"
-        if not _is_number(value) or not math.isfinite(value):
+        number = _finite_float(value)
+        if number is None:
             return f"{path}.value must be a finite number"
-        canonical = unit.to_canonical(float(value))
+        canonical = unit.to_canonical(number)
         if not unit.is_identity:
             reported = {"value": value, "unit": unit.symbol}
-    elif _is_number(raw) and math.isfinite(raw):
+    else:
+        number = _finite_float(raw)
+        if number is None:
+            return f"{path} must be a finite number"
         if spec.requires_explicit_unit:
             accepted = " | ".join(f'"{u.symbol}"' for u in spec.units)
             return f'{path} needs an explicit unit: {{"value": <number>, "unit": {accepted}}}'
-        canonical = float(raw)
-    else:
-        return f"{path} must be a finite number"
+        canonical = number
     if spec.kind == "integer":
         if not canonical.is_integer():
             return f"{path} must be a whole number"

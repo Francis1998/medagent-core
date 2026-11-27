@@ -30,9 +30,9 @@ MELD-Na 27: 3-month mortality 19.6% (Wiesner 2003).
   inr 1.8 -> 1.8 (floor 1.0): 1.120 x ln(INR) = 0.658
   0.614 + 0.346 + 0.658 + 0.643 = 2.262 -> 2.3 x 10 = MELD(i) 23
   sodium 129 -> 129 (bounded 125-137): 1.32 x 8 - 0.033 x 23 x 8 = 4.488
-# race-free CKD-EPI 2021 eGFR with its KDIGO G category and citation
-$ curl -s -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": {"value": 1.3, "unit": "mg/dL"}, "age": 67, "sex": "female"}}' | jq -c '{score, score_unit, band: .interpretation.label, doi: .citations[0].doi}'
-{"score":45,"score_unit":"mL/min/1.73 m2","band":"G3a mildly to moderately decreased","doi":"10.1056/NEJMoa2102953"}
+# race-free CKD-EPI 2021 eGFR: the band uses the unrounded value; labs report the whole number
+$ curl -s -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": {"value": 1.3, "unit": "mg/dL"}, "age": 67, "sex": "female"}}' | jq -c '{score, egfr_rounded: .details.egfr_rounded, band: .interpretation.label, doi: .citations[0].doi}'
+{"score":45.069939342314576,"egfr_rounded":45,"band":"G3a mildly to moderately decreased","doi":"10.1056/NEJMoa2102953"}
 # a missing input is a 422 that names it (never silently "absent"); a creatinine without a unit is rejected
 $ curl -s -w '  HTTP %{http_code}\n' -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": 1.3, "age": 67}}'
 {"detail":"Invalid inputs for ckd_epi_2021: inputs.creatinine needs an explicit unit: {\"value\": <number>, \"unit\": \"mg/dL\" | \"µmol/L\"}; inputs.sex is required"}  HTTP 422

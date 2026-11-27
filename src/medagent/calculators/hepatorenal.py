@@ -376,7 +376,7 @@ def _evaluate_ckd_epi(values: Mapping[str, Any]) -> Evaluation:
     min_term, max_term = min(ratio, 1) ** alpha, max(ratio, 1) ** -1.200
     age_factor, sex_factor = 0.9938**age, 1.012 if female else 1.0
     egfr = ckd_epi_2021_egfr(creatinine, age, female)
-    reported = _round_half_up(egfr)
+    rounded = _round_half_up(egfr)
     components = (
         Criterion(
             "creatinine_ratio",
@@ -423,13 +423,15 @@ def _evaluate_ckd_epi(values: Mapping[str, Any]) -> Evaluation:
             "142 x min term x max term x age factor x sex factor",
             None,
             f"142 x {min_term:.4f} x {max_term:.4f} x {age_factor:.4f} x {sex_factor} = "
-            f"{egfr:.1f} -> {reported}",
+            f"{egfr:.2f} (reported as {rounded})",
             ("creatinine", "age", "sex"),
-            value=round(egfr, 1),
+            value=egfr,
         ),
     )
-    band = next((name for lower, name in _KDIGO_G if reported >= lower), "g5")
-    return Evaluation(reported, components, band, {"egfr_unrounded": round(egfr, 2)})
+    # The band and the score keep full precision: rounding first would move 59.8 into G2
+    # and could cross the inclusive eGFR thresholds of the renal dosing checks.
+    band = next((name for lower, name in _KDIGO_G if egfr >= lower), "g5")
+    return Evaluation(egfr, components, band, {"egfr_rounded": rounded})
 
 
 CKD_EPI_2021 = Calculator(

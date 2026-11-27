@@ -269,11 +269,11 @@ the tool, era, error kind, timing and an `inputs_hash`, never the values.
 | Field | Meaning |
 | --- | --- |
 | `calculator` | `id`, `name` and `version` of the calculator that ran. |
-| `score` | The total (points, or mL/min/1.73 m2 for CKD-EPI 2021); an integer whenever it is whole. |
+| `score` | The total: points (an integer whenever it is whole), or for CKD-EPI 2021 the unrounded eGFR in mL/min/1.73 m2. The band is chosen from this full-precision value, so 59.88 is G3a, not 60 / G2, and no rounding can cross an eGFR threshold downstream. |
 | `score_unit`, `score_range` | Unit and possible range of `score`. |
 | `interpretation` | The band that contains `score`: `band` (stable id), `label`, `range`, `description` (the risk stratum from the cited source) and `severity` (`LOW`, `MODERATE`, `HIGH`, `CRITICAL`). |
 | `components[]` | One entry per criterion: `criterion` id (the wrapped scorer's factor name where one exists), `label`, `points` it contributed (`null` for formula terms), `rule` that fired, the `inputs` it used and, for MELD-Na and CKD-EPI, the `value` of the term or factor. |
-| `details` | Calculator-specific extras: Wells PE `two_tier` (`pe_unlikely` <= 4 / `pe_likely` > 4), MELD-Na `meld_i` and `sodium_term_applied`, CKD-EPI `egfr_unrounded`. |
+| `details` | Calculator-specific extras: Wells PE `two_tier` (`pe_unlikely` <= 4 / `pe_likely` > 4), MELD-Na `meld_i` and `sodium_term_applied`, CKD-EPI `egfr_rounded` (the whole number laboratories report, for display only). |
 | `inputs` | Echo of the validated inputs in canonical units; converted quantities also show the `reported` value and unit, defaulted ones `"defaulted": true`. |
 | `citations[]` | `reference`, `doi`, `pmid`, `url`. |
 | `limitations[]` | What the calculator does not cover; read them before relying on a band. |
@@ -414,10 +414,11 @@ MELD-Na 27: 3-month mortality 19.6% (Wiesner 2003).
   sodium 129 -> 129 (bounded 125-137): 1.32 x 8 - 0.033 x 23 x 8 = 4.488
 ```
 
-**CKD-EPI 2021** (creatinine 1.3 mg/dL, 67-year-old woman):
+**CKD-EPI 2021** (creatinine 1.3 mg/dL, 67-year-old woman; the band uses the unrounded
+value, `details.egfr_rounded` is what a laboratory would report):
 
 ```json
-{"score":45,"score_unit":"mL/min/1.73 m2","band":"G3a mildly to moderately decreased","doi":"10.1056/NEJMoa2102953"}
+{"score":45.069939342314576,"egfr_rounded":45,"band":"G3a mildly to moderately decreased","doi":"10.1056/NEJMoa2102953"}
 ```
 
 **NEWS2 with a temperature in °F, over MCP** (`run_calculator` text summary):
@@ -480,7 +481,8 @@ provider, network or database, and they run in the API process and the MCP serve
   their arithmetic; existing callers of `*_scorer.py` are unaffected (apart from the four
   corrected results above).
 - **Medication screening.** `screen_medications` takes an `egfr`; an agent can compute it
-  with `run_calculator("ckd_epi_2021", ...)` first instead of estimating it.
+  with `run_calculator("ckd_epi_2021", ...)` first instead of estimating it, passing the
+  unrounded `score` (the renal dosing thresholds are inclusive).
 - **Safety controls.** Results pass the same prescription-language output guard as the
   other tools (SAFETY.md §3.3) and carry the mandatory disclaimer (§3.1).
 - **Logging.** The registry logs `calculator_run` (calculator id and band) and

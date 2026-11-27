@@ -543,7 +543,7 @@ clinical scores themselves, and that deterministic calculators fix most of it.
 ```bash
 python -c "from medagent.calculators import run_calculator; \
 print(run_calculator('ckd_epi_2021', {'creatinine': {'value': 1.3, 'unit': 'mg/dL'}, \
-'age': 67, 'sex': 'female'})['score'])"   # 45
+'age': 67, 'sex': 'female'})['details'])"   # {'egfr_rounded': 45}
 ```
 
 **Research angle:** Compare an LLM's unaided scores with tool-augmented runs on MedCalc-Bench-style

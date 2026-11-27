@@ -15,6 +15,7 @@ from medagent.calculators.base import (
     Calculator,
     CalculatorInputError,
     UnknownCalculatorError,
+    fmt_number,
     parse_inputs,
 )
 from medagent.calculators.cardiac import CHA2DS2_VASC, HAS_BLED, HEART
@@ -156,7 +157,7 @@ def result_summary(result: dict[str, Any]) -> str:
     band = result["interpretation"]
     unit = result["score_unit"]
     return (
-        f"{result['calculator']['name']}: {result['score']} {unit} -> {band['label']} "
+        f"{result['calculator']['name']}: {fmt_number(result['score'])} {unit} -> {band['label']} "
         f"({band['range']}). {band['description']} RESEARCH USE ONLY: verify the inputs; "
         "not a substitute for clinical judgement."
     )

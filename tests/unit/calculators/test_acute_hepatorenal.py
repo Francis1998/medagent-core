@@ -303,7 +303,8 @@ def test_child_pugh_classes(changes: dict[str, Any], score: int, band: str) -> N
 )
 def test_ckd_epi_2021(creatinine: dict[str, Any], age: int, sex: str, egfr: int, band: str) -> None:
     result = run_calculator("ckd_epi_2021", {"creatinine": creatinine, "age": age, "sex": sex})
-    assert (result["score"], result["interpretation"]["band"]) == (egfr, band)
+    assert (result["details"]["egfr_rounded"], result["interpretation"]["band"]) == (egfr, band)
+    assert round(result["score"]) == egfr
     assert result["score_unit"] == "mL/min/1.73 m2"
 
 
