@@ -30,3 +30,13 @@ def test_moderate_band() -> None:
     findings = WellsPeProbabilityScorer().check(WellsPeFactors(hemoptysis=True, malignancy=True))
     assert findings[0].score == 2.0
     assert findings[0].band == "moderate"
+
+
+def test_score_of_exactly_six_is_moderate_not_high() -> None:
+    """Wells 2000 (PMID 10744147): moderate is 2.0-6.0 inclusive, high is > 6.0."""
+    findings = WellsPeProbabilityScorer().check(
+        WellsPeFactors(clinical_dvt_signs=True, pe_most_likely=True)
+    )
+    assert findings[0].score == 6.0
+    assert findings[0].band == "moderate"
+    assert findings[0].severity == Severity.MODERATE
