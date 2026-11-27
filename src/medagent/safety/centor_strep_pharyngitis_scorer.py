@@ -25,7 +25,7 @@ class CentorStrepPharyngitisFactors:
     tender_anterior_nodes: int = 0
     fever_history: int = 0
     cough_absent: int = 0
-    age_bonus: int = 0  # McIsaac: +1 age 3-14, 0 age 15-44, -1 age >=45 encoded as 0/1/0
+    age_bonus: int = 0  # McIsaac: +1 age 3-14, 0 age 15-44, -1 age >= 45
 
 
 class CentorStrepPharyngitisScorer:
@@ -42,7 +42,10 @@ class CentorStrepPharyngitisScorer:
             "age_bonus": factors.age_bonus,
         }
         for name, points in domains.items():
-            if points not in {0, 1}:
+            if name == "age_bonus":
+                if points not in {-1, 0, 1}:
+                    raise ValueError("age_bonus must be -1, 0 or 1")
+            elif points not in {0, 1}:
                 raise ValueError(f"{name} must be 0 or 1")
         score = sum(domains.values())
         positive = [k for k, v in domains.items() if v > 0]
