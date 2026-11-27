@@ -267,3 +267,21 @@ terminates TLS and authenticates the CDS client. See
 | `MEDQA_DATA_PATH` | `./data/medqa_usmle_4_options_test.jsonl` | MedQA test file |
 | `DRUGBANK_TEST_PATH` | `./data/drugbank_interactions_test.json` | DrugBank test file |
 | `EVAL_MAX_SAMPLES` | `100` | Maximum samples for benchmark runs |
+
+### Rubric evaluation
+
+`python -m medagent.evals` (and `scripts/eval_rubric.py`) reads no environment variables:
+everything is a command-line flag, and `--generate-offline` builds its own offline pipeline
+(regex entity extraction, no retrieval, no LLM providers), so LLM keys in `.env` do not change
+its answers.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--output` | `results/rubric_eval` | Report prefix: `.json`, `.md` and generated `.responses.jsonl` files (git-ignored under `results/`) |
+| `--bootstrap-samples` | `1000` | Bootstrap resamples for the CI (0-100,000; `0` disables it) |
+| `--seed` | `0` | Bootstrap seed (non-negative) |
+| `--confidence` | `0.95` | Confidence level of the interval |
+| `--fail-under` | off | Exit 1 when any configuration scores below this value (CI gate) |
+| `--log-level` | `ERROR` | medagent's stderr log level; logs never carry prompt or answer text |
+
+Full reference: [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides/RUBRIC_EVAL_GUIDE.md).

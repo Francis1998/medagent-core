@@ -422,6 +422,26 @@ See [docs/guides/TRIAL_ELIGIBILITY_GUIDE.md](docs/guides/TRIAL_ELIGIBILITY_GUIDE
 
 ---
 
+## Rubric Evaluation
+
+`src/medagent/evals/` is an offline batch harness beside the HTTP and MCP surfaces; it adds no
+endpoint, setting or database table:
+
+```mermaid
+flowchart LR
+    data["dataset.py<br/>HealthBench JSONL + check specs"] --> runner["runner.py<br/>labelled configurations"]
+    recorded["recorded answers<br/>(responses JSONL)"] --> runner
+    gen["generate.py<br/>ClinicalAgentStateMachine offline<br/>regex NER · no retrieval · no LLM"] --> runner
+    runner --> grader["grader.py<br/>deterministic rules<br/>met · not_met · ungraded"]
+    grader --> scoring["scoring.py<br/>HealthBench score · axes · themes<br/>seeded bootstrap CI"]
+    scoring --> report["report.py<br/>results/*.json + *.md"]
+```
+
+Generation reuses the real state machine (INTAKE de-identification and scope checks, SAFETY_CHECK
+gating) and renders the `ClinicalReasoning` fields `POST /analyze` returns. Grading reads only
+answer text; criteria without a `check` stay `ungraded` and are excluded from the denominator.
+See [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides/RUBRIC_EVAL_GUIDE.md).
+
 ## Extension Points
 
 - **Add a new LLM provider**: Implement `BaseLLMAdapter` in `src/medagent/llm/adapters.py` and register in `MedicalRouter.from_settings()`
