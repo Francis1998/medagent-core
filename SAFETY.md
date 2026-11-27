@@ -3474,3 +3474,46 @@ HealthBench-style rubrics. It is a research benchmark, not a safety certificatio
   keys; the harness never calls an LLM itself.
 
 See `docs/guides/RUBRIC_EVAL_GUIDE.md`.
+
+---
+
+## 13. Clinical Calculators Safety Model
+
+`src/medagent/calculators/` exposes 13 audited clinical calculators (CURB-65, CHA2DS2-VASc,
+HAS-BLED, HEART, Wells PE, PERC, qSOFA, NEWS2, MELD-Na, Child-Pugh, GCS, Centor/McIsaac and the
+race-free CKD-EPI 2021 eGFR) through `GET/POST /calculators` (`src/medagent/api/calculators.py`)
+and the read-only MCP tools `list_calculators` and `run_calculator` (§9). The following
+constraints are enforced in code:
+
+- **Research only, never a treatment recommendation.** Bands describe risk strata reported by the
+  cited publications in their populations; no result says to admit, discharge, anticoagulate,
+  prescribe or withhold anything. Every result, listing and MCP tool error carries the mandatory
+  disclaimer (§3.1). A calculator is not a substitute for clinical judgement, and its inputs must
+  be verified by a qualified clinician.
+- **Never silently "absent".** A missing required input is a validation error (HTTP 422, MCP
+  `isError`), never a default of `false`; booleans must be JSON booleans. The only default is
+  NEWS2 `spo2_scale` = Scale 1, which the result marks as defaulted.
+- **Explicit units and physiological ranges.** Quantities whose alternative units change the
+  number (creatinine, bilirubin, albumin, urea/BUN, temperature) must carry a unit; conversions are
+  exact and rounded to 6 decimals so float noise cannot cross a cut-off; values outside each
+  input's physiological range are rejected, which catches most unit mix-ups.
+- **Transparent derivation.** Each result lists every criterion with the points it contributed and
+  the rule that fired, the inputs in canonical units (and the reported unit when converted), the
+  citation (DOI/PMID) and the calculator's limitations. Point totals come from the audited
+  `src/medagent/safety/` scorers, and the registry checks that they equal the derived criteria.
+- **Audited arithmetic.** Each calculator was checked against its original publication and the
+  MedCalc-Bench reference implementation; the four scorer errors found (Wells PE 6.0 band, NEWS2
+  single-parameter red score, MELD-Na flag sum, McIsaac age >= 45) were fixed with fail-before
+  regression tests.
+- **No prescribing directives (§3.3).** Every string of an HTTP result is screened with the
+  `MedicalOutputValidator` patterns (a match returns 422, "result withheld — escalate"), and the MCP
+  server screens tool results the same way.
+- **PII (§3.5).** Logs carry the calculator id and the outcome band (`calculator_run`) or the
+  number of input problems (`calculator_rejected`) only; wrapped scorers keep their existing
+  total-and-band events. Inputs are never logged, error messages name the input but never echo
+  its value or unknown input names, and POST responses are `Cache-Control: no-store`. The MCP
+  audit log (§9) stores an `inputs_hash`, never the values.
+- **Bounded input.** HTTP bodies are limited to 64 KiB; malformed JSON (including `NaN`) is a 400,
+  an unknown calculator a 404 without echoing the id, invalid inputs a 422, never a 500.
+
+See `docs/guides/CLINICAL_CALCULATORS_GUIDE.md`.

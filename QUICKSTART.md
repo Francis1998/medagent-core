@@ -154,6 +154,8 @@ and `results/rubric_eval.md`. See [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides
 | `/cds-services/{id}` | POST | CDS Hooks service call: screens draft orders, returns cards (no LLM or API keys needed) |
 | `/cds-services/{id}/feedback` | POST | CDS Hooks card feedback, recorded in the audit log |
 | `/trials/eligibility` | POST | Research-only clinical-trial pre-screen: criterion-level statuses and ranked trials (no LLM or API keys needed) |
+| `/calculators` | GET | Research-only clinical calculators with their input specs (units, ranges, choices) |
+| `/calculators/{id}` | GET / POST | Full calculator specification / compute it from `{"inputs": {...}}` (no LLM or API keys needed) |
 | `/docs` | GET | Swagger UI |
 | `/redoc` | GET | ReDoc API docs |
 
@@ -173,6 +175,15 @@ jq -s '{bundle: .[0], trials: .[1], as_of: "2026-11-12"}' \
   examples/trials/patient-bundle.json examples/trials/example-trials.json \
   | curl -s -X POST http://localhost:8000/trials/eligibility \
       -H "Content-Type: application/json" -d @-
+```
+
+Compute a clinical score from raw values with units (see
+[docs/guides/CLINICAL_CALCULATORS_GUIDE.md](docs/guides/CLINICAL_CALCULATORS_GUIDE.md)):
+
+```bash
+curl -s -X POST http://localhost:8000/calculators/ckd_epi_2021 \
+  -H "Content-Type: application/json" \
+  -d '{"inputs": {"creatinine": {"value": 1.3, "unit": "mg/dL"}, "age": 67, "sex": "female"}}'
 ```
 
 ---

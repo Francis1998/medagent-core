@@ -1,0 +1,41 @@
+# 13 audited calculators, each with typed inputs (units, ranges, choices) and a citation
+$ URL=${MEDAGENT_URL:-localhost:8000}/calculators; H='Content-Type: application/json'
+$ curl -s $URL | jq -r '.calculators[] | "\(.id) [\(.category)] " + (if .citation.doi then "doi:" + .citation.doi elif .citation.pmid then "PMID " + .citation.pmid else .citation.url end)'
+centor_mcisaac [infectious disease] PMID 9475915
+cha2ds2_vasc [cardiology] doi:10.1378/chest.09-1584
+child_pugh [hepatology] doi:10.1002/bjs.1800600817
+ckd_epi_2021 [nephrology] doi:10.1056/NEJMoa2102953
+curb_65 [pulmonology] doi:10.1136/thorax.58.5.377
+gcs [neurology] doi:10.1016/S0140-6736(74)91639-0
+has_bled [cardiology] doi:10.1378/chest.10-0134
+heart [cardiology] doi:10.1007/BF03086144
+meld_na [hepatology] doi:10.1056/NEJMoa0801209
+news2 [critical care] https://www.rcp.ac.uk/resources/national-early-warning-score-news-2/
+perc [pulmonology] doi:10.1111/j.1538-7836.2004.00790.x
+qsofa [critical care] doi:10.1001/jama.2016.0288
+wells_pe [pulmonology] PMID 10744147
+# CURB-65 from raw values: BUN 26 mg/dL is converted to urea mmol/L; each criterion shows the rule that fired
+$ curl -s -X POST $URL/curb_65 -H "$H" -d '{"inputs": {"confusion": false, "urea": {"value": 26, "unit": "mg/dL"}, "respiratory_rate": 31, "systolic_bp": 118, "diastolic_bp": 72, "age": 72}}' | jq -r '"score \(.score) -> \(.interpretation.label) (\(.interpretation.range))", (.components[] | "  \(.points)  \(.rule)")'
+score 3 -> High risk (3-5)
+  0  confusion false: 0
+  1  urea 9.28 mmol/L > 7: +1
+  1  respiratory_rate 31 /min >= 30: +1
+  0  systolic_bp 118 mmHg >= 90; diastolic_bp 72 mmHg > 60: 0
+  1  age 72 years >= 65: +1
+# MELD-Na in SI units: the OPTN formula terms are returned, not just the total
+$ curl -s -X POST $URL/meld_na -H "$H" -d '{"inputs": {"bilirubin": {"value": 42.75, "unit": "µmol/L"}, "inr": 1.8, "creatinine": {"value": 168, "unit": "µmol/L"}, "sodium": 129, "dialysis": false}}' | jq -r '"MELD-Na \(.score): \(.interpretation.description)", (.components[] | "  \(.rule)")'
+MELD-Na 27: 3-month mortality 19.6% (Wiesner 2003).
+  creatinine 1.9 -> 1.9 (bounded 1.0-4.0): 0.957 x ln(creatinine) = 0.614
+  bilirubin 2.5 -> 2.5 (floor 1.0): 0.378 x ln(bilirubin) = 0.346
+  inr 1.8 -> 1.8 (floor 1.0): 1.120 x ln(INR) = 0.658
+  0.614 + 0.346 + 0.658 + 0.643 = 2.262 -> 2.3 x 10 = MELD(i) 23
+  sodium 129 -> 129 (bounded 125-137): 1.32 x 8 - 0.033 x 23 x 8 = 4.488
+# race-free CKD-EPI 2021 eGFR: the band uses the unrounded value; labs report the whole number
+$ curl -s -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": {"value": 1.3, "unit": "mg/dL"}, "age": 67, "sex": "female"}}' | jq -c '{score, egfr_rounded: .details.egfr_rounded, band: .interpretation.label, doi: .citations[0].doi}'
+{"score":45.069939342314576,"egfr_rounded":45,"band":"G3a mildly to moderately decreased","doi":"10.1056/NEJMoa2102953"}
+# a missing input is a 422 that names it (never silently "absent"); a creatinine without a unit is rejected
+$ curl -s -w '  HTTP %{http_code}\n' -X POST $URL/ckd_epi_2021 -H "$H" -d '{"inputs": {"creatinine": 1.3, "age": 67}}'
+{"detail":"Invalid inputs for ckd_epi_2021: inputs.creatinine needs an explicit unit: {\"value\": <number>, \"unit\": \"mg/dL\" | \"µmol/L\"}; inputs.sex is required"}  HTTP 422
+# the same registry over MCP: one stateless 2026-07-28 tools/call of run_calculator
+$ jq -nc '{jsonrpc: "2.0", id: 1, method: "tools/call", params: {name: "run_calculator", arguments: {calculator_id: "news2", inputs: {respiratory_rate: 22, oxygen_saturation: 95, supplemental_oxygen: false, systolic_bp: 105, heart_rate: 112, consciousness: "alert", temperature: {value: 101.3, unit: "°F"}}}, _meta: {"io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientCapabilities": {}}}}' | python -m medagent.mcp 2>/dev/null | jq -r '.result.content[0].text'
+NEWS2 (National Early Warning Score 2): 7 points -> High clinical risk (7-20). Aggregate 7 or more (emergency response threshold). RESEARCH USE ONLY: verify the inputs; not a substitute for clinical judgement.

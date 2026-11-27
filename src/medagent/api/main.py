@@ -25,6 +25,7 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from medagent.agent.audit import persist_run, safe_error_fields
 from medagent.agent.state_machine import ClinicalAgentStateMachine
+from medagent.api import calculators as calculators_api
 from medagent.api import cds_hooks
 from medagent.api import trials as trials_api
 from medagent.api.schemas import (
@@ -224,6 +225,7 @@ class _SanitisedServerErrors:
 app.add_middleware(_SanitisedServerErrors)
 app.include_router(cds_hooks.router)
 app.include_router(trials_api.router)
+app.include_router(calculators_api.router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Operations"])

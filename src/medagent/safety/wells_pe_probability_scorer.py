@@ -54,7 +54,8 @@ class WellsPeProbabilityScorer:
                 score += pts
         score = float(score)
 
-        if score >= 6.0:
+        # Wells 2000 three-tier model: low < 2.0, moderate 2.0-6.0, high > 6.0.
+        if score > 6.0:
             band = "high"
             severity = Severity.HIGH
         elif score >= 2.0:

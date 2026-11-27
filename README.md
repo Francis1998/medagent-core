@@ -10,7 +10,10 @@ backs it. 13 medication-screening checks and 83 interaction rules run offline fr
 Claude Desktop, Claude Code, Cursor or VS Code — and from EHR order workflows through an HL7
 [CDS Hooks 2.0](docs/guides/CDS_HOOKS_GUIDE.md) service (`order-sign`, `order-select`). A
 research-only [clinical-trial pre-screen](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) ranks structured
-trial definitions against a FHIR patient with criterion-level evidence, over MCP and HTTP.
+trial definitions against a FHIR patient with criterion-level evidence, over MCP and HTTP, and 13
+audited [clinical calculators](docs/guides/CLINICAL_CALCULATORS_GUIDE.md) (CURB-65, CHA2DS2-VASc,
+HEART, NEWS2, MELD-Na, CKD-EPI 2021, …) turn raw values with units into cited, criterion-level
+scores, so LLM agents call tested code instead of doing clinical arithmetic.
 
 <p align="left">
   <a href="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Francis1998/medagent-core/actions/workflows/ci.yml/badge.svg"></a>
@@ -75,6 +78,7 @@ flowchart LR
     CDS --> AUDIT
     RES["Research team or MCP host"] -.->|"POST /trials/eligibility · MCP"| TRIALS["Trial pre-screen<br/>criterion traces · ranking<br/>never a determination"]
     TRIALS --> AUDIT
+    AGENT["LLM agent or MCP host"] -.->|"/calculators · run_calculator"| CALC["Clinical calculators<br/>raw values + units → cited score<br/>never a treatment decision"]
 ```
 
 Stage details and timeouts are in [Architecture](#architecture--observe--decide--act) below and in
@@ -123,6 +127,20 @@ $ jq -s '{bundle: .[0], trials: .[1], as_of: "2026-11-12"}' examples/trials/pati
 #4 EXAMPLE-RHEU-003  likely_ineligible: 3 blocking, 2 of 5 criteria favourable, 0 open
 ```
 
+**Compute a clinical score from raw values** (research use only; units are explicit and every
+criterion shows the rule that fired — see the [clinical calculators guide](docs/guides/CLINICAL_CALCULATORS_GUIDE.md)):
+
+```console
+$ curl -s -X POST localhost:8000/calculators/curb_65 -H 'Content-Type: application/json' -d '{"inputs": {"confusion": false, "urea": {"value": 26, "unit": "mg/dL"}, "respiratory_rate": 31, "systolic_bp": 118, "diastolic_bp": 72, "age": 72}}' \
+    | jq -r '"score \(.score) -> \(.interpretation.label) (\(.interpretation.range))", (.components[] | "  \(.points)  \(.rule)")'
+score 3 -> High risk (3-5)
+  0  confusion false: 0
+  1  urea 9.28 mmol/L > 7: +1
+  1  respiratory_rate 31 /min >= 30: +1
+  0  systolic_bp 118 mmHg >= 90; diastolic_bp 72 mmHg > 60: 0
+  1  age 72 years >= 65: +1
+```
+
 **Run the HTTP API.** Reasoning needs at least one LLM API key; without one, `/analyze` escalates
 instead of guessing. INTAKE de-identifies every request before retrieval or any LLM call. It
 redacts dates, MRNs, SSNs, phone numbers, emails, and names after an honorific or a `Name:` label
@@ -149,14 +167,15 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | Deterministic safety library | 300 modules covering allergy cross-reactivity, pregnancy and lactation, Beers and STOPP/START, renal and hepatic dosing, QTc DDIs, anticoagulant bleeding and boxed warnings, plus scorers and lab-trend bridges. The MCP tools run 13 screening checks and 83 interaction rules from it | `src/medagent/safety/` | [SAFETY.md](SAFETY.md), [panel catalog](docs/SAFETY_PANEL_CATALOG.md) |
 | Drug-interaction checks | Dual-source RxNorm + OpenFDA on the HTTP path; 83 curated pairwise rules offline over MCP | `src/medagent/retrieval/drug_interaction.py`, `src/medagent/mcp/` | [SAFETY.md](SAFETY.md) |
 | FHIR R4 | Bundle parser and MedicationRequest adapter; de-identified screening input over MCP and CDS Hooks, and patient facts for trial pre-screening | `src/medagent/extraction/fhir_parser.py` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
-| MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 5 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
+| MCP server | Dual-era stdio server (2026-07-28, plus 2025-11-25 and 2025-06-18) with 7 tools | `src/medagent/mcp/` | [MCP guide](docs/guides/MCP_SERVER_GUIDE.md) |
 | HL7 CDS Hooks 2.0 service | `order-sign` and `order-select` services that screen draft orders against prefetched current medications, allergies, age and eGFR with the same checks; advisory cards only (no suggestions or system actions), info card when prefetch is missing, de-identified feedback; no FHIR server, LLM or network calls | `src/medagent/cds_hooks/`, `src/medagent/api/cds_hooks.py` | [CDS Hooks guide](docs/guides/CDS_HOOKS_GUIDE.md) |
 | Clinical-trial pre-screening (research only) | One FHIR patient against 1–20 structured trial definitions (ClinicalTrials.gov `eligibilityModule` + condition, medication, lab, pregnancy, lactation and free-text criteria): `met` / `not_met` / `insufficient_data` / `requires_human_review` per criterion with evidence pointers, deterministic ranking, free text never guessed, never an eligibility determination; MCP tool `screen_trial_eligibility` and `POST /trials/eligibility` | `src/medagent/trials/`, `src/medagent/api/trials.py` | [Trial eligibility guide](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) |
 | Rubric evaluation (HealthBench-style) | Grade free-text answers against physician-style rubrics (positive and negative points, `axis:` / `theme:` tags; HealthBench JSONL loads unchanged): deterministic offline checks for emergency escalation, dose directives, disclaimers, referrals and clarifying questions; ungraded criteria disclosed, never guessed; per-axis and per-theme scores with a seeded bootstrap CI; JSON + Markdown reports and a `--fail-under` CI gate | `src/medagent/evals/` | [Rubric evaluation guide](docs/guides/RUBRIC_EVAL_GUIDE.md) |
+| Clinical calculators (research only) | 13 audited calculators — CURB-65, CHA2DS2-VASc, HAS-BLED, HEART, Wells PE, PERC, qSOFA, NEWS2, MELD-Na, Child-Pugh, GCS, Centor/McIsaac, race-free CKD-EPI 2021 eGFR — from raw values with units (mg/dL or µmol/L, mmol/L urea or BUN mg/dL, °C or °F) and physiological ranges; each criterion's points and the rule that fired, the published band, DOI/PMID and limitations; missing inputs are errors, never "absent"; `GET/POST /calculators` and MCP `list_calculators` / `run_calculator` | `src/medagent/calculators/`, `src/medagent/api/calculators.py` | [Clinical calculators guide](docs/guides/CLINICAL_CALCULATORS_GUIDE.md) |
 | Durable audit log | Every completed `/analyze` run persisted; MCP tool calls audited with `--audit-log`; CDS Hooks calls, cards and feedback, and HTTP trial pre-screens, recorded with hashes, ids and codes only; failures logged without clinical parameters | `src/medagent/agent/audit.py`, `src/medagent/trials/audit.py` | [SAFETY.md](SAFETY.md) |
 | Privacy and scope | De-identification at INTAKE, before retrieval or any LLM call (sanitised narrative fields, HMAC-hashed patient IDs); the same sanitiser in the FHIR parser, MCP tools and CDS Hooks service; scope enforcement on queries | `src/medagent/safety/pii_hasher.py`, `src/medagent/safety/scope_enforcer.py` | [SAFETY.md](SAFETY.md) |
 | Multi-LLM routing | OpenAI, Anthropic, Google and Kimi with failover and model-aware request parameters | `src/medagent/llm/` | [CONFIGURATION.md](CONFIGURATION.md) |
-| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health`, CDS Hooks under `/cds-services`, and `POST /trials/eligibility` | `src/medagent/api/main.py` | [API](#api) |
+| HTTP API | `POST /analyze`, `POST /drug-interactions`, `GET /health`, CDS Hooks under `/cds-services`, `POST /trials/eligibility`, and `GET/POST /calculators` | `src/medagent/api/main.py` | [API](#api) |
 
 ## Docs map
 
@@ -168,6 +187,7 @@ End-to-end walkthroughs: [docs/guides/USE_CASES.md](docs/guides/USE_CASES.md) ·
 | [docs/guides/CDS_HOOKS_GUIDE.md](docs/guides/CDS_HOOKS_GUIDE.md) | Calling the checks from an EHR order workflow (HL7 CDS Hooks 2.0): quickstart, cards, prefetch, feedback, CORS, security limits |
 | [docs/guides/TRIAL_ELIGIBILITY_GUIDE.md](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md) | Research-only clinical-trial pre-screening: trial definition format 1.0, criterion statuses, ranking, MCP and HTTP reference, audit, bias and limits |
 | [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides/RUBRIC_EVAL_GUIDE.md) | HealthBench-style rubric evaluation of free-text answers: dataset and check-spec format, scoring formula with a worked example, CLI and report reference, comparing model configurations, limits |
+| [docs/guides/CLINICAL_CALCULATORS_GUIDE.md](docs/guides/CLINICAL_CALCULATORS_GUIDE.md) | Research-only clinical calculators: catalogue, units and validation, HTTP and MCP reference, how an LLM agent should call them, audit results and limits |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | State machine, retrieval, routing, MCP, CDS Hooks and trial pre-screening design |
 | [SAFETY.md](SAFETY.md) | Every hard control, regulatory status and escalation policy |
 | [CONFIGURATION.md](CONFIGURATION.md) | Environment variables, model defaults and provider parameter rules |
@@ -506,6 +526,31 @@ across patient groups.
 
 ---
 
+### 9. Tool-Augmented Clinical Calculation
+
+**The problem:** [MedCalc-Bench](https://github.com/ncbi-nlp/MedCalc-Bench) (NeurIPS 2024) shows
+that LLMs misapply cut-offs, skip unit conversions and slip on arithmetic when they compute
+clinical scores themselves, and that deterministic calculators fix most of it.
+
+**How medagent-core helps:**
+- 13 audited calculators take raw values with explicit units, convert them (BUN mg/dL to urea
+  mmol/L, µmol/L to mg/dL, °F to °C) and reject missing, out-of-range or ambiguous inputs
+- Every result lists each criterion's points and the rule that fired, the published band, the
+  DOI/PMID and the calculator's limitations, with the mandatory disclaimer
+- The same registry over MCP (`list_calculators`, `run_calculator`) and HTTP (`/calculators`), so
+  an agent on GPT-6.2 Sol, Claude Opus 5.5, Gemini 4 Neon or Kimi K3.1 Pro calls tested code
+
+```bash
+python -c "from medagent.calculators import run_calculator; \
+print(run_calculator('ckd_epi_2021', {'creatinine': {'value': 1.3, 'unit': 'mg/dL'}, \
+'age': 67, 'sex': 'female'})['details'])"   # {'egfr_rounded': 45}
+```
+
+**Research angle:** Compare an LLM's unaided scores with tool-augmented runs on MedCalc-Bench-style
+notes, or measure how often a model invents a missing criterion once absence must be stated.
+
+---
+
 ## Architecture — Observe → Decide → Act
 
 ```
@@ -752,6 +797,21 @@ Malformed JSON is `400`, invalid definitions or FHIR data `422`; every screening
 hashes, ids and counts only. It never determines eligibility or enrolls anyone. See the
 [trial eligibility guide](docs/guides/TRIAL_ELIGIBILITY_GUIDE.md).
 
+### `/calculators` — Clinical calculators (research only)
+
+![medagent clinical calculators: a real curl and MCP session computing CURB-65, MELD-Na, CKD-EPI 2021 and NEWS2 from raw values with units](assets/clinical_calculators_demo.gif)
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /calculators` | The 13 calculators with ids, versions, input specs (type, unit, accepted units, range, choices), bands and citation; optional `category` |
+| `GET /calculators/{id}` | Full specification: unit conversions, JSON Schema for `inputs`, bands, citations, limitations |
+| `POST /calculators/{id}` | `{"inputs": {...}}` → score, components (points and the rule that fired), interpretation band, citations, limitations, disclaimer |
+
+Malformed JSON is `400`, an unknown id `404`, a body over 64 KiB `413`, and missing, malformed or
+out-of-range inputs `422` naming the input but never echoing its value. The MCP tools
+`list_calculators` and `run_calculator` return the same objects. Never a treatment
+recommendation. See the [clinical calculators guide](docs/guides/CLINICAL_CALCULATORS_GUIDE.md).
+
 Interactive docs: http://localhost:8000/docs
 
 ---
@@ -811,7 +871,8 @@ medagent-core/
 │   ├── cds_hooks/      # HL7 CDS Hooks 2.0 services: discovery, FHIR → screen → cards, feedback
 │   ├── trials/         # Research-only clinical-trial pre-screening: format 1.0, evaluator, ranking
 │   ├── evals/          # HealthBench-style rubric evaluation: dataset, rule grader, scoring, reports, CLI
-│   └── api/            # FastAPI: /analyze /drug-interactions /health /cds-services /trials
+│   ├── calculators/    # Research-only clinical calculator registry: typed inputs, units, bands, citations
+│   └── api/            # FastAPI: /analyze /drug-interactions /health /cds-services /trials /calculators
 ├── tests/              # pytest suite (unit + integration), typed and documented
 ├── scripts/
 │   ├── demo.py         # Rich interactive demo (3 clinical cases, no API keys needed)
@@ -822,6 +883,7 @@ medagent-core/
 │   ├── cds_hooks_demo.sh # curl session against /cds-services (source of the CDS Hooks GIF)
 │   ├── trial_eligibility_demo.sh # curl + MCP session for trial pre-screening (source of its GIF)
 │   ├── rubric_eval_demo.sh # rubric evaluation CLI session (source of its GIF)
+│   ├── clinical_calculators_demo.sh # curl + MCP session for the clinical calculators (source of its GIF)
 │   └── ingest_kb.py    # KB ingestion from JSONL or live PubMed
 ├── assets/             # Animated SVG/GIF demos
 ├── docs/               # Guides, use cases, safety panel catalog, ADRs

@@ -59,6 +59,11 @@ class News2EarlyWarningScorer:
         elif score >= 5:
             band = "moderate"
             severity = Severity.MODERATE
+        elif any(points == 3 for points in domains.values()):
+            # RCP NEWS2 (2017): a "red score" of 3 in any single parameter is
+            # low-medium clinical risk even when the aggregate is 0-4.
+            band = "low_medium"
+            severity = Severity.MODERATE
         else:
             band = "low"
             severity = Severity.LOW

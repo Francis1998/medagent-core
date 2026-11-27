@@ -23,6 +23,17 @@ from typing import Any, cast
 from pydantic import BaseModel
 
 import medagent.safety as safety_pkg
+from medagent.calculators import (
+    CalculatorInputError,
+    UnknownCalculatorError,
+    catalogue,
+    result_summary,
+    run_calculator,
+)
+from medagent.calculators.schema import LIST_INPUT_SCHEMA as _CALCULATOR_LIST_INPUT
+from medagent.calculators.schema import LIST_OUTPUT_SCHEMA as _CALCULATOR_LIST_OUTPUT
+from medagent.calculators.schema import RUN_INPUT_SCHEMA as _CALCULATOR_RUN_INPUT
+from medagent.calculators.schema import RUN_OUTPUT_SCHEMA as _CALCULATOR_RUN_OUTPUT
 from medagent.extraction.fhir_parser import (
     FHIRParseError,
     concept_name,
@@ -1698,6 +1709,29 @@ def _screen_trial_eligibility(arguments: dict[str, Any]) -> ToolOutput:
     return ToolOutput(screening.structured(), screening.summary())
 
 
+def _list_calculators(arguments: dict[str, Any]) -> ToolOutput:
+    """Catalogue the deterministic clinical calculators with their input specs."""
+    try:
+        result = catalogue(arguments.get("category"), arguments.get("calculator_id"))
+    except UnknownCalculatorError as exc:
+        raise ToolInputError(str(exc)) from None
+    ids = ", ".join(entry["id"] for entry in result["calculators"]) or "none"
+    summary = (
+        f"{result['count']} clinical calculator(s): {ids}. Call run_calculator with raw values "
+        "and units; missing inputs are errors, never assumed absent. RESEARCH USE ONLY."
+    )
+    return ToolOutput(result, summary)
+
+
+def _run_calculator(arguments: dict[str, Any]) -> ToolOutput:
+    """Run one calculator on raw values and return the derived, cited result."""
+    try:
+        result = run_calculator(arguments["calculator_id"], arguments["inputs"])
+    except (CalculatorInputError, UnknownCalculatorError) as exc:
+        raise ToolInputError(str(exc)) from None
+    return ToolOutput(result, result_summary(result))
+
+
 TOOLS: tuple[ToolSpec, ...] = (
     ToolSpec(
         name="check_drug_interactions",
@@ -1724,6 +1758,21 @@ TOOLS: tuple[ToolSpec, ...] = (
         },
         output_schema=_INTERACTIONS_OUTPUT,
         handler=_check_drug_interactions,
+    ),
+    ToolSpec(
+        name="list_calculators",
+        title="List clinical calculators",
+        description=(
+            "List medagent's audited, deterministic clinical calculators (CURB-65, "
+            "CHA2DS2-VASc, HAS-BLED, HEART, Wells PE, PERC, qSOFA, NEWS2, MELD-Na, Child-Pugh, "
+            "GCS, Centor/McIsaac, CKD-EPI 2021 eGFR) with each input's type, unit, accepted "
+            "alternative units, physiological range and choices, the interpretation bands and "
+            "the primary citation. Filter by category or calculator_id. Use run_calculator "
+            "instead of doing clinical arithmetic. RESEARCH USE ONLY."
+        ),
+        input_schema=_CALCULATOR_LIST_INPUT,
+        output_schema=_CALCULATOR_LIST_OUTPUT,
+        handler=_list_calculators,
     ),
     ToolSpec(
         name="list_safety_controls",
@@ -1787,6 +1836,22 @@ TOOLS: tuple[ToolSpec, ...] = (
         },
         output_schema=_FHIR_OUTPUT,
         handler=_parse_fhir_bundle,
+    ),
+    ToolSpec(
+        name="run_calculator",
+        title="Run a clinical calculator",
+        description=(
+            "Compute one clinical calculator from raw patient values with units (e.g. creatinine "
+            '{"value": 168, "unit": "µmol/L"}, temperature in °C or °F, urea in mmol/L or BUN '
+            "in mg/dL). Every criterion is derived deterministically and returned with the "
+            "points it scored and the rule that fired, plus the total, the published "
+            "interpretation band, citations and limitations. Missing or out-of-range inputs "
+            "are errors, never silently assumed absent. Never a treatment recommendation. "
+            "RESEARCH USE ONLY."
+        ),
+        input_schema=_CALCULATOR_RUN_INPUT,
+        output_schema=_CALCULATOR_RUN_OUTPUT,
+        handler=_run_calculator,
     ),
     ToolSpec(
         name="screen_medications",

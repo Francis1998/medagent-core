@@ -88,10 +88,21 @@ src/medagent/
 │   ├── screening.py       # screen_trials(): validate → facts → evaluate → rank → audit events
 │   └── audit.py           # trial_screening_audit table (hashes, ids, statuses, counts)
 │
+├── calculators/           # Research-only clinical calculators (deterministic, offline)
+│   ├── base.py            # InputSpec / Unit / Band / Citation / Criterion, parse_inputs()
+│   ├── inputs.py          # Shared input specs and unit conversions (mg/dL↔µmol/L, BUN, °F)
+│   ├── pulmonary.py       # CURB-65, Wells PE, PERC (wrapping the safety scorers)
+│   ├── cardiac.py         # CHA2DS2-VASc, HAS-BLED, HEART
+│   ├── acute.py           # qSOFA, NEWS2, GCS, Centor/McIsaac
+│   ├── hepatorenal.py     # MELD-Na, Child-Pugh, CKD-EPI 2021
+│   ├── registry.py        # CALCULATORS, catalogue(), describe_calculator(), run_calculator()
+│   └── schema.py          # MCP / OpenAPI JSON Schemas
+│
 └── api/
     ├── main.py            # FastAPI app, lifespan, /analyze, /drug-interactions, /health
     ├── cds_hooks.py       # /cds-services router, path-scoped opt-in CORS, background audit writes
     ├── trials.py          # POST /trials/eligibility, 400/413/422 errors, background audit writes
+    ├── calculators.py     # GET /calculators, GET/POST /calculators/{id}, 400/404/413/422 errors
     └── schemas.py         # API-layer request/response schemas (separate from domain models)
 ```
 
@@ -321,6 +332,7 @@ flowchart LR
     server -- "validate args<br/>(mcp/schema.py)" --> tools["mcp/tools.py"]
     tools --> parser["extraction/fhir_parser.py<br/>+ FhirMedicationRequestAdapter"]
     tools --> checks["safety/* checkers<br/>(patient-context, list, 83 interaction rules)"]
+    tools --> calcs["calculators/ registry<br/>(list_calculators · run_calculator)"]
     tools --> guard["MedicalOutputValidator<br/>ScopeEnforcer · pii_hasher"]
     server -. "hashes + counts" .-> audit[("JSONL audit log")]
     server -. "logs" .-> stderr["STDERR"]
@@ -441,6 +453,43 @@ Generation reuses the real state machine (INTAKE de-identification and scope che
 gating) and renders the `ClinicalReasoning` fields `POST /analyze` returns. Grading reads only
 answer text; criteria without a `check` stay `ungraded` and are excluded from the denominator.
 See [docs/guides/RUBRIC_EVAL_GUIDE.md](docs/guides/RUBRIC_EVAL_GUIDE.md).
+
+---
+
+## Clinical Calculators
+
+`list_calculators` / `run_calculator` (MCP) and `/calculators` (HTTP) share one registry in
+`src/medagent/calculators/`; like the trial pre-screen it never touches the agent, an LLM, the
+network or the database:
+
+```mermaid
+flowchart LR
+    mcp["MCP tools/call<br/>run_calculator"] --> parse["base.parse_inputs<br/>types · units → canonical · ranges<br/>missing = error"]
+    http["POST /calculators/{id}<br/>64 KiB · 400/404/422"] --> parse
+    parse --> derive["calculator.evaluate<br/>criteria from raw values<br/>points + rule that fired"]
+    derive --> scorer["safety/*_scorer.py<br/>audited point sums"]
+    scorer --> check["total == derived points?"]
+    check --> band["published band · citations<br/>limitations · disclaimer"]
+    band --> mcp
+    band --> http
+```
+
+- **Wrap, don't duplicate.** Each point-based calculator derives its criteria from raw values and
+  then builds the existing scorer's factor dataclass, so the scorer computes the total; the
+  registry raises if the scorer's total and the derived points disagree. MELD-Na and CKD-EPI 2021
+  report formula terms instead of points.
+- **Typed inputs are the contract.** `InputSpec` (type, canonical unit, alternative units with
+  conversions, physiological range, choices, required) generates the per-calculator JSON Schema,
+  the listing and the validation, so the documented and enforced input shapes cannot drift.
+- **Import direction.** `medagent.mcp.tools` imports `medagent.calculators` (registry and
+  schemas); the calculators import only `medagent.safety` scorers, `medagent.models` and logging.
+- **Stable identity.** Calculator ids are stable strings with a version; band ids are stable per
+  calculator, so downstream evaluations can pin them.
+
+See [docs/guides/CLINICAL_CALCULATORS_GUIDE.md](docs/guides/CLINICAL_CALCULATORS_GUIDE.md) and
+[SAFETY.md §13](SAFETY.md#13-clinical-calculators-safety-model).
+
+---
 
 ## Extension Points
 

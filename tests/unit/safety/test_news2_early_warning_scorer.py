@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from medagent.models import Severity
 from medagent.safety.news2_early_warning_scorer import (
     News2EarlyWarningFactors,
     News2EarlyWarningScorer,
@@ -37,3 +38,19 @@ def test_invalid_factor_raises() -> None:
 
     with pytest.raises(ValueError, match="respiration"):
         News2EarlyWarningScorer().check(News2EarlyWarningFactors(respiration=4))
+
+
+def test_single_parameter_red_score_is_low_medium() -> None:
+    """RCP NEWS2 (2017): a 3 in any one parameter is low-medium risk even when the total is < 5."""
+    findings = News2EarlyWarningScorer().check(News2EarlyWarningFactors(respiration=3))
+    assert findings[0].score == 3
+    assert findings[0].band == "low_medium"
+    assert findings[0].severity == Severity.MODERATE
+
+
+def test_aggregate_below_five_without_a_red_score_stays_low() -> None:
+    findings = News2EarlyWarningScorer().check(
+        News2EarlyWarningFactors(respiration=2, heart_rate=2)
+    )
+    assert findings[0].score == 4
+    assert findings[0].band == "low"
