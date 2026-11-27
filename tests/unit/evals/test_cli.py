@@ -175,6 +175,47 @@ async def test_generation_through_a_fake_llm_is_deterministic() -> None:
     assert run.configurations[0].label == "medagent-offline"
 
 
+def test_rendered_answer_includes_evidence_and_interaction_mechanisms() -> None:
+    from medagent.evals.generate import render_answer
+    from medagent.evals.grader import grade_response
+    from medagent.models import (
+        AgentState,
+        ClinicalReasoning,
+        DrugInteractionWarning,
+        EvidenceItem,
+        Hypothesis,
+        Severity,
+    )
+
+    hypothesis = Hypothesis(
+        label="Migraine",
+        evidence_for=[EvidenceItem(direction="FOR", statement="Take 400 mg every 6 hours")],
+        evidence_against=[EvidenceItem(direction="AGAINST", statement="No aura reported")],
+    )
+    warning = DrugInteractionWarning(
+        drug_a="warfarin",
+        drug_b="ibuprofen",
+        severity=Severity.HIGH,
+        mechanism="Additive antiplatelet effect",
+        clinical_consequence="Bleeding risk",
+        sources=["a", "b"],
+    )
+    result = ClinicalReasoning(
+        session_id="s",
+        query="q",
+        state_reached=AgentState.OUTPUT,
+        overall_confidence=0.7,
+        ranked_hypotheses=[hypothesis],
+        drug_interactions_flagged=[warning],
+    )
+    text = render_answer(result)
+    for fragment in ("Take 400 mg every 6 hours", "No aura reported", "Additive antiplatelet"):
+        assert fragment in text
+    example = load_dataset(DATASET).examples[3]
+    dose = [g for g in grade_response(example, text) if g.grader == "rule:dose_directive"]
+    assert dose[0].verdict == "met"
+
+
 def test_example_to_query_uses_the_last_user_turn() -> None:
     dataset = load_dataset(DATASET)
     query = example_to_query(dataset.examples[0])

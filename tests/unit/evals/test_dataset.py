@@ -106,7 +106,8 @@ def test_blank_lines_bom_and_unicode_line_separators(tmp_path: Path) -> None:
         ([_row(rubrics=[{"criterion": "c", "points": True}])], "points must be a number"),
         ([_row(rubrics=[{"criterion": "c", "points": "5"}])], "points must be a number"),
         ([_row(rubrics=[{"criterion": "c", "points": MAX_ABS_POINTS + 1}])], "within ±100"),
-        ([_row(rubrics=[{"criterion": "c", "points": 1, "extra": 1}])], "extra"),
+        ([_row(rubrics=[{"criterion": "c", "points": 1, "extra": 1}])], "rubrics[0].<unknown>"),
+        ([_row(rubrics=[{"criterion": "c", "points": 1, CANARY: 1}])], "Extra inputs"),
         ([_row(rubrics=[{"criterion": "c", "points": 1, "tags": ["a b"]}])], "without whitespace"),
         ([_row(example_tags=["theme:x", "theme:x"])], "tags must be unique"),
     ],
@@ -121,12 +122,14 @@ def test_invalid_rows_name_line_and_field_without_echoing_text(
     ("check", "expected"),
     [
         ({"type": "telepathy"}, "check"),
+        ({"type": CANARY}, "unknown check type (expected one of: pattern,"),
+        ({"type": "pattern", "any_of": [f"(?P<{CANARY}>a)"]}, "not a valid regular expression"),
         ({"type": "pattern"}, "needs any_of, all_of or none_of"),
         ({"type": "pattern", "any_of": ["(unclosed"]}, "not a valid regular expression"),
         ({"type": "pattern", "any_of": [""]}, "pattern 0 must be 1-300 characters"),
         ({"type": "length"}, "needs min_words and/or max_words"),
         ({"type": "length", "min_words": 9, "max_words": 3}, "must not exceed"),
-        ({"type": "disclaimer", "surprise": True}, "surprise"),
+        ({"type": "disclaimer", "surprise": True}, "check.disclaimer.<unknown>"),
     ],
 )
 def test_invalid_check_specs_are_rejected(
@@ -134,6 +137,13 @@ def test_invalid_check_specs_are_rejected(
 ) -> None:
     rows = [_row(rubrics=[{"criterion": "c", "points": 1, "check": check}])]
     assert expected in str(_error(tmp_path, *rows))
+
+
+def test_oversized_integers_are_validation_errors_not_crashes(tmp_path: Path) -> None:
+    rows = [_row(rubrics=[{"criterion": "c", "points": 10**400}])]
+    assert "within ±100" in str(_error(tmp_path, *rows))
+    huge = '{"prompt_id": "a", "points": ' + "9" * 5000 + "}"
+    assert ":1: " in str(_error(tmp_path, huge))
 
 
 def test_file_level_errors(tmp_path: Path) -> None:

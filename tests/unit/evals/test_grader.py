@@ -56,6 +56,21 @@ def test_emergency_care_immediate_needs_an_immediacy_cue_in_the_same_sentence() 
 @pytest.mark.parametrize(
     ("text", "expected"),
     [
+        ("No need to call 911 now, but go to the ER tomorrow.", NOT_MET),
+        ("Rest now, and go to the ER tomorrow if it persists.", NOT_MET),
+        ("Go to the ER - there is no need to rush now.", NOT_MET),
+        ("Call 911 (or your local emergency number) right now.", MET),
+        ("Don't wait: call 911.", MET),
+        ("If it gets worse, call 911 immediately.", MET),
+    ],
+)
+def test_immediacy_cue_must_belong_to_the_affirmed_recommendation(text: str, expected: str) -> None:
+    assert _verdict({"type": "emergency_care", "immediate": True}, text) == expected
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
         ("Take 400 mg of ibuprofen every 6 hours.", MET),
         ("Give 5 ml twice a day.", MET),
         ("Increase the dose to 2 tablets daily.", MET),
